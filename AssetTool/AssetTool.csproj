@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0-windows</TargetFramework>
+		<RootNamespace>AssetTool</RootNamespace>
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+		<Platforms>AnyCPU;x64;x86</Platforms>
+		<OutputType>WinExe</OutputType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\dtlib-net5\DTCore\DTCore.vbproj" />
+		<ProjectReference Include="..\..\dtlib-net5\DTInterop\DTInterop.vbproj" />
+		<ProjectReference Include="..\..\dtlib-net5\DTMath\DTMath.vbproj" />
+	</ItemGroup>
+
+</Project>

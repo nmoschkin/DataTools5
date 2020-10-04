@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<TargetFramework>net5.0</TargetFramework>
+	<Platforms>AnyCPU;x64;x86</Platforms>
+	<RootNamespace>CoreCT.Native</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Native.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Native.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CoreCT\CoreCT.csproj" />
+  </ItemGroup>
+
+</Project>
