@@ -17,11 +17,28 @@ using DataTools.Interop.Desktop;
 
 namespace AssetTool
 {
+    public class ExplorerItemClickedEventArgs : EventArgs
+    {
+
+        public ISimpleShellItem Item { get; private set; }
+
+
+        public ExplorerItemClickedEventArgs(ISimpleShellItem item)
+        {
+            Item = item;
+        }
+
+    }
+
     /// <summary>
     /// Interaction logic for Explorer.xaml
     /// </summary>
     public partial class Explorer : UserControl
     {
+
+        public delegate void ItemClickedEvent(object sender, ExplorerItemClickedEventArgs e);
+        public event ItemClickedEvent ItemClicked;
+
         public Explorer()
         {
             InitializeComponent();
@@ -63,13 +80,14 @@ namespace AssetTool
 
         private void SystemTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue is ISimpleShellItem item)
+            if (e.NewValue is DirectoryObject item)
             {
+                if (item.Folders.Count == 1 && string.IsNullOrEmpty(item.Folders.ElementAt(0).ParsingName)) item.Refresh();
 
                 if (SelectedFolder != item)
                 {
-                    item.Refresh();
-                    SelectedFolder = item as DirectoryObject;
+                    SelectedFolder = item;
+                    ItemClicked?.Invoke(this, new ExplorerItemClickedEventArgs(item));
                 }
             }
         }
@@ -78,9 +96,26 @@ namespace AssetTool
         {
             var ti = e.OriginalSource as TreeViewItem;
 
-            var x = ti.Header as DirectoryObject;
-            if (x != null) x.Refresh();
+            var item = ti.Header as DirectoryObject;
+            if (item != null && item.Folders.Count == 1 && string.IsNullOrEmpty(item.Folders.ElementAt(0).ParsingName))
+                item.Refresh();
 
+        }
+
+        private void UserControl_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F5 && e.KeyboardDevice.Modifiers == ModifierKeys.None)
+            {
+                SelectedFolder?.Refresh();
+            }
+        }
+
+        private void FolderView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0 && e.AddedItems[0] is ISimpleShellItem item)
+            {
+                ItemClicked?.Invoke(this, new ExplorerItemClickedEventArgs(item));
+            }
         }
     }
 }

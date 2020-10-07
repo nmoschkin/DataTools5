@@ -8,9 +8,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    KeyDown="UserControl_KeyDown"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
+
+            <local:FriendlySizeConverter x:Key="friendly" />
+
             <HierarchicalDataTemplate
                 x:Key="FolderTemplate"
                 DataType="{x:Type desktop:DirectoryObject}"
@@ -75,7 +79,34 @@
             HorizontalAlignment="Stretch"
             ItemTemplate="{StaticResource FolderTemplate}"
             SelectedItemChanged="SystemTree_SelectedItemChanged"
-            TreeViewItem.Expanded="SystemTree_Expanded" />
+            TreeViewItem.Expanded="SystemTree_Expanded">
+
+
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="BorderThickness" Value="1.5" />
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="#adc6e5" />
+                            <Setter Property="Background" Value="{x:Static SystemColors.HighlightBrush}" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True" />
+                                <Condition Property="IsSelectionActive" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="BorderBrush" Value="LightGray" />
+                            <Setter Property="Background" Value="{x:Static SystemColors.InactiveSelectionHighlightBrush}" />
+                        </MultiTrigger>
+                    </Style.Triggers>
+                    <Style.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="2" />
+                        </Style>
+                    </Style.Resources>
+                </Style>
+            </TreeView.ItemContainerStyle>
+        </TreeView>
 
         <GridSplitter
             Grid.Column="0"
@@ -85,7 +116,8 @@
         <ListView
             x:Name="FolderView"
             Grid.Column="2"
-            HorizontalAlignment="Stretch">
+            HorizontalAlignment="Stretch"
+            SelectionChanged="FolderView_SelectionChanged">
 
             <ListView.View>
                 <GridView>
@@ -104,7 +136,7 @@
                     <GridViewColumn
                         Width="100"
                         CellTemplate="{StaticResource DetailsProperty}"
-                        DisplayMemberBinding="{Binding Size}"
+                        DisplayMemberBinding="{Binding Size, Converter={StaticResource friendly}}"
                         Header="Size" />
 
                 </GridView>

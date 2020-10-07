@@ -55,13 +55,13 @@
             x:Name="Explore"
             Grid.Row="1"
             Grid.ColumnSpan="3"
-            Margin="16" />
+            Margin="16,16,8,16" />
 
         <Border
             Grid.Row="1"
             Grid.Column="3"
             Grid.ColumnSpan="2"
-            Margin="16"
+            Margin="8,16,16,16"
             Background="White"
             BorderBrush="Black"
             BorderThickness="1">
