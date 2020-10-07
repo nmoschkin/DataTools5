@@ -1,48 +1,115 @@
-﻿<UserControl x:Class="AssetTool.Explorer"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:AssetTool"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+﻿<UserControl
+    x:Class="AssetTool.Explorer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:desktop="clr-namespace:DataTools.Interop.Desktop;assembly=DTInterop"
+    xmlns:local="clr-namespace:AssetTool"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
-
-            
-            <DataTemplate x:Key="DetailsName">
+            <HierarchicalDataTemplate
+                x:Key="FolderTemplate"
+                DataType="{x:Type desktop:DirectoryObject}"
+                ItemsSource="{Binding Folders}">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="{Binding Icon}"
-                           Height="16"
-                           Margin="2"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           />
+                    <Image
+                        Margin="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Source="{Binding IconImage}" />
 
-                    <Label Content="{Binding Filename}"
-                           Margin="2"
-                           FontSize="10"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                    />
+                    <Label
+                        Margin="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Content="{Binding DisplayName}"
+                        FontSize="12" />
+
+                </StackPanel>
+            </HierarchicalDataTemplate>
+
+            <DataTemplate x:Key="DetailsName">
+
+                <StackPanel Orientation="Horizontal">
+                    <Image
+                        Margin="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Source="{Binding IconImage}" />
+
+                    <Label
+                        Margin="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Content="{Binding DisplayName}"
+                        FontSize="12" />
                 </StackPanel>
             </DataTemplate>
 
             <DataTemplate x:Key="DetailsProperty">
-                <Label Content="{Binding Filename}"
-                           FontSize="10"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                    />
+                <Label
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Content="{Binding}"
+                    FontSize="10" />
             </DataTemplate>
-            
+
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
+
+    <Grid HorizontalAlignment="Stretch">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <TreeView
+            x:Name="SystemTree"
+            Grid.Column="0"
+            MinWidth="100"
+            HorizontalAlignment="Stretch"
+            ItemTemplate="{StaticResource FolderTemplate}"
+            SelectedItemChanged="SystemTree_SelectedItemChanged"
+            TreeViewItem.Expanded="SystemTree_Expanded" />
+
+        <GridSplitter
+            Grid.Column="0"
+            Width="4"
+            ResizeDirection="Columns" />
+
         <ListView
-             x:Name="fdList">
-            <ListViewItem Content="Item 1" />
-            <ListViewItem Content="Item 2" IsSelected="True" />
+            x:Name="FolderView"
+            Grid.Column="2"
+            HorizontalAlignment="Stretch">
+
+            <ListView.View>
+                <GridView>
+
+                    <GridViewColumn
+                        Width="140"
+                        CellTemplate="{StaticResource DetailsName}"
+                        Header="Name" />
+
+                    <GridViewColumn
+                        Width="100"
+                        CellTemplate="{StaticResource DetailsProperty}"
+                        DisplayMemberBinding="{Binding LastWriteTime}"
+                        Header="Last Modified" />
+
+                    <GridViewColumn
+                        Width="100"
+                        CellTemplate="{StaticResource DetailsProperty}"
+                        DisplayMemberBinding="{Binding Size}"
+                        Header="Size" />
+
+                </GridView>
+            </ListView.View>
+
         </ListView>
     </Grid>
 </UserControl>

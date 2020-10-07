@@ -25,20 +25,29 @@ namespace AssetTool
         public Explorer()
         {
             InitializeComponent();
-            Path = new DirectoryObject(@"MyComputerFolder", true);
+            SystemTree.ItemsSource = (DirectoryObject)DirectoryObject.CreateRootView(StandardIcons.Icon16);
         }
 
-        public DirectoryObject Path
+        public DirectoryObject RootView
         {
-            get { return (DirectoryObject)GetValue(PathProperty); }
-            set { SetValue(PathProperty, value); }
+            get { return (DirectoryObject)GetValue(RootViewProperty); }
+            set { SetValue(RootViewProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Path.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PathProperty =
-            DependencyProperty.Register("Path", typeof(DirectoryObject), typeof(Explorer), new PropertyMetadata(null, OnPathPropertyChanged));
+        public static readonly DependencyProperty RootViewProperty =
+            DependencyProperty.Register("RootView", typeof(DirectoryObject), typeof(Explorer), new PropertyMetadata(null));
 
-        private static void OnPathPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+
+        public DirectoryObject SelectedFolder
+        {
+            get { return (DirectoryObject)GetValue(SelectedFolderProperty); }
+            set { SetValue(SelectedFolderProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedFolderProperty =
+            DependencyProperty.Register("SelectedFolder", typeof(DirectoryObject), typeof(Explorer), new PropertyMetadata(null, OnSelectedFolderChanged));
+
+        private static void OnSelectedFolderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is Explorer explore)
             {
@@ -48,6 +57,29 @@ namespace AssetTool
 
         private void InternalNavigateNow()
         {
+            
+            FolderView.ItemsSource = SelectedFolder;
+        }
+
+        private void SystemTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue is ISimpleShellItem item)
+            {
+
+                if (SelectedFolder != item)
+                {
+                    item.Refresh();
+                    SelectedFolder = item as DirectoryObject;
+                }
+            }
+        }
+
+        private void SystemTree_Expanded(object sender, RoutedEventArgs e)
+        {
+            var ti = e.OriginalSource as TreeViewItem;
+
+            var x = ti.Header as DirectoryObject;
+            if (x != null) x.Refresh();
 
         }
     }
