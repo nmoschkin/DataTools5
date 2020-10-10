@@ -2693,9 +2693,9 @@ namespace CoreCT.Native
         [DllImport("ntshrui.dll", EntryPoint = "ShowShareFolderUIW", CharSet = CharSet.Unicode)]
         public static extern int ShowShareFolderUI(IntPtr hwnd, [MarshalAs(UnmanagedType.LPWStr)] string lpszFolder);
 
-        // Public Declare Unicode Function GetCurrentDirectory Lib "kernel32" Alias "GetCurrentDirectoryW" (ByVal bLen As Integer, <MarshalAs(UnmanagedType.LPWStr)> ByRef lpszBuffer As String) As Integer
+        // Public Declare Unicode Function GetCurrentDirectory Lib "kernel32" Alias "GetCurrentDirectoryW" (bLen As Integer, <MarshalAs(UnmanagedType.LPWStr)> ByRef lpszBuffer As String) As Integer
 
-        // Public Declare Unicode Function GetFullPathName Lib "kernel32" Alias "GetFullPathNameW" (<MarshalAs(UnmanagedType.LPWStr)> ByVal lpFilename As String, ByVal nBufferLength As Integer, lpBuffer As IntPtr, ByRef lpFilepart As IntPtr) As Integer
+        // Public Declare Unicode Function GetFullPathName Lib "kernel32" Alias "GetFullPathNameW" (<MarshalAs(UnmanagedType.LPWStr)> lpFilename As String, nBufferLength As Integer, lpBuffer As IntPtr, ByRef lpFilepart As IntPtr) As Integer
 
 
         public enum ReplaceFileFlags : uint
@@ -2927,7 +2927,18 @@ namespace CoreCT.Native
                 l.Add(Process.GetProcessById(pid));
             }
 
-            l.Sort(new Comparison<Process>((x, y) => { try { return string.Compare(x.ProcessName, y.ProcessName); } catch (Exception ex) { return 0; } }));
+            l.Sort(new Comparison<Process>((x, y) => 
+                { 
+                    try 
+                    { 
+                        return string.Compare(x.ProcessName, y.ProcessName); 
+                    } 
+                    catch (Exception ex) 
+                    { 
+                        return 0; 
+                    } 
+                }));
+
             var t = new List<Process>();
             Process c = null;
             foreach (var p in l)

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using CoreCT.Memory;
 
+[assembly: InternalsVisibleTo("DTInterop")]
 namespace CoreCT
 {
     class Program
@@ -40,7 +42,7 @@ namespace CoreCT
 
             b.SetUTF8String(657, "Çélà une teste de les charactarismes Unicodie.");
 
-            var st = b.GetUT8String(657);
+            var st = b.GetUTF8String(657);
 
             Console.WriteLine($"{st}");
 

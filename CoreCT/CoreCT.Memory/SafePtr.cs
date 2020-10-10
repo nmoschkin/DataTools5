@@ -8,6 +8,8 @@ using System.Data;
 using CoreCT.Memory;
 using System.Runtime.CompilerServices;
 using CoreCT.Memory.NativeLib;
+using Microsoft.VisualBasic.CompilerServices;
+using System.Runtime.Intrinsics.X86;
 
 namespace CoreCT.Memory
 {
@@ -21,10 +23,29 @@ namespace CoreCT.Memory
 
         public long Size { get; private set; }
 
+        public long Length
+        {
+            get => Size;
+            set
+            {
+                if (Size == value) return;
+
+                if (value == 0)
+                {
+                    TFree();
+                    return;
+                }
+                else if (handle == IntPtr.Zero || MemoryType == MemoryType.Aligned || MemoryType == MemoryType.HGlobal)
+                {
+                    ReAlloc(value);
+                }
+            }
+        }
+
         public MemoryType MemoryType { get; private set; }
 
         public bool IsOwner { get; private set; }
-       
+
         public bool HasGCPressure { get; private set; }
 
         public IntPtr CurrentHeap
@@ -40,7 +61,7 @@ namespace CoreCT.Memory
             }
             private set
             {
-                
+
                 if (value == IntPtr.Zero)
                 {
                     currentHeap = procHeap;
@@ -56,6 +77,16 @@ namespace CoreCT.Memory
             }
         }
 
+        internal new IntPtr handle
+        {
+            get => base.handle;
+            set
+            {
+                if (base.handle == value) return;
+                base.handle = value;
+            }
+        }
+
         public SafePtr(IntPtr ptr, int size, MemoryType t, bool fOwn) : base((IntPtr)0, fOwn)
         {
             handle = ptr;
@@ -63,7 +94,7 @@ namespace CoreCT.Memory
             MemoryType = t;
             IsOwner = fOwn;
         }
-        
+
         public SafePtr(IntPtr ptr, long size) : base((IntPtr)0, false)
         {
             handle = ptr;
@@ -171,7 +202,18 @@ namespace CoreCT.Memory
             TAlloc(size);
         }
 
-     
+
+        public uint CalculateCrc32()
+        {
+            long c = Size;
+            if (handle == IntPtr.Zero || c <= 0) return 0;
+
+            unsafe
+            {
+                return Crc32.Calculate((byte*)handle, c);
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref byte ByteAt(long index)
         {
@@ -180,6 +222,16 @@ namespace CoreCT.Memory
                 return ref *(byte*)((long)handle + index);
             }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref sbyte SByteAt(long index)
+        {
+            unsafe
+            {
+                return ref *(sbyte*)((long)handle + index);
+            }
+        }
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref char CharAt(long index)
@@ -403,6 +455,206 @@ namespace CoreCT.Memory
             }
         }
 
+        /// <summary>
+        /// Converts the contents of an unmanaged pointer into a structure.
+        /// </summary>
+        /// <typeparam name="T">The type of structure requested.</typeparam>
+        /// <returns>New instance of T.</returns>
+        /// <remarks></remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public virtual T ToStruct<T>() where T : struct
+        {
+            return (T)Marshal.PtrToStructure(handle, typeof(T));
+        }
+
+        /// <summary>
+        /// Sets the contents of a structure into an unmanaged pointer.
+        /// </summary>
+        /// <typeparam name="T">The type of structure to set.</typeparam>
+        /// <param name="val">The structure to set.</param>
+        /// <remarks></remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public virtual void FromStruct<T>(T val) where T : struct
+        {
+            int cb = Marshal.SizeOf(val);
+            if (handle == IntPtr.Zero)
+                Alloc(cb);
+            Marshal.StructureToPtr(val, handle, false);
+        }
+
+        /// <summary>
+        /// Converts the contents of an unmanaged pointer at the specified byte index into a structure.
+        /// </summary>
+        /// <typeparam name="T">The type of structure requested.</typeparam>
+        /// <param name="byteIndex">The byte index relative to the pointer at which to begin copying.</param>
+        /// <returns>New instance of T.</returns>
+        /// <remarks></remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public virtual T ToStructAt<T>(IntPtr byteIndex) where T : struct
+        {
+            return (T)Marshal.PtrToStructure((IntPtr)((long)handle + (long)byteIndex), typeof(T));
+        }
+
+        /// <summary>
+        /// Sets the contents of a structure into a memory buffer at the specified byte index.
+        /// </summary>
+        /// <typeparam name="T">The type of structure to set.</typeparam>
+        /// <param name="byteIndex">The byte index relative to the pointer at which to begin copying.</param>
+        /// <param name="val">The structure to set.</param>
+        /// <remarks></remarks>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public virtual void FromStructAt<T>(IntPtr byteIndex, T val) where T : struct
+        {
+            int cb = Marshal.SizeOf(val);
+            Marshal.StructureToPtr(val, (IntPtr)((long)handle + (long)byteIndex), false);
+        }
+
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public byte[] ToByteArray(long index = 0, int length = 0)
+        {
+            long len = length;
+            long size = Size;
+
+            if (len == 0) len = (size - index);
+            if (size - index < length) len = size - index;
+
+            if (len > int.MaxValue) len = int.MaxValue;
+
+            byte[] output = new byte[len];
+
+            GCHandle gch = GCHandle.Alloc(output, GCHandleType.Pinned);
+
+            unsafe
+            {
+                void* ptr1 = (void*)((long)handle + index);
+                void* ptr2 = (void*)gch.AddrOfPinnedObject();
+
+                Buffer.MemoryCopy(ptr1, ptr2, len, len);
+            }
+
+            gch.Free();
+            return output;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public char[] ToCharArray(long index = 0, int length = 0)
+        {
+            long len = length * sizeof(char);
+            long size = Size;
+
+            if (len == 0) len = (size - index);
+            if (size - index < length) len = size - index;
+
+            if (len > int.MaxValue) len = int.MaxValue;
+
+            if (len % sizeof(char) != 0)
+            {
+                len -= len % sizeof(char);
+            }
+
+            char[] output = new char[len / sizeof(char)];
+
+            GCHandle gch = GCHandle.Alloc(output, GCHandleType.Pinned);
+
+            unsafe
+            {
+                void* ptr1 = (void*)((long)handle + index);
+                void* ptr2 = (void*)gch.AddrOfPinnedObject();
+
+                Buffer.MemoryCopy(ptr1, ptr2, len, len);
+            }
+
+            gch.Free();
+            return output;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T[] ToArray<T>(long index = 0, int length = 0) where T : struct
+        {
+            unsafe
+            {
+                int tlen = typeof(T) == typeof(char) ? sizeof(char) : Marshal.SizeOf<T>();
+
+                long len = length * tlen;
+                long size = Size;
+
+                if (len == 0) len = (size - index);
+                if (size - index < length) len = size - index;
+
+                if (len > int.MaxValue) len = int.MaxValue;
+
+                if (len % tlen != 0)
+                {
+                    len -= len % tlen;
+                }
+
+                T[] output = new T[len / tlen];
+
+                GCHandle gch = GCHandle.Alloc(output, GCHandleType.Pinned);
+
+                unsafe
+                {
+                    void* ptr1 = (void*)((long)handle + index);
+                    void* ptr2 = (void*)gch.AddrOfPinnedObject();
+
+                    Buffer.MemoryCopy(ptr1, ptr2, len, len);
+                }
+
+                gch.Free();
+                return output;
+            }
+        }
+
+        public void FromByteArray(byte[] value, long index = 0)
+        {
+            if (Size < value.Length + index)
+            {
+                ReAlloc(value.Length + index);
+            }
+            unsafe
+            {
+                var vl = value.Length;
+                GCHandle gch = GCHandle.Alloc(value, GCHandleType.Pinned);
+                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject().ToInt64(), (void*)((long)handle + index), vl, vl);
+                gch.Free();
+            }
+        }
+
+        public void FromCharArray(char[] value, long index = 0)
+        {
+            if (Size < (value.Length * 2) + index)
+            {
+                ReAlloc((value.Length * 2) + index);
+            }
+            unsafe
+            {
+                var vl = value.Length * 2;
+                GCHandle gch = GCHandle.Alloc(value, GCHandleType.Pinned);
+                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject().ToInt64(), (void*)((long)handle + index), vl, vl);
+                gch.Free();
+            }
+        }
+
+        public void FromArray<T>(T[] value, long index = 0) where T : struct
+        {
+            var cb = Marshal.SizeOf<T>();
+
+            if (Size < (value.Length * cb) + index)
+            {
+                ReAlloc((value.Length * cb) + index);
+            }
+            unsafe
+            {
+                var vl = value.Length * cb;
+                GCHandle gch = GCHandle.Alloc(value, GCHandleType.Pinned);
+                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject().ToInt64(), (void*)((long)handle + index), vl, vl);
+                gch.Free();
+            }
+        }
+
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string GetString(long index)
         {
@@ -503,6 +755,360 @@ namespace CoreCT.Memory
             gch.Free();
         }
 
+
+        /// <summary>
+        /// Returns the string array at the byteIndex.
+        /// </summary>
+        /// <param name="byteIndex">Index at which to start copying.</param>
+        /// <returns></returns>
+        public string[] GetStringArray(long byteIndex)
+        {
+            unsafe
+            {
+
+                if (handle == null) return null;
+
+                string s = null;
+
+                char* cp = (char*)((ulong)handle + (ulong)byteIndex);
+                char* ap = cp;
+
+                int x = 0;
+
+                List<string> o = new List<string>();
+
+                while (true)
+                {
+
+                    if (*ap == (char)0)
+                    {
+                        if (x != 0)
+                        {
+                            s = new string(cp, 0, x);
+                            o.Add(s);
+
+                            s = null;
+                            x = 0;
+
+                            ap++;
+                            cp = ap;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        x++;
+                        ap++;
+                    }
+                }
+
+                return o.ToArray();
+            }
+
+        }
+
+        #region Editing
+
+        /// <summary>
+        /// Reverses the entire memory pointer.
+        /// </summary>
+        /// <returns>True if successful.</returns>
+        /// <remarks></remarks>
+        public virtual bool Reverse()
+        {
+            if (handle == IntPtr.Zero || Size == 0)
+                return false;
+
+            long l = Size;
+
+            unsafe
+            {
+                byte* b1, b2;
+
+                b1 = (byte*)handle;
+                b2 = (byte*)((long)handle + (l - 1));
+
+                byte x;
+
+                for (long i = 0; i < l; i++)
+                {
+                    x = *b1;
+
+                    *b1 = *b2;
+                    *b2 = x;
+
+                    b1++;
+                    b2--;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Slides a block of memory toward the beginning or toward the end of the memory buffer,
+        /// moving the memory around it to the other side.
+        /// </summary>
+        /// <param name="index">The index of the first byte in the affected block.</param>
+        /// <param name="length">The length of the block.</param>
+        /// <param name="offset">
+        /// The offset amount of the slide.  If the amount is negative, 
+        /// the block slides toward the beginning of the memory buffer. 
+        /// If it is positive, it slides to the right.
+        /// </param>
+        /// <remarks></remarks>
+        public virtual void Slide(long index, long length, long offset)
+        {
+            if (offset == 0)
+                return;
+            long hl = this.Length;
+            if (hl <= 0)
+                return;
+
+            if (0 > (index + length + offset) || (index + length + offset) > hl)
+            {
+                throw new IndexOutOfRangeException("Index out of bounds DataTools.Memory.MemPtr.Slide().");
+            }
+
+            IntPtr p1;
+            IntPtr p2;
+
+            p1 = (IntPtr)((long)handle + index);
+            p2 = (IntPtr)((long)handle + index + offset);
+
+            long a = Math.Abs(offset);
+            MemPtr m = new MemPtr(length);
+            MemPtr n = new MemPtr(a);
+
+            Native.MemCpy(p1, m.Handle, length);
+            Native.MemCpy(p2, n.Handle, a);
+
+            p1 = (IntPtr)((long)handle + index + offset + length);
+            Native.MemCpy(n.Handle, p1, a);
+            Native.MemCpy(m.Handle, p2, length);
+
+            m.Free();
+            n.Free();
+        }
+
+        /// <summary>
+        /// Pulls the data in from the specified index. 
+        /// </summary>
+        /// <param name="index">The index where contraction begins. The contraction starts at this position.</param>
+        /// <param name="amount">Number of bytes to pull in.</param>
+        /// <param name="removePressure">Specify whether to notify the garbage collector.</param>
+        /// <remarks></remarks>
+        public virtual long PullIn(long index, long amount, bool removePressure = false)
+        {
+            long hl = Size;
+            if (Size == 0 || 0 > index || index >= (hl - 1))
+            {
+                throw new IndexOutOfRangeException("Index out of bounds DataTools.Memory.MemPtr.PullIn().");
+            }
+
+            long a = index + amount;
+            long b = Size - a;
+            Slide(a, b, -amount);
+            ReAlloc(hl - amount);
+            return Size;
+        }
+
+        /// <summary>
+        /// Extend the buffer from the specified index.
+        /// </summary>
+        /// <param name="index">The index where expansion begins. The expansion starts at this position.</param>
+        /// <param name="amount">Number of bytes to push out.</param>
+        /// <param name="addPressure">Specify whether to notify the garbage collector.</param>
+        /// <remarks></remarks>
+        public virtual long PushOut(long index, long amount, byte[] bytes = null, bool addPressure = false)
+        {
+            long hl = this.Length;
+            if (hl <= 0)
+            {
+                Alloc(amount);
+                return amount;
+            }
+
+            if (0 > index || index > (hl - 1))
+            {
+                throw new IndexOutOfRangeException("Index out of bounds DataTools.Memory.MemPtr.PushOut().");
+            }
+
+            long ol = Size - index;
+            ReAlloc(hl + amount);
+            Slide(index, ol, amount);
+
+            if (bytes != null && bytes.Length <= amount)
+            {
+                FromByteArray(bytes, index);
+            }
+            else
+            {
+                unsafe
+                {
+                    Native.ZeroMemory((void*)((long)handle + index), amount);
+                }
+            }
+
+            return Size;
+        }
+
+        /// <summary>
+        /// Slides a block of memory as Unicode characters toward the beginning or toward the end of the buffer.
+        /// </summary>
+        /// <param name="index">The character index preceding the first character in the affected block.</param>
+        /// <param name="length">The length of the block, in characters.</param>
+        /// <param name="offset">The offset amount of the slide, in characters.  If the amount is negative, the block slides to the left, if it is positive it slides to the right.</param>
+        /// <remarks></remarks>
+        public virtual void SlideChar(long index, long length, long offset)
+        {
+            Slide(index << 1, length << 1, offset << 1);
+        }
+
+        /// <summary>
+        /// Pulls the data in from the specified character index. 
+        /// </summary>
+        /// <param name="index">The index where contraction begins. The contraction starts at this position.</param>
+        /// <param name="amount">Number of characters to pull in.</param>
+        /// <param name="removePressure">Specify whether to notify the garbage collector.</param>
+        /// <remarks></remarks>
+        public virtual long PullInChar(long index, long amount, bool removePressure = false)
+        {
+            return PullIn(index << 1, amount * 1);
+        }
+
+        /// <summary>
+        /// Extend the buffer from the specified character index.
+        /// </summary>
+        /// <param name="index">The index where expansion begins. The expansion starts at this position.</param>
+        /// <param name="amount">Number of characters to push out.</param>
+        /// <param name="addPressure">Specify whether to notify the garbage collector.</param>
+        /// <remarks></remarks>
+        public virtual long PushOutChar(long index, long amount, char[] chars = null, bool addPressure = false)
+        {
+            return PushOut(index << 1, amount * 1, Encoding.Unicode.GetBytes(chars));
+        }
+
+        /// <summary>
+        /// Parts the string in both directions from index.  
+        /// </summary>
+        /// <param name="index">The index from which to expand.</param>
+        /// <param name="amount">The amount of expansion, in both directions, so the total expansion will be amount * 1.</param>
+        /// <param name="addPressure">Specify whether to notify the garbage collector.</param>
+        /// <remarks></remarks>
+        public virtual void Part(long index, long amount, bool addPressure = false)
+        {
+            if (handle == IntPtr.Zero)
+            {
+                Alloc(amount);
+                return;
+            }
+
+            long l = Size;
+            if (l <= 0)
+                return;
+
+            long ol = l - index;
+            ReAlloc(l + (amount * 1));
+
+            Slide(index, ol, amount);
+            Slide(index + amount + 1, ol, amount);
+        }
+
+        /// <summary>
+        /// Inserts the specified bytes at the specified index.
+        /// </summary>
+        /// <param name="index">Index at which to insert.</param>
+        /// <param name="value">Byte array to insert</param>
+        /// <param name="addPressure">Specify whether to notify the garbage collector.</param>
+        /// <remarks></remarks>
+        public virtual void Insert(long index, byte[] value, bool addPressure = false)
+        {
+            PushOut(index, value.Length, value);
+        }
+
+        /// <summary>
+        /// Inserts the specified characters at the specified character index.
+        /// </summary>
+        /// <param name="index">Index at which to insert.</param>
+        /// <param name="value">Character array to insert</param>
+        /// <param name="addPressure">Specify whether to notify the garbage collector.</param>
+        /// <remarks></remarks>
+        public virtual void Insert(long index, char[] value, bool addPressure = false)
+        {
+            PushOutChar(index, value.Length, value);
+        }
+
+        /// <summary>
+        /// Delete the memory from the specified index.  Calls PullIn.
+        /// </summary>
+        /// <param name="index">Index to start the delete.</param>
+        /// <param name="amount">Amount of bytes to delete</param>
+        /// <param name="removePressure">Specify whether to notify the garbage collector.</param>
+        /// <remarks></remarks>
+        public virtual void Delete(long index, long amount, bool removePressure = false)
+        {
+            PullIn(index, amount);
+        }
+
+        /// <summary>
+        /// Delete the memory from the specified character index.  Calls PullIn.
+        /// </summary>
+        /// <param name="index">Index to start the delete.</param>
+        /// <param name="amount">Amount of characters to delete</param>
+        /// <param name="removePressure">Specify whether to notify the garbage collector.</param>
+        /// <remarks></remarks>
+        public virtual void DeleteChar(long index, long amount, bool removePressure = false)
+        {
+            PullInChar(index, amount);
+        }
+
+        /// <summary>
+        /// Consumes the buffer in both directions from specified index.
+        /// </summary>
+        /// <param name="index">Index at which consuming begins.</param>
+        /// <param name="amount">Amount of contraction, in both directions, so the total contraction will be amount * 1.</param>
+        /// <param name="removePressure">Specify whether to notify the garbage collector.</param>
+        /// <remarks></remarks>
+        public virtual void Consume(long index, long amount, bool removePressure = false)
+        {
+            long hl = Size;
+            if (hl <= 0 || amount > index || index >= ((hl - amount) + 1))
+            {
+                throw new IndexOutOfRangeException("Index out of bounds DataTools.Memory.Heap:Consume.");
+            }
+
+            index -= (amount + 1);
+            PullIn(index, amount);
+            index += (amount + 1);
+            PullIn(index, amount);
+        }
+
+        /// <summary>
+        /// Consumes the buffer in both directions from specified character index.
+        /// </summary>
+        /// <param name="index">Index at which consuming begins.</param>
+        /// <param name="amount">Amount of contraction, in both directions, so the total contraction will be amount * 1.</param>
+        /// <param name="removePressure">Specify whether to notify the garbage collector.</param>
+        /// <remarks></remarks>
+        public virtual void ConsumeChar(long index, long amount, bool removePressure = false)
+        {
+            long hl = Size;
+            if (hl <= 0 || amount > index || index >= (System.Convert.ToInt64(hl >> 1) - (amount + 1)))
+            {
+                throw new IndexOutOfRangeException("Index out of bounds DataTools.Memory.Heap:Consume.");
+            }
+
+            index -= (amount + 1) << 1;
+            PullIn(index, amount);
+            index += (amount + 1) << 1;
+            PullIn(index, amount);
+        }
+
+        #endregion
 
         /// <summary>
         /// Allocate a block of memory on a heap (typically the process heap).  
@@ -713,6 +1319,8 @@ namespace CoreCT.Memory
         /// <remarks></remarks>
         public bool ReAlloc(long size)
         {
+            if (handle == IntPtr.Zero) return Alloc(size);
+
             if (MemoryType != MemoryType.HGlobal && MemoryType != MemoryType.Aligned) return false;
 
             long l = Size;
@@ -872,7 +1480,7 @@ namespace CoreCT.Memory
             if (handle != IntPtr.Zero)
                 return true;
 
-            int r = Native.NetApiBufferAllocate(size, ref handle);
+            int r = Native.NetApiBufferAllocate(size, ref base.handle);
             
             if (r == 0)
             {
@@ -996,7 +1604,7 @@ namespace CoreCT.Memory
             MEMORY_BASIC_INFORMATION m = new MEMORY_BASIC_INFORMATION();
 
             if (Native.VirtualQuery(handle, ref m, (IntPtr)Marshal.SizeOf(m)) != IntPtr.Zero)
-                return System.Convert.ToInt64(m.RegionSize);
+                return (long)m.RegionSize;
 
             return 0;
         }
@@ -1085,6 +1693,16 @@ namespace CoreCT.Memory
             }
         }
 
+        public void ZeroMemory()
+        {
+            unsafe
+            {
+                void* p = (void*)handle;
+                if (p == null || Size == 0) return;
+
+                Native.ZeroMemory(p, Size);
+            }
+        }
 
         protected override bool ReleaseHandle()
         {
@@ -1108,6 +1726,19 @@ namespace CoreCT.Memory
             return base.GetHashCode();
         }
 
+
+        public static explicit operator byte[](SafePtr val)
+        {
+            return val.ToByteArray();
+        }
+
+        public static explicit operator SafePtr(byte[] val)
+        {
+            var n = new SafePtr();
+            n.FromByteArray(val);
+            return n;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator string(SafePtr val)
         {
@@ -1122,6 +1753,103 @@ namespace CoreCT.Memory
             op.SetString(0, val);
             return op;
         }
+
+        public static SafePtr operator +(SafePtr val1, byte[] val2)
+        {
+            var c = val1.Size;
+
+            val1.Alloc(val1.Size + val2.Length);
+            val1.FromByteArray(val2, c);
+
+            return val1;
+        }
+
+
+        public static SafePtr operator +(SafePtr val1, char[] val2)
+        {
+            var c = val1.Size;
+
+            val1.Alloc(val1.Size + val2.Length);
+            val1.FromCharArray(val2, c);
+
+            return val1;
+        }
+
+        //public static SafePtr operator +(SafePtr val1, short val2)
+        //{
+        //    val1.handle += val2;
+        //    return val1;
+        //}
+
+        //public static SafePtr operator -(SafePtr val1, short val2)
+        //{
+        //    val1.handle -= val2;
+        //    return val1;
+        //}
+
+        //public static SafePtr operator +(SafePtr val1, ushort val2)
+        //{
+        //    val1.handle += val2;
+        //    return val1;
+        //}
+
+        //public static SafePtr operator -(SafePtr val1, ushort val2)
+        //{
+        //    val1.handle -= val2;
+        //    return val1;
+        //}
+
+        //public static SafePtr operator +(SafePtr val1, int val2)
+        //{
+        //    val1.handle += val2;
+        //    return val1;
+        //}
+
+        //public static SafePtr operator -(SafePtr val1, int val2)
+        //{
+        //    val1.handle -= val2;
+        //    return val1;
+        //}
+
+        //public static SafePtr operator +(SafePtr val1, long val2)
+        //{
+        //    val1.handle = (IntPtr)((long)val1.handle + val2);
+        //    return val1;
+        //}
+
+        //public static SafePtr operator -(SafePtr val1, long val2)
+        //{
+        //    val1.handle = (IntPtr)((long)val1.handle - val2);
+        //    return val1;
+        //}
+
+
+        //public static SafePtr operator +(SafePtr val1, uint val2)
+        //{
+        //    val1.handle = (IntPtr)((uint)val1.handle + val2);
+        //    return val1;
+        //}
+
+        //public static SafePtr operator -(SafePtr val1, uint val2)
+        //{
+        //    val1.handle = (IntPtr)((uint)val1.handle - val2);
+        //    return val1;
+        //}
+
+
+        //public static SafePtr operator +(SafePtr val1, ulong val2)
+        //{
+        //    val1.handle = (IntPtr)((ulong)val1.handle + val2);
+        //    return val1;
+        //}
+
+        //public static SafePtr operator -(SafePtr val1, ulong val2)
+        //{
+        //    val1.handle = (IntPtr)((ulong)val1.handle - val2);
+        //    return val1;
+        //}
+
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(IntPtr val1, SafePtr val2)

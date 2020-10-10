@@ -31,4 +31,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="CoreCT.Stream\**" />
+    <EmbeddedResource Remove="CoreCT.Stream\**" />
+    <None Remove="CoreCT.Stream\**" />
+  </ItemGroup>
+
 </Project>

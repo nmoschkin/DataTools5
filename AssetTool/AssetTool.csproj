@@ -10,9 +10,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\dtlib-net5\DTCore\DTCore.vbproj" />
-		<ProjectReference Include="..\..\dtlib-net5\DTInterop\DTInterop.vbproj" />
-		<ProjectReference Include="..\..\dtlib-net5\DTMath\DTMath.vbproj" />
+	  <ProjectReference Include="..\..\..\DTCore5.0-exp\DTInterop\DTInterop.vbproj" />
 	</ItemGroup>
 
 </Project>

@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("CTNativeLib")]
 [assembly: InternalsVisibleTo("CTShell")]
+
 namespace CoreCT.Memory.NativeLib
 {
+   
     [Flags]
     public enum MemoryTypes
     {
-
         /// <summary>
         ///         '''  Indicates that the memory pages within the region are mapped into the view of an image section.
         ///         ''' </summary>
@@ -37,7 +34,6 @@ namespace CoreCT.Memory.NativeLib
     [Flags]
     public enum MemoryStates
     {
-
         /// <summary>
         ///         '''  Indicates committed pages for which physical storage has been allocated, either in memory or in the paging file on disk.
         ///         ''' </summary>
@@ -51,7 +47,7 @@ namespace CoreCT.Memory.NativeLib
         MEM_FREE = 0x10000,
 
         /// <summary>
-        ///         '''  Indicates reserved pages where a range of the process's virtual address space is reserved without any physical storage 
+        ///         '''  Indicates reserved pages where a range of the process's virtual address space is reserved without any physical storage
         ///         ''' </summary>
         [Description(" Indicates reserved pages where a range of the process's virtual address space is reserved without any physical storage ")]
         MEM_RESERVE = 0x2000
@@ -60,7 +56,6 @@ namespace CoreCT.Memory.NativeLib
     [Flags]
     public enum MemoryProtectionFlags
     {
-
         /// <summary>
         ///         ''' Enables execute access to the committed region of pages. An attempt to read from or write to the committed region results in an access violation.
         ///         ''' </summary>
@@ -131,7 +126,6 @@ namespace CoreCT.Memory.NativeLib
     [Flags]
     public enum VMemFreeFlags
     {
-
         /// <summary>
         ///         ''' Decommits the specified region of committed pages. After the operation, the pages are in the reserved state.
         ///         ''' The function does not fail if you attempt to decommit an uncommitted page. This means that you can decommit a range of pages without first determining the current commitment state.
@@ -152,7 +146,6 @@ namespace CoreCT.Memory.NativeLib
     [Flags]
     public enum VMemAllocFlags
     {
-
         /// <summary>
         ///         ''' Allocates memory charges (from the overall size of memory and the paging files on disk) for the specified reserved memory pages. The function also guarantees that when the caller later initially accesses the memory, the contents will be zero. Actual physical pages are not allocated unless/until the virtual addresses are actually accessed.
         ///         ''' </summary>
@@ -203,8 +196,6 @@ namespace CoreCT.Memory.NativeLib
         MEM_WRITE_WATCH = 0x200000
     }
 
-
-
     [StructLayout(LayoutKind.Sequential)]
     public struct MEMORY_BASIC_INFORMATION
     {
@@ -217,11 +208,11 @@ namespace CoreCT.Memory.NativeLib
         public MemoryTypes Type;
     }
 
-    internal static class Native
+    public static class Native
     {
-
         [DllImport("netapi32.dll")]
         internal static extern int NetApiBufferAllocate(int ByteCount, ref IntPtr Buffer);
+
         [DllImport("netapi32.dll")]
         internal static extern int NetApiBufferFree(IntPtr Buffer);
 
@@ -255,7 +246,6 @@ namespace CoreCT.Memory.NativeLib
         [DllImport("kernel32", EntryPoint = "HeapDestroy", CharSet = CharSet.Unicode, PreserveSig = true, SetLastError = true)]
         internal static extern bool HeapDestroy(IntPtr hHeap);
 
-
         [DllImport("kernel32", EntryPoint = "GetProcessHeap", CharSet = CharSet.Unicode, PreserveSig = true, SetLastError = true)]
         internal static extern IntPtr GetProcessHeap();
 
@@ -267,14 +257,11 @@ namespace CoreCT.Memory.NativeLib
         [DllImport("kernel32", EntryPoint = "HeapAlloc", CharSet = CharSet.Unicode, PreserveSig = true, SetLastError = true)]
         internal static extern IntPtr HeapAlloc(IntPtr hHeap, uint dwOptions, IntPtr dwBytes);
 
-
         [DllImport("kernel32", EntryPoint = "HeapReAlloc", CharSet = CharSet.Unicode, PreserveSig = true, SetLastError = true)]
         internal static extern IntPtr HeapReAlloc(IntPtr hHeap, int dwOptions, IntPtr lpMem, IntPtr dwBytes);
 
-
         [DllImport("kernel32", EntryPoint = "HeapFree", CharSet = CharSet.Unicode, PreserveSig = true, SetLastError = true)]
         internal static extern bool HeapFree(IntPtr hHeap, uint dwOptions, IntPtr lpMem);
-
 
         [DllImport("kernel32", EntryPoint = "HeapSize", CharSet = CharSet.Unicode, PreserveSig = true, SetLastError = true)]
         internal static extern IntPtr HeapSize(IntPtr hHeap, uint dwOptions, IntPtr lpMem);
@@ -282,10 +269,8 @@ namespace CoreCT.Memory.NativeLib
         [DllImport("kernel32", EntryPoint = "HeapLock", CharSet = CharSet.Unicode, PreserveSig = true, SetLastError = true)]
         internal static extern bool HeapLock(IntPtr hHeap);
 
-
         [DllImport("kernel32", EntryPoint = "HeapUnlock", CharSet = CharSet.Unicode, PreserveSig = true, SetLastError = true)]
         internal static extern bool HeaUnlock(IntPtr hHeap);
-
 
         [DllImport("kernel32", EntryPoint = "HeapValidate", CharSet = CharSet.Unicode, PreserveSig = true, SetLastError = true)]
         internal static extern bool HeapValidate(IntPtr hHeap, uint dwOptions, IntPtr lpMem);
@@ -298,17 +283,11 @@ namespace CoreCT.Memory.NativeLib
         [DllImport("kernel32.dll")]
         internal static extern IntPtr GlobalFree(IntPtr hMem);
 
-        internal static void RtlZeroMemory(IntPtr dest, IntPtr count)
-        {
-            n_memset(dest, 0, count);
-        }
-
-
         /// <summary>
         ///         ''' Native Visual C Runtime memset.
         ///         ''' </summary>
         [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "memset", PreserveSig = true)]
-        internal static extern void n_memset(IntPtr dest, int c, IntPtr count);
+        internal static unsafe extern void n_memset(void *dest, int c, IntPtr count);
 
         /// <summary>
         ///         ''' Native Visual C Runtime memcpy.
@@ -317,75 +296,21 @@ namespace CoreCT.Memory.NativeLib
         internal static extern IntPtr n_memcpy(IntPtr dest, IntPtr src, UIntPtr count);
 
 
-
-        internal static unsafe void MemCpy(void* src, void *dest, long len)
+        internal static unsafe void ZeroMemory(void* handle, long len)
         {
             unsafe
             {
-                byte* bp1 = (byte*)src;
-                byte* bp2 = (byte*)dest;
-                byte* bep = (byte*)src + len;
+                //if (len >= 2048)
+                //{
+                //    n_memset(handle, 0, (IntPtr)len);
+                //    return;
+                //}
 
-                if (len >= IntPtr.Size)
-                {
-
-                    if (IntPtr.Size == 8)
-                    {
-                        long* lp1 = (long*)bp1;
-                        long* lp2 = (long*)bp2;
-                        long* lep = (long*)bep;
-
-                        do
-                        {
-                            *lp2++ = *lp1++;
-                        } while (lp1 < lep);
-
-                        if (lp1 == lep) return;
-
-                        lp1--;
-                        lp2--;
-
-                        bp1 = (byte*)lp1;
-                        bp2 = (byte*)lp2;
-                    }
-                    else
-                    {
-                        int* ip1 = (int*)bp1;
-                        int* ip2 = (int*)bp2;
-                        int* lep = (int*)bep;
-
-                        do
-                        {
-                            *ip2++ = *ip1++;
-                        } while (ip1 < lep);
-
-                        if (ip1 == lep) return;
-
-                        ip1--;
-                        ip2--;
-
-                        bp1 = (byte*)ip1;
-                        bp2 = (byte*)ip2;
-                    }
-                }
-
-                do
-                {
-                    *bp2++ = *bp1++;
-                } while (bp1 < bep);
-            }
-        }
-
-        internal static unsafe void ZeroMemory(void *handle, long len)
-        {
-            unsafe
-            {
                 byte* bp1 = (byte*)handle;
                 byte* bep = (byte*)handle + len;
 
                 if (len >= IntPtr.Size)
                 {
-
                     if (IntPtr.Size == 8)
                     {
                         long* lp1 = (long*)bp1;
@@ -421,10 +346,95 @@ namespace CoreCT.Memory.NativeLib
                 {
                     *bp1++ = 0;
                 } while (bp1 < bep);
-
             }
-
         }
 
+        public static void MemCpy(IntPtr src, IntPtr dest, long len)
+        {
+            unsafe
+            {
+                Buffer.MemoryCopy((void*)src, (void*)dest, len, len);
+            }
+        }
+
+
+
+//        internal static unsafe void MemCpy(void* src, void* dest, long len)
+//        {
+//            unsafe
+//            {
+//                //if (len >= 2048)
+//                //{
+//                Buffer.MemoryCopy(src, dest, len, len);
+//                return;
+//                //}
+
+//                byte* bp1 = (byte*)src;
+//                byte* bp2 = (byte*)dest;
+//                byte* bep = (byte*)src + len;
+
+//#if X64
+//                if (len >= 16)
+//                {
+//                    do
+//                    {
+//                        *(long*)bp2 = *(long*)bp1;
+//                        if (bep - bp1 < 8) break;
+
+//                        bp1 += 8;
+//                        bp2 += 8;
+
+//                    } while (bp1 < bep);
+
+//                    if (bp1 == bep) return;
+
+//                    len = bep - bp1;
+//                }
+
+//#else
+//                if (len >= 16)
+//                {
+//                    do
+//                    {
+//                        *(int*)bp2 = *(int*)bp1;
+//                        if (bep - bp1 < 4) break;
+
+//                        bp1 += 4;
+//                        bp2 += 4;
+
+//                    } while (bp1 < bep);
+
+//                    if (bp1 == bep) return;
+//                }
+               
+//#endif
+//                do
+//                {
+//                    *bp2++ = *bp1++;
+//                } while (bp1 < bep);
+//            }
+//        }
+
     }
+
+    //[StructLayout(LayoutKind.Sequential, Size = 16, Pack = 1)]
+    //internal struct Block16
+    //{
+    //    public ulong val1;
+    //    public ulong val2;
+    //}
+
+    //[StructLayout(LayoutKind.Sequential, Size = 64, Pack = 1)]
+    //internal struct Block64
+    //{
+    //    public ulong val1;
+    //    public ulong val2;
+    //    public ulong val3;
+    //    public ulong val4;
+    //    public ulong val5;
+    //    public ulong val6;
+    //    public ulong val7;
+    //    public ulong val8;
+    //}
+
 }
