@@ -1,14 +1,17 @@
 ﻿<Window
-    x:Class="Programs"
+    x:Class="SysInfoUtil.Programs"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:interop="clr-namespace:DataTools.Interop.Desktop;assembly=DTInterop"
-    xmlns:local="clr-namespace:InteropTest"
+    xmlns:local="clr-namespace:SysInfoUtil"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
     x:Name="ProgramsView"
     Title="Programs"
     Width="810"
-    Height="500">
+    Height="500"
+    mc:Ignorable="d">
     <Window.Resources>
         <ResourceDictionary Source="Themes.xaml" />
     </Window.Resources>

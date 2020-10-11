@@ -1,10 +1,10 @@
 ﻿<Window
-    x:Class="Hardware"
+    x:Class="SysInfoUtil.Hardware"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:disk="clr-namespace:DataTools.Interop.Disk;assembly=DTInterop"
     xmlns:interop="clr-namespace:DataTools.Interop;assembly=DTInterop"
-    xmlns:local="clr-namespace:InteropTest"
+    xmlns:local="clr-namespace:SysInfoUtil"
     xmlns:pt="http://propertytools.org/wpf"
     xmlns:usb="clr-namespace:DataTools.Interop.Usb;assembly=DTInterop"
     xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
@@ -368,7 +368,7 @@
                 VerticalAlignment="Top"
                 Header="Devices"
                 IsExpanded="True"
-                ItemsSource="{Binding ElementName=Hardware, Path=Devices}" />
+                ItemsSource="{Binding ElementName=HardwareView, Path=Devices}" />
         </TreeView>
 
         <GridSplitter

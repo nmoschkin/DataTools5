@@ -746,7 +746,7 @@ namespace CoreCT.SystemInformation
     /// <summary>
     /// Processor cache type
     /// </summary>
-    public enum PROCESSOR_CACHE_TYPE
+    public enum ProcessorCacheType
     {
 
         /// <summary>
@@ -763,7 +763,6 @@ namespace CoreCT.SystemInformation
         /// Data
         /// </summary>
         CacheData,
-
 
         /// <summary>
         /// Trace
@@ -800,7 +799,17 @@ namespace CoreCT.SystemInformation
         /// <summary>
         /// Type
         /// </summary>
-        public PROCESSOR_CACHE_TYPE Type;
+        public ProcessorCacheType Type;
+
+        public override string ToString()
+        {
+            string ct = Type.ToString().Replace("Cache", "");
+
+            string s = $"L{Level} {ct} Cache, {TextTools.PrintFriendlySize(Size)}, Line Size {TextTools.PrintFriendlySize(LineSize)}";
+            if (Associativity == 0xff) s += ", Fully Associative";
+
+            return s;
+        }
     }
 
 
