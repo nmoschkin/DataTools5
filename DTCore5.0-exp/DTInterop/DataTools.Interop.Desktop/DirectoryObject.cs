@@ -570,7 +570,7 @@ namespace DataTools.Interop.Desktop
                         mm2.IntAt(0L) = 2;
 
                         // shfld.GetAttributesOf(1, mm, attr)
-                        shfld.GetDisplayNameOf(mm, (uint)ShellItemDesignNameOptions.ParentRelativeParsing, out mm2.handle);
+                        shfld.GetDisplayNameOf(mm, (uint)ShellItemDesignNameOptions.ParentRelativeParsing, mm2.handle);
                         MemPtr inv;
 
                         if (IntPtr.Size == 4)
