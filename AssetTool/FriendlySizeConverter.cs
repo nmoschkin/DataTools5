@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using CoreCT.Text;
 
 namespace AssetTool
 {
@@ -14,7 +15,7 @@ namespace AssetTool
         {
             if (value is long l)
             {
-                return DataTools.Strings.TextTools.PrintFriendlySize((ulong)l, null, DataTools.Strings.TextTools.FriendlyKBType.Auto, false);
+                return TextTools.PrintFriendlySize((ulong)l, null, false);
             }
             else
             {

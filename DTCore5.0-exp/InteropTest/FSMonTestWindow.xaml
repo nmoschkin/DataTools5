@@ -1,0 +1,91 @@
+﻿<Window x:Class="FSMonTestWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+    x:Name="FSMonTestWindow"
+    Title="FileSystemMonitor Demo" Height="500" Width="810">
+    <Window.Resources>
+        <ResourceDictionary Source="Themes.xaml" />
+    </Window.Resources>
+
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ShowGridLines="False" Width="{Binding}" Height="{Binding}"  Background="{DynamicResource FSGradient}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition x:Name="CenterRow" Height="{Binding}" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+
+        <Menu x:Name="menuBar" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="20" Grid.Row="0" Grid.ColumnSpan="3">
+            <MenuItem x:Name="fileMenu" Header="_Toggle Monitor">
+                <MenuItem.Items>
+                    <MenuItem Header="_Start Watching" x:Name="StartWatching" />
+                    <MenuItem Header="S_top Watching" x:Name="StopWatching" />
+                    <Separator />
+                    <MenuItem Header="_Quit" x:Name="Quitting" />
+                </MenuItem.Items>
+            </MenuItem>
+        </Menu>
+        <ScrollViewer Grid.Row="1"
+                      Grid.Column="0"
+                      CanContentScroll="True"
+                      VerticalScrollBarVisibility="Visible"
+                      >
+
+            <ItemsControl
+                x:Name="FilesList"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Width="{Binding}"
+                Height="{Binding}"
+                ItemsSource="{Binding ElementName=ViewingArea,Path=SelectedItem.Handlers}"
+                SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical"
+                ItemTemplate="{DynamicResource ProgramCell}"
+                Background="{x:Null}">
+
+            </ItemsControl>
+        </ScrollViewer>
+
+        <ListView
+            x:Name="ViewingArea"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Width="{Binding}"
+            Height="{Binding}"
+            ItemsSource="{Binding ElementName=FSMonTestWindow,Path=FileTypes.FileTypes}"
+            Grid.Row="1"
+            Grid.Column="0"
+            Background="{x:Null}">
+
+            <ListView.ContextMenu>
+                <ContextMenu x:Name="netMenu"
+                             DataContext="{Binding FSMonTestWindow}"
+                             ItemsSource="{Binding ViewMenu}" />
+            </ListView.ContextMenu>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Height" Value="84" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView x:Name="fileGridView">
+
+                    <GridViewColumn Width="540" Header="Filename"
+                        DisplayMemberBinding="{Binding Filename}" />
+
+                    <GridViewColumn Width="240" Header="Event"
+                        DisplayMemberBinding="{Binding Action}" />
+
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Grid Grid.Column="0" Grid.Row="2">
+
+            <TextBox x:Name="Status" Text="Ready" />
+
+        </Grid>
+
+    </Grid>
+</Window>

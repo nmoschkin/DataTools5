@@ -490,9 +490,9 @@ namespace CoreCT.Memory
         /// <returns>New instance of T.</returns>
         /// <remarks></remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public virtual T ToStructAt<T>(IntPtr byteIndex) where T : struct
+        public virtual T ToStructAt<T>(long byteIndex) where T : struct
         {
-            return (T)Marshal.PtrToStructure((IntPtr)((long)handle + (long)byteIndex), typeof(T));
+            return (T)Marshal.PtrToStructure((IntPtr)((long)handle + byteIndex), typeof(T));
         }
 
         /// <summary>
@@ -503,10 +503,10 @@ namespace CoreCT.Memory
         /// <param name="val">The structure to set.</param>
         /// <remarks></remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public virtual void FromStructAt<T>(IntPtr byteIndex, T val) where T : struct
+        public virtual void FromStructAt<T>(long byteIndex, T val) where T : struct
         {
             int cb = Marshal.SizeOf(val);
-            Marshal.StructureToPtr(val, (IntPtr)((long)handle + (long)byteIndex), false);
+            Marshal.StructureToPtr(val, (IntPtr)((long)handle + byteIndex), false);
         }
 
 
@@ -655,6 +655,7 @@ namespace CoreCT.Memory
         }
 
 
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string GetString(long index)
         {
@@ -665,21 +666,31 @@ namespace CoreCT.Memory
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetString(long index, string value)
+        public string GetString(long index, int length)
         {
             unsafe
             {
-                internalSetString((char*)((long)handle + index), value);
+                return new string((char*)((long)handle + index), 0, length);
+            }
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetString(long index, string value, bool addNull = true)
+        {
+            unsafe
+            {
+                internalSetString((char*)((long)handle + index), value, addNull);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetStringIndirect(long index, string value)
+        public void SetStringIndirect(long index, string value, bool addNull = true)
         {
             unsafe
             {
                 char* ptr = (char*)*(IntPtr*)((long)handle + index);
-                internalSetString(ptr, value);
+                internalSetString(ptr, value, addNull);
             }
         }
 
@@ -698,27 +709,50 @@ namespace CoreCT.Memory
         {
             unsafe
             {
-                byte* b1 = (byte*)((long)handle + index);
-                byte* b2 = b1;
-
-                while (*b2 != 0) b2++;
-                if (b1 == b2) return "";
-
-                return Encoding.UTF8.GetString(b1, (int)(b2 - b1));
+                return internalGetUTF8String((byte*)((long)handle + index));
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetUTF8String(long index, string value)
+        public string GetUTF8StringIndirect(long index)
         {
             unsafe
             {
-                internalSetUTF8String((byte*)((long)handle + index), value);
+                return internalGetUTF8String((byte*)*(IntPtr*)((long)handle + index));
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected unsafe void internalSetUTF8String(byte* ptr, string value)
+        private unsafe string internalGetUTF8String(byte* ptr)
+        {
+            byte* b2 = ptr;
+
+            while (*b2 != 0) b2++;
+            if (ptr == b2) return "";
+
+            return Encoding.UTF8.GetString(ptr, (int)(b2 - ptr));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetUTF8String(long index, string value, bool addNull = true)
+        {
+            unsafe
+            {
+                internalSetUTF8String((byte*)((long)handle + index), value, addNull);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetUTF8StringIndirect(long index, string value, bool addNull = true)
+        {
+            unsafe
+            {
+                internalSetUTF8String((byte*)*(IntPtr*)((long)handle + index), value, addNull);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe void internalSetUTF8String(byte* ptr, string value, bool addNull)
         {
             byte[] data = Encoding.UTF8.GetBytes(value);
             int slen = data.Length;
@@ -733,12 +767,12 @@ namespace CoreCT.Memory
                 *b1++ = *b2++;
             }
 
-            *b1++ = 0;
+            if (addNull) *b1++ = 0;
             gch.Free();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected unsafe void internalSetString(char* ptr, string value)
+        private unsafe void internalSetString(char* ptr, string value, bool addNull)
         {
             int slen = value.Length;
             GCHandle gch = GCHandle.Alloc(Encoding.Unicode.GetBytes(value), GCHandleType.Pinned);
@@ -751,10 +785,9 @@ namespace CoreCT.Memory
                 *b1++ = *b2++;
             }
 
-            *b1++ = '\x0';
+            if (addNull) *b1++ = '\x0';
             gch.Free();
         }
-
 
         /// <summary>
         /// Returns the string array at the byteIndex.

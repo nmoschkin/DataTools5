@@ -371,9 +371,9 @@ namespace CoreCT.Memory
         /// <returns>New instance of T.</returns>
         /// <remarks></remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T ToStructAt<T>(IntPtr byteIndex) where T : struct
+        public T ToStructAt<T>(long byteIndex) where T : struct
         {
-            return (T)Marshal.PtrToStructure((IntPtr)((long)handle + (long)byteIndex), typeof(T));
+            return (T)Marshal.PtrToStructure((IntPtr)((long)handle + byteIndex), typeof(T));
         }
 
         /// <summary>
@@ -384,14 +384,11 @@ namespace CoreCT.Memory
         /// <param name="val">The structure to set.</param>
         /// <remarks></remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FromStructAt<T>(IntPtr byteIndex, T val) where T : struct
+        public void FromStructAt<T>(long byteIndex, T val) where T : struct
         {
             int cb = Marshal.SizeOf(val);
-            Marshal.StructureToPtr(val, (IntPtr)((long)handle + (long)byteIndex), false);
+            Marshal.StructureToPtr(val, (IntPtr)((long)handle + byteIndex), false);
         }
-
-
-
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte[] ToByteArray(long index = 0, long length = 0)
@@ -570,21 +567,21 @@ namespace CoreCT.Memory
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetString(long index, string value)
+        public void SetString(long index, string value, bool addNull = true)
         {
             unsafe
             {
-                internalSetString((char*)((long)handle + index), value);
+                internalSetString((char*)((long)handle + index), value, addNull);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetStringIndirect(long index, string value)
+        public void SetStringIndirect(long index, string value, bool addNull = true)
         {
             unsafe
             {
                 char* ptr = (char*)*(IntPtr*)((long)handle + index);
-                internalSetString(ptr, value);
+                internalSetString(ptr, value, addNull);
             }
         }
 
@@ -628,25 +625,25 @@ namespace CoreCT.Memory
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetUTF8String(long index, string value)
+        public void SetUTF8String(long index, string value, bool addNull = true)
         {
             unsafe
             {
-                internalSetUTF8String((byte*)((long)handle + index), value);
+                internalSetUTF8String((byte*)((long)handle + index), value, addNull);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetUTF8StringIndirect(long index, string value)
+        public void SetUTF8StringIndirect(long index, string value, bool addNull = true)
         {
             unsafe
             {
-                internalSetUTF8String((byte*)*(IntPtr*)((long)handle + index), value);
+                internalSetUTF8String((byte*)*(IntPtr*)((long)handle + index), value, addNull);
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe void internalSetUTF8String(byte* ptr, string value)
+        private unsafe void internalSetUTF8String(byte* ptr, string value, bool addNull)
         {
             byte[] data = Encoding.UTF8.GetBytes(value);
             int slen = data.Length;
@@ -661,12 +658,12 @@ namespace CoreCT.Memory
                 *b1++ = *b2++;
             }
 
-            *b1++ = 0;
+            if (addNull) *b1++ = 0;
             gch.Free();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe void internalSetString(char* ptr, string value)
+        private unsafe void internalSetString(char* ptr, string value, bool addNull)
         {
             int slen = value.Length;
             GCHandle gch = GCHandle.Alloc(Encoding.Unicode.GetBytes(value), GCHandleType.Pinned);
@@ -679,7 +676,7 @@ namespace CoreCT.Memory
                 *b1++ = *b2++;
             }
 
-            *b1++ = '\x0';
+            if (addNull) *b1++ = '\x0';
             gch.Free();
         }
 

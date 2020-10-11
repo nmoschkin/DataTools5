@@ -989,10 +989,10 @@ namespace CoreCT.Text
         /// <param name="value">The string value to parse.</param>
         /// <returns>An numeric primitive (either a Long or a Double).</returns>
         /// <remarks></remarks>
-        public static double FVal(string value)
+        public static double? FVal(string value)
         {
 
-            double o = 0.0;
+            double o;
 
             value = value.Trim();
 
@@ -1013,9 +1013,9 @@ namespace CoreCT.Text
             }
             else if (value.ToLower()[0] == 'b')
             {
-                int i = 0;
-                int c = 0;
-                char[] ch = null;
+                int i;
+                int c;
+                char[] ch;
                 long v = 0;
 
                 ch = value.Substring(1).ToCharArray();
@@ -1043,7 +1043,7 @@ namespace CoreCT.Text
             if (double.TryParse(value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.CurrentCulture.NumberFormat, out o))
                 return (double)o;
 
-            return double.NaN;
+            return null;
 
         }
 
@@ -1275,6 +1275,17 @@ namespace CoreCT.Text
 
             return varOut.ToString();
 
+        }
+
+        public static string Bracket(string szText, ref int startIndex, ref int newIndex, ref string ErrorText)
+        {
+            return Bracket(szText, ref startIndex, ref newIndex, "()", ref ErrorText);
+        }
+
+        public static string Bracket(string szText, ref int startIndex, ref int newIndex)
+        {
+            string _d = null;
+            return Bracket(szText, ref startIndex, ref newIndex, "()", ref _d);
         }
 
         /// <summary>

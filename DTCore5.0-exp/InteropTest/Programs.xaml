@@ -1,0 +1,214 @@
+﻿<Window x:Class="Programs"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+    xmlns:local="clr-namespace:InteropTest"
+    xmlns:interop="clr-namespace:DataTools.Interop.Desktop;assembly=DTInterop"
+    x:Name="Programs"
+    Title="Programs"  Height="500" Width="810">
+    <Window.Resources>
+        <ResourceDictionary Source="Themes.xaml" />
+    </Window.Resources>
+
+    <Grid VerticalAlignment="Stretch" 
+          HorizontalAlignment="Stretch" 
+          ShowGridLines="False" 
+          Width="{Binding}" 
+          Height="{Binding}"  
+          Background="{DynamicResource PrgGradient}">
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="6" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition x:Name="CenterRow" Height="{Binding}" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+
+            <HierarchicalDataTemplate 
+                    x:Name="UICollectionTemplate"
+                    DataType="{x:Type interop:UIHandler}"
+                    ItemsSource="{Binding Path=AssocList}"
+                    >
+
+                <Grid Margin="2,4,2,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="56" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Image Source="{Binding Image}"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       VerticalAlignment="Top"
+                       SnapsToDevicePixels="True"
+                       Stretch="None"
+                       Grid.Column="0" 
+                       />
+                    
+                    <Grid Grid.Column="1">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="14"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="{Binding UIName}"
+                           ToolTip="{Binding UIName}"
+                           ToolTipService.HasDropShadow="True"
+                           TextTrimming="WordEllipsis"
+                           VerticalAlignment="Center"   
+                           FontSize="12"
+                           Grid.Column="0" 
+                           Grid.Row="0"/>
+
+                        <TextBlock Text="{Binding ExtListString}"
+                           ToolTip="{Binding ExtListString}"
+                           ToolTipService.HasDropShadow="True"
+                           VerticalAlignment="Center"
+                           TextWrapping="NoWrap"
+                           TextTrimming="WordEllipsis"
+                           MaxWidth="248"
+                           TextOptions.TextFormattingMode="Ideal"
+                           FontSize="10"
+                           Grid.Column="0" 
+                           Grid.Row="1">
+
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="#FF631EF7" />
+                            </TextBlock.Foreground>
+
+                        </TextBlock>
+
+                    </Grid>
+                </Grid>
+
+            </HierarchicalDataTemplate>
+    
+            <HierarchicalDataTemplate
+                    x:Name="AssocTemplate"
+                    DataType="{x:Type interop:SystemFileType}"
+                    ItemsSource="{Binding Path=Handlers}"
+                    >
+
+                <Grid Margin="2,4,2,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="56" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Image Source="{Binding DefaultImage}"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       SnapsToDevicePixels="True"
+                       Stretch="None"
+                       Grid.Column="0" />
+
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="14" />
+                           
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="{Binding Description}"
+                           ToolTip="{Binding Description}"
+                           ToolTipService.HasDropShadow="True"
+                           TextTrimming="WordEllipsis"
+                           VerticalAlignment="Center"   
+                           MaxWidth="248"
+                           FontSize="12"
+                           Grid.Row="0"/>
+
+                        <TextBlock Text="{Binding Extension}"
+                           ToolTip="{Binding Extension}"
+                           ToolTipService.HasDropShadow="True"
+                           TextTrimming="WordEllipsis"
+                           VerticalAlignment="Center"   
+                           FontSize="8"
+                           Grid.Row="1">
+                            
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="#FF631EF7" />
+                            </TextBlock.Foreground>
+                        </TextBlock>
+                        
+                    </Grid>
+                    
+                </Grid>
+
+
+            </HierarchicalDataTemplate>
+
+        </Grid.Resources>
+
+        <Menu x:Name="menuBar" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="20" Grid.Row="0" Grid.ColumnSpan="3">
+            <MenuItem x:Name="fileMenu" Header="_File" >
+                <MenuItem.Items>
+                    <MenuItem Header="_Close Window" x:Name="_Close" />
+                    <MenuItem Header="_Quit" x:Name="_Quit" />
+                </MenuItem.Items>
+            </MenuItem>
+        </Menu>
+
+        <TreeView
+                Grid.Row="1"
+                x:Name="ProgramList"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical"
+                
+                Background="{x:Null}">
+
+            <TreeViewItem Header="Programs"
+                              IsExpanded="True"
+                              VerticalAlignment="Top"
+                              ItemsSource="{Binding ElementName=Programs,Path=FileTypes.UICollection}"
+                    />
+
+        </TreeView>
+
+        <GridSplitter Grid.Row="1" Grid.Column="1" ResizeDirection="Columns"
+                    HorizontalAlignment="Stretch"
+                    Opacity="0.5"
+                    Background="AliceBlue"
+                    VerticalAlignment="Stretch" />
+
+        <ListView
+            x:Name="ViewingArea"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Width="{Binding}"
+            Height="{Binding}"
+            ItemsSource="{Binding ElementName=ProgramList,Path=SelectedItem.Items}"
+            Grid.Row="1"
+            Grid.Column="2"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            Background="{x:Null}">
+            <ListView.Resources>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Height" Value="64" />
+                </Style>
+            </ListView.Resources>
+            
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel 
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Orientation="Horizontal"
+                        ItemWidth="248"                
+                        />
+                        
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+        </ListView>
+        <Grid Grid.Column="3" Grid.Row="2">
+
+            <TextBox x:Name="Status" Text="Ready" />
+
+        </Grid>
+
+    </Grid>
+</Window>

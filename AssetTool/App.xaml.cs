@@ -60,8 +60,8 @@ namespace AssetTool
 
             hsvd.Value -= (hsvl.Value / 2);
 
-            ThemeDark = ColorMath.HSVToMediaColor(hsvd);
-            ThemeLight = ColorMath.HSVToMediaColor(hsvl);
+            ThemeDark = (Color)ColorMath.HSVToMediaColor(hsvd);
+            ThemeLight = (Color)ColorMath.HSVToMediaColor(hsvl);
 
             
 

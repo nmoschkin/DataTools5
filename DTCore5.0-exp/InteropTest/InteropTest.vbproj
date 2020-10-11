@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>InteropTest</RootNamespace>
+    <!--<StartupObject>Sub Main</StartupObject>-->
+	  <!-- Don't make ApplicationDefinition for me -->
+	  <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+	  <Platforms>AnyCPU;x64;x86</Platforms>
+    </PropertyGroup>
+	<ItemGroup>
+	    <!-- This is my application definition - I should be able to call it whatever I want -->
+	    <ApplicationDefinition Include="Application.xaml" />
+	</ItemGroup>
+	
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualBasic" Version="10.4.0-preview1-27018-01" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0-rc.1.20451.14" />
+    <PackageReference Include="PropertyTools.Wpf" Version="3.1.0-alpha0041" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.0-rc.1.20451.14" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\..\CoreCT\CoreCT.csproj" />
+    <ProjectReference Include="..\DTInterop\DTInterop.csproj" />
+    <ProjectReference Include="..\DTMath\DTMath.csproj" />
+  </ItemGroup>
+
+</Project>

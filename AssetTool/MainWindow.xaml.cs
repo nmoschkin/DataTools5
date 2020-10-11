@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 
 using DataTools.Interop.Desktop;
-using DataTools.Memory.Internal;
+using CoreCT.Memory;
 using System.IO;
 
 namespace AssetTool
