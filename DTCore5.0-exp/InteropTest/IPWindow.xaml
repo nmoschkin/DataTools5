@@ -56,10 +56,11 @@
             VerticalAlignment="Top">
             <MenuItem x:Name="fileMenu" Header="_File">
                 <MenuItem.Items>
-                    <MenuItem x:Name="ShowPrg" Header="_Show File Assocation Window" />
-                    <MenuItem x:Name="ShowHw" Header="_Show Computer Hardware Tree" />
-                    <MenuItem x:Name="ShowFS" Header="_Show FileSystemMonitor" />
-                    <MenuItem x:Name="ShowHID" Header="_Show HID Feature Code Explorer" />
+                    <MenuItem x:Name="ShowPrg" Header="Show _File Assocation Window" />
+                    <MenuItem x:Name="ShowHw" Header="Show Computer _Hardware Tree" />
+                    <MenuItem x:Name="ShowFS" Header="Show File System _Monitor" />
+                    <MenuItem x:Name="ShowHID" Header="Show HID Feature _Code Explorer" />
+                    <MenuItem x:Name="ShowSysInfo" Header="Show S_ystem Information" />
                     <MenuItem x:Name="Quit" Header="_Quit" />
                 </MenuItem.Items>
             </MenuItem>

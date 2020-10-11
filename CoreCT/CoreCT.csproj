@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
 
@@ -35,6 +35,10 @@
     <Compile Remove="CoreCT.Stream\**" />
     <EmbeddedResource Remove="CoreCT.Stream\**" />
     <None Remove="CoreCT.Stream\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0-rc.1.20451.14" />
   </ItemGroup>
 
 </Project>

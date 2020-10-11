@@ -71,6 +71,23 @@ Public Class IPWindow
                            GetType(Hardware), GetType(IPWindow),
                            New PropertyMetadata(Nothing))
 
+
+    Public Property SysInfoWindow As SysInfoWindow
+        Get
+            Return GetValue(SysInfoWindowProperty)
+        End Get
+
+        Set(value As SysInfoWindow)
+            SetValue(SysInfoWindowProperty, value)
+        End Set
+    End Property
+
+    Public Shared ReadOnly SysInfoWindowProperty As DependencyProperty =
+                           DependencyProperty.Register("SysInfoWindow",
+                           GetType(SysInfoWindow), GetType(IPWindow),
+                           New PropertyMetadata(Nothing))
+
+
     Public Property CodeEx As CodeExplorer
         Get
             Return GetValue(CodeExProperty)
@@ -131,12 +148,12 @@ Public Class IPWindow
         WindowStartupLocation = WindowStartupLocation.CenterScreen
         Title = "DataTools Interop Library Test Project"
 
-        Dim x = BOM.UTF16LE
+        'Dim x = BOM.UTF16LE
 
-        Dim txt = CPGlobal.SafeTextWrite("This is some text that I'm going to encode.  It's going to contain çalè", BOMTYPE.UTF8)
+        'Dim txt = CPGlobal.SafeTextWrite("This is some text that I'm going to encode.  It's going to contain çalè", BOMTYPE.UTF8)
 
 
-        System.IO.File.WriteAllBytes("BOM32.txt", txt)
+        'System.IO.File.WriteAllBytes("BOM32.txt", txt)
 
 
         'Dim bl As New MemPtr, bl2 As New MemPtr
@@ -253,6 +270,15 @@ Public Class IPWindow
         CodeEx.Show()
     End Sub
 
+
+    Private Sub ShowSysInfo_Click(sender As Object, e As RoutedEventArgs) Handles ShowSysInfo.Click
+        SysInfoWindow = New SysInfoWindow()
+
+        SysInfoWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen
+        SysInfoWindow.Show()
+    End Sub
+
+
     Private Sub IPWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
 
         _Adapters = New AdaptersCollection
@@ -262,6 +288,9 @@ Public Class IPWindow
         netMenu.ItemsSource = ViewMenu
 
     End Sub
+
+
+
 End Class
 
 Public Class VirtualMenu

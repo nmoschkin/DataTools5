@@ -11,6 +11,10 @@
 	  <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
 	  <Platforms>AnyCPU;x64;x86</Platforms>
     </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="SysInfoWindow.xaml" />
+  </ItemGroup>
 	<ItemGroup>
 	    <!-- This is my application definition - I should be able to call it whatever I want -->
 	    <ApplicationDefinition Include="Application.xaml" />
