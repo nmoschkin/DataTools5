@@ -120,7 +120,7 @@ namespace DataTools.Interop.Usb
             int c = 0;
             foreach (var blurb in devs)
             {
-                if (blurb.HidUsagePage == u)
+                if (blurb.HidUsagePage == u || u == HidUsagePage.Undefined)
                 {
                     Array.Resize(ref devOut, c + 1);
                     devOut[c] = blurb;

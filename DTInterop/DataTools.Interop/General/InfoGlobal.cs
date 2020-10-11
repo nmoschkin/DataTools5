@@ -190,7 +190,7 @@ namespace DataTools.Interop
                             bool b = ulong.TryParse(s, System.Globalization.NumberStyles.AllowHexSpecifier, System.Globalization.CultureInfo.CurrentCulture, out res);
                             if (b)
                             {
-                                if (res == Conversions.ToULong(y.Address))
+                                if (res == (ulong)y.Address)
                                 {
                                     x.IsRadio = false;
                                     x.BluetoothAddress = y.Address;
@@ -258,7 +258,7 @@ namespace DataTools.Interop
 
                 Array.Sort(p, new Comparison<ProcessorDeviceInfo>((x, y) =>
                 {
-                    return string.Compare(x.DevicePath, y.DevicePath);
+                    return string.Compare(x.InstanceId, y.InstanceId);
                 }));
 
                 int c = p.Length;
@@ -277,16 +277,12 @@ namespace DataTools.Interop
                     int ccore = 1;
                     foreach (var proc in procs)
                     {
-
-                        if ((proc.ProcessorMask & (i+1)) == (i+1))
+                        if ((proc.ProcessorMask & (1 << i)) == (1 << i))
                         {
                             if ((proc.Relationship | LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorCore) == LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorCore)
                             {
-                                if (pInfo.Core != 0)
-                                {
                                     pInfo.Core = ccore;
                                     pInfo.Source = proc;
-                                }
                             }
                             else if ((proc.Relationship | LOGICAL_PROCESSOR_RELATIONSHIP.RelationCache) == LOGICAL_PROCESSOR_RELATIONSHIP.RelationCache)
                             {
@@ -323,7 +319,6 @@ namespace DataTools.Interop
                         {
                             ccore++;
                         }
-
                     }
 
                     pInfo.Caches = new ReadOnlyCollection<CacheInfo>(pci[i]);

@@ -60,7 +60,7 @@ namespace DataTools.Interop.Native
 
             // ' this collection will never be empty.
             int i;
-            int c = comp.Count() - 1;
+            int c = comp.Length;
 
             // ' We are going to match up the raw device enumeration with the detailed device interface enumerations
             // ' for the specific kinds of hardware that we know about (so far).  this is a work in progress
@@ -68,8 +68,7 @@ namespace DataTools.Interop.Native
 
             try
             {
-                var loopTo = c;
-                for (i = 0; i <= loopTo; i++)
+                for (i = 0; i < c; i++)
                 {
                     if (comp[i].DeviceClass == DevClassPresenting.DeviceClassEnum.DiskDrive || comp[i].DeviceClass == DevClassPresenting.DeviceClassEnum.CdRom)
                     {
@@ -180,7 +179,7 @@ namespace DataTools.Interop.Native
                         {
                             foreach (var proc in procs)
                             {
-                                if (comp[i].DevicePath == proc.DevicePath)
+                                if (comp[i].InstanceId == proc.InstanceId)
                                 {
                                     comp[i] = proc;
                                     break;

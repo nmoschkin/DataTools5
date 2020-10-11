@@ -20,6 +20,7 @@ namespace DataTools.Interop.Processor
 
         internal CacheInfo(CACHE_DESCRIPTOR source)
         {
+            this.source = source;
             _Level = source.Level;
             _Associativity = source.Associativity;
             _LineSize = source.LineSize;

@@ -521,7 +521,14 @@ namespace DataTools.Interop.Usb
 
         public override string ToString()
         {
-            return Description + " (" + HidUsageDescription + ")";
+            if (string.IsNullOrEmpty(FriendlyName))
+            {
+                return Description + " (" + HidUsageDescription + ")";
+            }
+            else
+            {
+                return FriendlyName + ", " + Description + " (" + HidUsageDescription + ")";
+            }
         }
     }
 

@@ -10,6 +10,7 @@
     Title="HID Code Explorer"
     Width="810"
     Height="500"
+    x:Name="CodeExp"
     mc:Ignorable="d">
 
 
@@ -56,7 +57,7 @@
         <ComboBox
             x:Name="DeviceSelect"
             Grid.Row="1"
-            ItemsSource="{Binding ElementName=CodeExplorer, Path=Devices}" />
+            ItemsSource="{Binding ElementName=CodeExp, Path=Devices}" />
 
         <ListView
             x:Name="ViewingArea"

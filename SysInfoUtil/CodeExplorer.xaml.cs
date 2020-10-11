@@ -56,7 +56,7 @@ namespace SysInfoUtil
 
         private void internalInit()
         {
-            var devs = HidFeatures.HidDevicesByUsage(HidUsagePage.PowerDevice1);
+            var devs = HidFeatures.HidDevicesByUsage(HidUsagePage.Undefined);
             if (devs is null)
                 return;
             foreach (var d in devs)

@@ -158,9 +158,25 @@ namespace DataTools.Interop
     /// <param name="y"></param>
     /// <returns></returns>
     /// <remarks></remarks>
-        public int Compare(DeviceInfo x, DeviceInfo y)
+        public int Compare(DeviceInfo a, DeviceInfo b)
         {
-            return string.Compare(x.DeviceClass.ToString(), y.DeviceClass.ToString());
+            if (a.DeviceClass.ToString() == b.DeviceClass.ToString())
+            {
+                if (a.FriendlyName == b.FriendlyName)
+                {
+                    return string.Compare(a.InstanceId, b.InstanceId);
+                }
+                else
+                {
+                    return string.Compare(a.FriendlyName, b.FriendlyName);
+                }
+            }
+            else
+            {
+                return string.Compare(a.DeviceClass.ToString(), b.DeviceClass.ToString());
+            }
+
+            
         }
     }
 }

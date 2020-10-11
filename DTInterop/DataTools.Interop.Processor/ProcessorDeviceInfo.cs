@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DataTools.Interop.Native;
 using DataTools.Interop;
 using CoreCT.SystemInformation;
+using CoreCT.Text;
 
 namespace DataTools.Interop.Processor
 {
@@ -62,6 +63,18 @@ namespace DataTools.Interop.Processor
             }
         }
 
+        public CacheInfo L1Cache
+        {
+            get
+            {
+                foreach (var c in Caches)
+                {
+                    if (c.Level == 1) return c;
+                }
+
+                return null;
+            }
+        }
 
         private bool hasL2cache;
 
@@ -74,6 +87,21 @@ namespace DataTools.Interop.Processor
             }
         }
 
+
+        public CacheInfo L2Cache
+        {
+            get
+            {
+                foreach (var c in Caches)
+                {
+                    if (c.Level == 2) return c;
+                }
+
+                return null;
+            }
+        }
+
+
         private bool hasL3cache;
 
         public bool HasL3Cache
@@ -82,6 +110,19 @@ namespace DataTools.Interop.Processor
             internal set
             {
                 hasL3cache = value;
+            }
+        }
+
+        public CacheInfo L3Cache
+        {
+            get
+            {
+                foreach (var c in Caches)
+                {
+                    if (c.Level == 3) return c;
+                }
+
+                return null;
             }
         }
 
@@ -107,11 +148,32 @@ namespace DataTools.Interop.Processor
             }
         }
 
+        public override string Description
+        {
+            get => ToString();
+            internal set
+            {
+                base.Description = value;
+            }
+        }
+
         public override string ToString()
         {
             try
             {
-                string s = source.ToString();
+                string s = FriendlyName + $", Logical Processor: {LogicalProcessor}, Core: {Core}";
+                if (HasL1Cache)
+                {
+                    s += $", L1 ({TextTools.PrintFriendlySize(L1Cache.Size)})";
+                }
+                if (HasL2Cache)
+                {
+                    s += $", L2 ({TextTools.PrintFriendlySize(L2Cache.Size)})";
+                }
+                if (HasL3Cache)
+                {
+                    s += $", L3 ({TextTools.PrintFriendlySize(L3Cache.Size)})";
+                }
                 return s;
             }
             catch

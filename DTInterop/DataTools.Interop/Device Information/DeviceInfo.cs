@@ -95,6 +95,7 @@ namespace DataTools.Interop
         {
             if (devInfo is null)
                 return;
+
             foreach (var dprep in devInfo)
             {
                 dprep.LinkedParent = null;
@@ -121,6 +122,8 @@ namespace DataTools.Interop
                     }
                 }
             }
+
+            
         }
 
         /// <summary>
