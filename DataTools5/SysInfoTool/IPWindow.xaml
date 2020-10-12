@@ -1,0 +1,141 @@
+﻿<Window
+    x:Class="SysInfoTool.IPWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:SysInfoTool"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pt="http://propertytools.org/wpf"
+    xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+    x:Name="MainView"
+    Title="MainWindow"
+    Width="810"
+    Height="500"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <ResourceDictionary Source="Themes.xaml" />
+    </Window.Resources>
+
+    <Grid
+        Width="{Binding}"
+        Height="{Binding}"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        Background="{DynamicResource AppGradient}"
+        ShowGridLines="False">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="6" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition x:Name="CenterRow" Height="{Binding}" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+
+        <WindowsFormsHost
+            x:Name="winForms"
+            Grid.Row="1"
+            Grid.Column="0"
+            Margin="10,10,10,10"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+            <wf:PropertyGrid x:Name="_props" Dock="Fill" />
+        </WindowsFormsHost>
+        <Menu
+            x:Name="menuBar"
+            Grid.Row="0"
+            Grid.ColumnSpan="3"
+            Height="20"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top">
+            <MenuItem x:Name="fileMenu" Header="_File">
+                <MenuItem.Items>
+                    <MenuItem x:Name="ShowPrg" Header="Show _File Assocation Window" />
+                    <MenuItem x:Name="ShowHw" Header="Show Computer _Hardware Tree" />
+                    <MenuItem x:Name="ShowFS" Header="Show File System _Monitor" />
+                    <MenuItem x:Name="ShowHID" Header="Show HID Feature _Code Explorer" />
+                    <MenuItem x:Name="ShowSysInfo" Header="Show S_ystem Information" />
+                    <MenuItem x:Name="Quit" Header="_Quit" />
+                </MenuItem.Items>
+            </MenuItem>
+        </Menu>
+
+        <GridSplitter
+            Grid.Row="1"
+            Grid.Column="1"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="AliceBlue"
+            Opacity="0.5"
+            ResizeDirection="Columns" />
+
+
+        <ListView
+            x:Name="AdapterList"
+            Grid.Row="1"
+            Grid.Column="2"
+            Width="{Binding}"
+            Height="{Binding}"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="{x:Null}">
+
+            <ListView.ContextMenu>
+                <ContextMenu
+                    x:Name="netMenu"
+                    DataContext="{Binding IPWindow}"
+                    ItemsSource="{Binding ViewMenu}" />
+
+            </ListView.ContextMenu>
+
+            <ListView.View>
+                <GridView x:Name="netGridView">
+                    <GridViewColumn
+                        Width="204"
+                        CellTemplate="{DynamicResource ImgCell}"
+                        Header="Adapter Name" />
+                    <GridViewColumn
+                        Width="140"
+                        DisplayMemberBinding="{Binding FriendlyName}"
+                        Header="Connection Name" />
+                    <GridViewColumn
+                        Width="140"
+                        DisplayMemberBinding="{Binding IfType}"
+                        Header="Type" />
+                    <GridViewColumn
+                        Width="140"
+                        DisplayMemberBinding="{Binding FirstUnicastAddress.Next}"
+                        Header="IP Address" />
+                    <GridViewColumn
+                        Width="140"
+                        DisplayMemberBinding="{Binding FirstUnicastAddress}"
+                        Header="IP v6 Address" />
+                    <GridViewColumn
+                        Width="140"
+                        DisplayMemberBinding="{Binding DnsSuffix}"
+                        Header="Network" />
+                    <GridViewColumn
+                        Width="140"
+                        DisplayMemberBinding="{Binding PhysicalAddress}"
+                        Header="Physical Address" />
+
+                    <GridViewColumn
+                        Width="140"
+                        DisplayMemberBinding="{Binding DeviceInfo.Description}"
+                        Header="Device Name" />
+
+                    <GridViewColumn
+                        Width="140"
+                        DisplayMemberBinding="{Binding DeviceInfo.InstanceId}"
+                        Header="Instance Id" />
+
+
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="3" />
+    </Grid>
+</Window>

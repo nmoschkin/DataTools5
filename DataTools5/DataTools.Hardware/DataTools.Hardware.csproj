@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+		<AssemblyVersion>5.0.2020.1011</AssemblyVersion>
+		<FileVersion>5.0.2020.1011</FileVersion>
+		<Authors>Nathaniel Moschkin</Authors>
+		<Version>5.0.0</Version>
+		<Product>DataTools Hardware Library</Product>
+		<Description>DataTools Hardware Library</Description>
+		<Copyright>Copyright (C) 2020 Nathaniel Moschkin</Copyright>
+		<RepositoryUrl>https://www.github.com/nmoschkin/dtlib</RepositoryUrl>
+		<RepositoryType>GitHub</RepositoryType>
+		<NeutralLanguage>en-US</NeutralLanguage>
+		<Platforms>AnyCPU;x64;x86</Platforms>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<DefineConstants>TRACE;X64</DefineConstants>
+	</PropertyGroup>
+
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<DefineConstants>TRACE;X64</DefineConstants>
+	</PropertyGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.VisualStudio.OLE.Interop" Version="16.7.30328.74" />
+		<PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0-rc.1.20451.14" />
+		<PackageReference Include="System.Drawing.Common" Version="5.0.0-rc.1.20451.14" />
+		<PackageReference Include="System.Windows.Extensions" Version="5.0.0-rc.1.20451.14" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<ProjectReference Include="..\DataTools.Shell\DataTools.Shell.csproj" />
+		<ProjectReference Include="..\DataTools\DataTools.csproj" />
+	</ItemGroup>
+
+</Project>

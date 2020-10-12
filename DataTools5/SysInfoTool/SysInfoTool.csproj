@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+      <OutputType>WinExe</OutputType>
+	  <TargetFramework>net5.0-windows</TargetFramework>
+	  <UseWPF>true</UseWPF>
+	  <UseWindowsForms>true</UseWindowsForms>
+	  <AssemblyVersion>5.0.2020.1011</AssemblyVersion>
+	  <FileVersion>5.0.2020.1011</FileVersion>
+	  <Authors>Nathaniel Moschkin</Authors>
+	  <Version>5.0.0</Version>
+	  <Product>DataTools Core Library</Product>
+	  <Description>DataTools Core Memory and Utility Library</Description>
+	  <Copyright>Copyright (C) 2020 Nathaniel Moschkin</Copyright>
+	  <RepositoryUrl>https://www.github.com/nmoschkin/dtlib</RepositoryUrl>
+	  <RepositoryType>GitHub</RepositoryType>
+	  <NeutralLanguage>en-US</NeutralLanguage>
+	  <Platforms>AnyCPU;x64;x86</Platforms>
+  </PropertyGroup>
+		
+  <ItemGroup>
+    <ProjectReference Include="..\DataTools.Hardware\DataTools.Hardware.csproj" />
+    <ProjectReference Include="..\DataTools.Shell\DataTools.Shell.csproj" />
+    <ProjectReference Include="..\DataTools\DataTools.csproj" />
+  </ItemGroup>
+
+</Project>

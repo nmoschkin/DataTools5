@@ -1,0 +1,423 @@
+﻿<Window
+    x:Class="SysInfoTool.Hardware"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:disk="clr-namespace:DataTools.Hardware.Disk;assembly=DataTools.Hardware"
+    xmlns:interop="clr-namespace:DataTools.Hardware;assembly=DataTools.Hardware"
+    xmlns:local="clr-namespace:SysInfoTool"
+    xmlns:pt="http://propertytools.org/wpf"
+    xmlns:usb="clr-namespace:DataTools.Hardware.Usb;assembly=DataTools.Hardware"
+    xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+    x:Name="HardwareView"
+    Title="Hardware"
+    Width="910"
+    Height="500">
+    <Window.Resources>
+        <ResourceDictionary Source="Themes.xaml" />
+    </Window.Resources>
+
+    <Grid
+        Width="{Binding}"
+        Height="{Binding}"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        Background="{DynamicResource HWGradient}"
+        ShowGridLines="False">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition x:Name="CenterRow" Height="{Binding}" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+            <HierarchicalDataTemplate
+                x:Name="HWClassTemplate"
+                DataType="{x:Type interop:HardwareCollection}"
+                ItemsSource="{Binding}">
+
+                <Grid Width="340" Margin="2,4,2,4">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="56" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Image
+                        Grid.Column="0"
+                        Width="32"
+                        Height="32"
+                        VerticalAlignment="Top"
+                        RenderOptions.BitmapScalingMode="HighQuality"
+                        SnapsToDevicePixels="True"
+                        Source="{Binding ClassIcon}"
+                        Stretch="Uniform" />
+
+                    <Grid Grid.Column="1">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Text="{Binding Description}"
+                            TextTrimming="WordEllipsis"
+                            ToolTip="{Binding Description}"
+                            ToolTipService.HasDropShadow="True" />
+                    </Grid>
+                </Grid>
+            </HierarchicalDataTemplate>
+
+            <HierarchicalDataTemplate
+                x:Name="HWTemplate"
+                DataType="{x:Type interop:DeviceInfo}"
+                ItemsSource="{Binding Path=LinkedChildren}">
+
+                <Grid Width="340" Margin="2,4,2,4">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="56" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Image
+                        Grid.Column="0"
+                        Width="32"
+                        Height="32"
+                        VerticalAlignment="Top"
+                        RenderOptions.BitmapScalingMode="HighQuality"
+                        SnapsToDevicePixels="True"
+                        Source="{Binding DeviceIcon}"
+                        Stretch="Uniform"
+                        ToolTip="{StaticResource DeviceToolTip}"
+                        ToolTipService.ShowDuration="15000" />
+
+                    <Grid Grid.Column="1">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="14" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Text="{Binding UIDescription}"
+                            TextTrimming="WordEllipsis"
+                            ToolTip="{Binding UIDescription}"
+                            ToolTipService.HasDropShadow="True" />
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,0,4,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            FontSize="10"
+                            Text="{Binding Manufacturer}"
+                            TextOptions.TextFormattingMode="Ideal"
+                            TextTrimming="WordEllipsis"
+                            TextWrapping="NoWrap"
+                            ToolTip="{Binding Manufacturer}"
+                            ToolTipService.HasDropShadow="True">
+
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="#FF631EF7" />
+                            </TextBlock.Foreground>
+                        </TextBlock>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Width="130"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            FontSize="10"
+                            Text="{Binding DeviceClassDescription}"
+                            TextOptions.TextFormattingMode="Ideal"
+                            TextTrimming="WordEllipsis"
+                            TextWrapping="NoWrap"
+                            ToolTip="{Binding DeviceClassDescription}"
+                            ToolTipService.HasDropShadow="True">
+
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="#FF448739" />
+                            </TextBlock.Foreground>
+                        </TextBlock>
+                    </Grid>
+                </Grid>
+            </HierarchicalDataTemplate>
+
+            <HierarchicalDataTemplate
+                x:Name="DiskTemplate"
+                DataType="{x:Type disk:DiskDeviceInfo}"
+                ItemsSource="{Binding Path=LinkedChildren}">
+
+                <Grid Width="340" Margin="2,4,2,4">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="56" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Image
+                        Grid.Column="0"
+                        Width="32"
+                        Height="32"
+                        VerticalAlignment="Top"
+                        RenderOptions.BitmapScalingMode="HighQuality"
+                        SnapsToDevicePixels="True"
+                        Source="{Binding DeviceIcon}"
+                        Stretch="Uniform"
+                        ToolTip="{StaticResource DeviceToolTip}"
+                        ToolTipService.ShowDuration="15000" />
+
+                    <Grid Grid.Column="1">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="14" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Text="{Binding}"
+                            TextTrimming="WordEllipsis"
+                            ToolTip="{Binding}"
+                            ToolTipService.HasDropShadow="True" />
+
+                        <ProgressBar
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Height="10"
+                            Margin="0,0,4,0"
+                            VerticalAlignment="Center"
+                            IsEnabled="True"
+                            IsIndeterminate="False"
+                            Maximum="{Binding Size.DoubleValue, Mode=OneWay}"
+                            Minimum="0"
+                            ToolTip="{Binding SizeUsed}"
+                            ToolTipService.HasDropShadow="True"
+                            Value="{Binding SizeUsed.DoubleValue, Mode=OneWay}" />
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Width="130"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            FontSize="10"
+                            Text="{Binding Size}"
+                            TextOptions.TextFormattingMode="Ideal"
+                            TextTrimming="WordEllipsis"
+                            TextWrapping="NoWrap"
+                            ToolTip="{Binding Size}"
+                            ToolTipService.HasDropShadow="True">
+
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="#FF448739" />
+                            </TextBlock.Foreground>
+                        </TextBlock>
+                    </Grid>
+                </Grid>
+            </HierarchicalDataTemplate>
+
+            <HierarchicalDataTemplate
+                x:Name="HidTemplate"
+                DataType="{x:Type usb:HidDeviceInfo}"
+                ItemsSource="{Binding Path=LinkedChildren}">
+
+                <Grid Width="340" Margin="2,4,2,4">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="56" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Image
+                        Grid.Column="0"
+                        Width="32"
+                        Height="32"
+                        VerticalAlignment="Top"
+                        RenderOptions.BitmapScalingMode="HighQuality"
+                        SnapsToDevicePixels="True"
+                        Source="{Binding DeviceIcon}"
+                        Stretch="Uniform"
+                        ToolTip="{StaticResource DeviceToolTip}"
+                        ToolTipService.ShowDuration="15000" />
+
+                    <Grid Grid.Column="1">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="14" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Text="{Binding UIDescription}"
+                            TextTrimming="WordEllipsis"
+                            ToolTip="{Binding UIDescription}"
+                            ToolTipService.HasDropShadow="True" />
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,0,4,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            FontSize="10"
+                            Text="{Binding HidManufacturer}"
+                            TextOptions.TextFormattingMode="Ideal"
+                            TextTrimming="WordEllipsis"
+                            TextWrapping="NoWrap"
+                            ToolTip="{Binding SerialNumber}"
+                            ToolTipService.HasDropShadow="True">
+
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="#FF631EF7" />
+                            </TextBlock.Foreground>
+                        </TextBlock>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Width="130"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            FontSize="10"
+                            Text="{Binding HidUsageDescription}"
+                            TextOptions.TextFormattingMode="Ideal"
+                            TextTrimming="WordEllipsis"
+                            TextWrapping="NoWrap"
+                            ToolTip="{Binding HidUsageDescription}"
+                            ToolTipService.HasDropShadow="True">
+
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="#FF448739" />
+                            </TextBlock.Foreground>
+                        </TextBlock>
+                    </Grid>
+                </Grid>
+            </HierarchicalDataTemplate>
+        </Grid.Resources>
+
+        <Menu
+            x:Name="menuBar"
+            Grid.Row="0"
+            Grid.ColumnSpan="3"
+            Height="20"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top">
+            <MenuItem x:Name="fileMenu" Header="_File">
+                <MenuItem.Items>
+                    <MenuItem x:Name="_Close" Header="_Close Window" />
+                    <MenuItem x:Name="_Quit" Header="_Quit" />
+                </MenuItem.Items>
+            </MenuItem>
+        </Menu>
+
+        <TreeView
+            x:Name="ProgramList"
+            Grid.Row="1"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="{x:Null}"
+            SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical">
+
+            <TreeViewItem
+                VerticalAlignment="Top"
+                Header="Devices"
+                IsExpanded="True"
+                ItemsSource="{Binding ElementName=HardwareView, Path=Devices}" />
+        </TreeView>
+
+        <GridSplitter
+            Grid.Row="1"
+            Grid.Column="0"
+            Width="4"
+            Background="AliceBlue"
+            Opacity="0.5"
+            ResizeDirection="Columns" />
+
+        <ListView
+            x:Name="ViewingArea"
+            Grid.Row="1"
+            Grid.Column="1"
+            Width="{Binding}"
+            Height="{Binding}"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="{x:Null}"
+            ItemsSource="{Binding ElementName=ProgramList, Path=SelectedItem.LinkedChildren}"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.Resources>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Height" Value="64" />
+                </Style>
+            </ListView.Resources>
+
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        ItemWidth="340"
+                        Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+        </ListView>
+
+        <WindowsFormsHost
+            Grid.Row="1"
+            Grid.Column="2"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+            <wf:PropertyGrid x:Name="_props" Margin="10,10,10,10" />
+
+        </WindowsFormsHost>
+
+        <Grid Grid.Row="2" Grid.Column="1">
+            <TextBox x:Name="Status" Text="Ready" />
+        </Grid>
+    </Grid>
+</Window>
