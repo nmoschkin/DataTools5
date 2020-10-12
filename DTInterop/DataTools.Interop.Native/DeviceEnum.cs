@@ -719,10 +719,8 @@ namespace DataTools.Interop.Native
 
                         string s = sKey + pKey + rKey;
 
-                        IntPtr argppidl = mm;
-
                         ShellFileGetAttributesOptions argpsfgaoOut = 0;
-                        NativeShell.SHParseDisplayName(s, IntPtr.Zero, out argppidl, (ShellFileGetAttributesOptions)0, out argpsfgaoOut);
+                        NativeShell.SHParseDisplayName(s, IntPtr.Zero, out mm.handle, (ShellFileGetAttributesOptions)0, out argpsfgaoOut);
 
                         if (mm != IntPtr.Zero)
                         {

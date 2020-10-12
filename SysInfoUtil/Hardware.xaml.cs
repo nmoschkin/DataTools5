@@ -54,9 +54,15 @@ namespace SysInfoUtil
             // drv(0).ToString()
 
             this.Loaded += Hardware_Loaded;
+            ViewingArea.SelectionChanged += ViewingArea_SelectionChanged;
             ProgramList.MouseDoubleClick += ProgramList_MouseDoubleClick;
             _Quit.Click += _Quit_Click;
             _Close.Click += _Close_Click;
+        }
+
+        private void ViewingArea_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _props.SelectedObject = ViewingArea.SelectedItem;
         }
 
         private void _Quit_Click(object sender, RoutedEventArgs e)

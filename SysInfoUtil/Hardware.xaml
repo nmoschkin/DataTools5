@@ -407,14 +407,14 @@
             </ListView.ItemsPanel>
         </ListView>
 
-        <pt:PropertyGrid
-            x:Name="_props"
+        <WindowsFormsHost
             Grid.Row="1"
             Grid.Column="2"
-            Margin="10,10,10,10"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
-            SelectedObject="{Binding ElementName=ViewingArea, Path=SelectedItem}" />
+            VerticalAlignment="Stretch">
+            <wf:PropertyGrid x:Name="_props" Margin="10,10,10,10" />
+
+        </WindowsFormsHost>
 
         <Grid Grid.Row="2" Grid.Column="1">
             <TextBox x:Name="Status" Text="Ready" />

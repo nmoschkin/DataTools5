@@ -7,6 +7,8 @@ using DataTools.Interop.Native;
 using DataTools.Interop;
 using CoreCT.SystemInformation;
 using CoreCT.Text;
+using System.ComponentModel;
+using System.ComponentModel.Design;
 
 namespace DataTools.Interop.Processor
 {
@@ -63,13 +65,32 @@ namespace DataTools.Interop.Processor
             }
         }
 
-        public CacheInfo L1Cache
+        public CacheInfo L1DataCache
         {
             get
             {
                 foreach (var c in Caches)
                 {
-                    if (c.Level == 1) return c;
+                    if (c.Level == 1 && c.Type == ProcessorCacheType.CacheData)
+                    {
+                        return c;
+                    } 
+                }
+
+                return null;
+            }
+        }
+
+        public CacheInfo L1InstructionCache
+        {
+            get
+            {
+                foreach (var c in Caches)
+                {
+                    if (c.Level == 1 && c.Type == ProcessorCacheType.CacheInstruction)
+                    {
+                        return c;
+                    }
                 }
 
                 return null;
@@ -100,7 +121,6 @@ namespace DataTools.Interop.Processor
                 return null;
             }
         }
-
 
         private bool hasL3cache;
 
@@ -164,7 +184,7 @@ namespace DataTools.Interop.Processor
                 string s = FriendlyName + $", Logical Processor: {LogicalProcessor}, Core: {Core}";
                 if (HasL1Cache)
                 {
-                    s += $", L1 ({TextTools.PrintFriendlySize(L1Cache.Size)})";
+                    s += $", L1 ({TextTools.PrintFriendlySize(L1InstructionCache.Size)})";
                 }
                 if (HasL2Cache)
                 {

@@ -12,6 +12,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\CoreCT\CoreCT.csproj" />
 	  <ProjectReference Include="..\DTCore5.0-exp\DTInterop\DTInterop.csproj" />
+	  <ProjectReference Include="..\DTInterop\DTInterop.csproj" />
 	</ItemGroup>
 
 </Project>

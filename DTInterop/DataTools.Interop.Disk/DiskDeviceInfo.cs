@@ -11,6 +11,7 @@
 // ' ************************************************* ''
 
 using System;
+using System.ComponentModel;
 using System.Linq;
 using CoreCT.Text;
 using DataTools.Interop.Native;
@@ -88,6 +89,7 @@ namespace DataTools.Interop.Disk
         /// <value></value>
         /// <returns></returns>
         /// <remarks></remarks>
+        [TypeConverter(typeof(ExpandableObjectConverter))]
         public IDiskLayout DiskLayout
         {
             get
@@ -116,7 +118,7 @@ namespace DataTools.Interop.Disk
                 if (Type != DevClassPresenting.StorageType.Volume)
                     return null;
 
-                if (_PartInfo is null)
+                if (_PartInfo == null)
                 {
                     try
                     {

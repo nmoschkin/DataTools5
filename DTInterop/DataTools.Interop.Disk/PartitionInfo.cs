@@ -732,7 +732,7 @@ namespace DataTools.Interop.Disk
             var vs = TextTools.Split(s, ",", true, true, '"', '"', false, false, true);
 
             int i;
-            int c = vs.Length ;
+            int c = vs.Length;
 
             for (i = 0; i < c; i++)
             {
@@ -1290,7 +1290,7 @@ namespace DataTools.Interop.Disk
         /// <value></value>
         /// <returns></returns>
         /// <remarks></remarks>
-        IDiskPartition get_Partition(int index);
+        IDiskPartition this[int index] { get; set; }
 
         /// <summary>
         /// Returns the number of partitions on the disk.
@@ -1473,11 +1473,15 @@ namespace DataTools.Interop.Disk
         /// <value></value>
         /// <returns></returns>
         /// <remarks></remarks>
-        public IDiskPartition get_Partition(int index)
+        public IDiskPartition this[int index]
         {
-            IDiskPartition PartitionRet = default;
-            PartitionRet = _Parts[index];
-            return PartitionRet;
+            get {
+                return _Parts[index];
+            }
+            set
+            {
+                _Parts[index] = value;
+            }
         }
 
         /// <summary>
@@ -1831,6 +1835,7 @@ namespace DataTools.Interop.Disk
         /// <value></value>
         /// <returns></returns>
         /// <remarks></remarks>
+        [TypeConverter(typeof(ExpandableObjectConverter))]
         public PartitionCodeInfo PartitionTypeInfo
         {
             get
@@ -1974,6 +1979,7 @@ namespace DataTools.Interop.Disk
         /// <value></value>
         /// <returns></returns>
         /// <remarks></remarks>
+        [TypeConverter(typeof(ExpandableObjectConverter))]
         public GptCodeInfo PartitionTypeInfo
         {
             get

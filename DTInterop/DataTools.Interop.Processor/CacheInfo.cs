@@ -5,9 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using DataTools.Interop.Native;
 using CoreCT.SystemInformation;
+using System.ComponentModel;
 
 namespace DataTools.Interop.Processor
 {
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class CacheInfo
     {
         private CACHE_DESCRIPTOR source;

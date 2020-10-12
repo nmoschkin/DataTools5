@@ -2598,6 +2598,7 @@ namespace DataTools.Interop.Printers
     /// Encapsulates a printer queue on the system.
     /// </summary>
     /// <remarks></remarks>
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class PrinterObject : CriticalFinalizerObject, IDisposable, IEquatable<PrinterObject>
     {
         internal MemPtr _ptr;
