@@ -58,4 +58,21 @@
 		<ProjectReference Include="..\DataTools\DataTools.csproj" />
 	</ItemGroup>
 
+
+	<ItemGroup>
+	  <Compile Update="MessageResources\LocalizedMessages.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>LocalizedMessages.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <EmbeddedResource Update="MessageResources\LocalizedMessages.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>LocalizedMessages.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
+
 </Project>
