@@ -19,6 +19,9 @@ using DataTools.Memory;
 using DataTools.Text;
 using DataTools.Hardware.Disk;
 using Microsoft.VisualStudio.OLE.Interop;
+using DataTools.Hardware.Disk.Partitions;
+using DataTools.Hardware.Disk.Partitions.Mbr;
+using DataTools.Hardware.Disk.Partitions.Gpt;
 
 namespace DataTools.Hardware.Native
 {

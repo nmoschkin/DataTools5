@@ -24,6 +24,7 @@ using DataTools.Hardware.Disk;
 using DataTools.Hardware.Network;
 using DataTools.Hardware.Usb;
 using DataTools.Text;
+using DataTools.Hardware.Disk.Partitions;
 
 namespace DataTools.Hardware.Native
 {
