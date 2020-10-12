@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+      <OutputType>Exe</OutputType>
+	  <StartupObject>Utility.Program</StartupObject>
+	  <TargetFramework>net5.0-windows</TargetFramework>
+	  <UseWPF>true</UseWPF>
+	  <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataTools.Hardware\DataTools.Hardware.csproj" />
+    <ProjectReference Include="..\DataTools.Shell\DataTools.Shell.csproj" />
+    <ProjectReference Include="..\DataTools\DataTools.csproj" />
+  </ItemGroup>
+
+</Project>

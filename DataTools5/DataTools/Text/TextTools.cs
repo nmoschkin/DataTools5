@@ -1553,7 +1553,7 @@ namespace DataTools.Text
                     ch = (char)(i);
                     if (char.IsWhiteSpace(ch))
                     {
-                        if (ch != '\r' && ch != '\n')
+                        //if (ch != '\r' && ch != '\n')
                             SepChars += ch;
                     }
                 }
