@@ -1,29 +1,29 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: NativeMenu
-// '         Wrappers for the native Win32 API menu system
-// '
-// ' Started in 2000 on Windows 98/ME (and then later 2000).
-// '
-// ' Still kicking in 2014 on Windows 8.1!
-// ' A whole bunch of pInvoke/Const/Declare/Struct and associated utility functions that have been collected over the years.
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: NativeMenu
+//         Wrappers for the native Win32 API menu system
+//
+// Started in 2000 on Windows 98/ME (and then later 2000).
+//
+// Still kicking in 2014 on Windows 8.1!
+// A whole bunch of pInvoke/Const/Declare/Struct and associated utility functions that have been collected over the years.
 
-// ' Some enum documentation copied from the MSDN (and in some cases, updated).
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
-
-
+// Some enum documentation copied from the MSDN (and in some cases, updated).
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 
-// ' Some notes: The menu items are dynamic.  They are not statically maintained in any collection or structure.
 
-// ' When you fetch an item object from the virtual collection, that object is only alive in your program for as long as you reference it.
-// ' If the menu gets destroyed while you are still working with an item, it will fail.
+
+// Some notes: The menu items are dynamic.  They are not statically maintained in any collection or structure.
+
+// When you fetch an item object from the virtual collection, that object is only alive in your program for as long as you reference it.
+// If the menu gets destroyed while you are still working with an item, it will fail.
 
 
 using System;
@@ -60,7 +60,7 @@ namespace DataTools.Hardware.Native.Menu
         public object Data;
         public NativeMenuItem Item;
 
-        // ' More room for stuff
+        // More room for stuff
         public KeyValuePair<string, object> Misc = new KeyValuePair<string, object>();
 
         public MenuItemBag(IntPtr cmd, object data)
@@ -359,13 +359,11 @@ namespace DataTools.Hardware.Native.Menu
 
         public NativeMenuItem Add(string text, byte[] data = null)
         {
-            var mii = new PInvoke.MENUITEMINFO();
             return Insert(Count, text, true, IntPtr.Zero);
         }
 
         public NativeMenuItem Add(string text, Bitmap bmp, byte[] data = null)
         {
-            var mii = new PInvoke.MENUITEMINFO();
             return Insert(Count, text, bmp, true);
         }
 
@@ -443,7 +441,7 @@ namespace DataTools.Hardware.Native.Menu
                 for (int i = c; i >= 0; i -= 1)
                     PInvoke.DeleteMenu(hMenu, i, (int)PInvoke.MF_BYPOSITION);
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
@@ -724,14 +722,16 @@ namespace DataTools.Hardware.Native.Menu
                 if (PInvoke.GetMenuItemInfo(hMenu, itemId, false, ref mii) == 0)
                 {
                     int err = PInvoke.GetLastError();
-                    string serr = null;
+
                     mm.Length = 1026L;
                     mm.ZeroMemory();
+
                     PInvoke.FormatMessage(0x1000U, IntPtr.Zero, (uint)err, 0U, mm.DangerousGetHandle(), 512U, IntPtr.Zero);
 
                     // MsgBox("Error 0x" & err.ToString("X8") & ": " & mm.ToString)
                     s = mm.ToString();
                     mm.Dispose();
+
                     return s;
                 }
 
@@ -1285,22 +1285,29 @@ namespace DataTools.Hardware.Native.Menu
         {
             var mii = new PInvoke.MENUITEMINFO();
             var mm = new SafePtr();
+            
             mii.cbSize = Marshal.SizeOf(mii);
             mii.cch = 0;
             mii.fMask = PInvoke.MIIM_TYPE;
+            
             PInvoke.GetMenuItemInfo(hMenu, itemId, byPos, ref mii);
+            
             mm.Length = (mii.cch + 1) * sizeof(char);
+            
             mii.cch += 1;
             mii.dwTypeData = mm.handle;
+
             if (PInvoke.GetMenuItemInfo(hMenu, itemId, byPos, ref mii) == 0)
             {
                 int err = PInvoke.GetLastError();
-                string serr = null;
+
                 mm.Length = 1026L;
                 mm.ZeroMemory();
+
                 PInvoke.FormatMessage(0x1000U, IntPtr.Zero, (uint)err, 0U, mm.handle, 512U, IntPtr.Zero);
-                // Interaction.MsgBox("Error " + err.ToString("X8") + " " + mm.ToString());
+
                 mm.Dispose();
+
                 return null;
             }
 
@@ -1327,8 +1334,11 @@ namespace DataTools.Hardware.Native.Menu
         public static bool MenuItemCopyToManaged(IntPtr hMenu, int itemId, ref ToolStripMenuItem destItem, bool byPos = true)
         {
             var mii = new PInvoke.MENUITEMINFO();
+
             Bitmap bmp;
+
             var mm = new SafePtr();
+
             if (destItem is null)
             {
                 destItem = new ToolStripMenuItem();
@@ -1337,19 +1347,24 @@ namespace DataTools.Hardware.Native.Menu
             mii.cbSize = Marshal.SizeOf(mii);
             mii.cch = 0;
             mii.fMask = PInvoke.MIIM_TYPE;
+
             PInvoke.GetMenuItemInfo(hMenu, itemId, byPos, ref mii);
+
             mm.Length = (mii.cch + 1) * sizeof(char);
             mii.cch += 1;
             mii.dwTypeData = mm.handle;
+
             if (PInvoke.GetMenuItemInfo(hMenu, itemId, byPos, ref mii) == 0)
             {
                 int err = PInvoke.GetLastError();
-                string serr = null;
+
                 mm.Length = 1026L;
                 mm.ZeroMemory();
+
                 PInvoke.FormatMessage(0x1000U, IntPtr.Zero, (uint)err, 0U, mm.handle, 512U, IntPtr.Zero);
-                // Interaction.MsgBox("Error " + err.ToString("X8") + " " + mm.ToString());
+
                 mm.Dispose();
+
                 return false;
             }
 

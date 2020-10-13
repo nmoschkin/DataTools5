@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using System.ComponentModel;
 using DataTools.Memory.NativeLib;
+using System.Security.Policy;
+using System.Windows.Data;
 
 namespace DataTools.Memory
 {
@@ -24,7 +26,15 @@ namespace DataTools.Memory
             get
             {
                 if (handle == IntPtr.Zero) return 0;
-                return (long)Native.HeapSize(procHeap, 0, handle);
+
+                try
+                {
+                    return (long)Native.HeapSize(procHeap, 0, handle);
+                }
+                catch
+                {
+                    return 0;
+                }
             }
         }
 
@@ -335,6 +345,37 @@ namespace DataTools.Memory
             }
         }
 
+        /// <summary>
+        /// Copies one structure into another.  
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="U"></typeparam>
+        /// <param name="val1"></param>
+        /// <param name="val2"></param>
+        /// <param name="size"></param>
+        public static void Union<T, U>(ref T val1, ref U val2) 
+            where T : struct 
+            where U : struct
+        {
+            GCHandle gc1, gc2;
+
+            gc1 = GCHandle.Alloc(val1, GCHandleType.Pinned);
+            gc2 = GCHandle.Alloc(val2, GCHandleType.Pinned);
+
+            int x = Marshal.SizeOf<T>();
+            int y = Marshal.SizeOf<U>();
+
+            unsafe
+            {
+                void* h1 = (void*)gc1.AddrOfPinnedObject();
+                void* h2 = (void*)gc2.AddrOfPinnedObject();
+
+                Buffer.MemoryCopy(h1, h2, y, x);
+            }
+
+            gc1.Free();
+            gc2.Free();
+        }
 
         /// <summary>
         /// Converts the contents of an unmanaged pointer into a structure.
@@ -345,6 +386,7 @@ namespace DataTools.Memory
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T ToStruct<T>() where T : struct
         {
+            if (handle == IntPtr.Zero) return default;
             return (T)Marshal.PtrToStructure(handle, typeof(T));
         }
 
@@ -357,9 +399,11 @@ namespace DataTools.Memory
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FromStruct<T>(T val) where T : struct
         {
-            int cb = Marshal.SizeOf(val);
             if (handle == IntPtr.Zero)
-                Alloc(cb);
+            {
+                Alloc(Marshal.SizeOf(val));
+            }
+
             Marshal.StructureToPtr(val, handle, false);
         }
 
@@ -386,7 +430,11 @@ namespace DataTools.Memory
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void FromStructAt<T>(long byteIndex, T val) where T : struct
         {
-            int cb = Marshal.SizeOf(val);
+            if (handle == IntPtr.Zero)
+            {
+                Alloc(Marshal.SizeOf(val) + byteIndex);
+            }
+
             Marshal.StructureToPtr(val, (IntPtr)((long)handle + byteIndex), false);
         }
 
@@ -422,11 +470,17 @@ namespace DataTools.Memory
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public char[] ToCharArray(long index = 0, int length = 0)
         {
-            long len = length * sizeof(char);
-            long size = Size;
+            if (handle == IntPtr.Zero || length < 0) return null;
 
-            if (len == 0) len = (size - index);
-            if (size - index < length) len = size - index;
+            long len = length * sizeof(char);
+            long size;
+
+            if (length == 0)
+            {
+                size = Size;
+                len = (size - index);
+                if (size - index < length) len = size - index;
+            }
 
             if (len > int.MaxValue) len = int.MaxValue;
 
@@ -454,6 +508,8 @@ namespace DataTools.Memory
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray<T>(long index = 0, int length = 0) where T: struct
         {
+            if (handle == IntPtr.Zero || length < 0) return null;
+
             unsafe
             {
                 int tlen = typeof(T) == typeof(char) ? sizeof(char) : Marshal.SizeOf<T>();
@@ -491,30 +547,38 @@ namespace DataTools.Memory
 
         public void FromByteArray(byte[] value, long index = 0)
         {
-            if (Size < value.Length + index)
+            if (handle != IntPtr.Zero)
             {
                 ReAlloc(value.Length + index);
+            }
+            else
+            {
+                Alloc(value.Length + index);
             }
             unsafe
             {
                 var vl = value.Length;
                 GCHandle gch = GCHandle.Alloc(value, GCHandleType.Pinned);
-                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject().ToInt64(), (void*)((long)handle + index), vl, vl);
+                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject(), (void*)((long)handle + index), vl, vl);
                 gch.Free();
             }
         }
 
         public void FromCharArray(char[] value, long index = 0)
         {
-            if (Size < (value.Length * 2) + index)
+            if (handle != IntPtr.Zero)
             {
-                ReAlloc((value.Length * 2) + index);
+                ReAlloc((value.Length * sizeof(char)) + index);
+            }
+            else
+            {
+                Alloc((value.Length * sizeof(char)) + index);
             }
             unsafe
             {
                 var vl = value.Length * 2;
                 GCHandle gch = GCHandle.Alloc(value, GCHandleType.Pinned);
-                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject().ToInt64(), (void*)((long)handle + index), vl, vl);
+                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject(), (void*)((long)handle + index), vl, vl);
                 gch.Free();
             }
         }
@@ -523,15 +587,19 @@ namespace DataTools.Memory
         {
             var cb = Marshal.SizeOf<T>();
 
-            if (Size < (value.Length * cb) + index)
+            if (handle != IntPtr.Zero)
             {
                 ReAlloc((value.Length * cb) + index);
+            }
+            else
+            {
+                Alloc((value.Length * cb) + index);
             }
             unsafe
             {
                 var vl = value.Length * cb;
                 GCHandle gch = GCHandle.Alloc(value, GCHandleType.Pinned);
-                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject().ToInt64(), (void*)((long)handle + index), vl, vl);
+                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject(), (void*)((long)handle + index), vl, vl);
                 gch.Free();
             }
         }
@@ -804,7 +872,6 @@ namespace DataTools.Memory
 
             // Native.n_memset(handle, 0, (IntPtr)len);
         }
-
 
         #region Editing
 
@@ -1106,8 +1173,6 @@ namespace DataTools.Memory
         }
 
         #endregion
-
-
 
         /// <summary>
         /// Allocate a block of memory on a heap (typically the process heap).  
@@ -1565,6 +1630,24 @@ namespace DataTools.Memory
             return base.GetHashCode();
         }
 
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator string(MemPtr val)
+        {
+            if (val.handle == (IntPtr)0) return null;
+            return val.GetString(0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator MemPtr(string val)
+        {
+            var op = new MemPtr((val.Length + 1) * sizeof(char));
+            op.SetString(0, val);
+            return op;
+        }
+
+
+
         public static explicit operator byte[](MemPtr val)
         {
             return val.ToByteArray();
@@ -1577,17 +1660,187 @@ namespace DataTools.Memory
             return n;
         }
 
-        public static explicit operator string(MemPtr val)
+
+
+        public static explicit operator char[](MemPtr val)
         {
-            if (val.handle == IntPtr.Zero) return null;
-            return val.GetString(0);
+            return val.ToCharArray();
         }
 
-        public static explicit operator MemPtr(string val)
+        public static explicit operator MemPtr(char[] val)
         {
-            var op = new MemPtr((val.Length + 1) * sizeof(char));
-            op.SetString(0, val);
-            return op;
+            var n = new MemPtr();
+            n.FromCharArray(val);
+            return n;
+        }
+
+
+        public static explicit operator sbyte[](MemPtr val)
+        {
+            return val.ToArray<sbyte>();
+        }
+
+        public static explicit operator MemPtr(sbyte[] val)
+        {
+            var n = new MemPtr();
+            n.FromArray(val);
+            return n;
+        }
+
+        public static explicit operator short[](MemPtr val)
+        {
+            return val.ToArray<short>();
+        }
+
+        public static explicit operator MemPtr(short[] val)
+        {
+            var n = new MemPtr();
+            n.FromArray(val);
+            return n;
+        }
+
+
+        public static explicit operator ushort[](MemPtr val)
+        {
+            return val.ToArray<ushort>();
+        }
+
+        public static explicit operator MemPtr(ushort[] val)
+        {
+            var n = new MemPtr();
+            n.FromArray(val);
+            return n;
+        }
+
+
+        public static explicit operator int[](MemPtr val)
+        {
+            return val.ToArray<int>();
+        }
+
+        public static explicit operator MemPtr(int[] val)
+        {
+            var n = new MemPtr();
+            n.FromArray(val);
+            return n;
+        }
+
+
+        public static explicit operator uint[](MemPtr val)
+        {
+            return val.ToArray<uint>();
+        }
+
+        public static explicit operator MemPtr(uint[] val)
+        {
+            var n = new MemPtr();
+            n.FromArray(val);
+            return n;
+        }
+
+
+
+        public static explicit operator long[](MemPtr val)
+        {
+            return val.ToArray<long>();
+        }
+
+        public static explicit operator MemPtr(long[] val)
+        {
+            var n = new MemPtr();
+            n.FromArray(val);
+            return n;
+        }
+
+
+        public static explicit operator ulong[](MemPtr val)
+        {
+            return val.ToArray<ulong>();
+        }
+
+        public static explicit operator MemPtr(ulong[] val)
+        {
+            var n = new MemPtr();
+            n.FromArray(val);
+            return n;
+        }
+
+
+
+        public static explicit operator float[](MemPtr val)
+        {
+            return val.ToArray<float>();
+        }
+
+        public static explicit operator MemPtr(float[] val)
+        {
+            var n = new MemPtr();
+            n.FromArray(val);
+            return n;
+        }
+
+
+        public static explicit operator double[](MemPtr val)
+        {
+            return val.ToArray<double>();
+        }
+
+        public static explicit operator MemPtr(double[] val)
+        {
+            var n = new MemPtr();
+            n.FromArray(val);
+            return n;
+        }
+
+
+
+        public static explicit operator decimal[](MemPtr val)
+        {
+            return val.ToArray<decimal>();
+        }
+
+        public static explicit operator MemPtr(decimal[] val)
+        {
+            var n = new MemPtr();
+            n.FromArray(val);
+            return n;
+        }
+
+
+        public static explicit operator DateTime[](MemPtr val)
+        {
+            return val.ToArray<DateTime>();
+        }
+
+        public static explicit operator MemPtr(DateTime[] val)
+        {
+            var n = new MemPtr();
+            n.FromArray(val);
+            return n;
+        }
+
+
+        public static explicit operator Guid[](MemPtr val)
+        {
+            return val.ToArray<Guid>();
+        }
+
+        public static explicit operator MemPtr(Guid[] val)
+        {
+            var n = new MemPtr();
+            n.FromArray(val);
+            return n;
+        }
+
+       
+        public static MemPtr operator +(MemPtr val1, byte[] val2)
+        {
+            var c = val1.Size;
+
+            val1.Alloc(val1.Size + val2.Length);
+            val1.FromByteArray(val2, c);
+
+            return val1;
         }
 
         public static MemPtr operator +(MemPtr val1, short val2)

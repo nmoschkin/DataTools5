@@ -1,15 +1,15 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library 
-// '
-// ' Module: SystemInfo
-// '         Provides basic information about the
-// '         current computer.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows 
+//
+// Module: SystemInfo
+//         Provides basic information about the
+//         current computer.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.Collections.Generic;
@@ -377,8 +377,8 @@ namespace DataTools.SystemInformation
         {
             get
             {
-                // ' obviously this property is not very useful unless it is live, so let's
-                // ' refresh our data before sending out the result...
+                // obviously this property is not very useful unless it is live, so let's
+                // refresh our data before sending out the result...
                 SysInfo.GlobalMemoryStatusEx(ref SysInfo._memInfo);
                 return SysInfo._memInfo.ullAvailPhys;
             }
@@ -425,7 +425,7 @@ namespace DataTools.SystemInformation
 
                 return null;
 
-                // ' see the OSVersionNames class, above, for more info.
+                // see the OSVersionNames class, above, for more info.
                 // Dim o As Object = OSVersionNames.FindVersion(Me)
 
                 // If o Is Nothing Then
@@ -1213,7 +1213,7 @@ namespace DataTools.SystemInformation
             _col.Add(new OSVersionNames("Windows Vista", 6, 0, false));
             _col.Add(new OSVersionNames("Windows Server 2008", 6, 0, true));
 
-            // ' Nothing in this project is designed to work on Window XP, so looking for it is pointless.
+            // Nothing in this project is designed to work on Window XP, so looking for it is pointless.
         }
 
         public override string ToString()
@@ -1323,13 +1323,13 @@ namespace DataTools.SystemInformation
         static SysInfo()
         {
 
-            // ' let's get some version information!
+            // let's get some version information!
 
             _memInfo.dwLength = Marshal.SizeOf(_memInfo);
             GetNativeSystemInfo(ref _sysInfo);
             GlobalMemoryStatusEx(ref _memInfo);
 
-            // ' now let's figure out how many processors we have on this system
+            // now let's figure out how many processors we have on this system
             var mm = new MemPtr();
             MemPtr org;
             var lp = new SYSTEM_LOGICAL_PROCESSOR_INFORMATION();
@@ -1338,10 +1338,10 @@ namespace DataTools.SystemInformation
             int i;
             int c;
 
-            // ' The maximum number of processors for any version of Windows is 128, we'll allocate more for extra information.
+            // The maximum number of processors for any version of Windows is 128, we'll allocate more for extra information.
             mm.Alloc(Marshal.SizeOf(lp) * 1024);
 
-            // ' record the original memory pointer
+            // record the original memory pointer
             org = mm;
             lRet = (int)mm.Length;
             GetLogicalProcessorInformation(mm, ref lRet);
@@ -1353,17 +1353,17 @@ namespace DataTools.SystemInformation
                 rets[i] = mm.ToStruct<SYSTEM_LOGICAL_PROCESSOR_INFORMATION>();
                 mm += Marshal.SizeOf(lp);
 
-                // ' what we're really after are the number of cores.
+                // what we're really after are the number of cores.
                 if (rets[i].Relationship == LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorCore)
                 {
                     _sysInfo.dwNumberOfProcessors += 1;
                 }
             }
 
-            // ' store that data in case we need it for later.
+            // store that data in case we need it for later.
             _procRaw = rets;
 
-            // ' free our unmanaged resources.
+            // free our unmanaged resources.
             org.Free();
         }
 

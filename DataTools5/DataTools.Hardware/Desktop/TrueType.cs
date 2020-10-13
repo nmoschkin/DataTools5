@@ -1,16 +1,16 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: TrueType.
-// '         Code to read TrueType font file information
-// '         Adapted from the CodeProject article: http://www.codeproject.com/Articles/2293/Retrieving-font-name-from-TTF-file?msg=4714219#xx4714219xx
-// '
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: TrueType.
+//         Code to read TrueType font file information
+//         Adapted from the CodeProject article: http://www.codeproject.com/Articles/2293/Retrieving-font-name-from-TTF-file?msg=4714219#xx4714219xx
+//
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.Collections;
@@ -26,7 +26,7 @@ namespace DataTools.Desktop
     {
 
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        // ' This is TTF file header
+        // This is TTF file header
         [StructLayout(LayoutKind.Sequential)]
         public struct TT_OFFSET_TABLE
         {
@@ -138,7 +138,7 @@ namespace DataTools.Desktop
             {
                 fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             }
-            catch (Exception ex)
+            catch
             {
                 //Interaction.MsgBox(ex.Message, MsgBoxStyle.Critical);
                 return null;
@@ -149,7 +149,7 @@ namespace DataTools.Desktop
             oft.uMajorVersion = Swap(oft.uMajorVersion);
             oft.uMinorVersion = Swap(oft.uMinorVersion);
 
-            // ' Not a TrueType v1.0 font!
+            // Not a TrueType v1.0 font!
             if (oft.uMajorVersion != 1 || oft.uMinorVersion != 0)
                 return null;
             var loopTo = oft.uNumOfTables - 1;
@@ -164,7 +164,7 @@ namespace DataTools.Desktop
                 }
             }
 
-            // ' Exhausted all records, no name record found!
+            // Exhausted all records, no name record found!
             if (i >= oft.uNumOfTables)
                 return null;
             fs.Seek(tdir.uOffset, SeekOrigin.Begin);
@@ -520,10 +520,7 @@ namespace DataTools.Desktop
             
             var fonts = new List<PInvoke.ENUMLOGFONTEX>();
             
-            int i = 0;
-            
             var lf = new PInvoke.LOGFONT();
-            var tm = new PInvoke.TEXTMETRIC();
             
             string s;
             
@@ -687,7 +684,7 @@ namespace DataTools.Desktop
             {
                 pi = typeof(FontInfo).GetProperty(SortProperty);
             }
-            catch (Exception ex)
+            catch
             {
             }
 

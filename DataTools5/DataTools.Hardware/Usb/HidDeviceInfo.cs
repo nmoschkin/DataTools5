@@ -1,14 +1,14 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: HidDeviceInfo
-// '         USB HID Device derived class.
-// '
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: HidDeviceInfo
+//         USB HID Device derived class.
+//
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using DataTools.Memory;
@@ -457,7 +457,7 @@ namespace DataTools.Hardware.Usb
             base.ParseHw();
             string[] v;
 
-            // ' this is how we determine the HID class of the device. I've found this to be a very reliable method.
+            // this is how we determine the HID class of the device. I've found this to be a very reliable method.
             foreach (string hw in _HardwareIds)
             {
                 int i = hw.IndexOf("HID_DEVICE_UP:");

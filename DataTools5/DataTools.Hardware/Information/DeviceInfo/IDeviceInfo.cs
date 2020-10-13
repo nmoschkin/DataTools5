@@ -7,459 +7,407 @@ namespace DataTools.Hardware
     {
 
         /// <summary>
-    /// Gets the device instance id which can be passed to RunDLL property sheet functions.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Gets the device instance id which can be passed to RunDLL property sheet functions.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string InstanceId { get; }
 
         /// <summary>
-    /// Returns the type of bus that the device is hosted on.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Returns the type of bus that the device is hosted on.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         BusType BusType { get; }
 
         /// <summary>
-    /// Get the physical device path that can be used by CreateFile
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Get the physical device path that can be used by CreateFile
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string DevicePath { get; }
 
         /// <summary>
-    /// Returns the parent instance id of this device.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Returns the parent instance id of this device.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string Parent { get; }
 
         /// <summary>
-    /// Returns all children instance ids of this device.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Returns all children instance ids of this device.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string[] Children { get; }
 
         /// <summary>
-    /// Retrieves the install date for the device.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Retrieves the install date for the device.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         DateTime InstallDate { get; }
         /// <summary>
-    /// Retrieves any device characteristcs associated with the device.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
-        DevClassPresenting.DeviceCharacteristcs Characteristics { get; }
+        /// Retrieves any device characteristcs associated with the device.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        DeviceCharacteristcs Characteristics { get; }
 
         /// <summary>
-    /// Specifies whether or not the device must be removed safely.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Specifies whether or not the device must be removed safely.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         bool SafeRemovalRequired { get; }
 
         /// <summary>
-    /// Specifies the removal policy of the device.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
-        DevClassPresenting.DeviceRemovalPolicy RemovalPolicy { get; }
+        /// Specifies the removal policy of the device.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        DeviceRemovalPolicy RemovalPolicy { get; }
 
         /// <summary>
-    /// Gets all hardware location paths.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Gets all hardware location paths.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string[] LocationPaths { get; }
 
         /// <summary>
-    /// Gets location information.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Gets location information.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string LocationInfo { get; }
 
         /// <summary>
-    /// Gets all hardware Ids
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Gets all hardware Ids
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string[] HardwareIds { get; }
 
         /// <summary>
-    /// Gets the PDO name.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Gets the PDO name.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string PDOName { get; }
 
         /// <summary>
-    /// Gets the device interface class guid.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Gets the device interface class guid.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         Guid DeviceInterfaceClassGuid { get; }
 
         /// <summary>
-    /// Gets the device class type.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
-        DevClassPresenting.DeviceInterfaceClassEnum DeviceInterfaceClass { get; }
+        /// Gets the device class type.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        DeviceInterfaceClassEnum DeviceInterfaceClass { get; }
 
         /// <summary>
-    /// Gets the device class guid.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Gets the device class guid.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         Guid DeviceClassGuid { get; }
 
         /// <summary>
-    /// Gets the device class type.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
-        DevClassPresenting.DeviceClassEnum DeviceClass { get; }
+        /// Gets the device class type.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        DeviceClassEnum DeviceClass { get; }
 
         /// <summary>
-    /// Gets the device class name.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Gets the device class name.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string ClassName { get; }
 
         /// <summary>
-    /// Gets the device class description.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Gets the device class description.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string ClassDescription { get; }
 
         /// <summary>
-    /// Retrieve a WPF BitmapSource image for use in binding.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Retrieve a WPF BitmapSource image for use in binding.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         System.Windows.Media.Imaging.BitmapSource DeviceIcon { get; }
 
         /// <summary>
-    /// Gets the vendor Id hexadecimal string
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Gets the vendor Id hexadecimal string
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string VendorId { get; }
 
         /// <summary>
-    /// Gets the product Id hexadecimal string
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Gets the product Id hexadecimal string
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string ProductId { get; }
 
         /// <summary>
-    /// Display the system device properties dialog page for this device.
-    /// </summary>
-    /// <remarks></remarks>
+        /// Display the system device properties dialog page for this device.
+        /// </summary>
+        /// <remarks></remarks>
         void ShowDevicePropertiesDialog(IntPtr hwnd = default);
 
         /// <summary>
-    /// Retrieves a string suitable for display in a user interface.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Retrieves a string suitable for display in a user interface.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string UIDescription { get; }
 
         /// <summary>
-    /// Gets the friendly name for the device
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Gets the friendly name for the device
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string FriendlyName { get; }
 
         /// <summary>
-    /// Gets the description of the device.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Gets the description of the device.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string Description { get; }
 
         /// <summary>
-    /// Gets the manufacturer.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Gets the manufacturer.
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
         string Manufacturer { get; }
     }
 
-    public class DeviceInfoBase : IDeviceInfo
+    public abstract class DeviceInfoBase : IDeviceInfo
     {
-        internal string _InstanceId;
-        internal BusType _BusType;
-        internal string _DevicePath;
-        internal string _Parent;
-        internal string[] _Children;
-        internal DateTime _InstallDate;
-        internal DevClassPresenting.DeviceCharacteristcs _Characteristics;
-        internal bool _SafeRemovalRequired;
-        internal DevClassPresenting.DeviceRemovalPolicy _RemovalPolicy;
-        internal string[] _LocationPaths;
-        internal string _LocationInfo;
-        internal string[] _HardwareIds;
-        internal string _PDOName;
-        internal Guid _DeviceInterfaceClassGuid;
-        internal DevClassPresenting.DeviceInterfaceClassEnum _DeviceInterfaceClass;
-        internal Guid _DeviceClassGuid;
-        internal DevClassPresenting.DeviceClassEnum _DeviceClass;
-        internal string _ClassName;
-        internal string _ClassDescription;
-        internal System.Windows.Media.Imaging.BitmapSource _DeviceIcon;
-        internal string _VendorId;
-        internal string _ProductId;
-        internal string _UIDescription;
-        internal string _FriendlyName;
-        internal string _Description;
-        internal string _Manufacturer;
+        protected string _InstanceId;
+        protected BusType _BusType;
+        protected string _DevicePath;
+        protected string _Parent;
+        protected string[] _Children;
+        protected DateTime _InstallDate;
+        protected DeviceCharacteristcs _Characteristics;
+        protected bool _SafeRemovalRequired;
+        protected DeviceRemovalPolicy _RemovalPolicy;
+        protected string[] _LocationPaths;
+        protected string _LocationInfo;
+        protected string[] _HardwareIds;
+        protected string _PDOName;
+        protected Guid _DeviceInterfaceClassGuid;
+        protected DeviceInterfaceClassEnum _DeviceInterfaceClass;
+        protected Guid _DeviceClassGuid;
+        protected DeviceClassEnum _DeviceClass;
+        protected string _ClassName;
+        protected string _ClassDescription;
+        protected System.Windows.Media.Imaging.BitmapSource _DeviceIcon;
+        protected string _VendorId;
+        protected string _ProductId;
+        protected string _UIDescription;
+        protected string _FriendlyName;
+        protected string _Description;
+        protected string _Manufacturer;
 
-        public BusType BusType
+        public virtual BusType BusType
         {
-            get
-            {
-                return _BusType;
-            }
+            get => _BusType;
+            internal set => _BusType = value;
         }
 
-        public DevClassPresenting.DeviceCharacteristcs Characteristics
+        public virtual DeviceCharacteristcs Characteristics
         {
-            get
-            {
-                return _Characteristics;
-            }
+            get => _Characteristics;
+            internal set => _Characteristics = value;
         }
 
-        public string[] Children
+        public virtual string[] Children
         {
-            get
-            {
-                return _Children;
-            }
+            get => _Children;
+            internal set => _Children = value;
         }
 
-        public string ClassDescription
+        public virtual string ClassDescription
         {
-            get
-            {
-                return _ClassDescription;
-            }
+            get => _ClassDescription;
+            internal set => _ClassDescription = value;
         }
 
-        public string ClassName
+        public virtual string ClassName
         {
-            get
-            {
-                return _ClassName;
-            }
+            get => _ClassName;
+            internal set => _ClassName = value;
         }
 
-        public string Description
+        public virtual string Description
         {
-            get
-            {
-                return _Description;
-            }
+            get => _Description;
+            internal set => _Description = value;
         }
 
-        public DevClassPresenting.DeviceClassEnum DeviceClass
+        public virtual DeviceClassEnum DeviceClass
         {
-            get
-            {
-                return _DeviceClass;
-            }
+            get => _DeviceClass;
+            internal set => _DeviceClass = value;
         }
 
-        public Guid DeviceClassGuid
+        public virtual Guid DeviceClassGuid
         {
-            get
-            {
-                return _DeviceClassGuid;
-            }
+            get => _DeviceClassGuid;
+            internal set => _DeviceClassGuid = value;
         }
 
-        public System.Windows.Media.Imaging.BitmapSource DeviceIcon
+        public virtual System.Windows.Media.Imaging.BitmapSource DeviceIcon
         {
-            get
-            {
-                return _DeviceIcon;
-            }
+            get => _DeviceIcon;
+            internal set => _DeviceIcon = value;
         }
 
-        public DevClassPresenting.DeviceInterfaceClassEnum DeviceInterfaceClass
+        public virtual DeviceInterfaceClassEnum DeviceInterfaceClass
         {
-            get
-            {
-                return _DeviceInterfaceClass;
-            }
+            get => _DeviceInterfaceClass;
+            internal set => _DeviceInterfaceClass = value;
         }
 
-        public Guid DeviceInterfaceClassGuid
+        public virtual Guid DeviceInterfaceClassGuid
         {
-            get
-            {
-                return _DeviceInterfaceClassGuid;
-            }
+            get => _DeviceInterfaceClassGuid;
+            internal set => _DeviceInterfaceClassGuid = value;
         }
 
-        public string DevicePath
+        public virtual string DevicePath
         {
-            get
-            {
-                return _DevicePath;
-            }
+            get => _DevicePath;
+            internal set => _DevicePath = value;
         }
 
-        public string FriendlyName
+        public virtual string FriendlyName
         {
-            get
-            {
-                return _FriendlyName;
-            }
+            get => _FriendlyName;
+            internal set => _FriendlyName = value;
         }
 
-        public string[] HardwareIds
+        public virtual string[] HardwareIds
         {
-            get
-            {
-                return _HardwareIds;
-            }
+            get => _HardwareIds;
+            internal set => _HardwareIds = value;
         }
 
-        public DateTime InstallDate
+        public virtual DateTime InstallDate
         {
-            get
-            {
-                return _InstallDate;
-            }
+            get => _InstallDate;
+            internal set => _InstallDate = value;
         }
 
-        public string InstanceId
+        public virtual string InstanceId
         {
-            get
-            {
-                return _InstanceId;
-            }
+            get => _InstanceId;
+            internal set => _InstanceId = value;
         }
 
-        public string LocationInfo
+        public virtual string LocationInfo
         {
-            get
-            {
-                return _LocationInfo;
-            }
+            get => _LocationInfo;
+            internal set => _LocationInfo = value;
         }
 
-        public string[] LocationPaths
+        public virtual string[] LocationPaths
         {
-            get
-            {
-                return _LocationPaths;
-            }
+            get => _LocationPaths;
+            internal set => _LocationPaths = value;
         }
 
-        public string Manufacturer
+        public virtual string Manufacturer
         {
-            get
-            {
-                return _Manufacturer;
-            }
+            get => _Manufacturer;
+            internal set => _Manufacturer = value;
         }
 
-        public string Parent
+        public virtual string Parent
         {
-            get
-            {
-                return _Parent;
-            }
+            get => _Parent;
+            internal set => _Parent = value;
         }
 
-        public string PDOName
+        public virtual string PDOName
         {
-            get
-            {
-                return _PDOName;
-            }
+            get => _PDOName;
+            internal set => _PDOName = value;
         }
 
-        public string ProductId
+        public virtual string ProductId
         {
-            get
-            {
-                return _ProductId;
-            }
+            get => _ProductId;
+            internal set => _ProductId = value;
         }
 
-        public DevClassPresenting.DeviceRemovalPolicy RemovalPolicy
+        public virtual DeviceRemovalPolicy RemovalPolicy
         {
-            get
-            {
-                return _RemovalPolicy;
-            }
+            get => _RemovalPolicy;
+            internal set => _RemovalPolicy = value;
         }
 
-        public bool SafeRemovalRequired
+        public virtual bool SafeRemovalRequired
         {
-            get
-            {
-                return _SafeRemovalRequired;
-            }
+            get => _SafeRemovalRequired;
+            internal set => _SafeRemovalRequired = value;
         }
 
-        public void ShowDevicePropertiesDialog(IntPtr hwnd = default)
+        public virtual void ShowDevicePropertiesDialog(IntPtr hwnd = default)
         {
             DevPropDialog.OpenDeviceProperties(InstanceId, hwnd);
         }
 
-        public string UIDescription
+        public virtual string UIDescription
         {
-            get
-            {
-                return _UIDescription;
-            }
+            get => _UIDescription;
+            internal set => _UIDescription = value;
         }
 
-        public string VendorId
+        public virtual string VendorId
         {
-            get
-            {
-                return _VendorId;
-            }
+            get => _VendorId;
+            internal set => _VendorId = value;
         }
     }
 }

@@ -1,14 +1,14 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: FileApi
-// '         Native File Services.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: FileApi
+//         Native File Services.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.Runtime.InteropServices;
@@ -34,14 +34,14 @@ namespace DataTools.Hardware.Native
         [DllImport("kernel32", EntryPoint = "RtlCaptureStackBacktrace", CharSet = CharSet.Unicode)]
 
         public static extern ushort CaptureStackBacktrace(uint FramesToskip, uint FramesToCapture, IntPtr BackTrace, ref uint BackTraceHash);
-        // '
-        // ' File creation flags must start at the high end since they
-        // ' are combined with the attributes
-        // '
+        //
+        // File creation flags must start at the high end since they
+        // are combined with the attributes
+        //
 
-        // '
-        // '  These are flags supported through CreateFile (W7) and CreateFile2 (W8 and beyond)
-        // '
+        //
+        //  These are flags supported through CreateFile (W7) and CreateFile2 (W8 and beyond)
+        //
 
         public const int FILE_FLAG_WRITE_THROUGH = unchecked((int)0x80000000);
         public const int FILE_FLAG_OVERLAPPED = 0x40000000;
@@ -56,107 +56,107 @@ namespace DataTools.Hardware.Native
         public const int FILE_FLAG_OPEN_NO_RECALL = 0x100000;
         public const int FILE_FLAG_FIRST_PIPE_INSTANCE = 0x80000;
 
-        // ' (_WIN32_WINNT >= _WIN32_WINNT_WIN8) Then
+        // (_WIN32_WINNT >= _WIN32_WINNT_WIN8) Then
 
-        // '
-        // '  These are flags supported only through CreateFile2 (W8 and beyond)
-        // '
-        // '  Due to the multiplexing of file creation flags, file attribute flags and
-        // '  security QoS flags into a single DWORD (dwFlagsAndAttributes) parameter for
-        // '  CreateFile, there is no way to add any more flags to CreateFile. Additional
-        // '  flags for the create operation must be added to CreateFile2 only
-        // '
+        //
+        //  These are flags supported only through CreateFile2 (W8 and beyond)
+        //
+        //  Due to the multiplexing of file creation flags, file attribute flags and
+        //  security QoS flags into a single DWORD (dwFlagsAndAttributes) parameter for
+        //  CreateFile, there is no way to add any more flags to CreateFile. Additional
+        //  flags for the create operation must be added to CreateFile2 only
+        //
 
         public const int FILE_FLAG_OPEN_REQUIRING_OPLOCK = 0x40000;
 
-        // '
-        // ' (_WIN32_WINNT >= &H0400)
-        // '
-        // ' Define possible return codes from the CopyFileEx callback routine
-        // '
+        //
+        // (_WIN32_WINNT >= &H0400)
+        //
+        // Define possible return codes from the CopyFileEx callback routine
+        //
 
         public const int PROGRESS_CONTINUE = 0;
         public const int PROGRESS_CANCEL = 1;
         public const int PROGRESS_STOP = 2;
         public const int PROGRESS_QUIET = 3;
 
-        // '
-        // ' Define CopyFileEx callback routine state change values
-        // '
+        //
+        // Define CopyFileEx callback routine state change values
+        //
 
         public const int CALLBACK_CHUNK_FINISHED = 0x0;
         public const int CALLBACK_STREAM_SWITCH = 0x1;
 
-        // '
-        // ' Define CopyFileEx option flags
-        // '
+        //
+        // Define CopyFileEx option flags
+        //
 
         public const int COPY_FILE_FAIL_IF_EXISTS = 0x1;
         public const int COPY_FILE_RESTARTABLE = 0x2;
         public const int COPY_FILE_OPEN_SOURCE_FOR_WRITE = 0x4;
         public const int COPY_FILE_ALLOW_DECRYPTED_DESTINATION = 0x8;
 
-        // '
-        // '  Gap for private copyfile flags
-        // '
+        //
+        //  Gap for private copyfile flags
+        //
 
-        // '  (_WIN32_WINNT >= &H0600)
+        //  (_WIN32_WINNT >= &H0600)
         public const int COPY_FILE_COPY_SYMLINK = 0x800;
         public const int COPY_FILE_NO_BUFFERING = 0x1000;
-        // '
+        //
 
-        // ' (_WIN32_WINNT >= _WIN32_WINNT_WIN8) Then
+        // (_WIN32_WINNT >= _WIN32_WINNT_WIN8) Then
 
-        // '
-        // '  CopyFile2 flags
-        // '
+        //
+        //  CopyFile2 flags
+        //
 
         public const int COPY_FILE_REQUEST_SECURITY_PRIVILEGES = 0x2000;
         public const int COPY_FILE_RESUME_FROM_PAUSE = 0x4000;
         public const int COPY_FILE_NO_OFFLOAD = 0x40000;
 
-        // '
+        //
 
-        // '  /* _WIN32_WINNT >= &H0400 */
+        //  /* _WIN32_WINNT >= &H0400 */
 
-        // '  (_WIN32_WINNT >= &H0500)
-        // '
-        // ' Define ReplaceFile option flags
-        // '
+        //  (_WIN32_WINNT >= &H0500)
+        //
+        // Define ReplaceFile option flags
+        //
 
         public const int REPLACEFILE_WRITE_THROUGH = 0x1;
         public const int REPLACEFILE_IGNORE_MERGE_ERRORS = 0x2;
 
-        // '  (_WIN32_WINNT >= &H0600)
+        //  (_WIN32_WINNT >= &H0600)
         public const int REPLACEFILE_IGNORE_ACL_ERRORS = 0x4;
-        // '
+        //
 
-        // '  '' ''  (_WIN32_WINNT >= &H0500)
+        //  '' ''  (_WIN32_WINNT >= &H0500)
 
-        // '
-        // ' Define the NamedPipe definitions
-        // '
+        //
+        // Define the NamedPipe definitions
+        //
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        // '
-        // ' Define the dwOpenMode values for CreateNamedPipe
-        // '
+        //
+        // Define the dwOpenMode values for CreateNamedPipe
+        //
 
         public const int PIPE_ACCESS_INBOUND = 0x1;
         public const int PIPE_ACCESS_OUTBOUND = 0x2;
         public const int PIPE_ACCESS_DUPLEX = 0x3;
 
-        // '
-        // ' Define the Named Pipe End flags for GetNamedPipeInfo
-        // '
+        //
+        // Define the Named Pipe End flags for GetNamedPipeInfo
+        //
 
         public const int PIPE_CLIENT_END = 0x0;
         public const int PIPE_SERVER_END = 0x1;
 
-        // '
-        // ' Define the dwPipeMode values for CreateNamedPipe
-        // '
+        //
+        // Define the dwPipeMode values for CreateNamedPipe
+        //
 
         public const int PIPE_WAIT = 0x0;
         public const int PIPE_NOWAIT = 0x1;
@@ -167,16 +167,16 @@ namespace DataTools.Hardware.Native
         public const int PIPE_ACCEPT_REMOTE_CLIENTS = 0x0;
         public const int PIPE_REJECT_REMOTE_CLIENTS = 0x8;
 
-        // '
-        // ' Define the well known values for CreateNamedPipe nMaxInstances
-        // '
+        //
+        // Define the well known values for CreateNamedPipe nMaxInstances
+        //
 
         public const int PIPE_UNLIMITED_INSTANCES = 255;
 
-        // '
-        // ' Define the Security Quality of Service bits to be passed
-        // ' into CreateFile
-        // '
+        //
+        // Define the Security Quality of Service bits to be passed
+        // into CreateFile
+        //
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         public const int FILE_BEGIN = 0;
@@ -209,16 +209,16 @@ namespace DataTools.Hardware.Native
             End = FILE_END
         }
 
-        // '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-        // '                                                                    ''
-        // '                             ACCESS TYPES                           ''
-        // '                                                                    ''
-        // '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        //                                                                    ''
+        //                             ACCESS TYPES                           ''
+        //                                                                    ''
+        //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-        // ' begin_wdm
-        // '
-        // '  The following are masks for the predefined standard access types
-        // '
+        // begin_wdm
+        //
+        //  The following are masks for the predefined standard access types
+        //
 
         public const int DELETE = 0x10000;
         public const int READ_CONTROL = 0x20000;
@@ -232,31 +232,31 @@ namespace DataTools.Hardware.Native
         public const int STANDARD_RIGHTS_ALL = 0x1F0000;
         public const int SPECIFIC_RIGHTS_ALL = 0xFFFF;
 
-        // '
-        // ' AccessSystemAcl access type
-        // '
+        //
+        // AccessSystemAcl access type
+        //
 
         public const int ACCESS_SYSTEM_SECURITY = 0x1000000;
 
-        // '
-        // ' MaximumAllowed access type
-        // '
+        //
+        // MaximumAllowed access type
+        //
 
         public const int MAXIMUM_ALLOWED = 0x2000000;
 
-        // '
-        // '  These are the generic rights.
-        // '
+        //
+        //  These are the generic rights.
+        //
 
         public const int GENERIC_READ = unchecked((int) 0x80000000);
         public const int GENERIC_WRITE = 0x40000000;
         public const int GENERIC_EXECUTE = 0x20000000;
         public const int GENERIC_ALL = 0x10000000;
 
-        // '
-        // '  Define the generic mapping array.  This is used to denote the
-        // '  mapping of each generic access right to a specific access mask.
-        // '
+        //
+        //  Define the generic mapping array.  This is used to denote the
+        //  mapping of each generic access right to a specific access mask.
+        //
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct GENERIC_MAPPING
         {
@@ -266,20 +266,20 @@ namespace DataTools.Hardware.Native
             public uint GenericAll;
         }
 
-        public const int FILE_READ_DATA = 0x1;    // ' file & pipe
-        public const int FILE_LIST_DIRECTORY = 0x1;    // ' directory
-        public const int FILE_WRITE_DATA = 0x2;    // ' file & pipe
-        public const int FILE_ADD_FILE = 0x2;    // ' directory
-        public const int FILE_APPEND_DATA = 0x4;    // ' file
-        public const int FILE_ADD_SUBDIRECTORY = 0x4;    // ' directory
-        public const int FILE_CREATE_PIPE_INSTANCE = 0x4;    // ' named pipe
-        public const int FILE_READ_EA = 0x8;    // ' file & directory
-        public const int FILE_WRITE_EA = 0x10;    // ' file & directory
-        public const int FILE_EXECUTE = 0x20;    // ' file
-        public const int FILE_TRAVERSE = 0x20;    // ' directory
-        public const int FILE_DELETE_CHILD = 0x40;    // ' directory
-        public const int FILE_READ_ATTRIBUTES = 0x80;    // ' all
-        public const int FILE_WRITE_ATTRIBUTES = 0x100;    // ' all
+        public const int FILE_READ_DATA = 0x1;    // file & pipe
+        public const int FILE_LIST_DIRECTORY = 0x1;    // directory
+        public const int FILE_WRITE_DATA = 0x2;    // file & pipe
+        public const int FILE_ADD_FILE = 0x2;    // directory
+        public const int FILE_APPEND_DATA = 0x4;    // file
+        public const int FILE_ADD_SUBDIRECTORY = 0x4;    // directory
+        public const int FILE_CREATE_PIPE_INSTANCE = 0x4;    // named pipe
+        public const int FILE_READ_EA = 0x8;    // file & directory
+        public const int FILE_WRITE_EA = 0x10;    // file & directory
+        public const int FILE_EXECUTE = 0x20;    // file
+        public const int FILE_TRAVERSE = 0x20;    // directory
+        public const int FILE_DELETE_CHILD = 0x40;    // directory
+        public const int FILE_READ_ATTRIBUTES = 0x80;    // all
+        public const int FILE_WRITE_ATTRIBUTES = 0x100;    // all
         public const int FILE_ALL_ACCESS = STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | 0x1FF;
         public const int FILE_GENERIC_READ = STANDARD_RIGHTS_READ | FILE_READ_DATA | FILE_READ_ATTRIBUTES | FILE_READ_EA | SYNCHRONIZE;
         public const int FILE_GENERIC_WRITE = STANDARD_RIGHTS_WRITE | FILE_WRITE_DATA | FILE_WRITE_ATTRIBUTES | FILE_WRITE_EA | FILE_APPEND_DATA | SYNCHRONIZE;
@@ -364,9 +364,9 @@ namespace DataTools.Hardware.Native
         public const long FILE_INVALID_FILE_ID = -1L;
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        // ' begin_1_0
-        // ' begin_2_0
-        // ' begin_2_1
+        // begin_1_0
+        // begin_2_0
+        // begin_2_1
         // /********************************************************************************
         // *                                                                               *
         // * FileApi.h -- ApiSet Contract for api-ms-win-core-file-l1                      *
@@ -375,9 +375,9 @@ namespace DataTools.Hardware.Native
         // *                                                                               *
         // ********************************************************************************/
 
-        // '
-        // ' Constants
-        // '
+        //
+        // Constants
+        //
 
         public const int MAX_PATH = 260;
         public const int CREATE_NEW = 1;
@@ -798,11 +798,11 @@ namespace DataTools.Hardware.Native
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        // '
-        // ' The following is a list of the native file system fsctls followed by
-        // ' additional network file system fsctls.  Some values have been
-        // ' decommissioned.
-        // '
+        //
+        // The following is a list of the native file system fsctls followed by
+        // additional network file system fsctls.  Some values have been
+        // decommissioned.
+        //
 
         public readonly static DiskApi.CTL_CODE FSCTL_REQUEST_OPLOCK_LEVEL_1 = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 0U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_REQUEST_OPLOCK_LEVEL_2 = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 1U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
@@ -814,68 +814,68 @@ namespace DataTools.Hardware.Native
         public readonly static DiskApi.CTL_CODE FSCTL_UNLOCK_VOLUME = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 7U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_DISMOUNT_VOLUME = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 8U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
 
-        // ' decommissioned fsctl value                                              9
+        // decommissioned fsctl value                                              9
         public readonly static DiskApi.CTL_CODE FSCTL_IS_VOLUME_MOUNTED = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 10U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
-        public readonly static DiskApi.CTL_CODE FSCTL_IS_PATHNAME_VALID = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 11U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' PATHNAME_BUFFER,
+        public readonly static DiskApi.CTL_CODE FSCTL_IS_PATHNAME_VALID = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 11U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // PATHNAME_BUFFER,
         public readonly static DiskApi.CTL_CODE FSCTL_MARK_VOLUME_DIRTY = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 12U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
 
-        // ' decommissioned fsctl value                                             13
+        // decommissioned fsctl value                                             13
         public readonly static DiskApi.CTL_CODE FSCTL_QUERY_RETRIEVAL_POINTERS = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 14U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_GET_COMPRESSION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 15U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_SET_COMPRESSION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 16U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA | FileApi.FILE_WRITE_DATA);
 
-        // ' decommissioned fsctl value                                             17
-        // ' decommissioned fsctl value                                             18
+        // decommissioned fsctl value                                             17
+        // decommissioned fsctl value                                             18
         public readonly static DiskApi.CTL_CODE FSCTL_SET_BOOTLOADER_ACCESSED = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 19U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS);
         public static DiskApi.CTL_CODE FSCTL_MARK_AS_SYSTEM_HIVE = FSCTL_SET_BOOTLOADER_ACCESSED;
         public readonly static DiskApi.CTL_CODE FSCTL_OPLOCK_BREAK_ACK_NO_2 = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 20U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_INVALIDATE_VOLUMES = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 21U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
-        public readonly static DiskApi.CTL_CODE FSCTL_QUERY_FAT_BPB = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 22U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' FSCTL_QUERY_FAT_BPB_BUFFER
+        public readonly static DiskApi.CTL_CODE FSCTL_QUERY_FAT_BPB = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 22U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // FSCTL_QUERY_FAT_BPB_BUFFER
         public readonly static DiskApi.CTL_CODE FSCTL_REQUEST_FILTER_OPLOCK = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 23U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
-        public readonly static DiskApi.CTL_CODE FSCTL_FILESYSTEM_GET_STATISTICS = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 24U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' FILESYSTEM_STATISTICS
+        public readonly static DiskApi.CTL_CODE FSCTL_FILESYSTEM_GET_STATISTICS = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 24U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // FILESYSTEM_STATISTICS
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_NT4)
-        public readonly static DiskApi.CTL_CODE FSCTL_GET_NTFS_VOLUME_DATA = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 25U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' NTFS_VOLUME_DATA_BUFFER
-        public readonly static DiskApi.CTL_CODE FSCTL_GET_NTFS_FILE_RECORD = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 26U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' NTFS_FILE_RECORD_INPUT_BUFFER, NTFS_FILE_RECORD_OUTPUT_BUFFER
-        public readonly static DiskApi.CTL_CODE FSCTL_GET_VOLUME_BITMAP = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 27U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // ' STARTING_LCN_INPUT_BUFFER, VOLUME_BITMAP_BUFFER
-        public readonly static DiskApi.CTL_CODE FSCTL_GET_RETRIEVAL_POINTERS = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 28U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // ' STARTING_VCN_INPUT_BUFFER, RETRIEVAL_POINTERS_BUFFER
-        public readonly static DiskApi.CTL_CODE FSCTL_MOVE_FILE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 29U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS); // ' MOVE_FILE_DATA,
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_NT4)
+        public readonly static DiskApi.CTL_CODE FSCTL_GET_NTFS_VOLUME_DATA = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 25U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // NTFS_VOLUME_DATA_BUFFER
+        public readonly static DiskApi.CTL_CODE FSCTL_GET_NTFS_FILE_RECORD = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 26U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // NTFS_FILE_RECORD_INPUT_BUFFER, NTFS_FILE_RECORD_OUTPUT_BUFFER
+        public readonly static DiskApi.CTL_CODE FSCTL_GET_VOLUME_BITMAP = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 27U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // STARTING_LCN_INPUT_BUFFER, VOLUME_BITMAP_BUFFER
+        public readonly static DiskApi.CTL_CODE FSCTL_GET_RETRIEVAL_POINTERS = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 28U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // STARTING_VCN_INPUT_BUFFER, RETRIEVAL_POINTERS_BUFFER
+        public readonly static DiskApi.CTL_CODE FSCTL_MOVE_FILE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 29U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS); // MOVE_FILE_DATA,
         public readonly static DiskApi.CTL_CODE FSCTL_IS_VOLUME_DIRTY = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 30U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
 
-        // ' decommissioned fsctl value                                             31
+        // decommissioned fsctl value                                             31
         public readonly static DiskApi.CTL_CODE FSCTL_ALLOW_EXTENDED_DASD_IO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 32U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS);
 
-        // ' endif  /* _WIN32_WINNT >= _WIN32_WINNT_NT4 */
+        // endif  /* _WIN32_WINNT >= _WIN32_WINNT_NT4 */
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
-        // ' decommissioned fsctl value                                             33
-        // ' decommissioned fsctl value                                             34
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_WIN2K)
+        // decommissioned fsctl value                                             33
+        // decommissioned fsctl value                                             34
         public readonly static DiskApi.CTL_CODE FSCTL_FIND_FILES_BY_SID = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 35U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS);
 
-        // ' decommissioned fsctl value                                             36
-        // ' decommissioned fsctl value                                             37
-        public readonly static DiskApi.CTL_CODE FSCTL_SET_OBJECT_ID = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 38U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS); // ' FILE_OBJECTID_BUFFER
-        public readonly static DiskApi.CTL_CODE FSCTL_GET_OBJECT_ID = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 39U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' FILE_OBJECTID_BUFFER
+        // decommissioned fsctl value                                             36
+        // decommissioned fsctl value                                             37
+        public readonly static DiskApi.CTL_CODE FSCTL_SET_OBJECT_ID = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 38U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS); // FILE_OBJECTID_BUFFER
+        public readonly static DiskApi.CTL_CODE FSCTL_GET_OBJECT_ID = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 39U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // FILE_OBJECTID_BUFFER
         public readonly static DiskApi.CTL_CODE FSCTL_DELETE_OBJECT_ID = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 40U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS);
-        public readonly static DiskApi.CTL_CODE FSCTL_SET_REPARSE_POINT = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 41U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS); // ' REPARSE_DATA_BUFFER,
-        public readonly static DiskApi.CTL_CODE FSCTL_GET_REPARSE_POINT = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 42U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' REPARSE_DATA_BUFFER
-        public readonly static DiskApi.CTL_CODE FSCTL_DELETE_REPARSE_POINT = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 43U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS); // ' REPARSE_DATA_BUFFER,
-        public readonly static DiskApi.CTL_CODE FSCTL_ENUM_USN_DATA = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 44U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // ' MFT_ENUM_DATA,
-        public readonly static DiskApi.CTL_CODE FSCTL_SECURITY_ID_CHECK = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 45U, DiskApi.METHOD_NEITHER, FileApi.FILE_READ_DATA);  // ' BULK_SECURITY_TEST_DATA,
-        public readonly static DiskApi.CTL_CODE FSCTL_READ_USN_JOURNAL = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 46U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // ' READ_USN_JOURNAL_DATA, USN
+        public readonly static DiskApi.CTL_CODE FSCTL_SET_REPARSE_POINT = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 41U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS); // REPARSE_DATA_BUFFER,
+        public readonly static DiskApi.CTL_CODE FSCTL_GET_REPARSE_POINT = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 42U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // REPARSE_DATA_BUFFER
+        public readonly static DiskApi.CTL_CODE FSCTL_DELETE_REPARSE_POINT = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 43U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS); // REPARSE_DATA_BUFFER,
+        public readonly static DiskApi.CTL_CODE FSCTL_ENUM_USN_DATA = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 44U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // MFT_ENUM_DATA,
+        public readonly static DiskApi.CTL_CODE FSCTL_SECURITY_ID_CHECK = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 45U, DiskApi.METHOD_NEITHER, FileApi.FILE_READ_DATA);  // BULK_SECURITY_TEST_DATA,
+        public readonly static DiskApi.CTL_CODE FSCTL_READ_USN_JOURNAL = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 46U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // READ_USN_JOURNAL_DATA, USN
         public readonly static DiskApi.CTL_CODE FSCTL_SET_OBJECT_ID_EXTENDED = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 47U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS);
-        public readonly static DiskApi.CTL_CODE FSCTL_CREATE_OR_GET_OBJECT_ID = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 48U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' FILE_OBJECTID_BUFFER
+        public readonly static DiskApi.CTL_CODE FSCTL_CREATE_OR_GET_OBJECT_ID = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 48U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // FILE_OBJECTID_BUFFER
         public readonly static DiskApi.CTL_CODE FSCTL_SET_SPARSE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 49U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS);
-        public readonly static DiskApi.CTL_CODE FSCTL_SET_ZERO_DATA = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 50U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // ' FILE_ZERO_DATA_INFORMATION,
-        public readonly static DiskApi.CTL_CODE FSCTL_QUERY_ALLOCATED_RANGES = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 51U, DiskApi.METHOD_NEITHER, FileApi.FILE_READ_DATA);  // ' FILE_ALLOCATED_RANGE_BUFFER, FILE_ALLOCATED_RANGE_BUFFER
+        public readonly static DiskApi.CTL_CODE FSCTL_SET_ZERO_DATA = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 50U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // FILE_ZERO_DATA_INFORMATION,
+        public readonly static DiskApi.CTL_CODE FSCTL_QUERY_ALLOCATED_RANGES = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 51U, DiskApi.METHOD_NEITHER, FileApi.FILE_READ_DATA);  // FILE_ALLOCATED_RANGE_BUFFER, FILE_ALLOCATED_RANGE_BUFFER
         public readonly static DiskApi.CTL_CODE FSCTL_ENABLE_UPGRADE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 52U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA);
-        public readonly static DiskApi.CTL_CODE FSCTL_SET_ENCRYPTION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 53U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // ' ENCRYPTION_BUFFER, DECRYPTION_STATUS_BUFFER
+        public readonly static DiskApi.CTL_CODE FSCTL_SET_ENCRYPTION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 53U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // ENCRYPTION_BUFFER, DECRYPTION_STATUS_BUFFER
         public readonly static DiskApi.CTL_CODE FSCTL_ENCRYPTION_FSCTL_IO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 54U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS);
-        public readonly static DiskApi.CTL_CODE FSCTL_WRITE_RAW_ENCRYPTED = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 55U, DiskApi.METHOD_NEITHER, DiskApi.FILE_SPECIAL_ACCESS); // ' ENCRYPTED_DATA_INFO, EXTENDED_ENCRYPTED_DATA_INFO
-        public readonly static DiskApi.CTL_CODE FSCTL_READ_RAW_ENCRYPTED = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 56U, DiskApi.METHOD_NEITHER, DiskApi.FILE_SPECIAL_ACCESS); // ' REQUEST_RAW_ENCRYPTED_DATA, ENCRYPTED_DATA_INFO, EXTENDED_ENCRYPTED_DATA_INFO
-        public readonly static DiskApi.CTL_CODE FSCTL_CREATE_USN_JOURNAL = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 57U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // ' CREATE_USN_JOURNAL_DATA,
-        public readonly static DiskApi.CTL_CODE FSCTL_READ_FILE_USN_DATA = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 58U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // ' Read the Usn Record for a file
-        public readonly static DiskApi.CTL_CODE FSCTL_WRITE_USN_CLOSE_RECORD = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 59U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // ' Generate Close Usn Record
+        public readonly static DiskApi.CTL_CODE FSCTL_WRITE_RAW_ENCRYPTED = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 55U, DiskApi.METHOD_NEITHER, DiskApi.FILE_SPECIAL_ACCESS); // ENCRYPTED_DATA_INFO, EXTENDED_ENCRYPTED_DATA_INFO
+        public readonly static DiskApi.CTL_CODE FSCTL_READ_RAW_ENCRYPTED = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 56U, DiskApi.METHOD_NEITHER, DiskApi.FILE_SPECIAL_ACCESS); // REQUEST_RAW_ENCRYPTED_DATA, ENCRYPTED_DATA_INFO, EXTENDED_ENCRYPTED_DATA_INFO
+        public readonly static DiskApi.CTL_CODE FSCTL_CREATE_USN_JOURNAL = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 57U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // CREATE_USN_JOURNAL_DATA,
+        public readonly static DiskApi.CTL_CODE FSCTL_READ_FILE_USN_DATA = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 58U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // Read the Usn Record for a file
+        public readonly static DiskApi.CTL_CODE FSCTL_WRITE_USN_CLOSE_RECORD = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 59U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // Generate Close Usn Record
         public readonly static DiskApi.CTL_CODE FSCTL_EXTEND_VOLUME = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 60U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_QUERY_USN_JOURNAL = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 61U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_DELETE_USN_JOURNAL = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 62U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
@@ -883,154 +883,154 @@ namespace DataTools.Hardware.Native
         public readonly static DiskApi.CTL_CODE FSCTL_SIS_COPYFILE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 64U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_SIS_LINK_FILES = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 65U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA | FileApi.FILE_WRITE_DATA);
 
-        // ' decommissional fsctl value                                             66
-        // ' decommissioned fsctl value                                             67
-        // ' decommissioned fsctl value                                             68
+        // decommissional fsctl value                                             66
+        // decommissioned fsctl value                                             67
+        // decommissioned fsctl value                                             68
         public readonly static DiskApi.CTL_CODE FSCTL_RECALL_FILE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 69U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS);
 
-        // ' decommissioned fsctl value                                             70
+        // decommissioned fsctl value                                             70
         public readonly static DiskApi.CTL_CODE FSCTL_READ_FROM_PLEX = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 71U, DiskApi.METHOD_OUT_DIRECT, FileApi.FILE_READ_DATA);
-        public readonly static DiskApi.CTL_CODE FSCTL_FILE_PREFETCH = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 72U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS); // ' FILE_PREFETCH
+        public readonly static DiskApi.CTL_CODE FSCTL_FILE_PREFETCH = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 72U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS); // FILE_PREFETCH
 
-        // ' endif  /* _WIN32_WINNT >= _WIN32_WINNT_WIN2K */
+        // endif  /* _WIN32_WINNT >= _WIN32_WINNT_WIN2K */
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_VISTA)
-        public readonly static DiskApi.CTL_CODE FSCTL_MAKE_MEDIA_COMPATIBLE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 76U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // ' UDFS R/W
-        public readonly static DiskApi.CTL_CODE FSCTL_SET_DEFECT_MANAGEMENT = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 77U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // ' UDFS R/W
-        public readonly static DiskApi.CTL_CODE FSCTL_QUERY_SPARING_INFO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 78U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' UDFS R/W
-        public readonly static DiskApi.CTL_CODE FSCTL_QUERY_ON_DISK_VOLUME_INFO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 79U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' C/UDFS
-        public readonly static DiskApi.CTL_CODE FSCTL_SET_VOLUME_COMPRESSION_STATE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 80U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS); // ' VOLUME_COMPRESSION_STATE
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_VISTA)
+        public readonly static DiskApi.CTL_CODE FSCTL_MAKE_MEDIA_COMPATIBLE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 76U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // UDFS R/W
+        public readonly static DiskApi.CTL_CODE FSCTL_SET_DEFECT_MANAGEMENT = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 77U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // UDFS R/W
+        public readonly static DiskApi.CTL_CODE FSCTL_QUERY_SPARING_INFO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 78U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // UDFS R/W
+        public readonly static DiskApi.CTL_CODE FSCTL_QUERY_ON_DISK_VOLUME_INFO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 79U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // C/UDFS
+        public readonly static DiskApi.CTL_CODE FSCTL_SET_VOLUME_COMPRESSION_STATE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 80U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS); // VOLUME_COMPRESSION_STATE
 
-        // ' decommissioned fsctl value                                                 80
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_MODIFY_RM = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 81U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // ' TxF
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_QUERY_RM_INFORMATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 82U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA);  // ' TxF
+        // decommissioned fsctl value                                                 80
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_MODIFY_RM = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 81U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // TxF
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_QUERY_RM_INFORMATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 82U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA);  // TxF
 
-        // ' decommissioned fsctl value                                                 83
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_ROLLFORWARD_REDO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 84U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // ' TxF
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_ROLLFORWARD_UNDO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 85U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // ' TxF
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_START_RM = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 86U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // ' TxF
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_SHUTDOWN_RM = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 87U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // ' TxF
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_READ_BACKUP_INFORMATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 88U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA);  // ' TxF
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_WRITE_BACKUP_INFORMATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 89U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // ' TxF
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_CREATE_SECONDARY_RM = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 90U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // ' TxF
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_GET_METADATA_INFO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 91U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA);  // ' TxF
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_GET_TRANSACTED_VERSION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 92U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA);  // ' TxF
+        // decommissioned fsctl value                                                 83
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_ROLLFORWARD_REDO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 84U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // TxF
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_ROLLFORWARD_UNDO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 85U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // TxF
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_START_RM = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 86U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // TxF
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_SHUTDOWN_RM = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 87U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // TxF
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_READ_BACKUP_INFORMATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 88U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA);  // TxF
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_WRITE_BACKUP_INFORMATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 89U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // TxF
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_CREATE_SECONDARY_RM = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 90U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // TxF
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_GET_METADATA_INFO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 91U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA);  // TxF
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_GET_TRANSACTED_VERSION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 92U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA);  // TxF
 
-        // ' decommissioned fsctl value                                                 93
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_SAVEPOINT_INFORMATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 94U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // ' TxF
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_CREATE_MINIVERSION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 95U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // ' TxF
+        // decommissioned fsctl value                                                 93
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_SAVEPOINT_INFORMATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 94U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // TxF
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_CREATE_MINIVERSION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 95U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA); // TxF
 
-        // ' decommissioned fsctl value                                                 96
-        // ' decommissioned fsctl value                                                 97
-        // ' decommissioned fsctl value                                                 98
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_TRANSACTION_ACTIVE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 99U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA);  // ' TxF
+        // decommissioned fsctl value                                                 96
+        // decommissioned fsctl value                                                 97
+        // decommissioned fsctl value                                                 98
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_TRANSACTION_ACTIVE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 99U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA);  // TxF
         public readonly static DiskApi.CTL_CODE FSCTL_SET_ZERO_ON_DEALLOCATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 101U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_SET_REPAIR = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 102U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_GET_REPAIR = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 103U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_WAIT_FOR_REPAIR = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 104U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
 
-        // ' decommissioned fsctl value                                                 105
+        // decommissioned fsctl value                                                 105
         public readonly static DiskApi.CTL_CODE FSCTL_INITIATE_REPAIR = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 106U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
-        public readonly static DiskApi.CTL_CODE FSCTL_CSC_INTERNAL = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 107U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // ' CSC internal implementation
-        public readonly static DiskApi.CTL_CODE FSCTL_SHRINK_VOLUME = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 108U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS); // ' SHRINK_VOLUME_INFORMATION
+        public readonly static DiskApi.CTL_CODE FSCTL_CSC_INTERNAL = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 107U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // CSC internal implementation
+        public readonly static DiskApi.CTL_CODE FSCTL_SHRINK_VOLUME = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 108U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS); // SHRINK_VOLUME_INFORMATION
         public readonly static DiskApi.CTL_CODE FSCTL_SET_SHORT_NAME_BEHAVIOR = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 109U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_DFSR_SET_GHOST_HANDLE_STATE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 110U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
 
-        // '
-        // '  Values 111 - 119 are reserved for FSRM.
-        // '
+        //
+        //  Values 111 - 119 are reserved for FSRM.
+        //
 
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_LIST_TRANSACTION_LOCKED_FILES = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 120U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA); // ' TxF
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_LIST_TRANSACTIONS = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 121U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA); // ' TxF
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_LIST_TRANSACTION_LOCKED_FILES = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 120U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA); // TxF
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_LIST_TRANSACTIONS = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 121U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA); // TxF
         public readonly static DiskApi.CTL_CODE FSCTL_QUERY_PAGEFILE_ENCRYPTION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 122U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
 
-        // ' endif  /* _WIN32_WINNT >= _WIN32_WINNT_VISTA */
+        // endif  /* _WIN32_WINNT >= _WIN32_WINNT_VISTA */
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_VISTA)
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_VISTA)
         public readonly static DiskApi.CTL_CODE FSCTL_RESET_VOLUME_ALLOCATION_HINTS = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 123U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
 
-        // ' endif  /* _WIN32_WINNT >= _WIN32_WINNT_VISTA */
+        // endif  /* _WIN32_WINNT >= _WIN32_WINNT_VISTA */
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
-        public readonly static DiskApi.CTL_CODE FSCTL_QUERY_DEPENDENT_VOLUME = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 124U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);    // ' Dependency File System Filter
-        public readonly static DiskApi.CTL_CODE FSCTL_SD_GLOBAL_CHANGE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 125U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' Query/Change NTFS Security Descriptors
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
+        public readonly static DiskApi.CTL_CODE FSCTL_QUERY_DEPENDENT_VOLUME = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 124U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);    // Dependency File System Filter
+        public readonly static DiskApi.CTL_CODE FSCTL_SD_GLOBAL_CHANGE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 125U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // Query/Change NTFS Security Descriptors
 
-        // ' endif  /* _WIN32_WINNT >= _WIN32_WINNT_WIN7 */
+        // endif  /* _WIN32_WINNT >= _WIN32_WINNT_WIN7 */
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_VISTA)
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_READ_BACKUP_INFORMATION2 = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 126U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' TxF
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_VISTA)
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_READ_BACKUP_INFORMATION2 = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 126U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // TxF
 
-        // ' endif  /* _WIN32_WINNT >= _WIN32_WINNT_VISTA */
+        // endif  /* _WIN32_WINNT >= _WIN32_WINNT_VISTA */
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
         public readonly static DiskApi.CTL_CODE FSCTL_LOOKUP_STREAM_FROM_CLUSTER = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 127U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
-        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_WRITE_BACKUP_INFORMATION2 = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 128U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' TxF
+        public readonly static DiskApi.CTL_CODE FSCTL_TXFS_WRITE_BACKUP_INFORMATION2 = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 128U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // TxF
         public readonly static DiskApi.CTL_CODE FSCTL_FILE_TYPE_NOTIFICATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 129U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
 
-        // ' endif
+        // endif
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
         public readonly static DiskApi.CTL_CODE FSCTL_FILE_LEVEL_TRIM = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 130U, DiskApi.METHOD_BUFFERED, FileApi.FILE_WRITE_DATA);
 
-        // ' endif  /*_WIN32_WINNT >= _WIN32_WINNT_WIN8 */
+        // endif  /*_WIN32_WINNT >= _WIN32_WINNT_WIN8 */
 
-        // '
-        // '  Values 131 - 139 are reserved for FSRM.
-        // '
+        //
+        //  Values 131 - 139 are reserved for FSRM.
+        //
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
-        public readonly static DiskApi.CTL_CODE FSCTL_GET_BOOT_AREA_INFO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 140U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' BOOT_AREA_INFO
-        public readonly static DiskApi.CTL_CODE FSCTL_GET_RETRIEVAL_POINTER_BASE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 141U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' RETRIEVAL_POINTER_BASE
-        public readonly static DiskApi.CTL_CODE FSCTL_SET_PERSISTENT_VOLUME_STATE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 142U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);  // ' FILE_FS_PERSISTENT_VOLUME_INFORMATION
-        public readonly static DiskApi.CTL_CODE FSCTL_QUERY_PERSISTENT_VOLUME_STATE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 143U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);  // ' FILE_FS_PERSISTENT_VOLUME_INFORMATION
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
+        public readonly static DiskApi.CTL_CODE FSCTL_GET_BOOT_AREA_INFO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 140U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // BOOT_AREA_INFO
+        public readonly static DiskApi.CTL_CODE FSCTL_GET_RETRIEVAL_POINTER_BASE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 141U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // RETRIEVAL_POINTER_BASE
+        public readonly static DiskApi.CTL_CODE FSCTL_SET_PERSISTENT_VOLUME_STATE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 142U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);  // FILE_FS_PERSISTENT_VOLUME_INFORMATION
+        public readonly static DiskApi.CTL_CODE FSCTL_QUERY_PERSISTENT_VOLUME_STATE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 143U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);  // FILE_FS_PERSISTENT_VOLUME_INFORMATION
         public readonly static DiskApi.CTL_CODE FSCTL_REQUEST_OPLOCK = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 144U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
-        public readonly static DiskApi.CTL_CODE FSCTL_CSV_TUNNEL_REQUEST = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 145U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' CSV_TUNNEL_REQUEST
-        public readonly static DiskApi.CTL_CODE FSCTL_IS_CSV_FILE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 146U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' IS_CSV_FILE
-        public readonly static DiskApi.CTL_CODE FSCTL_QUERY_FILE_SYSTEM_RECOGNITION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 147U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // '
+        public readonly static DiskApi.CTL_CODE FSCTL_CSV_TUNNEL_REQUEST = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 145U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // CSV_TUNNEL_REQUEST
+        public readonly static DiskApi.CTL_CODE FSCTL_IS_CSV_FILE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 146U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // IS_CSV_FILE
+        public readonly static DiskApi.CTL_CODE FSCTL_QUERY_FILE_SYSTEM_RECOGNITION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 147U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); //
         public readonly static DiskApi.CTL_CODE FSCTL_CSV_GET_VOLUME_PATH_NAME = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 148U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_CSV_GET_VOLUME_NAME_FOR_VOLUME_MOUNT_POINT = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 149U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_CSV_GET_VOLUME_PATH_NAMES_FOR_VOLUME_NAME = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 150U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_IS_FILE_ON_CSV_VOLUME = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 151U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
 
-        // ' endif  /* _WIN32_WINNT >= _WIN32_WINNT_WIN7 */
+        // endif  /* _WIN32_WINNT >= _WIN32_WINNT_WIN7 */
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
         public readonly static DiskApi.CTL_CODE FSCTL_CORRUPTION_HANDLING = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 152U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_OFFLOAD_READ = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 153U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_READ_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_OFFLOAD_WRITE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 154U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_WRITE_ACCESS);
 
-        // ' endif  /*_WIN32_WINNT >= _WIN32_WINNT_WIN8 */
+        // endif  /*_WIN32_WINNT >= _WIN32_WINNT_WIN8 */
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_WIN7)
         public readonly static DiskApi.CTL_CODE FSCTL_CSV_INTERNAL = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 155U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
 
-        // ' endif  /* _WIN32_WINNT >= _WIN32_WINNT_WIN7 */
+        // endif  /* _WIN32_WINNT >= _WIN32_WINNT_WIN7 */
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
         public readonly static DiskApi.CTL_CODE FSCTL_SET_PURGE_FAILURE_MODE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 156U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_QUERY_FILE_LAYOUT = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 157U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_IS_VOLUME_OWNED_BYCSVFS = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 158U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
-        public readonly static DiskApi.CTL_CODE FSCTL_GET_INTEGRITY_INFORMATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 159U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);                  // ' FSCTL_GET_INTEGRITY_INFORMATION_BUFFER
-        public readonly static DiskApi.CTL_CODE FSCTL_SET_INTEGRITY_INFORMATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 160U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA | FileApi.FILE_WRITE_DATA); // ' FSCTL_SET_INTEGRITY_INFORMATION_BUFFER
+        public readonly static DiskApi.CTL_CODE FSCTL_GET_INTEGRITY_INFORMATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 159U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);                  // FSCTL_GET_INTEGRITY_INFORMATION_BUFFER
+        public readonly static DiskApi.CTL_CODE FSCTL_SET_INTEGRITY_INFORMATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 160U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA | FileApi.FILE_WRITE_DATA); // FSCTL_SET_INTEGRITY_INFORMATION_BUFFER
         public readonly static DiskApi.CTL_CODE FSCTL_QUERY_FILE_REGIONS = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 161U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
 
-        // ' endif  /*_WIN32_WINNT >= _WIN32_WINNT_WIN8 */
+        // endif  /*_WIN32_WINNT >= _WIN32_WINNT_WIN8 */
 
-        // '
-        // ' Dedup FSCTLs
-        // ' Values 162 - 170 are reserved for Dedup.
-        // '
+        //
+        // Dedup FSCTLs
+        // Values 162 - 170 are reserved for Dedup.
+        //
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
         public readonly static DiskApi.CTL_CODE FSCTL_DEDUP_FILE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 165U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_DEDUP_QUERY_FILE_HASHES = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 166U, DiskApi.METHOD_NEITHER, FileApi.FILE_READ_DATA);
         public readonly static DiskApi.CTL_CODE FSCTL_DEDUP_QUERY_RANGE_STATE = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 167U, DiskApi.METHOD_NEITHER, FileApi.FILE_READ_DATA);
         public readonly static DiskApi.CTL_CODE FSCTL_DEDUP_QUERY_REPARSE_INFO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 168U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS);
 
-        // ' endif  /*_WIN32_WINNT >= _WIN32_WINNT_WIN8 */
+        // endif  /*_WIN32_WINNT >= _WIN32_WINNT_WIN8 */
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
-        public readonly static DiskApi.CTL_CODE FSCTL_RKF_INTERNAL = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 171U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // ' Resume Key Filter
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
+        public readonly static DiskApi.CTL_CODE FSCTL_RKF_INTERNAL = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 171U, DiskApi.METHOD_NEITHER, DiskApi.FILE_ANY_ACCESS); // Resume Key Filter
         public readonly static DiskApi.CTL_CODE FSCTL_SCRUB_DATA = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 172U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_REPAIR_COPIES = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 173U, DiskApi.METHOD_BUFFERED, FileApi.FILE_READ_DATA | FileApi.FILE_WRITE_DATA);
         public readonly static DiskApi.CTL_CODE FSCTL_DISABLE_LOCAL_BUFFERING = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 174U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
@@ -1044,23 +1044,23 @@ namespace DataTools.Hardware.Native
         public readonly static DiskApi.CTL_CODE FSCTL_GET_REFS_VOLUME_DATA = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 182U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_CSV_H_BREAKING_SYNC_TUNNEL_REQUEST = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 185U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
 
-        // ' endif  /*_WIN32_WINNT >= _WIN32_WINNT_WIN8 */
+        // endif  /*_WIN32_WINNT >= _WIN32_WINNT_WIN8 */
 
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_WINBLUE)
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_WINBLUE)
         public readonly static DiskApi.CTL_CODE FSCTL_QUERY_STORAGE_CLASSES = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 187U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_QUERY_REGION_INFO = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 188U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
-        public readonly static DiskApi.CTL_CODE FSCTL_USN_TRACK_MODIFIED_RANGES = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 189U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // ' USN_TRACK_MODIFIED_RANGES
+        public readonly static DiskApi.CTL_CODE FSCTL_USN_TRACK_MODIFIED_RANGES = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 189U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS); // USN_TRACK_MODIFIED_RANGES
 
-        // ' endif  /* (_WIN32_WINNT >= _WIN32_WINNT_WINBLUE) */
-        // ' if  (_WIN32_WINNT >= _WIN32_WINNT_WINBLUE)
+        // endif  /* (_WIN32_WINNT >= _WIN32_WINNT_WINBLUE) */
+        // if  (_WIN32_WINNT >= _WIN32_WINNT_WINBLUE)
         public readonly static DiskApi.CTL_CODE FSCTL_QUERY_SHARED_VIRTUAL_DISK_SUPPORT = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 192U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_SVHDX_SYNC_TUNNEL_REQUEST = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 193U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
         public readonly static DiskApi.CTL_CODE FSCTL_SVHDX_SET_INITIATOR_INFORMATION = new DiskApi.CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 194U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_ANY_ACCESS);
 
-        // ' endif  /* (_WIN32_WINNT >= _WIN32_WINNT_WINBLUE) */
-        // '
-        // ' AVIO IOCTLS.
-        // '
+        // endif  /* (_WIN32_WINNT >= _WIN32_WINNT_WINBLUE) */
+        //
+        // AVIO IOCTLS.
+        //
 
         public readonly static DiskApi.CTL_CODE IOCTL_AVIO_ALLOCATE_STREAM = new DiskApi.CTL_CODE(FILE_DEVICE_AVIO, 1U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS);
         public readonly static DiskApi.CTL_CODE IOCTL_AVIO_FREE_STREAM = new DiskApi.CTL_CODE(FILE_DEVICE_AVIO, 2U, DiskApi.METHOD_BUFFERED, DiskApi.FILE_SPECIAL_ACCESS);

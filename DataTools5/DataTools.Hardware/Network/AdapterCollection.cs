@@ -1,15 +1,15 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: AdapterCollection
-// '         Encapsulates the network interface environment
-// '         of the currently running system.
-// '
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: AdapterCollection
+//         Encapsulates the network interface environment
+//         of the currently running system.
+//
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.Collections;
@@ -31,19 +31,19 @@ namespace DataTools.Hardware.Network
 {
 
 
-    // ''' <summary>
-    // ''' System network adapter information thin wrappers.
-    // ''' </summary>
-    // ''' <remarks>
-    // ''' The observable collection is more suitable for use as a WPF data source.
-    // ''' 
-    // ''' The NetworkAdapter class cannot be created independently.
-    // ''' 
-    // ''' For most usage cases, the AdaptersCollection object should be used.
-    // ''' 
-    // ''' The <see cref="NetworkAdapters"/> collection is also a viable option
-    // ''' and possibly of a lighter variety.
-    // ''' </remarks>
+    //'' <summary>
+    //'' System network adapter information thin wrappers.
+    //'' </summary>
+    //'' <remarks>
+    //'' The observable collection is more suitable for use as a WPF data source.
+    //'' 
+    //'' The NetworkAdapter class cannot be created independently.
+    //'' 
+    //'' For most usage cases, the AdaptersCollection object should be used.
+    //'' 
+    //'' The <see cref="NetworkAdapters"/> collection is also a viable option
+    //'' and possibly of a lighter variety.
+    //'' </remarks>
     // Public Module NetworkWrappers
 
     /* TODO ERROR: Skipped RegionDirectiveTrivia */
@@ -57,6 +57,7 @@ namespace DataTools.Hardware.Network
     {
         private IP_ADAPTER_ADDRESSES[] _Adapters;
         private MemPtr _origPtr;
+
         private Collection<NetworkAdapter> _Col = new Collection<NetworkAdapter>();
 
         /// <summary>
@@ -91,11 +92,15 @@ namespace DataTools.Hardware.Network
         public void Refresh()
         {
             Free();
+            
             var di = DevEnumPublic.EnumerateNetworkDevices();
+            
             _Adapters = IfDefApi.GetAdapters(ref _origPtr, true);
+
             foreach (var adap in _Adapters)
             {
                 var newp = new NetworkAdapter(adap);
+
                 foreach (var de in di)
                 {
                     if ((de.Description ?? "") == (adap.Description ?? ""))
@@ -117,8 +122,7 @@ namespace DataTools.Hardware.Network
             {
                 return _Col;
             }
-
-            set
+            internal set
             {
                 _Col = value;
             }
@@ -139,12 +143,12 @@ namespace DataTools.Hardware.Network
 
         public IEnumerator<IP_ADAPTER_ADDRESSES> GetEnumerator()
         {
-            return new NetAdapterEnum(this);
+            return new IP_ADAPTER_ADDRESSES_Enumerator(this);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return new NetAdapterEnum(this);
+            return new IP_ADAPTER_ADDRESSES_Enumerator(this);
         }
 
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
@@ -248,12 +252,12 @@ namespace DataTools.Hardware.Network
         }
     }
 
-    public class NetAdapterEnum : IEnumerator<IP_ADAPTER_ADDRESSES>
+    public class IP_ADAPTER_ADDRESSES_Enumerator : IEnumerator<IP_ADAPTER_ADDRESSES>
     {
         private int pos = -1;
         private NetworkAdapters subj;
 
-        internal NetAdapterEnum(NetworkAdapters subject)
+        internal IP_ADAPTER_ADDRESSES_Enumerator(NetworkAdapters subject)
         {
             subj = subject;
         }
@@ -358,7 +362,7 @@ namespace DataTools.Hardware.Network
             _Col = new ObservableCollection<NetworkAdapter>();
             var di = DevEnumPublic.EnumerateNetworkDevices();
 
-            // ' Get the array of unmanaged IP_ADAPTER_ADDRESSES structures 
+            // Get the array of unmanaged IP_ADAPTER_ADDRESSES structures 
             _Adapters = IfDefApi.GetAdapters(ref _origPtr, true);
             foreach (var adap in _Adapters)
             {
@@ -388,7 +392,7 @@ namespace DataTools.Hardware.Network
                     _Adapters = null;
                 }
 
-                // ' free up the unmanaged memory and release the memory pressure on the garbage collector.
+                // free up the unmanaged memory and release the memory pressure on the garbage collector.
                 _origPtr.Free(true);
             }
 
@@ -402,7 +406,7 @@ namespace DataTools.Hardware.Network
 
         protected void Free()
         {
-            // ' free up the unmanaged memory and release the memory pressure on the garbage collector.
+            // free up the unmanaged memory and release the memory pressure on the garbage collector.
             _origPtr.Free(true);
         }
 
@@ -426,18 +430,17 @@ namespace DataTools.Hardware.Network
         private IP_ADAPTER_ADDRESSES _nativeStruct;
         private DeviceInfo _deviceInfo;
         private bool _canShowNet;
-        private bool _canShowDev;
         private System.Windows.Media.Imaging.BitmapSource _Icon;
 
-        // ' This class should not be created outside of the context of AdaptersCollection.
+        // This class should not be created outside of the context of AdaptersCollection.
         internal NetworkAdapter(IP_ADAPTER_ADDRESSES nativeObject)
         {
 
-            // ' Store the native object.
+            // Store the native object.
             _nativeStruct = nativeObject;
 
-            // ' First thing's first... let's get the icon for the object from its parsing name.
-            // ' Which is magically the parsing name of the network device list and the adapter's GUID name.
+            // First thing's first... let's get the icon for the object from its parsing name.
+            // Which is magically the parsing name of the network device list and the adapter's GUID name.
             string s = @"::{7007ACC7-3202-11D1-AAD2-00805FC1270E}\" + AdapterName;
             var mm = new MemPtr();
             
@@ -447,7 +450,7 @@ namespace DataTools.Hardware.Network
 
             if (mm.Handle != IntPtr.Zero)
             {
-                // ' Get a WPFImage 
+                // Get a WPFImage 
                 _Icon = Resources.MakeWPFImage(Resources.GetItemIcon(mm, (Resources.SystemIconSizes)(int)(PInvoke.SHIL_EXTRALARGE)));
                 mm.Free();
                 _canShowNet = true;
@@ -534,7 +537,7 @@ namespace DataTools.Hardware.Network
             shex.hWnd = hwnd;
             shex.lpVerb = "properties";
 
-            // ' Set the parsing name exactly this way.
+            // Set the parsing name exactly this way.
             shex.lpDirectory = "::{7007ACC7-3202-11D1-AAD2-00805FC1270E}";
             shex.lpFile = @"::{7007ACC7-3202-11D1-AAD2-00805FC1270E}\" + AdapterName;
             shex.fMask = PInvoke.SEE_MASK_ASYNCOK | PInvoke.SEE_MASK_FLAG_DDEWAIT | PInvoke.SEE_MASK_UNICODE;
@@ -580,8 +583,8 @@ namespace DataTools.Hardware.Network
                 _deviceInfo = value;
                 if (_Icon is null)
                 {
-                    // ' if the adapter doesn't have its own icon, the device class surely will.
-                    // ' let's see if we can get an icon from the device!
+                    // if the adapter doesn't have its own icon, the device class surely will.
+                    // let's see if we can get an icon from the device!
 
                     if (_deviceInfo.DeviceIcon is object)
                     {
@@ -603,9 +606,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                string AdapterNameRet = default;
-                AdapterNameRet = _nativeStruct.AdapterName;
-                return AdapterNameRet;
+                return _nativeStruct.AdapterName;
             }
         }
 
@@ -620,9 +621,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                LPADAPTER_UNICAST_ADDRESS FirstUnicastAddressRet = default;
-                FirstUnicastAddressRet = _nativeStruct.FirstUnicastAddress;
-                return FirstUnicastAddressRet;
+                return _nativeStruct.FirstUnicastAddress;
             }
         }
 
@@ -637,9 +636,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                LPADAPTER_MULTICAST_ADDRESS FirstAnycastAddressRet = default;
-                FirstAnycastAddressRet = _nativeStruct.FirstAnycastAddress;
-                return FirstAnycastAddressRet;
+                return _nativeStruct.FirstAnycastAddress;
             }
         }
 
@@ -654,9 +651,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                LPADAPTER_MULTICAST_ADDRESS FirstMulticastAddressRet = default;
-                FirstMulticastAddressRet = _nativeStruct.FirstMulticastAddress;
-                return FirstMulticastAddressRet;
+                return _nativeStruct.FirstMulticastAddress;
             }
         }
 
@@ -671,9 +666,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                LPADAPTER_MULTICAST_ADDRESS FirstDnsServerAddressRet = default;
-                FirstDnsServerAddressRet = _nativeStruct.FirstDnsServerAddress;
-                return FirstDnsServerAddressRet;
+                return _nativeStruct.FirstDnsServerAddress;
             }
         }
 
@@ -688,9 +681,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                string DnsSuffixRet = default;
-                DnsSuffixRet = _nativeStruct.DnsSuffix;
-                return DnsSuffixRet;
+                return _nativeStruct.DnsSuffix;
             }
         }
 
@@ -705,9 +696,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                string DescriptionRet = default;
-                DescriptionRet = _nativeStruct.Description;
-                return DescriptionRet;
+                return _nativeStruct.Description;
             }
         }
 
@@ -722,9 +711,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                string FriendlyNameRet = default;
-                FriendlyNameRet = _nativeStruct.FriendlyName;
-                return FriendlyNameRet;
+                return _nativeStruct.FriendlyName;
             }
         }
 
@@ -739,9 +726,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                MACADDRESS PhysicalAddressRet = default;
-                PhysicalAddressRet = _nativeStruct.PhysicalAddress;
-                return PhysicalAddressRet;
+                return _nativeStruct.PhysicalAddress;
             }
         }
 
@@ -750,9 +735,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                uint PhysicalAddressLengthRet = default;
-                PhysicalAddressLengthRet = _nativeStruct.PhysicalAddressLength;
-                return PhysicalAddressLengthRet;
+                return _nativeStruct.PhysicalAddressLength;
             }
         }
 
@@ -767,9 +750,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                IPAdapterAddressesFlags FlagsRet = default;
-                FlagsRet = _nativeStruct.Flags;
-                return FlagsRet;
+                return _nativeStruct.Flags;
             }
         }
 
@@ -784,9 +765,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                int MtuRet = default;
-                MtuRet = _nativeStruct.Mtu;
-                return MtuRet;
+                return _nativeStruct.Mtu;
             }
         }
 
@@ -802,9 +781,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                IFTYPE IfTypeRet = default;
-                IfTypeRet = _nativeStruct.IfType;
-                return IfTypeRet;
+                return _nativeStruct.IfType;
             }
         }
 
@@ -819,9 +796,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                IF_OPER_STATUS OperStatusRet = default;
-                OperStatusRet = _nativeStruct.OperStatus;
-                return OperStatusRet;
+                return _nativeStruct.OperStatus;
             }
         }
 
@@ -834,9 +809,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                uint Ipv6IfIndexRet = default;
-                Ipv6IfIndexRet = _nativeStruct.Ipv6IfIndex;
-                return Ipv6IfIndexRet;
+                return _nativeStruct.Ipv6IfIndex;
             }
         }
 
@@ -850,9 +823,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                uint[] ZoneIndicesRet = default;
-                ZoneIndicesRet = _nativeStruct.ZoneIndices;
-                return ZoneIndicesRet;
+                return _nativeStruct.ZoneIndices;
             }
         }
 
@@ -866,9 +837,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                LPIP_ADAPTER_PREFIX FirstPrefixRet = default;
-                FirstPrefixRet = _nativeStruct.FirstPrefix;
-                return FirstPrefixRet;
+                return _nativeStruct.FirstPrefix;
             }
         }
 
@@ -883,9 +852,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                FriendlySpeedLong TransmitLinkSpeedRet = default;
-                TransmitLinkSpeedRet = _nativeStruct.TransmitLinkSpeed;
-                return TransmitLinkSpeedRet;
+                return _nativeStruct.TransmitLinkSpeed;
             }
         }
 
@@ -900,9 +867,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                FriendlySpeedLong ReceiveLinkSpeedRet = default;
-                ReceiveLinkSpeedRet = _nativeStruct.ReceiveLinkSpeed;
-                return ReceiveLinkSpeedRet;
+                return _nativeStruct.ReceiveLinkSpeed;
             }
         }
 
@@ -916,9 +881,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                LPADAPTER_MULTICAST_ADDRESS FirstWinsServerAddressRet = default;
-                FirstWinsServerAddressRet = _nativeStruct.FirstWinsServerAddress;
-                return FirstWinsServerAddressRet;
+                return _nativeStruct.FirstWinsServerAddress;
             }
         }
 
@@ -931,9 +894,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                LPADAPTER_MULTICAST_ADDRESS FirstGatewayAddressRet = default;
-                FirstGatewayAddressRet = _nativeStruct.FirstGatewayAddress;
-                return FirstGatewayAddressRet;
+                return _nativeStruct.FirstGatewayAddress;
             }
         }
 
@@ -947,9 +908,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                uint Ipv4MetricRet = default;
-                Ipv4MetricRet = _nativeStruct.Ipv4Metric;
-                return Ipv4MetricRet;
+                return _nativeStruct.Ipv4Metric;
             }
         }
 
@@ -962,9 +921,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                uint Ipv6MetricRet = default;
-                Ipv6MetricRet = _nativeStruct.Ipv6Metric;
-                return Ipv6MetricRet;
+                return _nativeStruct.Ipv6Metric;
             }
         }
 
@@ -977,9 +934,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                LUID LuidRet = default;
-                LuidRet = _nativeStruct.Luid;
-                return LuidRet;
+                return _nativeStruct.Luid;
             }
         }
 
@@ -992,9 +947,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                SOCKET_ADDRESS Dhcp4ServerRet = default;
-                Dhcp4ServerRet = _nativeStruct.Dhcp4Server;
-                return Dhcp4ServerRet;
+                return _nativeStruct.Dhcp4Server;
             }
         }
 
@@ -1008,9 +961,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                uint CompartmentIdRet = default;
-                CompartmentIdRet = _nativeStruct.CompartmentId;
-                return CompartmentIdRet;
+                return _nativeStruct.CompartmentId;
             }
         }
 
@@ -1023,9 +974,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                Guid NetworkGuidRet = default;
-                NetworkGuidRet = _nativeStruct.NetworkGuid;
-                return NetworkGuidRet;
+                return _nativeStruct.NetworkGuid;
             }
         }
 
@@ -1038,9 +987,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                NET_IF_CONNECTION_TYPE ConnectionTypeRet = default;
-                ConnectionTypeRet = _nativeStruct.ConnectionType;
-                return ConnectionTypeRet;
+                return _nativeStruct.ConnectionType;
             }
         }
 
@@ -1053,9 +1000,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                TUNNEL_TYPE TunnelTypeRet = default;
-                TunnelTypeRet = _nativeStruct.TunnelType;
-                return TunnelTypeRet;
+                return _nativeStruct.TunnelType;
             }
         }
 
@@ -1068,9 +1013,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                SOCKET_ADDRESS Dhcpv6ServerRet = default;
-                Dhcpv6ServerRet = _nativeStruct.Dhcpv6Server;
-                return Dhcpv6ServerRet;
+                return _nativeStruct.Dhcpv6Server;
             }
         }
 
@@ -1084,9 +1027,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                byte[] Dhcpv6ClientDuidRet = default;
-                Dhcpv6ClientDuidRet = _nativeStruct.Dhcpv6ClientDuid;
-                return Dhcpv6ClientDuidRet;
+                return _nativeStruct.Dhcpv6ClientDuid;
             }
         }
 
@@ -1099,9 +1040,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                uint Dhcpv6ClientDuidLengthRet = default;
-                Dhcpv6ClientDuidLengthRet = _nativeStruct.Dhcpv6ClientDuidLength;
-                return Dhcpv6ClientDuidLengthRet;
+                return _nativeStruct.Dhcpv6ClientDuidLength;
             }
         }
 
@@ -1114,9 +1053,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                uint Dhcpv6IaidRet = default;
-                Dhcpv6IaidRet = _nativeStruct.Dhcpv6Iaid;
-                return Dhcpv6IaidRet;
+                return _nativeStruct.Dhcpv6Iaid;
             }
         }
 
@@ -1129,9 +1066,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                LPIP_ADAPTER_DNS_SUFFIX FirstDnsSuffixRet = default;
-                FirstDnsSuffixRet = _nativeStruct.FirstDnsSuffix;
-                return FirstDnsSuffixRet;
+                return _nativeStruct.FirstDnsSuffix;
             }
         }
 
@@ -1141,56 +1076,36 @@ namespace DataTools.Hardware.Network
         /// <returns></returns>
         public override string ToString()
         {
-            string ToStringRet = default;
-            ToStringRet = FriendlyName;
-            return ToStringRet;
+            return FriendlyName;
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        // ''' <summary>
-        // ''' Explicit cast from <see cref="IP_ADAPTER_ADDRESSES"/> to <see cref="NetworkAdapter"/> 
-        // ''' </summary>
-        // ''' <param name="item1"></param>
-        // ''' <returns></returns>
-        // Shared Narrowing Operator CType(item1 As IP_ADAPTER_ADDRESSES) As NetworkAdapter
-        // Return New NetworkAdapter(item1)
-        // End Operator
-
-        // ''' <summary>
-        // ''' Explicit cast from <see cref="NetworkAdapter"/> to <see cref="IP_ADAPTER_ADDRESSES"/>
-        // ''' </summary>
-        // ''' <param name="item1"></param>
-        // ''' <returns></returns>
-        // Shared Narrowing Operator CType(item1 As NetworkAdapter) As IP_ADAPTER_ADDRESSES
-        // Return item1._nativeStruct
-        // End Operator
-
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        // ' Disposable support reserved for possible future use.  This object is managed
-        // ' by AdaptersCollection.
-
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
         private bool disposedValue; // To detect redundant calls
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        // IDisposable
-        protected void Dispose(bool disposing)
+        ~NetworkAdapter()
         {
-            disposedValue = true;
+            Dispose(false);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposedValue) return;
+
+            if (disposing)
+            {
+                disposedValue = true;
+                _nativeStruct = default;
+                _Icon = null;
+                _deviceInfo = null;
+            }
         }
 
         public void Dispose()
         {
-            // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-
     }
-
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    // '    End Module
 
 }

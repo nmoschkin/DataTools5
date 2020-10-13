@@ -1,21 +1,21 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: Native
-// '         Myriad Windows API Declares
-// '
-// ' Started in 2000 on Windows 98/ME (and then later 2000).
-// '
-// ' Still kicking in 2014 on Windows 8.1!
-// ' A whole bunch of pInvoke/Const/Declare/Struct and associated utility functions that have been collected over the years.
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: Native
+//         Myriad Windows API Declares
+//
+// Started in 2000 on Windows 98/ME (and then later 2000).
+//
+// Still kicking in 2014 on Windows 8.1!
+// A whole bunch of pInvoke/Const/Declare/Struct and associated utility functions that have been collected over the years.
 
-// ' Some enum documentation copied from the MSDN (and in some cases, updated).
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+// Some enum documentation copied from the MSDN (and in some cases, updated).
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 
 
@@ -515,9 +515,9 @@ namespace DataTools.Hardware.Native
         public const int GWL_STYLE = -16;
         public const int GWL_EXSTYLE = -20;
 
-        // ' Window Creation
+        // Window Creation
 
-        // ' Window Styles 1
+        // Window Styles 1
         
         public const long WS_OVERLAPPED = 0x0L;
         public const int WS_POPUP = unchecked((int)0x80000000);
@@ -543,7 +543,7 @@ namespace DataTools.Hardware.Native
         public const int WS_ICONIC = WS_MINIMIZE;
         public const int WS_SIZEBOX = WS_THICKFRAME;
 
-        // ' Window Styles 2
+        // Window Styles 2
 
         public const long WS_OVERLAPPEDWINDOW = WS_OVERLAPPED + WS_CAPTION + WS_SYSMENU + WS_THICKFRAME + WS_MINIMIZEBOX + WS_MAXIMIZEBOX;
         public const int WS_POPUPWINDOW = WS_POPUP + WS_BORDER + WS_SYSMENU;
@@ -609,11 +609,11 @@ namespace DataTools.Hardware.Native
             public int clrBtnShadow;
         }
 
-        public const int CCM_FIRST = 0x2000;      // ' Common control shared messages
+        public const int CCM_FIRST = 0x2000;      // Common control shared messages
         public const int CCM_LAST = CCM_FIRST + 0x200;
-        public const int CCM_SETBKCOLOR = CCM_FIRST + 1; // ' lParam is bkColor
-        public const int CCM_SETCOLORSCHEME = CCM_FIRST + 2; // ' lParam is color scheme
-        public const int CCM_GETCOLORSCHEME = CCM_FIRST + 3; // ' fills in COLORSCHEME pointed to by lParam
+        public const int CCM_SETBKCOLOR = CCM_FIRST + 1; // lParam is bkColor
+        public const int CCM_SETCOLORSCHEME = CCM_FIRST + 2; // lParam is color scheme
+        public const int CCM_GETCOLORSCHEME = CCM_FIRST + 3; // fills in COLORSCHEME pointed to by lParam
         public const int CCM_GETDROPTARGET = CCM_FIRST + 4;
         public const int CCM_SETUNICODEFORMAT = CCM_FIRST + 5;
         public const int CCM_GETUNICODEFORMAT = CCM_FIRST + 6;
@@ -643,7 +643,7 @@ namespace DataTools.Hardware.Native
         public const int LVS_NOCOLUMNHEADER = 0x4000;
         public const int LVS_NOSORTHEADER = 0x8000;
 
-        // ' end_r_commctrl
+        // end_r_commctrl
         public const int LVM_FIRST = 0x1000;
         public const int LVM_SETUNICODEFORMAT = CCM_SETUNICODEFORMAT;
         public const int LVM_GETUNICODEFORMAT = CCM_GETUNICODEFORMAT;
@@ -706,7 +706,7 @@ namespace DataTools.Hardware.Native
         public const int LVIF_COLUMNS = 0x200;
         /* TODO ERROR: Skipped EndIfDirectiveTrivia */
         /* TODO ERROR: Skipped IfDirectiveTrivia */
-        public const int LVIF_COLFMT = 0x10000; // ' The piColFmt member is valid in addition to puColumns
+        public const int LVIF_COLFMT = 0x10000; // The piColFmt member is valid in addition to puColumns
         /* TODO ERROR: Skipped EndIfDirectiveTrivia */
         public const int LVIS_FOCUSED = 0x1;
         public const int LVIS_SELECTED = 0x2;
@@ -812,7 +812,7 @@ namespace DataTools.Hardware.Native
         public const int SPI_SETWORKAREA = 47;
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */        // ' Frame Control
+        /* TODO ERROR: Skipped RegionDirectiveTrivia */        // Frame Control
 
         public const int DFC_BUTTON = 4;
         public const int DFC_CAPTION = 1;
@@ -855,7 +855,7 @@ namespace DataTools.Hardware.Native
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        // ' System Colors
+        // System Colors
 
         public const int COLOR_ACTIVEBORDER = 10;
         public const int COLOR_ACTIVECAPTION = 2;
@@ -893,7 +893,7 @@ namespace DataTools.Hardware.Native
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        // ' Scroll Bar Types
+        // Scroll Bar Types
 
         public const int SB_BOTH = 3;
         public const int SB_BOTTOM = 7;
@@ -915,7 +915,7 @@ namespace DataTools.Hardware.Native
         public const int SB_TOP = 6;
         public const int SB_VERT = 1;
 
-        // ' Scroll Bar Messages
+        // Scroll Bar Messages
 
         public const int SBM_ENABLE_ARROWS = 0xE4;
         public const int SBM_GETPOS = 0xE1;
@@ -924,7 +924,7 @@ namespace DataTools.Hardware.Native
         public const int SBM_SETRANGE = 0xE2;
         public const int SBM_SETRANGEREDRAW = 0xE6;
 
-        // ' Scroll Bar Window Styles
+        // Scroll Bar Window Styles
 
         public const int SBS_BOTTOMALIGN = 0x4;
         public const int SBS_HORZ = 0x0;
@@ -936,7 +936,7 @@ namespace DataTools.Hardware.Native
         public const int SBS_TOPALIGN = 0x2;
         public const int SBS_VERT = 0x1;
 
-        // ' EnableScrollBar() flags
+        // EnableScrollBar() flags
 
         public const int ESB_DISABLE_BOTH = 0x3;
         public const int ESB_DISABLE_DOWN = 0x2;
@@ -963,9 +963,9 @@ namespace DataTools.Hardware.Native
         public const long TPM_TOPALIGN = 0x0L;
         public const long TPM_VCENTERALIGN = 0x10L;
         public const long TPM_BOTTOMALIGN = 0x20L;
-        public const long TPM_HORIZONTAL = 0x0L;            // ' Horz alignment matters more ''
-        public const long TPM_VERTICAL = 0x40L;             // ' Vert alignment matters more ''
-        public const long TPM_NONOTIFY = 0x80L;             // ' Don't send any notification msgs ''
+        public const long TPM_HORIZONTAL = 0x0L;            // Horz alignment matters more ''
+        public const long TPM_VERTICAL = 0x40L;             // Vert alignment matters more ''
+        public const long TPM_NONOTIFY = 0x80L;             // Don't send any notification msgs ''
         public const long TPM_RETURNCMD = 0x100L;
         public const long TPM_RECURSE = 0x1L;
 
@@ -978,13 +978,13 @@ namespace DataTools.Hardware.Native
         public const int MIIM_TYPE = 0x10;
         public const int MIIM_DATA = 0x20;
 
-        // ' New for Windows 98/2000
+        // New for Windows 98/2000
 
         public const int MIIM_STRING = 0x40;
         public const int MIIM_BITMAP = 0x80;
         public const int MIIM_FTYPE = 0x100;
 
-        // ' End fMask flags
+        // End fMask flags
 
         // Menu Flags
 
@@ -1072,9 +1072,9 @@ namespace DataTools.Hardware.Native
         public const int SHARE_FILE_SD_PARMNUM = 501;
         public const int SHARE_SERVER_PARMNUM = 503;
 
-        // '
-        // ' Single-field infolevels for NetShareSetInfo.
-        // '
+        //
+        // Single-field infolevels for NetShareSetInfo.
+        //
 
         public const int SHARE_REMARK_INFOLEVEL = PARMNUM_BASE_INFOLEVEL + SHARE_REMARK_PARMNUM;
         public const int SHARE_MAX_USES_INFOLEVEL = PARMNUM_BASE_INFOLEVEL + SHARE_MAX_USES_PARMNUM;
@@ -1082,16 +1082,16 @@ namespace DataTools.Hardware.Native
         public const int SHI1_NUM_ELEMENTS = 4;
         public const int SHI2_NUM_ELEMENTS = 10;
 
-        // '
-        // ' Share types (shi1_type and shi2_type fields).
-        // '
+        //
+        // Share types (shi1_type and shi2_type fields).
+        //
 
         public const int STYPE_DISKTREE = 0;
         public const int STYPE_PRINTQ = 1;
         public const int STYPE_DEVICE = 2;
         public const int STYPE_IPC = 3;
-        public const int STYPE_MASK = 0xFF;  // ' AND with shi_type to
-        public const int STYPE_RESERVED1 = 0x1000000;  // ' Reserved for internal processing
+        public const int STYPE_MASK = 0xFF;  // AND with shi_type to
+        public const int STYPE_RESERVED1 = 0x1000000;  // Reserved for internal processing
         public const int STYPE_RESERVED2 = 0x2000000;
         public const int STYPE_RESERVED3 = 0x4000000;
         public const int STYPE_RESERVED4 = 0x8000000;
@@ -1112,9 +1112,9 @@ namespace DataTools.Hardware.Native
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
         // IContextMenu and shell
 
-        // '
-        // '  Begin ShellExecuteEx and family
-        // '
+        //
+        //  Begin ShellExecuteEx and family
+        //
 
         // /* ShellExecute() and ShellExecuteEx() error codes */
 
@@ -1229,62 +1229,62 @@ namespace DataTools.Hardware.Native
         public const long SHCIDS_CANONICALONLY = 0x10000000L;
         public const long SHCIDS_BITMASK = 0xFFFF0000L;
         public const long SHCIDS_COLUMNMASK = 0xFFFFL;
-        public const int SFGAO_CANCOPY = 0x1;        // ' Objects can be copied    (&H1)
-        public const int SFGAO_CANMOVE = 0x2;        // ' Objects can be moved     (&H2)
-        public const int SFGAO_CANLINK = 0x4;        // ' Objects can be linked    (&H4)
-        public const long SFGAO_STORAGE = 0x8L;     // ' supports BindToObject(IID_IStorage)
-        public const long SFGAO_CANRENAME = 0x10L;     // ' Objects can be renamed
-        public const long SFGAO_CANDELETE = 0x20L;     // ' Objects can be deleted
-        public const long SFGAO_HASPROPSHEET = 0x40L;     // ' Objects have property sheets
-        public const long SFGAO_DROPTARGET = 0x100L;     // ' Objects are drop target
+        public const int SFGAO_CANCOPY = 0x1;        // Objects can be copied    (&H1)
+        public const int SFGAO_CANMOVE = 0x2;        // Objects can be moved     (&H2)
+        public const int SFGAO_CANLINK = 0x4;        // Objects can be linked    (&H4)
+        public const long SFGAO_STORAGE = 0x8L;     // supports BindToObject(IID_IStorage)
+        public const long SFGAO_CANRENAME = 0x10L;     // Objects can be renamed
+        public const long SFGAO_CANDELETE = 0x20L;     // Objects can be deleted
+        public const long SFGAO_HASPROPSHEET = 0x40L;     // Objects have property sheets
+        public const long SFGAO_DROPTARGET = 0x100L;     // Objects are drop target
         public const long SFGAO_CAPABILITYMASK = 0x177L;
-        public const long SFGAO_SYSTEM = 0x1000L;     // ' System object
-        public const long SFGAO_ENCRYPTED = 0x2000L;     // ' Object is encrypted (use alt color)
-        public const long SFGAO_ISSLOW = 0x4000L;     // ' 'Slow' object
-        public const long SFGAO_GHOSTED = 0x8000L;     // ' Ghosted icon
-        public const long SFGAO_LINK = 0x10000L;     // ' Shortcut (link)
-        public const long SFGAO_SHARE = 0x20000L;     // ' Shared
-        public const long SFGAO_READONLY = 0x40000L;     // ' Read-only
-        public const long SFGAO_HIDDEN = 0x80000L;     // ' Hidden object
+        public const long SFGAO_SYSTEM = 0x1000L;     // System object
+        public const long SFGAO_ENCRYPTED = 0x2000L;     // Object is encrypted (use alt color)
+        public const long SFGAO_ISSLOW = 0x4000L;     //Slow' object
+        public const long SFGAO_GHOSTED = 0x8000L;     // Ghosted icon
+        public const long SFGAO_LINK = 0x10000L;     // Shortcut (link)
+        public const long SFGAO_SHARE = 0x20000L;     // Shared
+        public const long SFGAO_READONLY = 0x40000L;     // Read-only
+        public const long SFGAO_HIDDEN = 0x80000L;     // Hidden object
         public const long SFGAO_DISPLAYATTRMASK = 0xFC000L;
-        public const long SFGAO_FILESYSANCESTOR = 0x10000000L;     // ' May contain children with SFGAO_FILESYSTEM
-        public const long SFGAO_FOLDER = 0x20000000L;     // ' Support BindToObject(IID_IShellFolder)
-        public const long SFGAO_FILESYSTEM = 0x40000000L;     // ' Is a win32 file system object (file/folder/root)
-        public const long SFGAO_HASSUBFOLDER = 0x80000000L;     // ' May contain children with SFGAO_FOLDER (may be slow)
+        public const long SFGAO_FILESYSANCESTOR = 0x10000000L;     // May contain children with SFGAO_FILESYSTEM
+        public const long SFGAO_FOLDER = 0x20000000L;     // Support BindToObject(IID_IShellFolder)
+        public const long SFGAO_FILESYSTEM = 0x40000000L;     // Is a win32 file system object (file/folder/root)
+        public const long SFGAO_HASSUBFOLDER = 0x80000000L;     // May contain children with SFGAO_FOLDER (may be slow)
         public const long SFGAO_CONTENTSMASK = 0x80000000L;
-        public const long SFGAO_VALIDATE = 0x1000000L;     // ' Invalidate cached information (may be slow)
-        public const long SFGAO_REMOVABLE = 0x2000000L;     // ' Is this removeable media?
-        public const long SFGAO_COMPRESSED = 0x4000000L;     // ' Object is compressed (use alt color)
-        public const long SFGAO_BROWSABLE = 0x8000000L;     // ' Supports IShellFolder, but only implements CreateViewObject() (non-folder view)
-        public const long SFGAO_NONENUMERATED = 0x100000L;     // ' Is a non-enumerated object (should be hidden)
-        public const long SFGAO_NEWCONTENT = 0x200000L;     // ' Should show bold in explorer tree
-        public const long SFGAO_CANMONIKER = 0x400000L;     // ' Obsolete
-        public const long SFGAO_HASSTORAGE = 0x400000L;     // ' Obsolete
-        public const long SFGAO_STREAM = 0x400000L;     // ' Supports BindToObject(IID_IStream)
-        public const long SFGAO_STORAGEANCESTOR = 0x800000L;     // ' May contain children with SFGAO_STORAGE or SFGAO_STREAM
-        public const long SFGAO_STORAGECAPMASK = 0x70C50008L;     // ' For determining storage capabilities, ie for open/save semantics
-        public const long SFGAO_PKEYSFGAOMASK = 0x81044000L;     // ' Attributes that are masked out for PKEY_SFGAOFlags because they are considered to cause slow calculations or lack context (SFGAO_VALIDATE | SFGAO_ISSLOW | SFGAO_HASSUBFOLDER and others)
-        public const int SHGFI_ICON = 0x100;     // ' get icon
-        public const int SHGFI_DISPLAYNAME = 0x200;     // ' get display name
-        public const int SHGFI_TYPENAME = 0x400;     // ' get type name
-        public const int SHGFI_ATTRIBUTES = 0x800;     // ' get attributes
-        public const int SHGFI_ICONLOCATION = 0x1000;     // ' get icon location
-        public const int SHGFI_EXETYPE = 0x2000;     // ' return exe type
-        public const int SHGFI_SYSICONINDEX = 0x4000;     // ' get system icon index
-        public const int SHGFI_LINKOVERLAY = 0x8000;     // ' put a link overlay on icon
-        public const int SHGFI_SELECTED = 0x10000;     // ' show icon in selected state
+        public const long SFGAO_VALIDATE = 0x1000000L;     // Invalidate cached information (may be slow)
+        public const long SFGAO_REMOVABLE = 0x2000000L;     // Is this removeable media?
+        public const long SFGAO_COMPRESSED = 0x4000000L;     // Object is compressed (use alt color)
+        public const long SFGAO_BROWSABLE = 0x8000000L;     // Supports IShellFolder, but only implements CreateViewObject() (non-folder view)
+        public const long SFGAO_NONENUMERATED = 0x100000L;     // Is a non-enumerated object (should be hidden)
+        public const long SFGAO_NEWCONTENT = 0x200000L;     // Should show bold in explorer tree
+        public const long SFGAO_CANMONIKER = 0x400000L;     // Obsolete
+        public const long SFGAO_HASSTORAGE = 0x400000L;     // Obsolete
+        public const long SFGAO_STREAM = 0x400000L;     // Supports BindToObject(IID_IStream)
+        public const long SFGAO_STORAGEANCESTOR = 0x800000L;     // May contain children with SFGAO_STORAGE or SFGAO_STREAM
+        public const long SFGAO_STORAGECAPMASK = 0x70C50008L;     // For determining storage capabilities, ie for open/save semantics
+        public const long SFGAO_PKEYSFGAOMASK = 0x81044000L;     // Attributes that are masked out for PKEY_SFGAOFlags because they are considered to cause slow calculations or lack context (SFGAO_VALIDATE | SFGAO_ISSLOW | SFGAO_HASSUBFOLDER and others)
+        public const int SHGFI_ICON = 0x100;     // get icon
+        public const int SHGFI_DISPLAYNAME = 0x200;     // get display name
+        public const int SHGFI_TYPENAME = 0x400;     // get type name
+        public const int SHGFI_ATTRIBUTES = 0x800;     // get attributes
+        public const int SHGFI_ICONLOCATION = 0x1000;     // get icon location
+        public const int SHGFI_EXETYPE = 0x2000;     // return exe type
+        public const int SHGFI_SYSICONINDEX = 0x4000;     // get system icon index
+        public const int SHGFI_LINKOVERLAY = 0x8000;     // put a link overlay on icon
+        public const int SHGFI_SELECTED = 0x10000;     // show icon in selected state
         /* TODO ERROR: Skipped IfDirectiveTrivia */
-        public const int SHGFI_ATTR_SPECIFIED = 0x20000;     // ' get only specified attributes
+        public const int SHGFI_ATTR_SPECIFIED = 0x20000;     // get only specified attributes
         /* TODO ERROR: Skipped EndIfDirectiveTrivia */
-        public const int SHGFI_LARGEICON = 0x0;     // ' get large icon
-        public const int SHGFI_SMALLICON = 0x1;     // ' get small icon
-        public const int SHGFI_OPENICON = 0x2;     // ' get open icon
-        public const int SHGFI_SHELLICONSIZE = 0x4;     // ' get shell size icon
-        public const int SHGFI_PIDL = 0x8;     // ' pszPath is a pidl
-        public const int SHGFI_USEFILEATTRIBUTES = 0x10;     // ' use passed dwFileAttribute
-        public const int SHGFI_ADDOVERLAYS = 0x20;     // ' apply the appropriate overlays
-        public const int SHGFI_OVERLAYINDEX = 0x40;     // ' Get the index of the overlay
-        // ' in the upper 8 bits of the iIcon
+        public const int SHGFI_LARGEICON = 0x0;     // get large icon
+        public const int SHGFI_SMALLICON = 0x1;     // get small icon
+        public const int SHGFI_OPENICON = 0x2;     // get open icon
+        public const int SHGFI_SHELLICONSIZE = 0x4;     // get shell size icon
+        public const int SHGFI_PIDL = 0x8;     // pszPath is a pidl
+        public const int SHGFI_USEFILEATTRIBUTES = 0x10;     // use passed dwFileAttribute
+        public const int SHGFI_ADDOVERLAYS = 0x20;     // apply the appropriate overlays
+        public const int SHGFI_OVERLAYINDEX = 0x40;     // Get the index of the overlay
+        // in the upper 8 bits of the iIcon
 
         public const int BIF_RETURNONLYFSDIRS = 0x1;   // For finding a folder to start document searching
         public const int BIF_DONTGOBELOWDOMAIN = 0x2; // For starting the Find Computer
@@ -1316,7 +1316,7 @@ namespace DataTools.Hardware.Native
         public const long SHGDFIL_NETRESOURCE = 2L;
         public const long SHGDFIL_DESCRIPTIONID = 3L;
 
-        // ' Shell Description ID
+        // Shell Description ID
 
         public const long SHDID_ROOT_REGITEM = 1L;
         public const long SHDID_FS_FILE = 2L;
@@ -1336,7 +1336,7 @@ namespace DataTools.Hardware.Native
         public const long SHDID_NET_RESTOFNET = 16L;
         public const long SHDID_NET_OTHER = 17L;
 
-        // ' FO_MOVE ''these need to be kept in sync with the ones in shlobj.h
+        // FO_MOVE ''these need to be kept in sync with the ones in shlobj.h
 
         public const int FO_MOVE = 0x1;
         public const int FO_COPY = 0x2;
@@ -1344,25 +1344,25 @@ namespace DataTools.Hardware.Native
         public const int FO_RENAME = 0x4;
         public const int FOF_MULTIDESTFILES = 0x1;
         public const int FOF_CONFIRMMOUSE = 0x2;
-        public const int FOF_SILENT = 0x4;                    // ' don't create progress/report
+        public const int FOF_SILENT = 0x4;                    // don't create progress/report
         public const int FOF_RENAMEONCOLLISION = 0x8;
-        public const int FOF_NOCONFIRMATION = 0x10;           // ' Don't prompt the user.
-        public const int FOF_WANTMAPPINGHANDLE = 0x20;        // ' Fill in SHFILEOPSTRUCT.hNameMappings
-        // ' Must be freed using SHFreeNameMappings
+        public const int FOF_NOCONFIRMATION = 0x10;           // Don't prompt the user.
+        public const int FOF_WANTMAPPINGHANDLE = 0x20;        // Fill in SHFILEOPSTRUCT.hNameMappings
+        // Must be freed using SHFreeNameMappings
         public const int FOF_ALLOWUNDO = 0x40;
-        public const int FOF_FILESONLY = 0x80;                // ' on *.*, do only files
-        public const int FOF_SIMPLEPROGRESS = 0x100;          // ' means don't show names of files
-        public const int FOF_NOCONFIRMMKDIR = 0x200;          // ' don't confirm making any needed dirs
-        public const int FOF_NOERRORUI = 0x400;               // ' don't put up error UI
-        public const int FOF_NOCOPYSECURITYATTRIBS = 0x800;   // ' dont copy NT file Security Attributes
-        public const int PO_DELETE = 0x13;         // ' printer is being deleted
-        public const int PO_RENAME = 0x14;         // ' printer is being renamed
-        public const int PO_PORTCHANGE = 0x20;     // ' port this printer connected to is being changed
-        // ' if this id is set, the strings received by
-        // ' the copyhook are a doubly-null terminated
-        // ' list of strings.  The first is the printer
-        // ' name and the second is the printer port.
-        public const int PO_REN_PORT = 0x34;       // ' PO_RENAME and PO_PORTCHANGE at same time.
+        public const int FOF_FILESONLY = 0x80;                // on *.*, do only files
+        public const int FOF_SIMPLEPROGRESS = 0x100;          // means don't show names of files
+        public const int FOF_NOCONFIRMMKDIR = 0x200;          // don't confirm making any needed dirs
+        public const int FOF_NOERRORUI = 0x400;               // don't put up error UI
+        public const int FOF_NOCOPYSECURITYATTRIBS = 0x800;   // dont copy NT file Security Attributes
+        public const int PO_DELETE = 0x13;         // printer is being deleted
+        public const int PO_RENAME = 0x14;         // printer is being renamed
+        public const int PO_PORTCHANGE = 0x20;     // port this printer connected to is being changed
+        // if this id is set, the strings received by
+        // the copyhook are a doubly-null terminated
+        // list of strings.  The first is the printer
+        // name and the second is the printer port.
+        public const int PO_REN_PORT = 0x34;       // PO_RENAME and PO_PORTCHANGE at same time.
         public const int CSIDL_DESKTOP = 0x0;
         public const int CSIDL_INTERNET = 0x1;
         public const int CSIDL_PROGRAMS = 0x2;
@@ -1387,20 +1387,20 @@ namespace DataTools.Hardware.Native
         public const int CSIDL_COMMON_DESKTOPDIRECTORY = 0x19;
         public const int CSIDL_APPDATA = 0x1A;
         public const int CSIDL_PRINTHOOD = 0x1B;
-        public const int CSIDL_ALTSTARTUP = 0x1D;                          // ' DBCS
-        public const int CSIDL_COMMON_ALTSTARTUP = 0x1E;                   // ' DBCS
+        public const int CSIDL_ALTSTARTUP = 0x1D;                          // DBCS
+        public const int CSIDL_COMMON_ALTSTARTUP = 0x1E;                   // DBCS
         public const int CSIDL_COMMON_FAVORITES = 0x1F;
         public const int CSIDL_INTERNET_CACHE = 0x20;
         public const int CSIDL_COOKIES = 0x21;
         public const int CSIDL_HISTORY = 0x22;
 
         /* TODO ERROR: Skipped IfDirectiveTrivia */
-        public const int SHIL_LARGE = 0;   // ' normally 32x32
-        public const int SHIL_SMALL = 1;   // ' normally 16x16
+        public const int SHIL_LARGE = 0;   // normally 32x32
+        public const int SHIL_SMALL = 1;   // normally 16x16
         public const int SHIL_EXTRALARGE = 2;
-        public const int SHIL_SYSSMALL = 3;   // ' like SHIL_SMALL, but tracks system small icon metric correctly
+        public const int SHIL_SYSSMALL = 3;   // like SHIL_SMALL, but tracks system small icon metric correctly
         /* TODO ERROR: Skipped IfDirectiveTrivia */
-        public const int SHIL_JUMBO = 4;   // ' normally 256x256
+        public const int SHIL_JUMBO = 4;   // normally 256x256
         public const int SHIL_LAST = SHIL_JUMBO;
         /* TODO ERROR: Skipped ElseDirectiveTrivia *//* TODO ERROR: Skipped DisabledTextTrivia *//* TODO ERROR: Skipped EndIfDirectiveTrivia *//* TODO ERROR: Skipped EndIfDirectiveTrivia */
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
@@ -1426,153 +1426,153 @@ namespace DataTools.Hardware.Native
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        // ' Public Const Device = Parameters for GetDeviceCaps() ''
-        public const int DRIVERVERSION = 0;     // ' Device driver version                    ''
-        public const int TECHNOLOGY = 2;     // ' Device classification                    ''
-        public const int HORZSIZE = 4;     // ' Horizontal size in millimeters           ''
-        public const int VERTSIZE = 6;     // ' Vertical size in millimeters             ''
-        public const int HORZRES = 8;     // ' Horizontal width in pixels               ''
-        public const int VERTRES = 10;    // ' Vertical height in pixels                ''
-        public const int BITSPIXEL = 12;    // ' Number of bits per pixel                 ''
-        public const int PLANES = 14;    // ' Number of planes                         ''
-        public const int NUMBRUSHES = 16;    // ' Number of brushes the device has         ''
-        public const int NUMPENS = 18;    // ' Number of pens the device has            ''
-        public const int NUMMARKERS = 20;    // ' Number of markers the device has         ''
-        public const int NUMFONTS = 22;    // ' Number of fonts the device has           ''
-        public const int NUMCOLORS = 24;    // ' Number of colors the device supports     ''
-        public const int PDEVICESIZE = 26;    // ' Size required for device descriptor      ''
-        public const int CURVECAPS = 28;    // ' Curve capabilities                       ''
-        public const int LINECAPS = 30;    // ' Line capabilities                        ''
-        public const int POLYGONALCAPS = 32;    // ' Polygonal capabilities                   ''
-        public const int TEXTCAPS = 34;    // ' Text capabilities                        ''
-        public const int CLIPCAPS = 36;    // ' Clipping capabilities                    ''
-        public const int RASTERCAPS = 38;    // ' Bitblt capabilities                      ''
-        public const int ASPECTX = 40;    // ' Length of the X leg                      ''
-        public const int ASPECTY = 42;    // ' Length of the Y leg                      ''
-        public const int ASPECTXY = 44;    // ' Length of the hypotenuse                 ''
-        public const int LOGPIXELSX = 88;    // ' Logical pixels/inch in X                 ''
-        public const int LOGPIXELSY = 90;    // ' Logical pixels/inch in Y                 ''
-        public const int SIZEPALETTE = 104;    // ' Number of entries in physical palette    ''
-        public const int NUMRESERVED = 106;    // ' Number of reserved entries in palette    ''
-        public const int COLORRES = 108;    // ' Actual color resolution                  ''
+        // Public Const Device = Parameters for GetDeviceCaps() ''
+        public const int DRIVERVERSION = 0;     // Device driver version                    ''
+        public const int TECHNOLOGY = 2;     // Device classification                    ''
+        public const int HORZSIZE = 4;     // Horizontal size in millimeters           ''
+        public const int VERTSIZE = 6;     // Vertical size in millimeters             ''
+        public const int HORZRES = 8;     // Horizontal width in pixels               ''
+        public const int VERTRES = 10;    // Vertical height in pixels                ''
+        public const int BITSPIXEL = 12;    // Number of bits per pixel                 ''
+        public const int PLANES = 14;    // Number of planes                         ''
+        public const int NUMBRUSHES = 16;    // Number of brushes the device has         ''
+        public const int NUMPENS = 18;    // Number of pens the device has            ''
+        public const int NUMMARKERS = 20;    // Number of markers the device has         ''
+        public const int NUMFONTS = 22;    // Number of fonts the device has           ''
+        public const int NUMCOLORS = 24;    // Number of colors the device supports     ''
+        public const int PDEVICESIZE = 26;    // Size required for device descriptor      ''
+        public const int CURVECAPS = 28;    // Curve capabilities                       ''
+        public const int LINECAPS = 30;    // Line capabilities                        ''
+        public const int POLYGONALCAPS = 32;    // Polygonal capabilities                   ''
+        public const int TEXTCAPS = 34;    // Text capabilities                        ''
+        public const int CLIPCAPS = 36;    // Clipping capabilities                    ''
+        public const int RASTERCAPS = 38;    // Bitblt capabilities                      ''
+        public const int ASPECTX = 40;    // Length of the X leg                      ''
+        public const int ASPECTY = 42;    // Length of the Y leg                      ''
+        public const int ASPECTXY = 44;    // Length of the hypotenuse                 ''
+        public const int LOGPIXELSX = 88;    // Logical pixels/inch in X                 ''
+        public const int LOGPIXELSY = 90;    // Logical pixels/inch in Y                 ''
+        public const int SIZEPALETTE = 104;    // Number of entries in physical palette    ''
+        public const int NUMRESERVED = 106;    // Number of reserved entries in palette    ''
+        public const int COLORRES = 108;    // Actual color resolution                  ''
 
-        // ' Public Const Printing = related DeviceCaps. These replace the appropriate Escapes
+        // Public Const Printing = related DeviceCaps. These replace the appropriate Escapes
 
-        public const int PHYSICALWIDTH = 110; // ' Physical Width in device units           ''
-        public const int PHYSICALHEIGHT = 111; // ' Physical Height in device units          ''
-        public const int PHYSICALOFFSETX = 112; // ' Physical Printable Area x margin         ''
-        public const int PHYSICALOFFSETY = 113; // ' Physical Printable Area y margin         ''
-        public const int SCALINGFACTORX = 114; // ' Scaling factor x                         ''
-        public const int SCALINGFACTORY = 115; // ' Scaling factor y                         ''
+        public const int PHYSICALWIDTH = 110; // Physical Width in device units           ''
+        public const int PHYSICALHEIGHT = 111; // Physical Height in device units          ''
+        public const int PHYSICALOFFSETX = 112; // Physical Printable Area x margin         ''
+        public const int PHYSICALOFFSETY = 113; // Physical Printable Area y margin         ''
+        public const int SCALINGFACTORX = 114; // Scaling factor x                         ''
+        public const int SCALINGFACTORY = 115; // Scaling factor y                         ''
 
-        // ' Public Const Display = driver specific
+        // Public Const Display = driver specific
 
-        public const int VREFRESH = 116;  // ' Current vertical refresh rate of the    ''
-        // ' Public Const display = device (for displays only) in Hz ''
-        public const int DESKTOPVERTRES = 117;  // ' Horizontal width of entire desktop in   ''
-        // ' pixels                                  ''
-        public const int DESKTOPHORZRES = 118;  // ' Vertical height of entire desktop in    ''
-        // ' pixels                                  ''
-        public const int BLTALIGNMENT = 119;  // ' Preferred blt alignment                 ''
-        public const int SHADEBLENDCAPS = 120;  // ' Shading and blending caps               ''
-        public const int COLORMGMTCAPS = 121;  // ' Color Management caps                   ''
-        // ' WINVER >= &H0500 ''
+        public const int VREFRESH = 116;  // Current vertical refresh rate of the    ''
+        // Public Const display = device (for displays only) in Hz ''
+        public const int DESKTOPVERTRES = 117;  // Horizontal width of entire desktop in   ''
+        // pixels                                  ''
+        public const int DESKTOPHORZRES = 118;  // Vertical height of entire desktop in    ''
+        // pixels                                  ''
+        public const int BLTALIGNMENT = 119;  // Preferred blt alignment                 ''
+        public const int SHADEBLENDCAPS = 120;  // Shading and blending caps               ''
+        public const int COLORMGMTCAPS = 121;  // Color Management caps                   ''
+        // WINVER >= &H0500 ''
 
-        // ' Public Const Device = Capability Masks: ''
+        // Public Const Device = Capability Masks: ''
 
-        // ' Public Const Device = Technologies ''
-        public const int DT_PLOTTER = 0;   // ' Vector plotter                   ''
-        public const int DT_RASDISPLAY = 1;   // ' Raster display                   ''
-        public const int DT_RASPRINTER = 2;   // ' Raster printer                   ''
-        public const int DT_RASCAMERA = 3;   // ' Raster camera                    ''
-        public const int DT_CHARSTREAM = 4;   // ' Character-stream, PLP            ''
-        public const int DT_METAFILE = 5;   // ' Metafile, VDM                    ''
-        public const int DT_DISPFILE = 6;   // ' Display-file                     ''
+        // Public Const Device = Technologies ''
+        public const int DT_PLOTTER = 0;   // Vector plotter                   ''
+        public const int DT_RASDISPLAY = 1;   // Raster display                   ''
+        public const int DT_RASPRINTER = 2;   // Raster printer                   ''
+        public const int DT_RASCAMERA = 3;   // Raster camera                    ''
+        public const int DT_CHARSTREAM = 4;   // Character-stream, PLP            ''
+        public const int DT_METAFILE = 5;   // Metafile, VDM                    ''
+        public const int DT_DISPFILE = 6;   // Display-file                     ''
 
-        // ' Public Const Curve = Capabilities ''
-        public const int CC_NONE = 0;   // ' Curves not supported             ''
-        public const int CC_CIRCLES = 1;   // ' Can do circles                   ''
-        public const int CC_PIE = 2;   // ' Can do pie wedges                ''
-        public const int CC_CHORD = 4;   // ' Can do chord arcs                ''
-        public const int CC_ELLIPSES = 8;   // ' Can do ellipese                  ''
-        public const int CC_WIDE = 16;  // ' Can do wide lines                ''
-        public const int CC_STYLED = 32;  // ' Can do styled lines              ''
-        public const int CC_WIDESTYLED = 64;  // ' Can do wide styled lines         ''
-        public const int CC_INTERIORS = 128; // ' Can do interiors                 ''
-        public const int CC_ROUNDRECT = 256; // '                                  ''
+        // Public Const Curve = Capabilities ''
+        public const int CC_NONE = 0;   // Curves not supported             ''
+        public const int CC_CIRCLES = 1;   // Can do circles                   ''
+        public const int CC_PIE = 2;   // Can do pie wedges                ''
+        public const int CC_CHORD = 4;   // Can do chord arcs                ''
+        public const int CC_ELLIPSES = 8;   // Can do ellipese                  ''
+        public const int CC_WIDE = 16;  // Can do wide lines                ''
+        public const int CC_STYLED = 32;  // Can do styled lines              ''
+        public const int CC_WIDESTYLED = 64;  // Can do wide styled lines         ''
+        public const int CC_INTERIORS = 128; // Can do interiors                 ''
+        public const int CC_ROUNDRECT = 256; //                                  ''
 
-        // ' Public Const Line = Capabilities ''
-        public const int LC_NONE = 0;   // ' Lines not supported              ''
-        public const int LC_POLYLINE = 2;   // ' Can do polylines                 ''
-        public const int LC_MARKER = 4;   // ' Can do markers                   ''
-        public const int LC_POLYMARKER = 8;   // ' Can do polymarkers               ''
-        public const int LC_WIDE = 16;  // ' Can do wide lines                ''
-        public const int LC_STYLED = 32;  // ' Can do styled lines              ''
-        public const int LC_WIDESTYLED = 64;  // ' Can do wide styled lines         ''
-        public const int LC_INTERIORS = 128; // ' Can do interiors                 ''
+        // Public Const Line = Capabilities ''
+        public const int LC_NONE = 0;   // Lines not supported              ''
+        public const int LC_POLYLINE = 2;   // Can do polylines                 ''
+        public const int LC_MARKER = 4;   // Can do markers                   ''
+        public const int LC_POLYMARKER = 8;   // Can do polymarkers               ''
+        public const int LC_WIDE = 16;  // Can do wide lines                ''
+        public const int LC_STYLED = 32;  // Can do styled lines              ''
+        public const int LC_WIDESTYLED = 64;  // Can do wide styled lines         ''
+        public const int LC_INTERIORS = 128; // Can do interiors                 ''
 
-        // ' Public Const Polygonal = Capabilities ''
-        public const int PC_NONE = 0;   // ' Polygonals not supported         ''
-        public const int PC_POLYGON = 1;   // ' Can do polygons                  ''
-        public const int PC_RECTANGLE = 2;   // ' Can do rectangles                ''
-        public const int PC_WINDPOLYGON = 4;   // ' Can do winding polygons          ''
-        public const int PC_TRAPEZOID = 4;   // ' Can do trapezoids                ''
-        public const int PC_SCANLINE = 8;   // ' Can do scanlines                 ''
-        public const int PC_WIDE = 16;  // ' Can do wide borders              ''
-        public const int PC_STYLED = 32;  // ' Can do styled borders            ''
-        public const int PC_WIDESTYLED = 64;  // ' Can do wide styled borders       ''
-        public const int PC_INTERIORS = 128; // ' Can do interiors                 ''
-        public const int PC_POLYPOLYGON = 256; // ' Can do polypolygons              ''
-        public const int PC_PATHS = 512; // ' Can do paths                     ''
+        // Public Const Polygonal = Capabilities ''
+        public const int PC_NONE = 0;   // Polygonals not supported         ''
+        public const int PC_POLYGON = 1;   // Can do polygons                  ''
+        public const int PC_RECTANGLE = 2;   // Can do rectangles                ''
+        public const int PC_WINDPOLYGON = 4;   // Can do winding polygons          ''
+        public const int PC_TRAPEZOID = 4;   // Can do trapezoids                ''
+        public const int PC_SCANLINE = 8;   // Can do scanlines                 ''
+        public const int PC_WIDE = 16;  // Can do wide borders              ''
+        public const int PC_STYLED = 32;  // Can do styled borders            ''
+        public const int PC_WIDESTYLED = 64;  // Can do wide styled borders       ''
+        public const int PC_INTERIORS = 128; // Can do interiors                 ''
+        public const int PC_POLYPOLYGON = 256; // Can do polypolygons              ''
+        public const int PC_PATHS = 512; // Can do paths                     ''
 
-        // ' Public Const Clipping = Capabilities ''
-        public const int CP_NONE = 0;   // ' No clipping of output            ''
-        public const int CP_RECTANGLE = 1;   // ' Output clipped to rects          ''
-        public const int CP_REGION = 2;   // ' obsolete                         ''
+        // Public Const Clipping = Capabilities ''
+        public const int CP_NONE = 0;   // No clipping of output            ''
+        public const int CP_RECTANGLE = 1;   // Output clipped to rects          ''
+        public const int CP_REGION = 2;   // obsolete                         ''
 
-        // ' Public Const Text = Capabilities ''
-        public const int TC_OP_CHARACTER = 0x1;  // ' Can do OutputPrecision   CHARACTER      ''
-        public const int TC_OP_STROKE = 0x2;  // ' Can do OutputPrecision   STROKE         ''
-        public const int TC_CP_STROKE = 0x4;  // ' Can do ClipPrecision     STROKE         ''
-        public const int TC_CR_90 = 0x8;  // ' Can do CharRotAbility    90             ''
-        public const int TC_CR_ANY = 0x10;  // ' Can do CharRotAbility    ANY            ''
-        public const int TC_SF_X_YINDEP = 0x20;  // ' Can do ScaleFreedom      X_YINDEPENDENT ''
-        public const int TC_SA_DOUBLE = 0x40;  // ' Can do ScaleAbility      DOUBLE         ''
-        public const int TC_SA_INTEGER = 0x80;  // ' Can do ScaleAbility      INTEGER        ''
-        public const int TC_SA_CONTIN = 0x100;  // ' Can do ScaleAbility      CONTINUOUS     ''
-        public const int TC_EA_DOUBLE = 0x200;  // ' Can do EmboldenAbility   DOUBLE         ''
-        public const int TC_IA_ABLE = 0x400;  // ' Can do ItalisizeAbility  ABLE           ''
-        public const int TC_UA_ABLE = 0x800;  // ' Can do UnderlineAbility  ABLE           ''
-        public const int TC_SO_ABLE = 0x1000;  // ' Can do StrikeOutAbility  ABLE           ''
-        public const int TC_RA_ABLE = 0x2000;  // ' Can do RasterFontAble    ABLE           ''
-        public const int TC_VA_ABLE = 0x4000;  // ' Can do VectorFontAble    ABLE           ''
+        // Public Const Text = Capabilities ''
+        public const int TC_OP_CHARACTER = 0x1;  // Can do OutputPrecision   CHARACTER      ''
+        public const int TC_OP_STROKE = 0x2;  // Can do OutputPrecision   STROKE         ''
+        public const int TC_CP_STROKE = 0x4;  // Can do ClipPrecision     STROKE         ''
+        public const int TC_CR_90 = 0x8;  // Can do CharRotAbility    90             ''
+        public const int TC_CR_ANY = 0x10;  // Can do CharRotAbility    ANY            ''
+        public const int TC_SF_X_YINDEP = 0x20;  // Can do ScaleFreedom      X_YINDEPENDENT ''
+        public const int TC_SA_DOUBLE = 0x40;  // Can do ScaleAbility      DOUBLE         ''
+        public const int TC_SA_INTEGER = 0x80;  // Can do ScaleAbility      INTEGER        ''
+        public const int TC_SA_CONTIN = 0x100;  // Can do ScaleAbility      CONTINUOUS     ''
+        public const int TC_EA_DOUBLE = 0x200;  // Can do EmboldenAbility   DOUBLE         ''
+        public const int TC_IA_ABLE = 0x400;  // Can do ItalisizeAbility  ABLE           ''
+        public const int TC_UA_ABLE = 0x800;  // Can do UnderlineAbility  ABLE           ''
+        public const int TC_SO_ABLE = 0x1000;  // Can do StrikeOutAbility  ABLE           ''
+        public const int TC_RA_ABLE = 0x2000;  // Can do RasterFontAble    ABLE           ''
+        public const int TC_VA_ABLE = 0x4000;  // Can do VectorFontAble    ABLE           ''
         public const int TC_RESERVED = 0x8000;
-        public const int TC_SCROLLBLT = 0x10000;  // ' Don't do text scroll with blt           ''
+        public const int TC_SCROLLBLT = 0x10000;  // Don't do text scroll with blt           ''
 
-        // ' NOGDICAPMASKS ''
+        // NOGDICAPMASKS ''
 
-        // ' Public Const Raster = Capabilities ''
+        // Public Const Raster = Capabilities ''
         public const int RC_NONE = 0;
-        public const int RC_BITBLT = 1;       // ' Can do standard BLT.             ''
-        public const int RC_BANDING = 2;       // ' Device requires banding support  ''
-        public const int RC_SCALING = 4;       // ' Device requires scaling support  ''
-        public const int RC_BITMAP64 = 8;       // ' Device can support >64K bitmap   ''
-        public const int RC_GDI20_OUTPUT = 0x10;      // ' has 2.0 output calls         ''
+        public const int RC_BITBLT = 1;       // Can do standard BLT.             ''
+        public const int RC_BANDING = 2;       // Device requires banding support  ''
+        public const int RC_SCALING = 4;       // Device requires scaling support  ''
+        public const int RC_BITMAP64 = 8;       // Device can support >64K bitmap   ''
+        public const int RC_GDI20_OUTPUT = 0x10;      // has 2.0 output calls         ''
         public const int RC_GDI20_STATE = 0x20;
         public const int RC_SAVEBITMAP = 0x40;
-        public const int RC_DI_BITMAP = 0x80;      // ' supports DIB to memory       ''
-        public const int RC_PALETTE = 0x100;      // ' supports a palette           ''
-        public const int RC_DIBTODEV = 0x200;      // ' supports DIBitsToDevice      ''
-        public const int RC_BIGFONT = 0x400;      // ' supports >64K fonts          ''
-        public const int RC_STRETCHBLT = 0x800;      // ' supports StretchBlt          ''
-        public const int RC_FLOODFILL = 0x1000;      // ' supports FloodFill           ''
-        public const int RC_STRETCHDIB = 0x2000;      // ' supports StretchDIBits       ''
+        public const int RC_DI_BITMAP = 0x80;      // supports DIB to memory       ''
+        public const int RC_PALETTE = 0x100;      // supports a palette           ''
+        public const int RC_DIBTODEV = 0x200;      // supports DIBitsToDevice      ''
+        public const int RC_BIGFONT = 0x400;      // supports >64K fonts          ''
+        public const int RC_STRETCHBLT = 0x800;      // supports StretchBlt          ''
+        public const int RC_FLOODFILL = 0x1000;      // supports FloodFill           ''
+        public const int RC_STRETCHDIB = 0x2000;      // supports StretchDIBits       ''
         public const int RC_OP_DX_OUTPUT = 0x4000;
         public const int RC_DEVBITS = 0x8000;
 
 
 
-        // ' Public Const Shading = and blending caps ''
+        // Public Const Shading = and blending caps ''
         public const int SB_NONE = 0x0;
         public const int SB_CONST_ALPHA = 0x1;
         public const int SB_PIXEL_ALPHA = 0x2;
@@ -1580,13 +1580,13 @@ namespace DataTools.Hardware.Native
         public const int SB_GRAD_RECT = 0x10;
         public const int SB_GRAD_TRI = 0x20;
 
-        // ' Public Const Color = Management caps ''
+        // Public Const Color = Management caps ''
         public const int CM_NONE = 0x0;
         public const int CM_DEVICE_ICM = 0x1;
         public const int CM_GAMMA_RAMP = 0x2;
         public const int CM_CMYK_COLOR = 0x4;
 
-        // ' WINVER >= &H0500 ''
+        // WINVER >= &H0500 ''
 
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
@@ -1603,7 +1603,7 @@ namespace DataTools.Hardware.Native
         public const int BS_PATTERN8X8 = 7;
         public const int BS_SOLID = 0;
 
-        // ' Hatch brush constants
+        // Hatch brush constants
 
         public const int HS_BDIAGONAL = 3;
         public const int HS_BDIAGONAL1 = 7;
@@ -1648,7 +1648,7 @@ namespace DataTools.Hardware.Native
         public const int PS_PTCMASK = 0xF0000;
         public const int PS_USERSTYLE = 7;
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        // ' GetObject object constants
+        // GetObject object constants
         public const long BI_RGB = 0L;
         public const long BI_RLE8 = 1L;
         public const long BI_RLE4 = 2L;
@@ -1684,12 +1684,12 @@ namespace DataTools.Hardware.Native
         public const int NOTSRCERASE = 0x1100A6;
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */        // ' Draw Modes
+        /* TODO ERROR: Skipped RegionDirectiveTrivia */        // Draw Modes
 
         public const int OPAQUE = 2;
         public const int TRANSPARENT = 1;
 
-        // ' Text Alignment
+        // Text Alignment
 
         public const int TA_BASELINE = 2;
         public const int TA_BOTTOM = 8;
@@ -1712,13 +1712,13 @@ namespace DataTools.Hardware.Native
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        // ' Check states.
+        // Check states.
 
         public const int DRWCHK_NORMAL = 0;
         public const int DRWCHK_SELECTED = 1;
         public const int DRWCHK_DISABLED = 2;
 
-        // ' Draw Types
+        // Draw Types
 
         public const int DST_COMPLEX = 0x0;
         public const int DST_TEXT = 0x1;
@@ -1726,7 +1726,7 @@ namespace DataTools.Hardware.Native
         public const int DST_ICON = 0x3;
         public const int DST_BITMAP = 0x4;
 
-        // ' Draw states
+        // Draw states
 
         public const int DSS_NORMAL = 0x0;
         public const int DSS_UNION = 0x10;         // Gray string appearance '
@@ -2045,8 +2045,8 @@ namespace DataTools.Hardware.Native
             CommonDesktopDirectory = 0x19,
             AppData = 0x1A,
             PrintHood = 0x1B,
-            AltStartup = 0x1D,                          // ' DBCS
-            CommonAltStartup = 0x1E,                   // ' DBCS
+            AltStartup = 0x1D,                          // DBCS
+            CommonAltStartup = 0x1E,                   // DBCS
             CommonFavorites = 0x1F,
             InternetCache = 0x20,
             Cookies = 0x21,
@@ -2141,7 +2141,7 @@ namespace DataTools.Hardware.Native
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
             public string szStructureName;
         }
-        // ' Share folder information structure
+        // Share folder information structure
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct SHARE_INFO_2
         {
@@ -2159,7 +2159,7 @@ namespace DataTools.Hardware.Native
             public string shi2_passwd;
         }
 
-        // ' system browser-for-folder info structure
+        // system browser-for-folder info structure
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BROWSEINFO
         {
@@ -2691,7 +2691,7 @@ namespace DataTools.Hardware.Native
         [DllImport("kernel32", EntryPoint = "FormatMessageW", CharSet = CharSet.Unicode)]
         public static extern int FormatMessage(uint dwFlags, IntPtr lpSource, uint dwMessageId, uint dwLanguageId, IntPtr lpBuffer, uint dwSize, IntPtr va_list);
 
-        // ' Executable assembly version functions for 16, 32 and 64 bit binaries.
+        // Executable assembly version functions for 16, 32 and 64 bit binaries.
         [DllImport("version.dll", EntryPoint = "GetFileVersionInfoW", CharSet = CharSet.Unicode)]
         public static extern bool GetFileVersionInfo([MarshalAs(UnmanagedType.LPTStr)] string lptstrFilename, IntPtr dwHandle, int dwLen, IntPtr lpData);
         [DllImport("Version.dll", EntryPoint = "GetFileVersionInfoSizeW", CharSet = CharSet.Unicode)]
@@ -2969,7 +2969,7 @@ namespace DataTools.Hardware.Native
                 l.Add(Process.GetProcessById(pid));
             }
 
-            l.Sort(new Comparison<Process>((x, y) => { try { return string.Compare(x.ProcessName, y.ProcessName); } catch (Exception ex) { return 0; } }));
+            l.Sort(new Comparison<Process>((x, y) => { try { return string.Compare(x.ProcessName, y.ProcessName); } catch { return 0; } }));
             var t = new List<Process>();
             Process c = null;
             foreach (var p in l)
@@ -3097,11 +3097,11 @@ namespace DataTools.Hardware.Native
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
         public static extern int GetStockObject(int nIndex);
 
-        // ' Pen
+        // Pen
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
         public static extern int GetObject(IntPtr hObject, int nCount, [MarshalAs(UnmanagedType.Struct)] LOGPEN lpObject);
 
-        // ' Brush
+        // Brush
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
         public static extern int GetObject(IntPtr hObject, int nCount, [MarshalAs(UnmanagedType.Struct)] LOGBRUSH lpObject);
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
@@ -3174,7 +3174,7 @@ namespace DataTools.Hardware.Native
 
         [DllImport("user32", CharSet = CharSet.Unicode)]
         public static extern int DrawFrameControl(IntPtr hDC, [MarshalAs(UnmanagedType.Struct)] ref RECT lpRect, int un1, int un2);
-        // ' draw caption text
+        // draw caption text
 
         [DllImport("user32", CharSet = CharSet.Unicode)]
         public static extern int DrawCaption(IntPtr hWnd, IntPtr hDC, [MarshalAs(UnmanagedType.Struct)] ref RECT pcRect, int un);

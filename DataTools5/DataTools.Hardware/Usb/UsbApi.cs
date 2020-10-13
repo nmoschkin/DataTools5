@@ -1,18 +1,18 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: UsbApi
-// '         HID Feature Code Manipulation
-// '
-// '         Enums are documented in part from the API documentation at MSDN.
-// '         Other knowledge and references obtained through various sources
-// '         and all is considered public domain/common knowledge.
-// '
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: UsbApi
+//         HID Feature Code Manipulation
+//
+//         Enums are documented in part from the API documentation at MSDN.
+//         Other knowledge and references obtained through various sources
+//         and all is considered public domain/common knowledge.
+//
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using DataTools.Memory;
@@ -144,7 +144,7 @@ namespace DataTools.Hardware.Usb
             {
                 OpenHidRet = FileApi.CreateFile(device.DevicePath, FileApi.GENERIC_READ, FileApi.FILE_SHARE_READ | FileApi.FILE_SHARE_WRITE, IntPtr.Zero, FileApi.OPEN_EXISTING, FileApi.FILE_ATTRIBUTE_NORMAL, default);
             }
-            catch (Exception ex)
+            catch
             {
                 return IntPtr.Zero;
             }
@@ -213,7 +213,7 @@ namespace DataTools.Hardware.Usb
 
                 mm.Free();
             }
-            catch (Exception ex)
+            catch
             {
                 mm.Free();
                 return null;

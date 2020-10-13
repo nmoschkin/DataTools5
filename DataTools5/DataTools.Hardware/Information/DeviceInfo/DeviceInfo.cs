@@ -1,13 +1,13 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: DeviceInfo Hardware Information Class
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: DeviceInfo Hardware Information Class
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.ComponentModel;
@@ -47,15 +47,15 @@ namespace DataTools.Hardware
         protected string _BusReportedDeviceDesc;
         protected string _ClassName;
         protected Guid _DeviceInterfaceClassGuid;
-        protected DevClassPresenting.DeviceInterfaceClassEnum _DeviceInterfaceClass;
+        protected DeviceInterfaceClassEnum _DeviceInterfaceClass;
         protected Guid _DeviceClassGuid;
-        protected DevClassPresenting.DeviceClassEnum _DeviceClass;
+        protected DeviceClassEnum _DeviceClass;
         protected System.Drawing.Icon _DeviceClassIcon;
         protected string _Parent;
         protected string[] _Children;
-        protected DevClassPresenting.DeviceRemovalPolicy _RemovalPolicy;
+        protected DeviceRemovalPolicy _RemovalPolicy;
         protected bool _SafeRemovalRequired;
-        protected DevClassPresenting.DeviceCharacteristcs _Characteristics;
+        protected DeviceCharacteristcs _Characteristics;
         protected DateTime _InstallDate;
         protected BusType _BusType;
         protected string _VenderId = null;
@@ -209,7 +209,7 @@ namespace DataTools.Hardware
     /// <value></value>
     /// <returns></returns>
     /// <remarks></remarks>
-        public DevClassPresenting.DeviceCharacteristcs Characteristics
+        public DeviceCharacteristcs Characteristics
         {
             get
             {
@@ -247,7 +247,7 @@ namespace DataTools.Hardware
     /// <value></value>
     /// <returns></returns>
     /// <remarks></remarks>
-        public DevClassPresenting.DeviceRemovalPolicy RemovalPolicy
+        public DeviceRemovalPolicy RemovalPolicy
         {
             get
             {
@@ -609,7 +609,7 @@ namespace DataTools.Hardware
     /// <value></value>
     /// <returns></returns>
     /// <remarks></remarks>
-        public virtual DevClassPresenting.DeviceInterfaceClassEnum DeviceInterfaceClass
+        public virtual DeviceInterfaceClassEnum DeviceInterfaceClass
         {
             get
             {
@@ -647,7 +647,7 @@ namespace DataTools.Hardware
     /// <value></value>
     /// <returns></returns>
     /// <remarks></remarks>
-        public virtual DevClassPresenting.DeviceClassEnum DeviceClass
+        public virtual DeviceClassEnum DeviceClass
         {
             get
             {
@@ -918,21 +918,6 @@ namespace DataTools.Hardware
             {
                 return d;
             }
-        }
-
-        /// <summary>
-    /// Tests for device equality in a meaningful way.
-    /// Every device has an instance id.
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <returns></returns>
-    /// <remarks></remarks>
-        public override bool Equals(object obj)
-        {
-            DeviceInfo d = obj as DeviceInfo;
-            if (d is null)
-                return false;
-            return (d.InstanceId ?? "") == (InstanceId ?? "");
         }
     }
 }

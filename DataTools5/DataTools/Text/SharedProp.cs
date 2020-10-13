@@ -7,7 +7,7 @@ namespace DataTools.Text
     {
 
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        // ' These functions are useful for objects whose valid values come from shared members of specific classes, such as Color and FontWeight.
+        // These functions are useful for objects whose valid values come from shared members of specific classes, such as Color and FontWeight.
 
         /// <summary>
         /// Returns the string name of an object that is set to one of its own (or another type's) shared members.

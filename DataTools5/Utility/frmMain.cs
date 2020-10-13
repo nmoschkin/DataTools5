@@ -11,7 +11,7 @@ using System.Runtime.ConstrainedExecution;
 
 namespace Utility
 {
-    public partial class Form1 : Form
+    public partial class frmMain : Form
     {
 
         private string[] currentLines;
@@ -20,12 +20,12 @@ namespace Utility
 
         private int preambleTo;
 
-        public Form1()
+        public frmMain()
         {
             InitializeComponent();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnBrowse_Click(object sender, EventArgs e)
         {
 
             var dlg = new OpenFileDialog()
@@ -47,17 +47,17 @@ namespace Utility
 
             if (res == DialogResult.Cancel) return;
 
-            textBox1.Text = dlg.FileName;
+            txtFilename.Text = dlg.FileName;
 
 
 
 
 
         }
-        private void button1_Click(object sender, EventArgs e)
+        private void btnStart_Click(object sender, EventArgs e)
         {
 
-            var input = File.ReadAllLines(textBox1.Text);
+            var input = File.ReadAllLines(txtFilename.Text);
 
             currentLines = input;
 
@@ -95,6 +95,13 @@ namespace Utility
                     if (i >= c) throw new ArgumentException();
                 }
 
+                if (words[i].Word == "#region" || words[i].Word == "#endregion")
+                {
+                    int cl = words[i].Line;
+                    while (words[i].Line == cl && i < c) i++;
+
+                    if (i >= c) throw new ArgumentException();
+                }
 
                 switch (words[i].Word)
                 {
@@ -109,7 +116,7 @@ namespace Utility
                         i++;
 
                         break;
-
+                                          
                     case "class":
                     case "enum":
                     case "struct":
@@ -246,27 +253,22 @@ namespace Utility
             } while (i < c);
 
 
-            listBox1.Items.AddRange(currentMarkers.ToArray());
+            lstElements.Items.AddRange(currentMarkers.ToArray());
+            btnFinish.Enabled = true;
         }
 
-        private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
+
+        private void lstElements_SelectionChanged(object sender, EventArgs e)
         {
+            if (lstElements.SelectedIndex < 0) return;
+
+            var marker = currentMarkers[lstElements.SelectedIndex];
+
+            txtCode.Text = OutputFile.FormatOutputText(marker, currentLines, preambleTo);
 
         }
 
-        
-
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (listBox1.SelectedIndex < 0) return;
-
-            var marker = currentMarkers[listBox1.SelectedIndex];
-
-            textBox2.Text = OutputFile.FormatOutputText(marker, currentLines, preambleTo);
-
-        }
-
-        private void button3_Click(object sender, EventArgs e)
+        private void btnFinish_Click(object sender, EventArgs e)
         {
             var dlg = new FolderBrowserDialog()
             {
@@ -288,6 +290,22 @@ namespace Utility
             System.Diagnostics.Process.Start("explorer.exe", p);
             
 
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            txtFilename.Text = null;
+            txtCode.Text = null;
+            lstElements.Items.Clear();
+            currentLines = null;
+            currentMarkers = null;
+            btnFinish.Enabled = false;
+
+        }
+
+        private void txtFilename_TextChanged(object sender, EventArgs e)
+        {
+            btnStart.Enabled = File.Exists(txtFilename.Text);
         }
     }
 
@@ -435,7 +453,6 @@ namespace Utility
             var textOut = "";
 
             var pre = GetPreamble(lines, preambleTo);
-            var ns = "";
 
             if (pre != null) textOut += pre + "\r\n";
 

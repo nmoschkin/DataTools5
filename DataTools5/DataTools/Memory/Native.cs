@@ -252,7 +252,7 @@ namespace DataTools.Memory.NativeLib
         [DllImport("kernel32", EntryPoint = "HeapQueryInformation", CharSet = CharSet.Unicode, PreserveSig = true, SetLastError = true)]
         internal static extern bool HeapQueryInformation(IntPtr HeapHandle, int HeapInformationClass, ref ulong HeapInformation, IntPtr HeapInformationLength, IntPtr ReturnLength);
 
-        // ' As per the MSDN manual, we're using ONLY Heap functions, here.
+        // As per the MSDN manual, we're using ONLY Heap functions, here.
 
         [DllImport("kernel32", EntryPoint = "HeapAlloc", CharSet = CharSet.Unicode, PreserveSig = true, SetLastError = true)]
         internal static extern IntPtr HeapAlloc(IntPtr hHeap, uint dwOptions, IntPtr dwBytes);
@@ -275,11 +275,11 @@ namespace DataTools.Memory.NativeLib
         [DllImport("kernel32", EntryPoint = "HeapValidate", CharSet = CharSet.Unicode, PreserveSig = true, SetLastError = true)]
         internal static extern bool HeapValidate(IntPtr hHeap, uint dwOptions, IntPtr lpMem);
 
-        // ' used for specific operating system functions.
+        // used for specific operating system functions.
         [DllImport("kernel32.dll")]
         public static extern IntPtr LocalFree(IntPtr hMem);
 
-        // ' used for specific operating system functions.
+        // used for specific operating system functions.
         [DllImport("kernel32.dll")]
         internal static extern IntPtr GlobalFree(IntPtr hMem);
 

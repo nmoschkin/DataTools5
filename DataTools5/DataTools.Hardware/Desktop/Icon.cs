@@ -1,26 +1,26 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: Icon File.
-// '         Icon image file format structure classes
-// '         Capable of using Windows Vista and greater .PNG icon images
-// '         Can create a complete icon file from scratch using images you add
-// '
-// ' Icons are an old old format.  They have been adapted for modern use,
-// ' and the reason that they endure is because of the ability to succintly
-// ' store multiple image sizes in multiple formats, in a single file.
-// '
-// ' But, because the 32-bit bitmap standard came around slightly afterward,
-// ' certain acrobatic programming translations had to be made to get one from
-// ' the other, and back again.
-// '
-// ' Remember, back in the day, icon painting and design software was its own thing.
-// '
-// ' Copyright (C) 2011-2017 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: Icon File.
+//         Icon image file format structure classes
+//         Capable of using Windows Vista and greater .PNG icon images
+//         Can create a complete icon file from scratch using images you add
+//
+// Icons are an old old format.  They have been adapted for modern use,
+// and the reason that they endure is because of the ability to succintly
+// store multiple image sizes in multiple formats, in a single file.
+//
+// But, because the 32-bit bitmap standard came around slightly afterward,
+// certain acrobatic programming translations had to be made to get one from
+// the other, and back again.
+//
+// Remember, back in the day, icon painting and design software was its own thing.
+//
+// Copyright (C) 2011-2017 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.Collections.Generic;
@@ -298,7 +298,7 @@ namespace DataTools.Desktop
                 SafePtr mm = (SafePtr)_image;
                 int q = mm.IntAt(0L);
 
-                // ' The PNG moniker
+                // The PNG moniker
                 IsPngFormatRet = q == 0x474E5089;
                 return IsPngFormatRet;
             }
@@ -462,10 +462,10 @@ namespace DataTools.Desktop
         /// <remarks></remarks>
         private void _applyMask(MemPtr hBits, MemPtr hMask, int Width, int Height)
         {
-            // ' Masks in icon images are bitstreams wherein a single bit represents a 1 or 0 transparency
-            // ' for an entire pixel on the screen.  In order to convert an icon into a 32 bit images,
-            // ' we need to access each individual bit, and apply the NOT of the value to the byte-length alpha mask
-            // ' of the bitmap.
+            // Masks in icon images are bitstreams wherein a single bit represents a 1 or 0 transparency
+            // for an entire pixel on the screen.  In order to convert an icon into a 32 bit images,
+            // we need to access each individual bit, and apply the NOT of the value to the byte-length alpha mask
+            // of the bitmap.
 
             int x;
             int y;
@@ -474,10 +474,10 @@ namespace DataTools.Desktop
             int shift2;
             int mask;
 
-            // ' in transparency masks for icons, the minimum stride is 32 pixels/bits, no matter the actual size of the image.
+            // in transparency masks for icons, the minimum stride is 32 pixels/bits, no matter the actual size of the image.
             int boundary = Math.Max(32, Width);
 
-            // ' walk every pixel of the image.
+            // walk every pixel of the image.
             var loopTo = Height - 1;
             for (y = 0; y <= loopTo; y++)
             {
@@ -485,24 +485,24 @@ namespace DataTools.Desktop
                 for (x = 0; x <= loopTo1; x++)
                 {
 
-                    // ' the first shift is our position in the bitmap output.
-                    // ' 4 bytes is 32 bits ... then we add 3 to get directly 
-                    // ' to the alpha mask.
+                    // the first shift is our position in the bitmap output.
+                    // 4 bytes is 32 bits ... then we add 3 to get directly 
+                    // to the alpha mask.
                     shift = 4 * (x + y * Width) + 3;
 
-                    // ' we find the exact bit-wise position by modulus with 8 (the length of a byte, in bits)
+                    // we find the exact bit-wise position by modulus with 8 (the length of a byte, in bits)
                     bit = 7 - x % 8;
 
-                    // ' the second shift is the position in the bitmask, byte-wise.  We subtract 1 from y before subtracting it from the
-                    // ' height because the first scan line is 0.
+                    // the second shift is the position in the bitmask, byte-wise.  We subtract 1 from y before subtracting it from the
+                    // height because the first scan line is 0.
                     shift2 = (int)((x + (Height - y - 1) * boundary) / 8d);
 
-                    // ' we get a number that is either 1 or 0 from the mask by accessing the exact byte, and then
-                    // ' accessing the exact bit by left-shifting its value into the 1 position.
+                    // we get a number that is either 1 or 0 from the mask by accessing the exact byte, and then
+                    // accessing the exact bit by left-shifting its value into the 1 position.
                     mask = 1 & hMask.ByteAt(shift2) >> bit;
 
-                    // ' we do a quick logical AND via multiplication with the inverse of the mask.
-                    // ' we do this because alpha channel 0 is transparent, but transparent mask 1 is also transparent.
+                    // we do a quick logical AND via multiplication with the inverse of the mask.
+                    // we do this because alpha channel 0 is transparent, but transparent mask 1 is also transparent.
                     hBits.ByteAt(shift) *= (byte)(1 - mask);
                 }
             }
@@ -894,7 +894,7 @@ namespace DataTools.Desktop
             var loopTo = c;
             for (i = 0; i <= loopTo; i++)
             {
-                // ' load all images in sequence.
+                // load all images in sequence.
                 _entries.Add(new IconImageEntry(mm.ToStruct<IconFileStructures.ICONDIRENTRY>(), optr));
                 ptr = ptr + f;
             }
@@ -981,7 +981,7 @@ namespace DataTools.Desktop
             foreach (var e in _entries)
                 bl = bl + e._image;
 
-            // ' write the icon file
+            // write the icon file
             stream.Write((byte[])bl, 0, (int)bl.Size);
             stream.Close();
             bl.Dispose();

@@ -1,15 +1,15 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: Real-time FileSystemMonitor implementation
-// '         With multi-threading and synchronized
-// '         with the app thread.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: Real-time FileSystemMonitor implementation
+//         With multi-threading and synchronized
+//         with the app thread.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.Collections.Generic;
@@ -932,13 +932,13 @@ namespace DataTools.Hardware.Disk
 
                 CreateHandle(cp);
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
 
-            // ' 128k is definitely enough when the thread is running continuously.
-            // ' barring something funky blocking us ...
+            // 128k is definitely enough when the thread is running continuously.
+            // barring something funky blocking us ...
             return _Buff.AllocZero(buffLen, true);
         }
 
@@ -1010,11 +1010,11 @@ namespace DataTools.Hardware.Disk
                             break;
                         }
                     }
-                    catch (System.Threading.ThreadAbortException ex)
+                    catch (System.Threading.ThreadAbortException)
                     {
                         break;
                     }
-                    catch (Exception ex2)
+                    catch (Exception)
                     {
                         notice = (IntPtr)1;
                         break;
@@ -1034,10 +1034,12 @@ namespace DataTools.Hardware.Disk
                 _thread = null;
                 PInvoke.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL_CLOSE, IntPtr.Zero, IntPtr.Zero);
             });
+
             _thread.SetApartmentState(System.Threading.ApartmentState.STA);
             _thread.IsBackground = true;
-            if (_thread.IsAlive == false)
-                _thread.Start();
+
+            _thread.Start();
+
             return true;
         }
 
@@ -1054,40 +1056,40 @@ namespace DataTools.Hardware.Disk
             {
                 case FileSystemMonitor.WM_SIGNAL:
                     {
-                        // ' don't block on the main thread, block on the watching thread, instead.
+                        // don't block on the main thread, block on the watching thread, instead.
                         if (System.Threading.Monitor.TryEnter(_WaitList))
                         {
                             int c;
                             int i;
 
-                            // ' there are items waiting to be dequeued, let's dequeue one.
+                            // there are items waiting to be dequeued, let's dequeue one.
                             i = _lastIndex;
                             c = _WaitList.Count - 1;
 
-                            // ' make sure we're not jumping ahead of a previous cleaning.
+                            // make sure we're not jumping ahead of a previous cleaning.
                             if (c >= i)
                             {
                                 if (_WaitList[i] is object)
                                 {
 
-                                    // ' post the events so that whatever is watching this folder can do its thing.
+                                    // post the events so that whatever is watching this folder can do its thing.
 
                                     _WaitList[i]._Info = (FileNotifyInfo)_WaitList[i]._Info.Clone();
                                     WatchNotifyChange?.Invoke(this, _WaitList[i]);
 
-                                    // ' remove the item from its slot in the queue, thereby
-                                    // ' eliminating any chance the same event will be fired, again.
+                                    // remove the item from its slot in the queue, thereby
+                                    // eliminating any chance the same event will be fired, again.
                                     _WaitList[i] = null;
                                 }
 
-                                // ' post a message to the queue cleaner.  if there are more files, it will send the pump back this way.
+                                // post a message to the queue cleaner.  if there are more files, it will send the pump back this way.
                                 _lastIndex = i + 1;
                                 PInvoke.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL_CLEAN, IntPtr.Zero, IntPtr.Zero);
                             }
 
                             System.Threading.Monitor.Exit(_WaitList);
                         }
-                        // ' going too fast?  we'll get there, eventually.  At least we know they're queuing.
+                        // going too fast?  we'll get there, eventually.  At least we know they're queuing.
                         else if (_WaitList.Count > 0)
                             PInvoke.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL, IntPtr.Zero, IntPtr.Zero);
                         break;
@@ -1105,18 +1107,18 @@ namespace DataTools.Hardware.Disk
                             int c = _WaitList.Count - 1;
                             for (i = c; i >= 0; i -= 1)
                             {
-                                // ' we want to only remove slots that have been dequeued.
+                                // we want to only remove slots that have been dequeued.
                                 if (_WaitList[i] is null)
                                 {
                                     _WaitList.RemoveAt(i);
                                 }
                             }
 
-                            // ' reset the lastindex to 0, indicating that any items still in the queue have not fired, yet.
+                            // reset the lastindex to 0, indicating that any items still in the queue have not fired, yet.
                             _lastIndex = 0;
                             System.Threading.Monitor.Exit(_WaitList);
 
-                            // ' if we still have more signals in the queue, tell the message pump to keep on truckin'.
+                            // if we still have more signals in the queue, tell the message pump to keep on truckin'.
                             if (_WaitList.Count > 0)
                                 PInvoke.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL, IntPtr.Zero, IntPtr.Zero);
                         }
@@ -1177,7 +1179,7 @@ namespace DataTools.Hardware.Disk
         }
 
         private bool disposedValue; // To detect redundant calls
-        private bool shuttingDown;
+        //private bool shuttingDown;
 
         /// <summary>
         /// Dispose of the managed and unmanaged resources.
@@ -1188,25 +1190,25 @@ namespace DataTools.Hardware.Disk
         {
             if (!disposedValue)
             {
-                shuttingDown = true;
+                //shuttingDown = true;
                 if (_isWatching)
                     StopWatching();
                 _lastIndex = 0;
                 _WaitList = null;
                 _WaitLock = 0;
 
-                // ' destroy the window handle
+                // destroy the window handle
                 DestroyHandle();
 
-                // ' free the buffer
+                // free the buffer
                 _Buff.Free(true);
 
-                // ' release the String handle
+                // release the String handle
                 _stor = null;
             }
 
             disposedValue = true;
-            shuttingDown = false;
+            //shuttingDown = false;
         }
 
         ~FSMonitor()

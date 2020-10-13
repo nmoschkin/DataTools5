@@ -1,18 +1,18 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: HidUsagePage
-// '         Hid Usage Page Enum.
-// '
-// '         Enums are documented in part from the API documentation at MSDN.
-// '         Other knowledge and references obtained through various sources
-// '         and all is considered public domain/common knowledge.
-// '
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: HidUsagePage
+//         Hid Usage Page Enum.
+//
+//         Enums are documented in part from the API documentation at MSDN.
+//         Other knowledge and references obtained through various sources
+//         and all is considered public domain/common knowledge.
+//
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System.ComponentModel;
 

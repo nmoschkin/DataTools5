@@ -1,14 +1,14 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: DiskApi
-// '         Native Disk Serivces.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: DiskApi
+//         Native Disk Serivces.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 
 using System;
@@ -111,14 +111,14 @@ namespace DataTools.Hardware.Native
         public readonly static CTL_CODE IOCTL_STORAGE_FAILURE_PREDICTION_CONFIG = new CTL_CODE(IOCTL_STORAGE_BASE, 0x441U, METHOD_BUFFERED, FILE_ANY_ACCESS);
         public readonly static CTL_CODE IOCTL_STORAGE_READ_CAPACITY = new CTL_CODE(IOCTL_STORAGE_BASE, 0x450U, METHOD_BUFFERED, FILE_READ_ACCESS);
 
-        // '
-        // ' IOCTLs &H0463 to &H0468 reserved for dependent disk support.
-        // '
+        //
+        // IOCTLs &H0463 to &H0468 reserved for dependent disk support.
+        //
 
 
-        // '
-        // ' IOCTLs &H0470 to &H047f reserved for device and stack telemetry interfaces
-        // '
+        //
+        // IOCTLs &H0470 to &H047f reserved for device and stack telemetry interfaces
+        //
 
         public readonly static CTL_CODE IOCTL_STORAGE_GET_DEVICE_TELEMETRY = new CTL_CODE(IOCTL_STORAGE_BASE, 0x470U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
         public readonly static CTL_CODE IOCTL_STORAGE_DEVICE_TELEMETRY_NOTIFY = new CTL_CODE(IOCTL_STORAGE_BASE, 0x471U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
@@ -128,63 +128,63 @@ namespace DataTools.Hardware.Native
         public readonly static CTL_CODE IOCTL_STORAGE_MANAGE_DATA_SET_ATTRIBUTES = new CTL_CODE(IOCTL_STORAGE_BASE, 0x501U, METHOD_BUFFERED, FILE_WRITE_ACCESS);
         public readonly static CTL_CODE IOCTL_STORAGE_GET_LB_PROVISIONING_MAP_RESOURCES = new CTL_CODE(IOCTL_STORAGE_BASE, 0x502U, METHOD_BUFFERED, FILE_READ_ACCESS);
 
-        // '
-        // ' IOCTLs &H0503 to &H0580 reserved for Enhanced Storage devices.
-        // '
+        //
+        // IOCTLs &H0503 to &H0580 reserved for Enhanced Storage devices.
+        //
 
 
-        // '
-        // ' IOCTLs for bandwidth contracts on storage devices
-        // ' (Move this to ntddsfio if we decide to use a new base)
-        // '
+        //
+        // IOCTLs for bandwidth contracts on storage devices
+        // (Move this to ntddsfio if we decide to use a new base)
+        //
 
         public readonly static CTL_CODE IOCTL_STORAGE_GET_BC_PROPERTIES = new CTL_CODE(IOCTL_STORAGE_BASE, 0x600U, METHOD_BUFFERED, FILE_READ_ACCESS);
         public readonly static CTL_CODE IOCTL_STORAGE_ALLOCATE_BC_STREAM = new CTL_CODE(IOCTL_STORAGE_BASE, 0x601U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
         public readonly static CTL_CODE IOCTL_STORAGE_FREE_BC_STREAM = new CTL_CODE(IOCTL_STORAGE_BASE, 0x602U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
 
-        // '
-        // ' IOCTL to check for priority support
-        // '
+        //
+        // IOCTL to check for priority support
+        //
         public readonly static CTL_CODE IOCTL_STORAGE_CHECK_PRIORITY_HINT_SUPPORT = new CTL_CODE(IOCTL_STORAGE_BASE, 0x620U, METHOD_BUFFERED, FILE_ANY_ACCESS);
 
-        // '
-        // ' IOCTL for data integrity check support
-        // '
+        //
+        // IOCTL for data integrity check support
+        //
 
         public readonly static CTL_CODE IOCTL_STORAGE_START_DATA_INTEGRITY_CHECK = new CTL_CODE(IOCTL_STORAGE_BASE, 0x621U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
         public readonly static CTL_CODE IOCTL_STORAGE_STOP_DATA_INTEGRITY_CHECK = new CTL_CODE(IOCTL_STORAGE_BASE, 0x622U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
 
-        // ' begin_winioctl
+        // begin_winioctl
 
-        // '
-        // ' IOCTLs &H0643 to &H0655 reserved for VHD disk support.
-        // '
+        //
+        // IOCTLs &H0643 to &H0655 reserved for VHD disk support.
+        //
 
-        // '
-        // ' IOCTL to support Idle Power Management, including Device Wake
-        // '
+        //
+        // IOCTL to support Idle Power Management, including Device Wake
+        //
         public readonly static CTL_CODE IOCTL_STORAGE_ENABLE_IDLE_POWER = new CTL_CODE(IOCTL_STORAGE_BASE, 0x720U, METHOD_BUFFERED, FILE_ANY_ACCESS);
         public readonly static CTL_CODE IOCTL_STORAGE_GET_IDLE_POWERUP_REASON = new CTL_CODE(IOCTL_STORAGE_BASE, 0x721U, METHOD_BUFFERED, FILE_ANY_ACCESS);
 
-        // '
-        // ' IOCTLs to allow class drivers to acquire and release active references on
-        // ' a unit.  These should only be used if the class driver previously sent a
-        // ' successful IOCTL_STORAGE_ENABLE_IDLE_POWER request to the port driver.
-        // '
+        //
+        // IOCTLs to allow class drivers to acquire and release active references on
+        // a unit.  These should only be used if the class driver previously sent a
+        // successful IOCTL_STORAGE_ENABLE_IDLE_POWER request to the port driver.
+        //
         public readonly static CTL_CODE IOCTL_STORAGE_POWER_ACTIVE = new CTL_CODE(IOCTL_STORAGE_BASE, 0x722U, METHOD_BUFFERED, FILE_ANY_ACCESS);
         public readonly static CTL_CODE IOCTL_STORAGE_POWER_IDLE = new CTL_CODE(IOCTL_STORAGE_BASE, 0x723U, METHOD_BUFFERED, FILE_ANY_ACCESS);
 
-        // '
-        // ' This IOCTL indicates that the physical device has triggered some sort of event.
-        // '
+        //
+        // This IOCTL indicates that the physical device has triggered some sort of event.
+        //
         public readonly static CTL_CODE IOCTL_STORAGE_EVENT_NOTIFICATION = new CTL_CODE(IOCTL_STORAGE_BASE, 0x724U, METHOD_BUFFERED, FILE_ANY_ACCESS);
         public const int IOCTL_VOLUME_BASE = 86; // Asc("V")
         public const uint IOCTL_VOLUME_GET_VOLUME_DISK_EXTENTS = IOCTL_VOLUME_BASE << 16 | FILE_ANY_ACCESS << 14 | 0 << 2 | METHOD_BUFFERED;
 
 
-        // '
-        // ' IoControlCode values for disk devices.
-        // '
+        //
+        // IoControlCode values for disk devices.
+        //
 
         public const int IOCTL_DISK_BASE = 7;
         public readonly static CTL_CODE IOCTL_DISK_GET_DRIVE_GEOMETRY = new CTL_CODE(IOCTL_DISK_BASE, 0x0U, METHOD_BUFFERED, FILE_ANY_ACCESS);
@@ -208,24 +208,24 @@ namespace DataTools.Hardware.Native
 
 
 
-        // 'if(_WIN32_WINNT >= &H0400)
+        //if(_WIN32_WINNT >= &H0400)
         public readonly static CTL_CODE IOCTL_DISK_CONTROLLER_NUMBER = new CTL_CODE(IOCTL_DISK_BASE, 0x11U, METHOD_BUFFERED, FILE_ANY_ACCESS);
 
-        // '
-        // ' IOCTL support for SMART drive fault prediction.
-        // '
+        //
+        // IOCTL support for SMART drive fault prediction.
+        //
 
         public readonly static CTL_CODE SMART_GET_VERSION = new CTL_CODE(IOCTL_DISK_BASE, 0x20U, METHOD_BUFFERED, FILE_READ_ACCESS);
         public readonly static CTL_CODE SMART_SEND_DRIVE_COMMAND = new CTL_CODE(IOCTL_DISK_BASE, 0x21U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
         public readonly static CTL_CODE SMART_RCV_DRIVE_DATA = new CTL_CODE(IOCTL_DISK_BASE, 0x22U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
 
-        // 'endif /* _WIN32_WINNT >= &H0400 */
+        //endif /* _WIN32_WINNT >= &H0400 */
 
-        // 'if (_WIN32_WINNT >= &H500)
+        //if (_WIN32_WINNT >= &H500)
 
-        // '
-        // ' New IOCTLs for GUID Partition tabled disks.
-        // '
+        //
+        // New IOCTLs for GUID Partition tabled disks.
+        //
 
         public readonly static CTL_CODE IOCTL_DISK_GET_PARTITION_INFO_EX = new CTL_CODE(IOCTL_DISK_BASE, 0x12U, METHOD_BUFFERED, FILE_ANY_ACCESS);
         public readonly static CTL_CODE IOCTL_DISK_SET_PARTITION_INFO_EX = new CTL_CODE(IOCTL_DISK_BASE, 0x13U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
@@ -235,56 +235,56 @@ namespace DataTools.Hardware.Native
         public readonly static CTL_CODE IOCTL_DISK_GET_LENGTH_INFO = new CTL_CODE(IOCTL_DISK_BASE, 0x17U, METHOD_BUFFERED, FILE_READ_ACCESS);
         public readonly static CTL_CODE IOCTL_DISK_GET_DRIVE_GEOMETRY_EX = new CTL_CODE(IOCTL_DISK_BASE, 0x28U, METHOD_BUFFERED, FILE_ANY_ACCESS);
 
-        // 'endif /* _WIN32_WINNT >= &H0500 */
+        //endif /* _WIN32_WINNT >= &H0500 */
 
 
-        // 'if (_WIN32_WINNT >= &H0502)
+        //if (_WIN32_WINNT >= &H0502)
 
-        // '
-        // ' New IOCTL for disk devices that support 8 byte LBA
-        // '
+        //
+        // New IOCTL for disk devices that support 8 byte LBA
+        //
         public readonly static CTL_CODE IOCTL_DISK_REASSIGN_BLOCKS_EX = new CTL_CODE(IOCTL_DISK_BASE, 0x29U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
 
-        // 'End If ''_WIN32_WINNT >= &H0502
+        //End If ''_WIN32_WINNT >= &H0502
 
-        // 'if(_WIN32_WINNT >= &H0500)
+        //if(_WIN32_WINNT >= &H0500)
         public readonly static CTL_CODE IOCTL_DISK_UPDATE_DRIVE_SIZE = new CTL_CODE(IOCTL_DISK_BASE, 0x32U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
         public readonly static CTL_CODE IOCTL_DISK_GROW_PARTITION = new CTL_CODE(IOCTL_DISK_BASE, 0x34U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
         public readonly static CTL_CODE IOCTL_DISK_GET_CACHE_INFORMATION = new CTL_CODE(IOCTL_DISK_BASE, 0x35U, METHOD_BUFFERED, FILE_READ_ACCESS);
         public readonly static CTL_CODE IOCTL_DISK_SET_CACHE_INFORMATION = new CTL_CODE(IOCTL_DISK_BASE, 0x36U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
-        // 'If (NTDDI_VERSION < NTDDI_WS03) Then
+        //If (NTDDI_VERSION < NTDDI_WS03) Then
         public readonly static CTL_CODE IOCTL_DISK_GET_WRITE_CACHE_STATE = new CTL_CODE(IOCTL_DISK_BASE, 0x37U, METHOD_BUFFERED, FILE_READ_ACCESS);
-        // 'Else
+        //Else
         public readonly static CTL_CODE OBSOLETE_DISK_GET_WRITE_CACHE_STATE = new CTL_CODE(IOCTL_DISK_BASE, 0x37U, METHOD_BUFFERED, FILE_READ_ACCESS);
-        // 'End If
+        //End If
         public readonly static CTL_CODE IOCTL_DISK_DELETE_DRIVE_LAYOUT = new CTL_CODE(IOCTL_DISK_BASE, 0x40U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
 
-        // '
-        // ' Called to flush cached information that the driver may have about this
-        // ' device's characteristics.  Not all drivers cache characteristics, and not
-        // ' cached properties can be flushed.  This simply serves as an update to the
-        // ' driver that it may want to do an expensive reexamination of the device's
-        // ' characteristics now (fixed media size, partition table, etc...)
-        // '
+        //
+        // Called to flush cached information that the driver may have about this
+        // device's characteristics.  Not all drivers cache characteristics, and not
+        // cached properties can be flushed.  This simply serves as an update to the
+        // driver that it may want to do an expensive reexamination of the device's
+        // characteristics now (fixed media size, partition table, etc...)
+        //
 
         public readonly static CTL_CODE IOCTL_DISK_UPDATE_PROPERTIES = new CTL_CODE(IOCTL_DISK_BASE, 0x50U, METHOD_BUFFERED, FILE_ANY_ACCESS);
 
-        // '
-        // '  Special IOCTLs needed to support PC-98 machines in Japan
-        // '
+        //
+        //  Special IOCTLs needed to support PC-98 machines in Japan
+        //
 
         public readonly static CTL_CODE IOCTL_DISK_FORMAT_DRIVE = new CTL_CODE(IOCTL_DISK_BASE, 0xF3U, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS);
         public readonly static CTL_CODE IOCTL_DISK_SENSE_DEVICE = new CTL_CODE(IOCTL_DISK_BASE, 0xF8U, METHOD_BUFFERED, FILE_ANY_ACCESS);
 
-        // 'endif /* _WIN32_WINNT >= &H0500 */
+        //endif /* _WIN32_WINNT >= &H0500 */
 
-        // '
-        // ' The following device control codes are common for all class drivers.  The
-        // ' functions codes defined here must match all of the other class drivers.
-        // '
-        // ' Warning: these codes will be replaced in the future by equivalent
-        // ' IOCTL_STORAGE codes
-        // '
+        //
+        // The following device control codes are common for all class drivers.  The
+        // functions codes defined here must match all of the other class drivers.
+        //
+        // Warning: these codes will be replaced in the future by equivalent
+        // IOCTL_STORAGE codes
+        //
 
         public readonly static CTL_CODE IOCTL_DISK_CHECK_VERIFY = new CTL_CODE(IOCTL_DISK_BASE, 0x200U, METHOD_BUFFERED, FILE_READ_ACCESS);
         public readonly static CTL_CODE IOCTL_DISK_MEDIA_REMOVAL = new CTL_CODE(IOCTL_DISK_BASE, 0x201U, METHOD_BUFFERED, FILE_READ_ACCESS);
@@ -295,7 +295,7 @@ namespace DataTools.Hardware.Native
         public readonly static CTL_CODE IOCTL_DISK_FIND_NEW_DEVICES = new CTL_CODE(IOCTL_DISK_BASE, 0x206U, METHOD_BUFFERED, FILE_READ_ACCESS);
         public readonly static CTL_CODE IOCTL_DISK_GET_MEDIA_TYPES = new CTL_CODE(IOCTL_DISK_BASE, 0x300U, METHOD_BUFFERED, FILE_ANY_ACCESS);
 
-        // '
+        //
 
 
 
@@ -375,10 +375,10 @@ namespace DataTools.Hardware.Native
 
         [DllImport("kernel32.dll", EntryPoint = "GetVolumeInformationW")]
 
-        public static extern bool GetVolumeInformation([MarshalAs(UnmanagedType.LPWStr)] string lpRootPathName, IntPtr lpVolumeNameBuffer, int nVolumeNameSize, ref uint lpVolumeSerialNumber, ref int lpMaximumComponentLength, ref DevClassPresenting.FileSystemFlags lpFileSystemFlags, IntPtr lpFileSystemNameBuffer, int nFileSystemNameSize);
+        public static extern bool GetVolumeInformation([MarshalAs(UnmanagedType.LPWStr)] string lpRootPathName, IntPtr lpVolumeNameBuffer, int nVolumeNameSize, ref uint lpVolumeSerialNumber, ref int lpMaximumComponentLength, ref FileSystemFlags lpFileSystemFlags, IntPtr lpFileSystemNameBuffer, int nFileSystemNameSize);
         [DllImport("kernel32.dll", EntryPoint = "GetVolumeInformationByHandleW")]
 
-        public static extern bool GetVolumeInformationByHandle(IntPtr hFile, IntPtr lpVolumeNameBuffer, int nVolumeNameSize, ref uint lpVolumeSerialNumber, ref int lpMaximumComponentLength, ref DevClassPresenting.FileSystemFlags lpFileSystemFlags, IntPtr lpFileSystemNameBuffer, int nFileSystemNameSize);
+        public static extern bool GetVolumeInformationByHandle(IntPtr hFile, IntPtr lpVolumeNameBuffer, int nVolumeNameSize, ref uint lpVolumeSerialNumber, ref int lpMaximumComponentLength, ref FileSystemFlags lpFileSystemFlags, IntPtr lpFileSystemNameBuffer, int nFileSystemNameSize);
         [DllImport("kernel32.dll", EntryPoint = "GetVolumePathNamesForVolumeNameW")]
 
         public static extern bool GetVolumePathNamesForVolumeName([MarshalAs(UnmanagedType.LPWStr)] string lpszVolumeName, IntPtr lpszVolumePathNames, int cchBufferLength, ref int lpcchReturnLength);
@@ -390,9 +390,9 @@ namespace DataTools.Hardware.Native
         /// <param name="devicePath">The device path of the volume.</param>
         /// <returns>An array of DiskExtent structures.</returns>
         /// <remarks></remarks>
-        public static DevClassPresenting.DiskExtent[] GetDiskExtentsFor(string devicePath)
+        public static DiskExtent[] GetDiskExtentsFor(string devicePath)
         {
-            DevClassPresenting.DiskExtent[] deOut = null;
+            DiskExtent[] deOut = null;
             MemPtr inBuff = new MemPtr();
             int inSize;
             IntPtr file;
@@ -429,7 +429,7 @@ namespace DataTools.Hardware.Native
             ve = VOLUME_DISK_EXTENTS.FromPtr(inBuff);
             inBuff.Free();
             h = 0;
-            deOut = new DevClassPresenting.DiskExtent[ve.Extents.Length];
+            deOut = new DiskExtent[ve.Extents.Length];
             foreach (var currentDe in ve.Extents)
             {
                 de = currentDe;
@@ -467,9 +467,9 @@ namespace DataTools.Hardware.Native
             string pp = new string('\0', 1024);
             FileApi.GetVolumeNameForVolumeMountPoint(disk.DevicePath + @"\", mm1, 1024U);
 
-            // ' just get rid of the extra nulls (they like to stick around).
+            // just get rid of the extra nulls (they like to stick around).
 
-            disk.Type = DevClassPresenting.StorageType.Volume;
+            disk.Type = StorageType.Volume;
             disk.VolumeGuidPath = (string)mm1;
             disk.VolumePaths = GetVolumePaths((string)mm1);
 
@@ -655,7 +655,7 @@ namespace DataTools.Hardware.Native
                 return false;
             DISK_GEOMETRY_EX geo = default;
 
-            // ' get the disk geometry to retrieve the sector (LBA) size.
+            // get the disk geometry to retrieve the sector (LBA) size.
             if (!DiskGeometry(hfile, ref geo))
             {
                 PInvoke.CloseHandle(hfile);
@@ -680,7 +680,7 @@ namespace DataTools.Hardware.Native
             // read the GPT structure header.
             gpt = mm.ToStructAt<RAW_GPT_HEADER>(bps);
 
-            // ' check the partition header CRC.
+            // check the partition header CRC.
             if (gpt.IsValid)
             {
                 long lr = br;
@@ -698,17 +698,17 @@ namespace DataTools.Hardware.Native
                     lp += bps - lp % bps;
                 }
 
-                // ' bump up the memory pointer.
+                // bump up the memory pointer.
                 mm.ReAlloc(lp);
                 mm.ZeroMemory();
 
-                // ' read the partition information into the pointer.
+                // read the partition information into the pointer.
                 FileApi.ReadFile(hfile, mm.Handle, (uint)lp, ref br, IntPtr.Zero);
 
-                // ' check the partition table CRC.
+                // check the partition table CRC.
                 if (mm.CalculateCrc32() == gpt.PartitionArrayCRC32)
                 {
-                    // ' disk is valid.
+                    // disk is valid.
 
                     lp = (uint)Marshal.SizeOf<RAW_GPT_PARTITION>();
                     br = 0U;
@@ -716,7 +716,7 @@ namespace DataTools.Hardware.Native
                     int c = (int)gpt.NumberOfPartitions - 1;
                     gpp = new RAW_GPT_PARTITION[c + 1];
 
-                    // ' populate the drive information.
+                    // populate the drive information.
                     var loopTo = c;
                     for (i = 0; i <= loopTo; i++)
                     {
@@ -728,7 +728,7 @@ namespace DataTools.Hardware.Native
                         lp2 += lp;
                     }
 
-                    // ' trim off excess records from the array.
+                    // trim off excess records from the array.
                     if (i < c)
                     {
                         if (i == 0)
@@ -743,20 +743,20 @@ namespace DataTools.Hardware.Native
                 }
             }
 
-            // ' free the resources.
+            // free the resources.
             mm.Free();
             PInvoke.CloseHandle(hfile);
 
-            // ' if gpp is nothing then some error occurred somewhere and we did not succeed.
+            // if gpp is nothing then some error occurred somewhere and we did not succeed.
             if (gpp is null)
                 return false;
 
-            // ' create a new RAW_GPT_DISK structure.
+            // create a new RAW_GPT_DISK structure.
             gptInfo = new RAW_GPT_DISK();
             gptInfo.Header = gpt;
             gptInfo.Partitions = gpp;
 
-            // ' we have succeeded.
+            // we have succeeded.
             return true;
         }
 
@@ -853,7 +853,7 @@ namespace DataTools.Hardware.Native
                 mm.FromStruct(this);
                 mm.UIntAt(4L) = 0U;
 
-                // ' validate the crc and the signature moniker 
+                // validate the crc and the signature moniker 
                 ValidateRet = HeaderCRC32 == mm.CalculateCrc32() && Signature == 0x5452415020494645;
                 mm.Free();
                 return ValidateRet;

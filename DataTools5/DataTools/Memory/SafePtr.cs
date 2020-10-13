@@ -1,13 +1,9 @@
-﻿using System;
+﻿using DataTools.Memory.NativeLib;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.InteropServices;
-using System.Data;
-using DataTools.Memory;
 using System.Runtime.CompilerServices;
-using DataTools.Memory.NativeLib;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace DataTools.Memory
 {
@@ -32,7 +28,7 @@ namespace DataTools.Memory
                 {
                     TFree();
                     return;
-                }
+                }                
                 else if (handle == IntPtr.Zero || MemoryType == MemoryType.Aligned || MemoryType == MemoryType.HGlobal)
                 {
                     ReAlloc(value);
@@ -59,7 +55,6 @@ namespace DataTools.Memory
             }
             private set
             {
-
                 if (value == IntPtr.Zero)
                 {
                     currentHeap = procHeap;
@@ -200,7 +195,6 @@ namespace DataTools.Memory
             TAlloc(size);
         }
 
-
         public uint CalculateCrc32()
         {
             long c = Size;
@@ -229,7 +223,6 @@ namespace DataTools.Memory
                 return ref *(sbyte*)((long)handle + index);
             }
         }
-
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref char CharAt(long index)
@@ -453,6 +446,27 @@ namespace DataTools.Memory
             }
         }
 
+        public void Append<T>(T value) where T: struct
+        {
+            FromStructAt(Size, value);
+        }
+
+        public void Append(IntPtr buffer, int buffLen)
+        {
+            unsafe
+            {
+                Append((void*)buffer, buffLen);
+            }
+        }
+
+        public unsafe void Append(void *buffer, int buffLen)
+        {
+            long c = Length;
+
+            Length += buffLen;
+            Buffer.MemoryCopy(buffer, (void*)((long)handle + c), buffLen, buffLen);
+        }
+
         /// <summary>
         /// Converts the contents of an unmanaged pointer into a structure.
         /// </summary>
@@ -475,8 +489,9 @@ namespace DataTools.Memory
         public virtual void FromStruct<T>(T val) where T : struct
         {
             int cb = Marshal.SizeOf(val);
-            if (handle == IntPtr.Zero)
-                Alloc(cb);
+
+            if (cb > Size) ReAlloc(cb);
+
             Marshal.StructureToPtr(val, handle, false);
         }
 
@@ -504,10 +519,11 @@ namespace DataTools.Memory
         public virtual void FromStructAt<T>(long byteIndex, T val) where T : struct
         {
             int cb = Marshal.SizeOf(val);
+
+            if (byteIndex + cb > Size) ReAlloc(byteIndex + cb);
+
             Marshal.StructureToPtr(val, (IntPtr)((long)handle + byteIndex), false);
         }
-
-
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte[] ToByteArray(long index = 0, int length = 0)
@@ -615,7 +631,7 @@ namespace DataTools.Memory
             {
                 var vl = value.Length;
                 GCHandle gch = GCHandle.Alloc(value, GCHandleType.Pinned);
-                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject().ToInt64(), (void*)((long)handle + index), vl, vl);
+                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject(), (void*)((long)handle + index), vl, vl);
                 gch.Free();
             }
         }
@@ -630,7 +646,7 @@ namespace DataTools.Memory
             {
                 var vl = value.Length * 2;
                 GCHandle gch = GCHandle.Alloc(value, GCHandleType.Pinned);
-                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject().ToInt64(), (void*)((long)handle + index), vl, vl);
+                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject(), (void*)((long)handle + index), vl, vl);
                 gch.Free();
             }
         }
@@ -647,12 +663,10 @@ namespace DataTools.Memory
             {
                 var vl = value.Length * cb;
                 GCHandle gch = GCHandle.Alloc(value, GCHandleType.Pinned);
-                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject().ToInt64(), (void*)((long)handle + index), vl, vl);
+                Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject(), (void*)((long)handle + index), vl, vl);
                 gch.Free();
             }
         }
-
-
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string GetString(long index)
@@ -671,7 +685,6 @@ namespace DataTools.Memory
                 return new string((char*)((long)handle + index), 0, length);
             }
         }
-
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetString(long index, string value, bool addNull = true)
@@ -796,7 +809,6 @@ namespace DataTools.Memory
         {
             unsafe
             {
-
                 if (handle == null) return null;
 
                 string s = null;
@@ -810,7 +822,6 @@ namespace DataTools.Memory
 
                 while (true)
                 {
-
                     if (*ap == (char)0)
                     {
                         if (x != 0)
@@ -838,7 +849,6 @@ namespace DataTools.Memory
 
                 return o.ToArray();
             }
-
         }
 
         #region Editing
@@ -886,8 +896,8 @@ namespace DataTools.Memory
         /// <param name="index">The index of the first byte in the affected block.</param>
         /// <param name="length">The length of the block.</param>
         /// <param name="offset">
-        /// The offset amount of the slide.  If the amount is negative, 
-        /// the block slides toward the beginning of the memory buffer. 
+        /// The offset amount of the slide.  If the amount is negative,
+        /// the block slides toward the beginning of the memory buffer.
         /// If it is positive, it slides to the right.
         /// </param>
         /// <remarks></remarks>
@@ -901,7 +911,7 @@ namespace DataTools.Memory
 
             if (0 > (index + length + offset) || (index + length + offset) > hl)
             {
-                throw new IndexOutOfRangeException("Index out of bounds DataTools.Memory.MemPtr.Slide().");
+                throw new IndexOutOfRangeException("Index out of bounds DataTools.Memory.SafePtr.Slide().");
             }
 
             IntPtr p1;
@@ -926,7 +936,7 @@ namespace DataTools.Memory
         }
 
         /// <summary>
-        /// Pulls the data in from the specified index. 
+        /// Pulls the data in from the specified index.
         /// </summary>
         /// <param name="index">The index where contraction begins. The contraction starts at this position.</param>
         /// <param name="amount">Number of bytes to pull in.</param>
@@ -1000,7 +1010,7 @@ namespace DataTools.Memory
         }
 
         /// <summary>
-        /// Pulls the data in from the specified character index. 
+        /// Pulls the data in from the specified character index.
         /// </summary>
         /// <param name="index">The index where contraction begins. The contraction starts at this position.</param>
         /// <param name="amount">Number of characters to pull in.</param>
@@ -1024,7 +1034,7 @@ namespace DataTools.Memory
         }
 
         /// <summary>
-        /// Parts the string in both directions from index.  
+        /// Parts the string in both directions from index.
         /// </summary>
         /// <param name="index">The index from which to expand.</param>
         /// <param name="amount">The amount of expansion, in both directions, so the total expansion will be amount * 1.</param>
@@ -1139,10 +1149,10 @@ namespace DataTools.Memory
             PullIn(index, amount);
         }
 
-        #endregion
+        #endregion Editing
 
         /// <summary>
-        /// Allocate a block of memory on a heap (typically the process heap).  
+        /// Allocate a block of memory on a heap (typically the process heap).
         /// </summary>
         /// <param name="size">The size to attempt to allocate</param>
         /// <param name="addPressure">Whether or not to call GC.AddMemoryPressure</param>
@@ -1155,7 +1165,6 @@ namespace DataTools.Memory
         /// <remarks></remarks>
         public bool Alloc(long size, bool addPressure = false, IntPtr? hHeap = null, bool zeroMem = true)
         {
-
             if (handle != IntPtr.Zero)
             {
                 if (MemoryType == MemoryType.HGlobal)
@@ -1198,7 +1207,7 @@ namespace DataTools.Memory
         }
 
         /// <summary>
-        /// Allocate a block of memory on the process heap.  
+        /// Allocate a block of memory on the process heap.
         /// </summary>
         /// <param name="size">The size to attempt to allocate</param>
         /// <param name="addPressure">Whether or not to call GC.AddMemoryPressure</param>
@@ -1209,9 +1218,8 @@ namespace DataTools.Memory
             return Alloc(size, addPressure, null, true);
         }
 
-
         /// <summary>
-        /// Allocate a block of memory on the process heap.  
+        /// Allocate a block of memory on the process heap.
         /// </summary>
         /// <param name="size">The size to attempt to allocate</param>
         /// <returns>True if successful. If False, call GetLastError or FormatLastError to find out more information.</returns>
@@ -1237,7 +1245,6 @@ namespace DataTools.Memory
             return Alloc(size, addPressure, hHeap, true);
         }
 
-
         /// <summary>
         /// Allocates memory aligned to a particular byte boundary.
         /// Memory allocated in this way must be freed with AlignedFree()
@@ -1252,7 +1259,6 @@ namespace DataTools.Memory
         /// <returns></returns>
         public bool AlignedAlloc(long size, long alignment = 512, bool addPressure = false, IntPtr? hHeap = null)
         {
-
             if (handle != IntPtr.Zero) return false;
 
             if ((alignment == 0) || (alignment & 1) != 0)
@@ -1337,7 +1343,6 @@ namespace DataTools.Memory
                 return false;
         }
 
-
         /// <summary>
         /// Reallocate a block of memory to a different size on the task heap.
         /// </summary>
@@ -1357,7 +1362,6 @@ namespace DataTools.Memory
             long l = Size;
             bool ra;
 
-            
             // While the function doesn't need to call HeapReAlloc, it hasn't necessarily failed, either.
             if (size == l) return true;
 
@@ -1377,7 +1381,6 @@ namespace DataTools.Memory
                     GC.RemoveMemoryPressure(l - size);
                 else
                     GC.AddMemoryPressure(size - l);
-
             }
 
             Size = size;
@@ -1484,7 +1487,7 @@ namespace DataTools.Memory
                 handle = IntPtr.Zero;
                 MemoryType = MemoryType.Invalid;
                 HasGCPressure = false;
-               
+
                 Size = 0;
 
                 return true;
@@ -1493,7 +1496,7 @@ namespace DataTools.Memory
 
         // NetApi Memory functions should be used carefully and not within the context
         // of any scenario when you may accidentally call normal memory management functions
-        // on any region of memory allocated with the network memory functions. 
+        // on any region of memory allocated with the network memory functions.
         // Be mindful of usage.
         // Some normal functions such as Length and SetLength cannot be used.
         // Normal allocation and deallocation functions cannot be used, at all.
@@ -1512,7 +1515,7 @@ namespace DataTools.Memory
                 return true;
 
             int r = Native.NetApiBufferAllocate(size, ref base.handle);
-            
+
             if (r == 0)
             {
                 MemoryType = MemoryType.Network;
@@ -1523,7 +1526,6 @@ namespace DataTools.Memory
             {
                 return false;
             }
-
         }
 
         /// <summary>
@@ -1541,12 +1543,9 @@ namespace DataTools.Memory
             Size = 0;
         }
 
-
-
-
         // Virtual Memory should be used carefully and not within the context
         // of any scenario when you may accidentally call normal memory management functions
-        // on any region of memory allocated with the Virtual functions. 
+        // on any region of memory allocated with the Virtual functions.
         // Be mindful of usage.
         // Some normal functions such as Length and SetLength cannot be used (use VirtualLength).
         // Normal allocation and deallocation functions cannot be used, at all.
@@ -1575,7 +1574,7 @@ namespace DataTools.Memory
 
             if (va && addPressure)
                 GC.AddMemoryPressure(Size);
-            
+
             HasGCPressure = addPressure;
 
             return va;
@@ -1615,7 +1614,6 @@ namespace DataTools.Memory
 
                     currentHeap = procHeap;
                     Size = 0;
-
                 }
             }
 
@@ -1757,7 +1755,6 @@ namespace DataTools.Memory
             return base.GetHashCode();
         }
 
-
         public static explicit operator byte[](SafePtr val)
         {
             return val.ToByteArray();
@@ -1767,6 +1764,162 @@ namespace DataTools.Memory
         {
             var n = new SafePtr();
             n.FromByteArray(val);
+            return n;
+        }
+
+        public static explicit operator char[](SafePtr val)
+        {
+            return val.ToCharArray();
+        }
+
+        public static explicit operator SafePtr(char[] val)
+        {
+            var n = new SafePtr();
+            n.FromCharArray(val);
+            return n;
+        }
+
+        public static explicit operator sbyte[](SafePtr val)
+        {
+            return val.ToArray<sbyte>();
+        }
+
+        public static explicit operator SafePtr(sbyte[] val)
+        {
+            var n = new SafePtr();
+            n.FromArray(val);
+            return n;
+        }
+
+        public static explicit operator short[](SafePtr val)
+        {
+            return val.ToArray<short>();
+        }
+
+        public static explicit operator SafePtr(short[] val)
+        {
+            var n = new SafePtr();
+            n.FromArray(val);
+            return n;
+        }
+
+        public static explicit operator ushort[](SafePtr val)
+        {
+            return val.ToArray<ushort>();
+        }
+
+        public static explicit operator SafePtr(ushort[] val)
+        {
+            var n = new SafePtr();
+            n.FromArray(val);
+            return n;
+        }
+
+        public static explicit operator int[](SafePtr val)
+        {
+            return val.ToArray<int>();
+        }
+
+        public static explicit operator SafePtr(int[] val)
+        {
+            var n = new SafePtr();
+            n.FromArray(val);
+            return n;
+        }
+
+        public static explicit operator uint[](SafePtr val)
+        {
+            return val.ToArray<uint>();
+        }
+
+        public static explicit operator SafePtr(uint[] val)
+        {
+            var n = new SafePtr();
+            n.FromArray(val);
+            return n;
+        }
+
+        public static explicit operator long[](SafePtr val)
+        {
+            return val.ToArray<long>();
+        }
+
+        public static explicit operator SafePtr(long[] val)
+        {
+            var n = new SafePtr();
+            n.FromArray(val);
+            return n;
+        }
+
+        public static explicit operator ulong[](SafePtr val)
+        {
+            return val.ToArray<ulong>();
+        }
+
+        public static explicit operator SafePtr(ulong[] val)
+        {
+            var n = new SafePtr();
+            n.FromArray(val);
+            return n;
+        }
+
+        public static explicit operator float[](SafePtr val)
+        {
+            return val.ToArray<float>();
+        }
+
+        public static explicit operator SafePtr(float[] val)
+        {
+            var n = new SafePtr();
+            n.FromArray(val);
+            return n;
+        }
+
+        public static explicit operator double[](SafePtr val)
+        {
+            return val.ToArray<double>();
+        }
+
+        public static explicit operator SafePtr(double[] val)
+        {
+            var n = new SafePtr();
+            n.FromArray(val);
+            return n;
+        }
+
+        public static explicit operator decimal[](SafePtr val)
+        {
+            return val.ToArray<decimal>();
+        }
+
+        public static explicit operator SafePtr(decimal[] val)
+        {
+            var n = new SafePtr();
+            n.FromArray(val);
+            return n;
+        }
+
+        public static explicit operator DateTime[](SafePtr val)
+        {
+            return val.ToArray<DateTime>();
+        }
+
+        public static explicit operator SafePtr(DateTime[] val)
+        {
+            var n = new SafePtr();
+            n.FromArray(val);
+            return n;
+        }
+
+        public static explicit operator Guid[](SafePtr val)
+        {
+            return val.ToArray<Guid>();
+        }
+
+        public static explicit operator SafePtr(Guid[] val)
+        {
+            var n = new SafePtr();
+            n.FromArray(val);
             return n;
         }
 
@@ -1795,128 +1948,286 @@ namespace DataTools.Memory
             return val1;
         }
 
-
         public static SafePtr operator +(SafePtr val1, char[] val2)
         {
             var c = val1.Size;
 
-            val1.Alloc(val1.Size + val2.Length);
+            val1.Alloc(val1.Size + val2.Length * sizeof(char));
             val1.FromCharArray(val2, c);
 
             return val1;
         }
 
-        //public static SafePtr operator +(SafePtr val1, short val2)
-        //{
-        //    val1.handle += val2;
-        //    return val1;
-        //}
+        public static SafePtr operator +(SafePtr val1, string val2)
+        {
+            var c = val1.Size;
 
-        //public static SafePtr operator -(SafePtr val1, short val2)
-        //{
-        //    val1.handle -= val2;
-        //    return val1;
-        //}
+            val1.Alloc(val1.Size + val2.Length * sizeof(char));
+            val1.FromCharArray(val2.ToCharArray(), c);
 
-        //public static SafePtr operator +(SafePtr val1, ushort val2)
-        //{
-        //    val1.handle += val2;
-        //    return val1;
-        //}
+            return val1;
+        }
 
-        //public static SafePtr operator -(SafePtr val1, ushort val2)
-        //{
-        //    val1.handle -= val2;
-        //    return val1;
-        //}
+        public static SafePtr operator +(SafePtr val1, sbyte[] val2)
+        {
+            var c = val1.Size;
 
-        //public static SafePtr operator +(SafePtr val1, int val2)
-        //{
-        //    val1.handle += val2;
-        //    return val1;
-        //}
+            val1.Alloc(val1.Size + val2.Length);
+            val1.FromArray(val2, c);
 
-        //public static SafePtr operator -(SafePtr val1, int val2)
-        //{
-        //    val1.handle -= val2;
-        //    return val1;
-        //}
+            return val1;
+        }
 
-        //public static SafePtr operator +(SafePtr val1, long val2)
-        //{
-        //    val1.handle = (IntPtr)((long)val1.handle + val2);
-        //    return val1;
-        //}
+        public static SafePtr operator +(SafePtr val1, short[] val2)
+        {
+            var c = val1.Size;
 
-        //public static SafePtr operator -(SafePtr val1, long val2)
-        //{
-        //    val1.handle = (IntPtr)((long)val1.handle - val2);
-        //    return val1;
-        //}
+            val1.Alloc(val1.Size + val2.Length * sizeof(short));
+            val1.FromArray(val2, c);
 
+            return val1;
+        }
 
-        //public static SafePtr operator +(SafePtr val1, uint val2)
-        //{
-        //    val1.handle = (IntPtr)((uint)val1.handle + val2);
-        //    return val1;
-        //}
+        public static SafePtr operator +(SafePtr val1, ushort[] val2)
+        {
+            var c = val1.Size;
 
-        //public static SafePtr operator -(SafePtr val1, uint val2)
-        //{
-        //    val1.handle = (IntPtr)((uint)val1.handle - val2);
-        //    return val1;
-        //}
+            val1.Alloc(val1.Size + val2.Length * sizeof(ushort));
+            val1.FromArray(val2, c);
 
+            return val1;
+        }
 
-        //public static SafePtr operator +(SafePtr val1, ulong val2)
-        //{
-        //    val1.handle = (IntPtr)((ulong)val1.handle + val2);
-        //    return val1;
-        //}
+        public static SafePtr operator +(SafePtr val1, int[] val2)
+        {
+            var c = val1.Size;
 
-        //public static SafePtr operator -(SafePtr val1, ulong val2)
-        //{
-        //    val1.handle = (IntPtr)((ulong)val1.handle - val2);
-        //    return val1;
-        //}
+            val1.Alloc(val1.Size + val2.Length * sizeof(int));
+            val1.FromArray(val2, c);
 
+            return val1;
+        }
 
+        public static SafePtr operator +(SafePtr val1, uint[] val2)
+        {
+            var c = val1.Size;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            val1.Alloc(val1.Size + val2.Length * sizeof(uint));
+            val1.FromArray(val2, c);
+
+            return val1;
+        }
+
+        public static SafePtr operator +(SafePtr val1, long[] val2)
+        {
+            var c = val1.Size;
+
+            val1.Alloc(val1.Size + val2.Length * sizeof(long));
+            val1.FromArray(val2, c);
+
+            return val1;
+        }
+
+        public static SafePtr operator +(SafePtr val1, ulong[] val2)
+        {
+            var c = val1.Size;
+
+            val1.Alloc(val1.Size + val2.Length * sizeof(ulong));
+            val1.FromArray(val2, c);
+
+            return val1;
+        }
+
+        public static SafePtr operator +(SafePtr val1, float[] val2)
+        {
+            var c = val1.Size;
+
+            val1.Alloc(val1.Size + val2.Length * sizeof(float));
+            val1.FromArray(val2, c);
+
+            return val1;
+        }
+
+        public static SafePtr operator +(SafePtr val1, double[] val2)
+        {
+            var c = val1.Size;
+
+            val1.Alloc(val1.Size + val2.Length * sizeof(double));
+            val1.FromArray(val2, c);
+
+            return val1;
+        }
+
+        public static SafePtr operator +(SafePtr val1, decimal[] val2)
+        {
+            var c = val1.Size;
+
+            val1.Alloc(val1.Size + val2.Length * sizeof(decimal));
+            val1.FromArray(val2, c);
+
+            return val1;
+        }
+
+        public static SafePtr operator +(SafePtr val1, DateTime[] val2)
+        {
+            var c = val1.Size;
+
+            val1.Alloc(val1.Size + val2.Length * Marshal.SizeOf<DateTime>());
+            val1.FromArray(val2, c);
+
+            return val1;
+        }
+
+        public static SafePtr operator +(SafePtr val1, Guid[] val2)
+        {
+            var c = val1.Size;
+
+            val1.Alloc(val1.Size + val2.Length * Marshal.SizeOf<Guid>());
+            val1.FromArray(val2, c);
+
+            return val1;
+        }
+
+        public static SafePtr operator +(SafePtr val1, short val2)
+        {
+            val1.handle += val2;
+            return val1;
+        }
+
+        public static SafePtr operator -(SafePtr val1, short val2)
+        {
+            val1.handle -= val2;
+            return val1;
+        }
+
+        public static SafePtr operator +(SafePtr val1, ushort val2)
+        {
+            val1.handle += val2;
+            return val1;
+        }
+
+        public static SafePtr operator -(SafePtr val1, ushort val2)
+        {
+            val1.handle -= val2;
+            return val1;
+        }
+
+        public static SafePtr operator +(SafePtr val1, int val2)
+        {
+            val1.handle += val2;
+            return val1;
+        }
+
+        public static SafePtr operator -(SafePtr val1, int val2)
+        {
+            val1.handle -= val2;
+            return val1;
+        }
+
+        public static SafePtr operator +(SafePtr val1, long val2)
+        {
+            val1.handle = (IntPtr)((long)val1.handle + val2);
+            return val1;
+        }
+
+        public static SafePtr operator -(SafePtr val1, long val2)
+        {
+            val1.handle = (IntPtr)((long)val1.handle - val2);
+            return val1;
+        }
+
+        public static SafePtr operator +(SafePtr val1, uint val2)
+        {
+            val1.handle = (IntPtr)((uint)val1.handle + val2);
+            return val1;
+        }
+
+        public static SafePtr operator -(SafePtr val1, uint val2)
+        {
+            val1.handle = (IntPtr)((uint)val1.handle - val2);
+            return val1;
+        }
+
+        public static SafePtr operator +(SafePtr val1, ulong val2)
+        {
+            val1.handle = (IntPtr)((ulong)val1.handle + val2);
+            return val1;
+        }
+
+        public static SafePtr operator -(SafePtr val1, ulong val2)
+        {
+            val1.handle = (IntPtr)((ulong)val1.handle - val2);
+            return val1;
+        }
+
+        public static SafePtr operator +(SafePtr val1, IntPtr val2)
+        {
+            val1.handle = (IntPtr)((long)val1.handle + (long)val2);
+            return val1;
+        }
+
+        public static SafePtr operator -(SafePtr val1, IntPtr val2)
+        {
+            val1.handle = (IntPtr)((long)val1.handle - (long)val2);
+            return val1;
+        }
+
         public static bool operator ==(IntPtr val1, SafePtr val2)
         {
-            return (val1 == val2?.handle);
+            return (val1 == val2.handle);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(IntPtr val1, SafePtr val2)
         {
-            return (val1 != val2?.handle);
+            return (val1 != val2.handle);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(SafePtr val2, IntPtr val1)
         {
-            return (val1 == val2?.handle);
+            return (val1 == val2.handle);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator !=(SafePtr val2, IntPtr val1)
         {
-            return (val1 != val2?.handle);
+            return (val1 != val2.handle);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator IntPtr(SafePtr val)
         {
-            return val?.handle ?? IntPtr.Zero;
+            unsafe
+            {
+                return val.handle;
+            }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator SafePtr(IntPtr val)
         {
-            return new SafePtr(val);
+            unsafe
+            {
+                return new SafePtr
+                {
+                    handle = (IntPtr)(void*)val
+                };
+            }
         }
 
+        public static implicit operator UIntPtr(SafePtr val)
+        {
+            unsafe
+            {
+                return (UIntPtr)(void*)val.handle;
+            }
+        }
+
+        public static implicit operator SafePtr(UIntPtr val)
+        {
+            unsafe
+            {
+                return new SafePtr
+                {
+                    handle = (IntPtr)(void*)val
+                };
+            }
+        }
     }
 }

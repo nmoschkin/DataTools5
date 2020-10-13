@@ -1,15 +1,15 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library 
-// '
-// ' Module: Bluetooth API
-// '         Complete Translation of
-// '         BluetoothAPI.h
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows 
+//
+// Module: Bluetooth API
+//         Complete Translation of
+//         BluetoothAPI.h
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.Collections.Generic;
@@ -25,41 +25,41 @@ namespace DataTools.Hardware.Native
 
     
 
-        // ' {0850302A-B344-4fda-9BE9-90576B8D46F0}
+        // {0850302A-B344-4fda-9BE9-90576B8D46F0}
         public readonly static Guid GUID_BTHPORT_DEVICE_INTERFACE = new Guid(0x850302AU, 0xB344, 0x4FDA, 0x9B, 0xE9, 0x90, 0x57, 0x6B, 0x8D, 0x46, 0xF0);
 
-        // ' RFCOMM device interface GUID for RFCOMM services
-        // ' {b142fc3e-fa4e-460b-8abc-072b628b3c70}
+        // RFCOMM device interface GUID for RFCOMM services
+        // {b142fc3e-fa4e-460b-8abc-072b628b3c70}
         public readonly static Guid GUID_BTH_RFCOMM_SERVICE_DEVICE_INTERFACE = new Guid(0xB142FC3E, 0xFA4E, 0x460B, 0x8A, 0xBC, 0x7, 0x2B, 0x62, 0x8B, 0x3C, 0x70);
 
-        // ' {EA3B5B82-26EE-450E-B0D8-D26FE30A3869}
+        // {EA3B5B82-26EE-450E-B0D8-D26FE30A3869}
         public readonly static Guid GUID_BLUETOOTH_RADIO_IN_RANGE = new Guid(0xEA3B5B82, 0x26EE, 0x450E, 0xB0, 0xD8, 0xD2, 0x6F, 0xE3, 0xA, 0x38, 0x69);
 
-        // ' {E28867C9-C2AA-4CED-B969-4570866037C4}
+        // {E28867C9-C2AA-4CED-B969-4570866037C4}
         public readonly static Guid GUID_BLUETOOTH_RADIO_OUT_OF_RANGE = new Guid(0xE28867C9, 0xC2AA, 0x4CED, 0xB9, 0x69, 0x45, 0x70, 0x86, 0x60, 0x37, 0xC4);
 
-        // ' {7EAE4030-B709-4AA8-AC55-E953829C9DAA}
+        // {7EAE4030-B709-4AA8-AC55-E953829C9DAA}
         public readonly static Guid GUID_BLUETOOTH_L2CAP_EVENT = new Guid(0x7EAE4030U, 0xB709, 0x4AA8, 0xAC, 0x55, 0xE9, 0x53, 0x82, 0x9C, 0x9D, 0xAA);
 
-        // ' {FC240062-1541-49BE-B463-84C4DCD7BF7F}
+        // {FC240062-1541-49BE-B463-84C4DCD7BF7F}
         public readonly static Guid GUID_BLUETOOTH_HCI_EVENT = new Guid(0xFC240062, 0x1541, 0x49BE, 0xB4, 0x63, 0x84, 0xC4, 0xDC, 0xD7, 0xBF, 0x7F);
 
-        // '
-        // ' Support added in KB942567
+        //
+        // Support added in KB942567
 
-        // ' {5DC9136D-996C-46DB-84F5-32C0A3F47352}
+        // {5DC9136D-996C-46DB-84F5-32C0A3F47352}
         public readonly static Guid GUID_BLUETOOTH_AUTHENTICATION_REQUEST = new Guid(0x5DC9136DU, 0x996C, 0x46DB, 0x84, 0xF5, 0x32, 0xC0, 0xA3, 0xF4, 0x73, 0x52);
 
-        // ' {D668DFCD-0F4E-4EFC-BFE0-392EEEC5109C}
+        // {D668DFCD-0F4E-4EFC-BFE0-392EEEC5109C}
         public readonly static Guid GUID_BLUETOOTH_KEYPRESS_EVENT = new Guid(0xD668DFCD, 0xF4E, 0x4EFC, 0xBF, 0xE0, 0x39, 0x2E, 0xEE, 0xC5, 0x10, 0x9C);
 
-        // ' {547247e6-45bb-4c33-af8c-c00efe15a71d}
+        // {547247e6-45bb-4c33-af8c-c00efe15a71d}
         public readonly static Guid GUID_BLUETOOTH_HCI_VENDOR_EVENT = new Guid(0x547247E6, 0x45BB, 0x4C33, 0xAF, 0x8C, 0xC0, 0xE, 0xFE, 0x15, 0xA7, 0x1D);
 
 
-        // '
-        // ' Bluetooth base UUID for service discovery
-        // '
+        //
+        // Bluetooth base UUID for service discovery
+        //
         public readonly static Guid Bluetooth_Base_UUID = new Guid(0x0, 0x0, 0x1000, 0x80, 0x0, 0x0, 0x80, 0x5F, 0x9B, 0x34, 0xFB);
 
         public static Guid DEFINE_BLUETOOTH_UUID128(ushort shortId)
@@ -73,9 +73,9 @@ namespace DataTools.Hardware.Native
 
 
 
-        // '
-        // ' UUIDs for the Protocol Identifiers, Service Discovery Assigned Numbers
-        // '
+        //
+        // UUIDs for the Protocol Identifiers, Service Discovery Assigned Numbers
+        //
         public const ushort SDP_PROTOCOL_UUID16 = 0x1;
         public const ushort UDP_PROTOCOL_UUID16 = 0x2;
         public const ushort RFCOMM_PROTOCOL_UUID16 = 0x3;
@@ -123,9 +123,9 @@ namespace DataTools.Hardware.Native
         public readonly static Guid UDI_C_PLANE_PROTOCOL_UUID = DEFINE_BLUETOOTH_UUID128(UDI_C_PLANE_PROTOCOL_UUID16);
         public readonly static Guid L2CAP_PROTOCOL_UUID = DEFINE_BLUETOOTH_UUID128(L2CAP_PROTOCOL_UUID16);
 
-        // '
-        // ' UUIDs for Service Class IDs, Service Discovery Assigned Numbers
-        // '
+        //
+        // UUIDs for Service Class IDs, Service Discovery Assigned Numbers
+        //
         public const ushort ServiceDiscoveryServerServiceClassID_UUID16 = 0x1000;
         public const ushort BrowseGroupDescriptorServiceClassID_UUID16 = 0x1001;
         public const ushort PublicBrowseGroupServiceClassID_UUID16 = 0x1002;
@@ -265,9 +265,9 @@ namespace DataTools.Hardware.Native
         public readonly static Guid HealthDeviceProfileSourceServiceClass_UUID = DEFINE_BLUETOOTH_UUID128(HealthDeviceProfileSourceServiceClassID_UUID16);
         public readonly static Guid HealthDeviceProfileSinkServiceClass_UUID = DEFINE_BLUETOOTH_UUID128(HealthDeviceProfileSinkServiceClassID_UUID16);
 
-        // '
-        // ' UUIDs for SIG defined profiles, Service Discovery Assigned Numbers
-        // '
+        //
+        // UUIDs for SIG defined profiles, Service Discovery Assigned Numbers
+        //
         public const ushort AdvancedAudioDistributionProfileID_UUID16 = 0x110D;
         public const ushort ImagingServiceProfileID_UUID16 = 0x111A;
         public const ushort BasicPrintingProfileID_UUID16 = 0x1122;
@@ -293,30 +293,30 @@ namespace DataTools.Hardware.Native
         public readonly static Guid VideoDistributionProfile_UUID = DEFINE_BLUETOOTH_UUID128(VideoDistributionProfileID_UUID16);
         public readonly static Guid HealthDeviceProfile_UUID = DEFINE_BLUETOOTH_UUID128(HealthDeviceProfileID_UUID16);
 
-        // '
-        // ' The SIG renamed the uuid for VideoConferencingServiceClass
-        // '
+        //
+        // The SIG renamed the uuid for VideoConferencingServiceClass
+        //
         public readonly static Guid VideoConferencingServiceClass_UUID = AVRemoteControlControllerServiceClass_UUID;
         public readonly static ushort VideoConferencingServiceClassID_UUID16 = AVRemoteControlControllerServiceClass_UUID16;
 
-        // '
-        // ' Fixing typos introduced in previous releases
-        // '
+        //
+        // Fixing typos introduced in previous releases
+        //
         public readonly static Guid HN_PROTOCOL_UUID = HCN_PROTOCOL_UUID;
         public readonly static Guid BasicPringingServiceClass_UUID = BasicPrintingProfile_UUID;
 
-        // '
-        // ' Fixing naming inconsistencies in UUID16 list
-        // '
+        //
+        // Fixing naming inconsistencies in UUID16 list
+        //
         public readonly static ushort CommonISDNAccessServiceClass_UUID16 = CommonISDNAccessServiceClassID_UUID16;
         public readonly static ushort VideoConferencingGWServiceClass_UUID16 = VideoConferencingGWServiceClassID_UUID16;
         public readonly static ushort UDIMTServiceClass_UUID16 = UDIMTServiceClassID_UUID16;
         public readonly static ushort UDITAServiceClass_UUID16 = UDITAServiceClassID_UUID16;
         public readonly static ushort AudioVideoServiceClass_UUID16 = AudioVideoServiceClassID_UUID16;
 
-        // '
-        // ' Fixing naming inconsistencies in profile list
-        // '
+        //
+        // Fixing naming inconsistencies in profile list
+        //
         public readonly static ushort CordlessServiceClassID_UUID16 = CordlessTelephonyServiceClassID_UUID16;
         public readonly static ushort AudioSinkSourceServiceClassID_UUID16 = AudioSinkServiceClassID_UUID16;
         public readonly static ushort AdvancedAudioDistributionServiceClassID_UUID16 = AdvancedAudioDistributionProfileID_UUID16;
@@ -330,15 +330,15 @@ namespace DataTools.Hardware.Native
         public readonly static Guid VideoDistributionServiceClass_UUID = VideoDistributionProfile_UUID;
 
 
-        // '
-        // ' max length of device friendly name.
-        // '
+        //
+        // max length of device friendly name.
+        //
         public const ushort BTH_MAX_NAME_SIZE = 248;
         public const ushort BTH_MAX_PIN_SIZE = 16;
         public const ushort BTH_LINK_KEY_LENGTH = 16;
 
 
-        // ' Manufacturers
+        // Manufacturers
         public readonly static BTH_MFG_INFO BTH_MFG_ERICSSON = new BTH_MFG_INFO("Ericsson", 0);
         public readonly static BTH_MFG_INFO BTH_MFG_NOKIA = new BTH_MFG_INFO("Nokia", 1);
         public readonly static BTH_MFG_INFO BTH_MFG_INTEL = new BTH_MFG_INFO("Intel", 2);
@@ -391,7 +391,7 @@ namespace DataTools.Hardware.Native
         public readonly static BTH_MFG_INFO BTH_MFG_INTERNAL_USE = new BTH_MFG_INFO("INTERNAL_USE", 65535);
 
 
-        // ' COD
+        // COD
 
 
         public const ulong BTH_ADDR_NULL = 0UL;
@@ -451,9 +451,9 @@ namespace DataTools.Hardware.Native
 
         public readonly static int COD_SERVICE_MAX_COUNT = 9;
 
-        // '
-        // ' Major class codes
-        // '
+        //
+        // Major class codes
+        //
         public const uint COD_MAJOR_MISCELLANEOUS = 0x0;
         public const uint COD_MAJOR_COMPUTER = 0x1;
         public const uint COD_MAJOR_PHONE = 0x2;
@@ -466,9 +466,9 @@ namespace DataTools.Hardware.Native
         public const uint COD_MAJOR_HEALTH = 0x9;
         public const uint COD_MAJOR_UNCLASSIFIED = 0x1F;
 
-        // '
-        // ' Minor class codes specific to each major class
-        // '
+        //
+        // Minor class codes specific to each major class
+        //
         public const uint COD_COMPUTER_MINOR_UNCLASSIFIED = 0x0;
         public const uint COD_COMPUTER_MINOR_DESKTOP = 0x1;
         public const uint COD_COMPUTER_MINOR_SERVER = 0x2;
@@ -498,7 +498,7 @@ namespace DataTools.Hardware.Native
         public const uint COD_AUDIO_MINOR_VIDEO_MONITOR = 0xE;
         public const uint COD_AUDIO_MINOR_VIDEO_DISPLAY_LOUDSPEAKER = 0xF;
         public const uint COD_AUDIO_MINOR_VIDEO_DISPLAY_CONFERENCING = 0x10;
-        // ' Public Const COD_AUDIO_MINOR_RESERVED As UInteger = (&H11)
+        // Public Const COD_AUDIO_MINOR_RESERVED As UInteger = (&H11)
         public const uint COD_AUDIO_MINOR_GAMING_TOY = 0x12;
         public const uint COD_PERIPHERAL_MINOR_KEYBOARD_MASK = 0x10;
         public const uint COD_PERIPHERAL_MINOR_POINTER_MASK = 0x20;
@@ -530,10 +530,10 @@ namespace DataTools.Hardware.Native
         public const uint COD_HEALTH_MINOR_HEALTH_DATA_DISPLAY = 0x7;
         public const uint COD_HEALTH_MINOR_STEP_COUNTER = 0x8;
 
-        // '
-        // ' Cannot use GET_COD_MINOR for this b/c it is embedded in a different manner
-        // ' than the rest of the major classes
-        // '
+        //
+        // Cannot use GET_COD_MINOR for this b/c it is embedded in a different manner
+        // than the rest of the major classes
+        //
 
         public const byte COD_LAN_ACCESS_BIT_OFFSET = 5;
         public const uint COD_LAN_MINOR_MASK = 0x1C;
@@ -549,9 +549,9 @@ namespace DataTools.Hardware.Native
             return (_cod & COD_LAN_ACCESS_MASK) >> COD_LAN_ACCESS_BIT_OFFSET;
         }
 
-        // '
-        // ' LAN access percent usage subcodes
-        // '
+        //
+        // LAN access percent usage subcodes
+        //
         public const uint COD_LAN_MINOR_UNCLASSIFIED = 0x0;
         public const uint COD_LAN_ACCESS_0_USED = 0x0;
         public const uint COD_LAN_ACCESS_17_USED = 0x1;
@@ -699,9 +699,9 @@ namespace DataTools.Hardware.Native
         {
             var sb = new List<string>();
 
-            // '
-            // ' Major class codes
-            // '
+            //
+            // Major class codes
+            //
             if (major == COD_MAJOR_MISCELLANEOUS)
                 sb.Add("MISCELLANEOUS");
             if (major == COD_MAJOR_COMPUTER)
@@ -757,9 +757,9 @@ namespace DataTools.Hardware.Native
 
 
 
-        // '
-        // ' Extended Inquiry Response (EIR) defines.
-        // '
+        //
+        // Extended Inquiry Response (EIR) defines.
+        //
         public const byte BTH_EIR_FLAGS_ID = 0x1;
         public const byte BTH_EIR_16_UUIDS_PARTIAL_ID = 0x2;
         public const byte BTH_EIR_16_UUIDS_COMPLETE_ID = 0x3;
@@ -770,32 +770,32 @@ namespace DataTools.Hardware.Native
         public const byte BTH_EIR_LOCAL_NAME_PARTIAL_ID = 0x8;
         public const byte BTH_EIR_LOCAL_NAME_COMPLETE_ID = 0x9;
         public const byte BTH_EIR_TX_POWER_LEVEL_ID = 0xA;
-        public const byte BTH_EIR_OOB_OPT_DATA_LEN_ID = 0xB; // ' OOB only.
-        public const byte BTH_EIR_OOB_BD_ADDR_ID = 0xC; // ' OOB only.
-        public const byte BTH_EIR_OOB_COD_ID = 0xD; // ' OOB only.
-        public const byte BTH_EIR_OOB_SP_HASH_ID = 0xE; // ' OOB only.
-        public const byte BTH_EIR_OOB_SP_RANDOMIZER_ID = 0xF; // ' OOB only.
+        public const byte BTH_EIR_OOB_OPT_DATA_LEN_ID = 0xB; // OOB only.
+        public const byte BTH_EIR_OOB_BD_ADDR_ID = 0xC; // OOB only.
+        public const byte BTH_EIR_OOB_COD_ID = 0xD; // OOB only.
+        public const byte BTH_EIR_OOB_SP_HASH_ID = 0xE; // OOB only.
+        public const byte BTH_EIR_OOB_SP_RANDOMIZER_ID = 0xF; // OOB only.
         public const byte BTH_EIR_MANUFACTURER_ID = 0xFF;
 
-        // '
-        // ' Extended Inquiry Response (EIR) size.
-        // '
+        //
+        // Extended Inquiry Response (EIR) size.
+        //
         public const byte BTH_EIR_SIZE = 240;
 
-        // '
-        // ' Used as an initializer of LAP_DATA
-        // '
+        //
+        // Used as an initializer of LAP_DATA
+        //
         public readonly static byte[] LAP_GIAC_INIT = new byte[] { 0x33, 0x8B, 0x9E };
         public readonly static byte[] LAP_LIAC_INIT = new byte[] { 0x0, 0x8B, 0x9E };
 
-        // '
-        // ' General Inquiry Access Code.
-        // '
+        //
+        // General Inquiry Access Code.
+        //
         public const uint LAP_GIAC_VALUE = 0x9E8B33;
 
-        // '
-        // ' Limited Inquiry Access Code.
-        // '
+        //
+        // Limited Inquiry Access Code.
+        //
         public const uint LAP_LIAC_VALUE = 0x9E8B00;
         public const uint BTH_ADDR_IAC_FIRST = 0x9E8B00;
         public const uint BTH_ADDR_IAC_LAST = 0x9E8B3F;
@@ -875,23 +875,23 @@ namespace DataTools.Hardware.Native
         public const byte BTH_ERROR_MAC_CONNECTION_FAILED = 0x3F;
         public const byte BTH_ERROR_UNSPECIFIED = 0xFF;
 
-        // '
-        // ' Min, max, and default L2cap MTU.
-        // '
+        //
+        // Min, max, and default L2cap MTU.
+        //
         public const uint L2CAP_MIN_MTU = 48U;
         public const uint L2CAP_MAX_MTU = 0xFFFF;
         public const uint L2CAP_DEFAULT_MTU = 672U;
 
-        // '
-        // ' Max l2cap signal size (48) - size of signal header (4)
-        // '
+        //
+        // Max l2cap signal size (48) - size of signal header (4)
+        //
         public const uint MAX_L2CAP_PING_DATA_LENGTH = 44U;
         public const uint MAX_L2CAP_INFO_DATA_LENGTH = 44U;
 
-        // '
-        // ' the following structures provide information about
-        // ' discovered remote radios.
-        // '
+        //
+        // the following structures provide information about
+        // discovered remote radios.
+        //
 
         public const uint BDIF_ADDRESS = 0x1;
         public const uint BDIF_COD = 0x2;
@@ -900,9 +900,9 @@ namespace DataTools.Hardware.Native
         public const uint BDIF_PERSONAL = 0x10;
         public const uint BDIF_CONNECTED = 0x20;
 
-        // '
-        // ' Support added in KB942567
-        // '
+        //
+        // Support added in KB942567
+        //
         // (NTDDI_VERSION > NTDDI_VISTASP1 || _
 
         public const uint BDIF_SHORT_NAME = 0x40;
@@ -944,7 +944,7 @@ namespace DataTools.Hardware.Native
             return BDIF_ADDRESS | BDIF_COD | BDIF_NAME | BDIF_PAIRED | BDIF_PERSONAL | BDIF_CONNECTED | BDIF_SHORT_NAME | BDIF_VISIBLE | BDIF_RSSI | BDIF_EIR | BDIF_SSP_PAIRED | BDIF_SSP_MITM_PROTECTED | BDIF_BR | BDIF_LE | BDIF_LE_PAIRED | BDIF_LE_PERSONAL | BDIF_LE_MITM_PROTECTED | BDIF_LE_PRIVACY_ENABLED | BDIF_LE_RANDOM_ADDRESS_TYPE | BDIF_LE_DISCOVERABLE | BDIF_LE_NAME | BDIF_LE_VISIBLE | BDIF_LE_CONNECTED | BDIF_LE_CONNECTABLE | BDIF_CONNECTION_INBOUND | BDIF_BR_SECURE_CONNECTION_PAIRED | BDIF_LE_SECURE_CONNECTION_PAIRED | BDIF_DEBUGKEY | BDIF_LE_DEBUGKEY;
         }
 
-        // '' >= SP1+KB942567
+        //' >= SP1+KB942567
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_ADDR
@@ -1031,79 +1031,79 @@ namespace DataTools.Hardware.Native
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_DEVICE_INFO
         {
-            // '
-            // ' Combination BDIF_Xxx flags
-            // '
+            //
+            // Combination BDIF_Xxx flags
+            //
             public uint flags;
 
-            // '
-            // ' Address of remote device.
-            // '
+            //
+            // Address of remote device.
+            //
             public BTH_ADDR address;
 
-            // '
-            // ' Class Of Device.
-            // '
+            //
+            // Class Of Device.
+            //
             public BTH_COD classOfDevice;
 
-            // '
-            // ' name of the device
-            // '
+            //
+            // name of the device
+            //
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = BTH_MAX_NAME_SIZE)]
             public string name;
         }
 
-        // '
-        // ' Buffer associated with GUID_BLUETOOTH_RADIO_IN_RANGE
-        // '
+        //
+        // Buffer associated with GUID_BLUETOOTH_RADIO_IN_RANGE
+        //
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_RADIO_IN_RANGE
         {
-            // '
-            // ' Information about the remote radio
-            // '
+            //
+            // Information about the remote radio
+            //
             public BTH_DEVICE_INFO deviceInfo;
 
-            // '
-            // ' The previous flags value for the BTH_DEVICE_INFO.  The receiver of this
-            // ' notification can compare the deviceInfo.flags and previousDeviceFlags
-            // ' to determine what has changed about this remote radio.
-            // '
-            // ' For instance, if BDIF_NAME is set in deviceInfo.flags and not in
-            // ' previousDeviceFlags, the remote radio's has just been retrieved.
-            // '
+            //
+            // The previous flags value for the BTH_DEVICE_INFO.  The receiver of this
+            // notification can compare the deviceInfo.flags and previousDeviceFlags
+            // to determine what has changed about this remote radio.
+            //
+            // For instance, if BDIF_NAME is set in deviceInfo.flags and not in
+            // previousDeviceFlags, the remote radio's has just been retrieved.
+            //
             public uint previousDeviceFlags;
         }
 
-        // '
-        // ' Buffer associated with GUID_BLUETOOTH_L2CAP_EVENT
-        // '
+        //
+        // Buffer associated with GUID_BLUETOOTH_L2CAP_EVENT
+        //
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_L2CAP_EVENT_INFO
         {
-            // '
-            // ' Remote radio address which the L2CAP event is associated with
-            // '
+            //
+            // Remote radio address which the L2CAP event is associated with
+            //
             public BTH_ADDR bthAddress;
 
-            // '
-            // ' The PSM that is either being connected to or disconnected from
-            // '
+            //
+            // The PSM that is either being connected to or disconnected from
+            //
             public ushort psm;
 
-            // '
-            // ' If != 0, then the channel has just been established.  If = 0, then the
-            // ' channel has been destroyed.  Notifications for a destroyed channel will
-            // ' only be sent for channels successfully established.
-            // '
+            //
+            // If != 0, then the channel has just been established.  If = 0, then the
+            // channel has been destroyed.  Notifications for a destroyed channel will
+            // only be sent for channels successfully established.
+            //
             public byte connected;
 
-            // '
-            // ' If != 0, then the local host iniated the l2cap connection.  If = 0, then
-            // ' the remote host initated the connection.  This field is only valid if
-            // ' connect is != 0.
-            // '
+            //
+            // If != 0, then the local host iniated the l2cap connection.  If = 0, then
+            // the remote host initated the connection.  This field is only valid if
+            // connect is != 0.
+            //
             public byte initiated;
         }
 
@@ -1111,35 +1111,35 @@ namespace DataTools.Hardware.Native
         public readonly static uint HCI_CONNECTION_TYPE_SCO = 2U;
         public readonly static uint HCI_CONNECTION_TYPE_LE = 3U;
 
-        // '
-        // ' Fix typos
-        // '
+        //
+        // Fix typos
+        //
         public readonly static uint HCI_CONNNECTION_TYPE_ACL = HCI_CONNECTION_TYPE_ACL;
         public readonly static uint HCI_CONNNECTION_TYPE_SCO = HCI_CONNECTION_TYPE_SCO;
 
 
 
-        // '
-        // ' Buffer associated with GUID_BLUETOOTH_HCI_EVENT
-        // '
+        //
+        // Buffer associated with GUID_BLUETOOTH_HCI_EVENT
+        //
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_HCI_EVENT_INFO
         {
-            // '
-            // ' Remote radio address which the HCI event is associated with
-            // '
+            //
+            // Remote radio address which the HCI event is associated with
+            //
             public BTH_ADDR bthAddress;
 
-            // '
-            // ' HCI_CONNNECTION_TYPE_XXX value
-            // '
+            //
+            // HCI_CONNNECTION_TYPE_XXX value
+            //
             public byte connectionType;
 
-            // '
-            // ' If != 0, then the underlying connection to the remote radio has just
-            // ' been estrablished.  If = 0, then the underlying conneciton has just been
-            // ' destroyed.
-            // '
+            //
+            // If != 0, then the underlying connection to the remote radio has just
+            // been estrablished.  If = 0, then the underlying conneciton has just been
+            // destroyed.
+            //
             public byte connected;
         }
 
@@ -1168,11 +1168,11 @@ namespace DataTools.Hardware.Native
             return AUTHENTICATION_REQUIREMENTS.MITMProtectionRequired == requirements | AUTHENTICATION_REQUIREMENTS.MITMProtectionRequiredBonding == requirements | AUTHENTICATION_REQUIREMENTS.MITMProtectionRequiredGeneralBonding == requirements;
         }
 
-        // '' >= SP1+KB942567
+        //' >= SP1+KB942567
 
-        // '
-        // ' Max length we allow for ServiceName in the remote SDP records
-        // '
+        //
+        // Max length we allow for ServiceName in the remote SDP records
+        //
         public const uint BTH_MAX_SERVICE_NAME_SIZE = 256U;
         public const uint MAX_UUIDS_IN_QUERY = 12U;
         public const uint BTH_VID_DEFAULT_VALUE = 0xFFFF;
@@ -1183,41 +1183,41 @@ namespace DataTools.Hardware.Native
         public const uint SDP_ERROR_INVALID_CONTINUATION_STATE = 0x5;
         public const uint SDP_ERROR_INSUFFICIENT_RESOURCES = 0x6;
 
-        // '
-        // ' Defined by windows to handle server errors that are not described by the
-        // ' above errors.  Start at &H0100 so we don't go anywhere near the spec
-        // ' defined values.
-        // '
+        //
+        // Defined by windows to handle server errors that are not described by the
+        // above errors.  Start at &H0100 so we don't go anywhere near the spec
+        // defined values.
+        //
 
-        // '
-        // ' Success, nothing went wrong
-        // '
+        //
+        // Success, nothing went wrong
+        //
         public const uint SDP_ERROR_SUCCESS = 0x0;
 
-        // '
-        // ' The SDP PDU or parameters other than the SDP stream response was not correct
-        // '
+        //
+        // The SDP PDU or parameters other than the SDP stream response was not correct
+        //
         public const uint SDP_ERROR_SERVER_INVALID_RESPONSE = 0x100;
 
-        // '
-        // ' The SDP response stream did not parse correctly.
-        // '
+        //
+        // The SDP response stream did not parse correctly.
+        //
         public const uint SDP_ERROR_SERVER_RESPONSE_DID_NOT_PARSE = 0x200;
 
-        // '
-        // ' The SDP response stream was successfully parsed, but did not match the
-        // ' required format for the query.
-        // '
+        //
+        // The SDP response stream was successfully parsed, but did not match the
+        // required format for the query.
+        //
         public const uint SDP_ERROR_SERVER_BAD_FORMAT = 0x300;
 
-        // '
-        // ' SDP was unable to send a continued query back to the server
-        // '
+        //
+        // SDP was unable to send a continued query back to the server
+        //
         public const uint SDP_ERROR_COULD_NOT_SEND_CONTINUE = 0x400;
 
-        // '
-        // ' Server sent a response that was too large to fit in the caller's buffer.
-        // '
+        //
+        // Server sent a response that was too large to fit in the caller's buffer.
+        //
         public const uint SDP_ERROR_RESPONSE_TOO_LARGE = 0x500;
         public readonly static uint SDP_ATTRIB_RECORD_HANDLE = 0x0;
         public readonly static uint SDP_ATTRIB_CLASS_ID_LIST = 0x1;
@@ -1234,9 +1234,9 @@ namespace DataTools.Hardware.Native
         public readonly static uint SDP_ATTRIB_ICON_URL = 0xC;
         public const int SDP_ATTRIB_ADDITIONAL_PROTOCOL_DESCRIPTOR_LIST = 0xD;
 
-        // '
-        // ' Attribute IDs in the range of &H000D - &H01FF are reserved for future use
-        // '
+        //
+        // Attribute IDs in the range of &H000D - &H01FF are reserved for future use
+        //
         public readonly static uint SDP_ATTRIB_PROFILE_SPECIFIC = 0x200;
         public readonly static uint LANG_BASE_LANGUAGE_INDEX = 0x0;
         public readonly static uint LANG_BASE_ENCODING_INDEX = 0x1;
@@ -1260,7 +1260,7 @@ namespace DataTools.Hardware.Native
         public readonly static uint SDP_ATTRIB_OBJECT_PUSH_SUPPORTED_FORMATS_LIST = 0x303;
         public readonly static uint SDP_ATTRIB_SYNCH_SUPPORTED_DATA_STORES_LIST = 0x301;
 
-        // '  this is in the assigned numbers doc, but it does not show up in any profile
+        //  this is in the assigned numbers doc, but it does not show up in any profile
         public readonly static uint SDP_ATTRIB_SERVICE_VERSION = 0x300;
         public readonly static uint SDP_ATTRIB_PAN_NETWORK_ADDRESS = 0x306;
         public readonly static uint SDP_ATTRIB_PAN_WAP_GATEWAY = 0x307;
@@ -1300,9 +1300,9 @@ namespace DataTools.Hardware.Native
         public readonly static uint SDP_ATTRIB_AVRCP_SUPPORTED_FEATURES = 0x311;
         public readonly static uint SDP_ATTRIB_HFP_SUPPORTED_FEATURES = 0x311;
 
-        // '
-        // ' Profile specific values
-        // '
+        //
+        // Profile specific values
+        //
         public readonly static uint AVRCP_SUPPORTED_FEATURES_CATEGORY_1 = 0x1;
         public readonly static uint AVRCP_SUPPORTED_FEATURES_CATEGORY_2 = 0x2;
         public readonly static uint AVRCP_SUPPORTED_FEATURES_CATEGORY_3 = 0x4;
@@ -1352,9 +1352,9 @@ namespace DataTools.Hardware.Native
         public readonly static uint PSM_3DSP = 0x21;
         public readonly static uint PSM_LE_IPSP = 0x23;
 
-        // '
-        // ' Strings
-        // '
+        //
+        // Strings
+        //
         public const string STR_ADDR_FMTW = "(%02x:%02x:%02x:%02x:%02x:%02x)";
         public const string STR_ADDR_SHORT_FMTW = "%04x%08x";
         public const string STR_USBHCI_CLASS_HARDWAREIDW = @"USB\\Class_E0&SubClass_01&Prot_01";
@@ -1365,7 +1365,7 @@ namespace DataTools.Hardware.Native
         public const string STR_ADDR_SHORT_FMT = STR_ADDR_SHORT_FMTW;
         public const string STR_USBHCI_CLASS_HARDWAREID = STR_USBHCI_CLASS_HARDWAREIDW;
 
-        // '' UNICODE
+        //' UNICODE
 
 
         public static uint GET_BITS(uint field, uint offset, uint mask)
@@ -1645,9 +1645,9 @@ namespace DataTools.Hardware.Native
 
 
 
-        // '
-        // ' IOCTL defines. 
-        // '
+        //
+        // IOCTL defines. 
+        //
         public readonly static uint BTH_IOCTL_BASE = 0U;
 
         public static DiskApi.CTL_CODE BTH_CTL(uint id)
@@ -1661,108 +1661,108 @@ namespace DataTools.Hardware.Native
         }
 
 
-        // '
-        // ' kernel-level (internal) IOCTLs
-        // '
+        //
+        // kernel-level (internal) IOCTLs
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_INTERNAL_BTH_SUBMIT_BRB = BTH_KERNEL_CTL((uint)(BTH_IOCTL_BASE + 0x0L));
 
-        // '
-        // ' Input:  none
-        // ' Output:  BTH_ENUMERATOR_INFO
-        // '
+        //
+        // Input:  none
+        // Output:  BTH_ENUMERATOR_INFO
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_INTERNAL_BTHENUM_GET_ENUMINFO = BTH_KERNEL_CTL((uint)(BTH_IOCTL_BASE + 0x1L));
 
-        // '
-        // ' Input:  none
-        // ' Output:  BTH_DEVICE_INFO
-        // '
+        //
+        // Input:  none
+        // Output:  BTH_DEVICE_INFO
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_INTERNAL_BTHENUM_GET_DEVINFO = BTH_KERNEL_CTL((uint)(BTH_IOCTL_BASE + 0x2L));
 
-        // '
-        // ' IOCTLs 
-        // '
-        // '
-        // ' Input:  none
-        // ' Output:  BTH_LOCAL_RADIO_INFO
-        // '
+        //
+        // IOCTLs 
+        //
+        //
+        // Input:  none
+        // Output:  BTH_LOCAL_RADIO_INFO
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_BTH_GET_LOCAL_INFO = BTH_CTL((uint)(BTH_IOCTL_BASE + 0x0L));
 
-        // '
-        // ' Input:  BTH_ADDR
-        // ' Output:  BTH_RADIO_INFO
-        // '
+        //
+        // Input:  BTH_ADDR
+        // Output:  BTH_RADIO_INFO
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_BTH_GET_RADIO_INFO = BTH_CTL((uint)(BTH_IOCTL_BASE + 0x1L));
 
-        // '
-        // ' use this ioctl to get a list of cached discovered devices in the port driver.
-        // '
-        // ' Input: None
-        // ' Output: BTH_DEVICE_INFO_LIST
-        // '
+        //
+        // use this ioctl to get a list of cached discovered devices in the port driver.
+        //
+        // Input: None
+        // Output: BTH_DEVICE_INFO_LIST
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_BTH_GET_DEVICE_INFO = BTH_CTL((uint)(BTH_IOCTL_BASE + 0x2L));
 
-        // '
-        // ' Input:  BTH_ADDR
-        // ' Output:  none
-        // '
+        //
+        // Input:  BTH_ADDR
+        // Output:  none
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_BTH_DISCONNECT_DEVICE = BTH_CTL((uint)(BTH_IOCTL_BASE + 0x3L));
-        // '
-        // ' Input:   BTH_VENDOR_SPECIFIC_COMMAND 
-        // ' Output:  PVOID
-        // '
+        //
+        // Input:   BTH_VENDOR_SPECIFIC_COMMAND 
+        // Output:  PVOID
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_BTH_HCI_VENDOR_COMMAND = BTH_CTL((uint)(BTH_IOCTL_BASE + 0x14L));
-        // '
-        // ' Input:  BTH_SDP_CONNECT
-        // ' Output:  BTH_SDP_CONNECT
-        // '
+        //
+        // Input:  BTH_SDP_CONNECT
+        // Output:  BTH_SDP_CONNECT
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_BTH_SDP_CONNECT = BTH_CTL((uint)(BTH_IOCTL_BASE + 0x80L));
 
-        // '
-        // ' Input:  HANDLE_SDP
-        // ' Output:  none
-        // '
+        //
+        // Input:  HANDLE_SDP
+        // Output:  none
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_BTH_SDP_DISCONNECT = BTH_CTL((uint)(BTH_IOCTL_BASE + 0x81L));
 
-        // '
-        // ' Input:  BTH_SDP_SERVICE_SEARCH_REQUEST
-        // ' Output:  ULong * number of handles wanted
-        // '
+        //
+        // Input:  BTH_SDP_SERVICE_SEARCH_REQUEST
+        // Output:  ULong * number of handles wanted
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_BTH_SDP_SERVICE_SEARCH = BTH_CTL((uint)(BTH_IOCTL_BASE + 0x82L));
 
-        // '
-        // ' Input:  BTH_SDP_ATTRIBUTE_SEARCH_REQUEST
-        // ' Output:  BTH_SDP_STREAM_RESPONSE Or bigger
-        // '
+        //
+        // Input:  BTH_SDP_ATTRIBUTE_SEARCH_REQUEST
+        // Output:  BTH_SDP_STREAM_RESPONSE Or bigger
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_BTH_SDP_ATTRIBUTE_SEARCH = BTH_CTL((uint)(BTH_IOCTL_BASE + 0x83L));
 
-        // '
-        // ' Input:  BTH_SDP_SERVICE_ATTRIBUTE_SEARCH_REQUEST
-        // ' Output:  BTH_SDP_STREAM_RESPONSE Or bigger
-        // '
+        //
+        // Input:  BTH_SDP_SERVICE_ATTRIBUTE_SEARCH_REQUEST
+        // Output:  BTH_SDP_STREAM_RESPONSE Or bigger
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_BTH_SDP_SERVICE_ATTRIBUTE_SEARCH = BTH_CTL((uint)(BTH_IOCTL_BASE + 0x84L));
 
-        // '
-        // ' Input:  raw SDP stream (at least 2 bytes)
-        // ' Ouptut: HANDLE_SDP
-        // '
+        //
+        // Input:  raw SDP stream (at least 2 bytes)
+        // Ouptut: HANDLE_SDP
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_BTH_SDP_SUBMIT_RECORD = BTH_CTL((uint)(BTH_IOCTL_BASE + 0x85L));
 
-        // '
-        // ' Input:  HANDLE_SDP
-        // ' Output:  none
-        // '
+        //
+        // Input:  HANDLE_SDP
+        // Output:  none
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_BTH_SDP_REMOVE_RECORD = BTH_CTL((uint)(BTH_IOCTL_BASE + 0x86L));
 
-        // '
-        // ' Input:  BTH_SDP_RECORD + raw SDP record
-        // ' Output:  HANDLE_SDP
-        // '
+        //
+        // Input:  BTH_SDP_RECORD + raw SDP record
+        // Output:  HANDLE_SDP
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_BTH_SDP_SUBMIT_RECORD_WITH_INFO = BTH_CTL((uint)(BTH_IOCTL_BASE + 0x87L));
 
-        // '
-        // ' Input:  NONE
-        // ' Output:  BTH_HOST_FEATURE_MASK
-        // '
+        //
+        // Input:  NONE
+        // Output:  BTH_HOST_FEATURE_MASK
+        //
         public readonly static DiskApi.CTL_CODE IOCTL_BTH_GET_HOST_SUPPORTED_FEATURES = BTH_CTL((uint)(BTH_IOCTL_BASE + 0x88L));
 
         public struct BTH_DEVICE_INFO_LIST
@@ -1847,7 +1847,7 @@ namespace DataTools.Hardware.Native
                     {
                         _ptr.Free();
                     }
-                    catch (Exception ex)
+                    catch
                     {
                     }
 
@@ -1855,14 +1855,14 @@ namespace DataTools.Hardware.Native
                 }
             }
 
-            // '
-            // ' [IN/OUT] minimum of 1 device required
-            // '
+            //
+            // [IN/OUT] minimum of 1 device required
+            //
             // Public numOfDevices As UInteger
 
-            // '
-            // ' Open ended array of devices;
-            // '
+            //
+            // Open ended array of devices;
+            //
             // Public deviceList As BTH_DEVICE_INFO
 
             public uint NumberOfDevices
@@ -1896,54 +1896,54 @@ namespace DataTools.Hardware.Native
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_RADIO_INFO
         {
-            // '
-            // ' Supported LMP features of the radio.  Use LMP_XXX() to extract
-            // ' the desired bits.
-            // '
+            //
+            // Supported LMP features of the radio.  Use LMP_XXX() to extract
+            // the desired bits.
+            //
             public ulong lmpSupportedFeatures;
 
-            // '
-            // ' Manufacturer ID (possibly BTH_MFG_XXX)
-            // '
+            //
+            // Manufacturer ID (possibly BTH_MFG_XXX)
+            //
             public BTH_MFG_INFO mfg;
 
-            // '
-            // ' LMP subversion
-            // '
+            //
+            // LMP subversion
+            //
             public ushort lmpSubversion;
 
-            // '
-            // ' LMP version
-            // '
+            //
+            // LMP version
+            //
             public byte lmpVersion;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_LOCAL_RADIO_INFO
         {
-            // '
-            // ' Local BTH_ADDR, class of defice, And radio name
-            // '
+            //
+            // Local BTH_ADDR, class of defice, And radio name
+            //
             public BTH_DEVICE_INFO localInfo;
 
-            // '
-            // ' Combo of LOCAL_RADIO_XXX values
-            // '
+            //
+            // Combo of LOCAL_RADIO_XXX values
+            //
             public uint flags;
 
-            // '
-            // ' HCI revision, see core spec
-            // '
+            //
+            // HCI revision, see core spec
+            //
             public ushort hciRevision;
 
-            // '
-            // ' HCI version, see core spec
-            // '
+            //
+            // HCI version, see core spec
+            //
             public byte hciVersion;
 
-            // '
-            // ' More information about the local radio (LMP, MFG)
-            // '
+            //
+            // More information about the local radio (LMP, MFG)
+            //
             public BTH_RADIO_INFO radioInfo;
         }
 
@@ -1964,16 +1964,16 @@ namespace DataTools.Hardware.Native
         public const int SERVICE_SECURITY_DISABLED = 0x10000000;
         public const int SERVICE_SECURITY_NO_ASK = 0x20000000;
 
-        // '
-        // ' Do Not attempt to validate that the stream can be parsed
-        // '
+        //
+        // Do Not attempt to validate that the stream can be parsed
+        //
         public const int SDP_SEARCH_NO_PARSE_CHECK = 0x1;
 
-        // '
-        // ' Do Not check the format of the results.  This includes suppression of both
-        // ' the check for a record patten (SEQ of UINT16 + value) And the validation
-        // ' of each universal attribute's accordance to the spec.
-        // '
+        //
+        // Do Not check the format of the results.  This includes suppression of both
+        // the check for a record patten (SEQ of UINT16 + value) And the validation
+        // of each universal attribute's accordance to the spec.
+        //
         public const int SDP_SEARCH_NO_FORMAT_CHECK = 0x2;
         public readonly static IntPtr HANDLE_SDP_NULL = IntPtr.Zero;
         public readonly static IntPtr HANDLE_SDP_LOCAL = new IntPtr(-2);
@@ -2009,12 +2009,12 @@ namespace DataTools.Hardware.Native
             SDP_TYPE_URL = 0x8,
             SDP_TYPE_CONTAINER = 0x20
         }
-        // '  9 - 31 are reserved
+        //  9 - 31 are reserved
 
 
-        // ' allow for a little easier type checking / sizing for integers And UUIDs
-        // ' ((SDP_ST_XXX & &HF0) >> 4) == SDP_TYPE_XXX
-        // ' size of the data (in bytes) Is encoded as ((SDP_ST_XXX & &HF0) >> 8)
+        // allow for a little easier type checking / sizing for integers And UUIDs
+        // ((SDP_ST_XXX & &HF0) >> 4) == SDP_TYPE_XXX
+        // size of the data (in bytes) Is encoded as ((SDP_ST_XXX & &HF0) >> 8)
         public enum SDP_SPECIFICTYPE
         {
             SDP_ST_NONE = 0x0,
@@ -2043,67 +2043,67 @@ namespace DataTools.Hardware.Native
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_SDP_CONNECT
         {
-            // '
-            // ' Address of the remote SDP server.  Cannot be the local radio.
-            // '
+            //
+            // Address of the remote SDP server.  Cannot be the local radio.
+            //
             public BTH_ADDR bthAddress;
 
-            // '
-            // ' Combination of SDP_CONNECT_XXX flags
-            // '
+            //
+            // Combination of SDP_CONNECT_XXX flags
+            //
             public uint fSdpConnect;
 
-            // '
-            // ' When the connect request returns, this will specify the handle to the
-            // ' SDP connection to the remote server
-            // '
+            //
+            // When the connect request returns, this will specify the handle to the
+            // SDP connection to the remote server
+            //
             public IntPtr hConnection;
 
-            // '
-            // ' Timeout, in seconds, for the requests on ths SDP channel.  If the request
-            // ' times out, the SDP connection represented by the HANDLE_SDP must be
-            // ' closed.  The values for this field are bound by SDP_REQUEST_TO_MIN And
-            // ' SDP_REQUEST_MAX.  If SDP_REQUEST_TO_DEFAULT Is specified, the timeout Is
-            // ' 30 seconds.
-            // '
+            //
+            // Timeout, in seconds, for the requests on ths SDP channel.  If the request
+            // times out, the SDP connection represented by the HANDLE_SDP must be
+            // closed.  The values for this field are bound by SDP_REQUEST_TO_MIN And
+            // SDP_REQUEST_MAX.  If SDP_REQUEST_TO_DEFAULT Is specified, the timeout Is
+            // 30 seconds.
+            //
             public byte requestTimeout;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_SDP_DISCONNECT
         {
-            // '
-            // ' hConnection returned by BTH_SDP_CONNECT
-            // '
+            //
+            // hConnection returned by BTH_SDP_CONNECT
+            //
             public IntPtr hConnection;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_SDP_RECORD
         {
-            // '
-            // ' Combination of SERVICE_SECURITY_XXX flags
-            // '
+            //
+            // Combination of SERVICE_SECURITY_XXX flags
+            //
             public uint fSecurity;
 
-            // '
-            // ' Combination of SERVICE_OPTION_XXX flags
-            // '
+            //
+            // Combination of SERVICE_OPTION_XXX flags
+            //
             public uint fOptions;
 
-            // '
-            // ' combo of COD_SERVICE_XXX flags
-            // '
+            //
+            // combo of COD_SERVICE_XXX flags
+            //
             public uint fCodService;
 
-            // '
-            // ' The length of the record array, in bytes.
-            // '
+            //
+            // The length of the record array, in bytes.
+            //
             public uint recordLength;
 
-            // '
-            // ' The SDP record in its raw format
-            // '
+            //
+            // The SDP record in its raw format
+            //
             public byte[] record;
 
             public SafePtr ToPointer()
@@ -2135,14 +2135,14 @@ namespace DataTools.Hardware.Native
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_SDP_SERVICE_SEARCH_REQUEST
         {
-            // '
-            // ' Handle returned by the connect request Or HANDLE_SDP_LOCAL
-            // '
+            //
+            // Handle returned by the connect request Or HANDLE_SDP_LOCAL
+            //
             public IntPtr hConnection;
 
-            // '
-            // ' Array of UUIDs.  Each entry can be either a 2 byte, 4 byte Or 16 byte
-            // ' UUID. SDP spec mandates that a request can have a maximum of 12 UUIDs.
+            //
+            // Array of UUIDs.  Each entry can be either a 2 byte, 4 byte Or 16 byte
+            // UUID. SDP spec mandates that a request can have a maximum of 12 UUIDs.
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)MAX_UUIDS_IN_QUERY)]
             public Guid[] uuids;
         }
@@ -2150,29 +2150,29 @@ namespace DataTools.Hardware.Native
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_SDP_ATTRIBUTE_SEARCH_REQUEST
         {
-            // '
-            // ' Handle returned by the connect request Or HANDLE_SDP_LOCAL
-            // '
+            //
+            // Handle returned by the connect request Or HANDLE_SDP_LOCAL
+            //
             public IntPtr hConnection;
 
-            // '
-            // ' Combo of SDP_SEARCH_Xxx flags
-            // '
+            //
+            // Combo of SDP_SEARCH_Xxx flags
+            //
             public uint searchFlags;
 
-            // '
-            // ' Record handle returned by the remote SDP server, most likely from a
-            // ' previous BTH_SDP_SERVICE_SEARCH_RESPONSE.
-            // '
+            //
+            // Record handle returned by the remote SDP server, most likely from a
+            // previous BTH_SDP_SERVICE_SEARCH_RESPONSE.
+            //
             public uint recordHandle;
 
-            // '
-            // ' Array of attributes to query for.  Each SdpAttributeRange entry can
-            // ' specify either a single attribute Or a range.  To specify a single
-            // ' attribute, minAttribute should be equal to maxAttribute.   The array must
-            // ' be in sorted order, starting with the smallest attribute.  Furthermore,
-            // ' if a range Is specified, the minAttribute must be <= maxAttribute.
-            // '
+            //
+            // Array of attributes to query for.  Each SdpAttributeRange entry can
+            // specify either a single attribute Or a range.  To specify a single
+            // attribute, minAttribute should be equal to maxAttribute.   The array must
+            // be in sorted order, starting with the smallest attribute.  Furthermore,
+            // if a range Is specified, the minAttribute must be <= maxAttribute.
+            //
             public SdpAttributeRange[] range;
 
             public SafePtr ToPointer()
@@ -2207,25 +2207,25 @@ namespace DataTools.Hardware.Native
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_SDP_SERVICE_ATTRIBUTE_SEARCH_REQUEST
         {
-            // '
-            // ' Handle returned by the connect request Or HANDLE_SDP_LOCAL
-            // '
+            //
+            // Handle returned by the connect request Or HANDLE_SDP_LOCAL
+            //
             public IntPtr hConnection;
 
-            // '
-            // ' Combo of SDP_SEARCH_Xxx flags
-            // '
+            //
+            // Combo of SDP_SEARCH_Xxx flags
+            //
             public uint searchFlags;
 
-            // '
-            // ' See comments in BTH_SDP_SERVICE_SEARCH_REQUEST
-            // '
+            //
+            // See comments in BTH_SDP_SERVICE_SEARCH_REQUEST
+            //
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = (int)MAX_UUIDS_IN_QUERY)]
             public Guid[] uuids;
 
-            // '
-            // ' See comments in BTH_SDP_ATTRIBUTE_SEARCH_REQUEST
-            // '
+            //
+            // See comments in BTH_SDP_ATTRIBUTE_SEARCH_REQUEST
+            //
             public SdpAttributeRange[] range;
 
             public SafePtr ToPointer()
@@ -2266,31 +2266,31 @@ namespace DataTools.Hardware.Native
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_SDP_STREAM_RESPONSE
         {
-            // '
-            // ' The required buffer size (Not including the first 2 ULONG_PTRs of this
-            // ' data structure) needed to contain the response.
-            // '
-            // ' If the buffer passed was large enough to contain the entire response,
-            // ' requiredSize will be equal to responseSize.  Otherwise, the caller should
-            // ' resubmit the request with a buffer size equal to
-            // ' sizeof(BTH_SDP_STREAM_RESPONSE) + requiredSize - 1.  (The -1 Is because
-            // ' the size of this data structure already includes one byte of the
-            // ' response.)
-            // '
-            // ' A response cannot exceed 4GB in size.
-            // '
+            //
+            // The required buffer size (Not including the first 2 ULONG_PTRs of this
+            // data structure) needed to contain the response.
+            //
+            // If the buffer passed was large enough to contain the entire response,
+            // requiredSize will be equal to responseSize.  Otherwise, the caller should
+            // resubmit the request with a buffer size equal to
+            // sizeof(BTH_SDP_STREAM_RESPONSE) + requiredSize - 1.  (The -1 Is because
+            // the size of this data structure already includes one byte of the
+            // response.)
+            //
+            // A response cannot exceed 4GB in size.
+            //
             public uint requiredSize;
 
-            // '
-            // ' The number of bytes copied into the response array of this data
-            // ' structure.  If there Is Not enough room for the entire response, the
-            // ' response will be partially copied into the response array.
-            // '
+            //
+            // The number of bytes copied into the response array of this data
+            // structure.  If there Is Not enough room for the entire response, the
+            // response will be partially copied into the response array.
+            //
             public uint responseSize;
 
-            // '
-            // ' The raw SDP response from the search.
-            // '
+            //
+            // The raw SDP response from the search.
+            //
             public byte[] response;
 
             public static BTH_SDP_STREAM_RESPONSE FromPointer(IntPtr ptr)
@@ -2304,56 +2304,56 @@ namespace DataTools.Hardware.Native
             }
         }
 
-        // '
-        // ' Vendor specific HCI command header
-        // '
+        //
+        // Vendor specific HCI command header
+        //
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_COMMAND_HEADER
         {
 
-            // '
-            // ' Opcode for the command
-            // ' 
+            //
+            // Opcode for the command
+            // 
             public ushort OpCode;
 
-            // '
-            // ' Payload of the command excluding the header.
-            // ' TotalParameterLength = TotalCommandLength - sizeof(BTH_COMMAND_HEADER)
-            // ' 
+            //
+            // Payload of the command excluding the header.
+            // TotalParameterLength = TotalCommandLength - sizeof(BTH_COMMAND_HEADER)
+            // 
             public byte TotalParameterLength;
         }
 
-        // '
-        // ' Vendor Specific Command structure
-        // '
+        //
+        // Vendor Specific Command structure
+        //
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_VENDOR_SPECIFIC_COMMAND
         {
-            // '
-            // ' Manufacturer ID
-            // ' 
+            //
+            // Manufacturer ID
+            // 
             public uint ManufacturerId;
 
-            // '
-            // ' LMP version. Command Is send to radio only if the radios 
-            // ' LMP version Is greater than this value.
-            // ' 
+            //
+            // LMP version. Command Is send to radio only if the radios 
+            // LMP version Is greater than this value.
+            // 
             public byte LmpVersion;
 
-            // '
-            // ' Should all the patterns match Or just one. If MatchAnySinglePattern == TRUE
-            // ' then if a single pattern matches the command, we decide that we have a match.
+            //
+            // Should all the patterns match Or just one. If MatchAnySinglePattern == TRUE
+            // then if a single pattern matches the command, we decide that we have a match.
             [MarshalAs(UnmanagedType.Bool)]
             public bool MatchAnySinglePattern;
 
-            // '
-            // ' HCI Command Header
-            // '
+            //
+            // HCI Command Header
+            //
             public BTH_COMMAND_HEADER HciHeader;
 
-            // '
-            // ' Data for the above command including patterns
-            // '
+            //
+            // Data for the above command including patterns
+            //
             public byte[] Data;
 
             public SafePtr ToPointer()
@@ -2384,25 +2384,25 @@ namespace DataTools.Hardware.Native
             }
         }
 
-        // '
-        // ' Structure of patterns
-        // '
+        //
+        // Structure of patterns
+        //
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_VENDOR_PATTERN
         {
-            // '
-            // ' Pattern Offset in the event structure excluding EVENT header
-            // ' 
+            //
+            // Pattern Offset in the event structure excluding EVENT header
+            // 
             public byte Offset;
 
-            // '
-            // ' Size of the Pattern
-            // ' 
+            //
+            // Size of the Pattern
+            // 
             public byte Size;
 
-            // '
-            // ' Pattern
-            // ' 
+            //
+            // Pattern
+            // 
             public byte[] Pattern;
 
             public SafePtr ToPointer()
@@ -2428,25 +2428,25 @@ namespace DataTools.Hardware.Native
             }
         }
 
-        // '
-        // 'The buffer associated with GUID_BLUETOOTH_HCI_VENDOR_EVENT
-        // '
+        //
+        //The buffer associated with GUID_BLUETOOTH_HCI_VENDOR_EVENT
+        //
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_VENDOR_EVENT_INFO
         {
-            // '
-            // 'Local radio address with which the event Is associated.
-            // '
+            //
+            //Local radio address with which the event Is associated.
+            //
             public BTH_ADDR BthAddress;
 
-            // '
-            // 'Size of the event buffer including Event header
-            // '
+            //
+            //Size of the event buffer including Event header
+            //
             public uint EventSize;
 
-            // '
-            // 'Information associated with the event
-            // '
+            //
+            //Information associated with the event
+            //
             public byte[] EventInfo;
 
             public SafePtr ToPointer()
@@ -2474,9 +2474,9 @@ namespace DataTools.Hardware.Native
 
 
 
-        // '
-        // ' Host supported features
-        // '
+        //
+        // Host supported features
+        //
         public const ulong BTH_HOST_FEATURE_ENHANCED_RETRANSMISSION_MODE = 0x1;
         public const ulong BTH_HOST_FEATURE_STREAMING_MODE = 0x2;
         public const ulong BTH_HOST_FEATURE_LOW_ENERGY = 0x4;
@@ -2486,14 +2486,14 @@ namespace DataTools.Hardware.Native
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct BTH_HOST_FEATURE_MASK
         {
-            // '
-            // ' Mask of supported features. 
-            // '
+            //
+            // Mask of supported features. 
+            //
             public ulong Mask;
 
-            // '
-            // ' Reserved for future use.
-            // '
+            //
+            // Reserved for future use.
+            //
             public ulong Reserved1;
             public ulong Reserved2;
         }
@@ -2672,15 +2672,15 @@ namespace DataTools.Hardware.Native
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public struct BLUETOOTH_RADIO_INFO
     {
-        public ulong dwSize; // ' Size, In bytes, Of this entire data Structure
-        public BLUETOOTH_ADDRESS address; // ' Address Of the local radio
+        public ulong dwSize; // Size, In bytes, Of this entire data Structure
+        public BLUETOOTH_ADDRESS address; // Address Of the local radio
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = BluetoothApi.BLUETOOTH_MAX_NAME_SIZE)]
         public string szName;
-        public uint ulClassofDevice; // ' Class of device for the local radio
-        public ushort lmpSubVersion;                    // ' lmpSubversion, manufacturer specifc.
-        public BTH_MFG_INFO manufacturer;                        // ' Manufacturer Of the radio, BTH_MFG_Xxx value.  For the most up to date
-        // ' list, goto the Bluetooth specification website And get the Bluetooth
-        // ' assigned numbers document.
+        public uint ulClassofDevice; // Class of device for the local radio
+        public ushort lmpSubVersion;                    // lmpSubversion, manufacturer specifc.
+        public BTH_MFG_INFO manufacturer;                        // Manufacturer Of the radio, BTH_MFG_Xxx value.  For the most up to date
+        // list, goto the Bluetooth specification website And get the Bluetooth
+        // assigned numbers document.
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]

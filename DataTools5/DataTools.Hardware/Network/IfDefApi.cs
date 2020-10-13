@@ -1,17 +1,17 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: IfDefApi
-// '         The almighty network interface native API.
-// '         Some enum documentation comes from the MSDN.
-// '
-// ' (and an exercise in creative problem solving and data-structure marshaling.)
-// '
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: IfDefApi
+//         The almighty network interface native API.
+//         Some enum documentation comes from the MSDN.
+//
+// (and an exercise in creative problem solving and data-structure marshaling.)
+//
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 
 using System;
@@ -1245,7 +1245,7 @@ namespace DataTools.Hardware.Network
             if (Data is null)
                 return "NULL";
 
-            // ' let's get a clean string without extraneous zeros at the end:
+            // let's get a clean string without extraneous zeros at the end:
 
             int i;
             int c = Data.Length - 1;
@@ -1274,19 +1274,19 @@ namespace DataTools.Hardware.Network
     }
 
     /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */    // ' From Microsoft:
+    /* TODO ERROR: Skipped RegionDirectiveTrivia */    // From Microsoft:
 
-    // '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    // '                                                                          ''
-    // ' Media types                                                              ''
-    // '                                                                          ''
-    // ' These are enumerated values of the ifType object defined in MIB-II's     ''
-    // ' ifTable.  They are registered with IANA which publishes this list        ''
-    // ' periodically, in either the Assigned Numbers RFC, or some derivative     ''
-    // ' of it specific to Internet Network Management number assignments.        ''
-    // ' See ftp:''ftp.isi.edu/mib/ianaiftype.mib                                 ''
-    // '                                                                          ''
-    // '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    //                                                                          ''
+    // Media types                                                              ''
+    //                                                                          ''
+    // These are enumerated values of the ifType object defined in MIB-II's     ''
+    // ifTable.  They are registered with IANA which publishes this list        ''
+    // periodically, in either the Assigned Numbers RFC, or some derivative     ''
+    // of it specific to Internet Network Management number assignments.        ''
+    // See ftp:''ftp.isi.edu/mib/ianaiftype.mib                                 ''
+    //                                                                          ''
+    //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     public enum IFTYPE
     {
 
@@ -2691,7 +2691,7 @@ namespace DataTools.Hardware.Network
     public static class IfDefApi
     {
 
-        // ' A lot of creative marshaling is used here.
+        // A lot of creative marshaling is used here.
 
         public const int MAX_ADAPTER_ADDRESS_LENGTH = 8;
         public const int MAX_DHCPV6_DUID_LENGTH = 130;
@@ -2714,7 +2714,7 @@ namespace DataTools.Hardware.Network
             var lpadapt = new LPIP_ADAPTER_ADDRESSES();
             IP_ADAPTER_ADDRESSES adapt;
 
-            // ' and this is barely enough on a typical system.
+            // and this is barely enough on a typical system.
             lpadapt.Handle.Alloc(65536L, noRelease);
             lpadapt.Handle.ZeroMemory();
             int ft = 0;
@@ -2728,7 +2728,7 @@ namespace DataTools.Hardware.Network
             // lpadapt, cblen)
 
 
-            // ' we have a buffer overflow?  We need to get more memory.
+            // we have a buffer overflow?  We need to get more memory.
             if (res == ADAPTER_ENUM_RESULT.ERROR_BUFFER_OVERFLOW)
             {
                 while (res == ADAPTER_ENUM_RESULT.ERROR_BUFFER_OVERFLOW)
@@ -2736,7 +2736,7 @@ namespace DataTools.Hardware.Network
                     lpadapt.Handle.ReAlloc(cblen, noRelease);
                     res = GetAdaptersAddresses(AfENUM.AfUnspecified, GAA_FLAGS.GAA_FLAG_INCLUDE_GATEWAYS | GAA_FLAGS.GAA_FLAG_INCLUDE_WINS_INFO, IntPtr.Zero, lpadapt, ref cblen);
 
-                    // ' to make sure that we don't loop forever, in some weird scenario.
+                    // to make sure that we don't loop forever, in some weird scenario.
                     ft += 1;
                     if (ft > 300)
                         break;
@@ -2748,7 +2748,7 @@ namespace DataTools.Hardware.Network
                 throw new NativeException();
             }
 
-            // ' trim any excess memory.
+            // trim any excess memory.
             if (cblen < 65536L)
             {
                 lpadapt.Handle.ReAlloc(cblen, noRelease);
@@ -2778,8 +2778,8 @@ namespace DataTools.Hardware.Network
             }
             while (adapt.Next.Handle.Handle != IntPtr.Zero);
 
-            // ' there is currently no reason for this function to free this pointer,
-            // ' but we reserve the right to do so, in the future.
+            // there is currently no reason for this function to free this pointer,
+            // but we reserve the right to do so, in the future.
             if (!noRelease)
                 origPtr.Free();
             return adapters;

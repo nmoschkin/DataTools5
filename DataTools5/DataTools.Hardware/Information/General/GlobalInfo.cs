@@ -1,11 +1,11 @@
 ﻿
 
-// ' The guts of the device enumeration system
-// ' Some outward-facing functions and a lot of little internal ones.
+// The guts of the device enumeration system
+// Some outward-facing functions and a lot of little internal ones.
 
-// ' I tried to make it as clean as self-explanatory as possible.  
+// I tried to make it as clean as self-explanatory as possible.  
 
-// ' Copyright (C) 2014 Nathan Moschkin
+// Copyright (C) 2014 Nathan Moschkin
 
 using System;
 using System.Collections.Generic;
@@ -103,7 +103,7 @@ namespace DataTools.Hardware
                         d[c] = x;
                         c += 1;
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         e = null;
                         return d;
@@ -113,7 +113,7 @@ namespace DataTools.Hardware
                 e = null;
                 return d;
             }
-            catch (Exception ex)
+            catch
             {
             }
 
@@ -171,28 +171,38 @@ namespace DataTools.Hardware
         public static BluetoothDeviceInfo[] EnumBluetoothDevices()
         {
             var lOut = new List<BluetoothDeviceInfo>();
+
             var bth = BluetoothApi._internalEnumBluetoothDevices();
+
             var p = DevEnumApi._internalEnumerateDevices<BluetoothDeviceInfo>(DevProp.GUID_DEVCLASS_BLUETOOTH, ClassDevFlags.Present);
-            if (p is object && p.Count() > 0)
+
+            if (p != null && p.Length > 0)
             {
                 foreach (var x in p)
                 {
                     foreach (var y in bth)
                     {
                         int i = x.InstanceId.LastIndexOf("_");
+
                         if (i > -1)
                         {
                             string s = x.InstanceId.Substring(i + 1);
+
                             ulong res;
+
                             bool b = ulong.TryParse(s, System.Globalization.NumberStyles.AllowHexSpecifier, System.Globalization.CultureInfo.CurrentCulture, out res);
+
                             if (b)
                             {
                                 if (res == (ulong)y.Address)
                                 {
                                     x.IsRadio = false;
+                                    
                                     x.BluetoothAddress = y.Address;
                                     x.BluetoothDeviceClass = y.ulClassofDevice;
+                                    
                                     lOut.Add(x);
+
                                     break;
                                 }
                             }
@@ -202,8 +212,9 @@ namespace DataTools.Hardware
             }
 
             return lOut.ToArray();
-            Array.Sort(p, new Comparison<DeviceInfo>((x, y) => { if (x.FriendlyName is object && y.FriendlyName is object) { return string.Compare(x.FriendlyName, y.FriendlyName); } else { return string.Compare(x.Description, y.Description); } }));
-            return p;
+
+            //Array.Sort(p, new Comparison<DeviceInfo>((x, y) => { if (x.FriendlyName is object && y.FriendlyName is object) { return string.Compare(x.FriendlyName, y.FriendlyName); } else { return string.Compare(x.Description, y.Description); } }));
+            //return p;
         }
 
         /// <summary>
@@ -260,8 +271,6 @@ namespace DataTools.Hardware
 
                 int c = p.Length;
                 int d = procs.Length;
-
-                int j;
 
                 List<CacheInfo>[] pci = new List<CacheInfo>[c];
 
@@ -345,10 +354,10 @@ namespace DataTools.Hardware
                     {
                         x.PrinterInfo = PrinterObject.GetPrinterInfoObject(x.FriendlyName);
                     }
-                    catch (Exception ex)
+                    catch
                     {
 
-                        // ' can't connect to that printer!
+                        // can't connect to that printer!
                         continue;
                     }
                 }

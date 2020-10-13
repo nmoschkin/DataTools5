@@ -1,9 +1,9 @@
-﻿// ' ColorMath class.  Copyright (C) 1999-2014 Nathaniel Moschkin.
-// ' This is the 4th writing of this class.
+﻿// ColorMath class.  Copyright (C) 1999-2014 Nathaniel Moschkin.
+// This is the 4th writing of this class.
 
-// ' This most recent version uses clarified equations harvested from Wikipedia.
-// ' The remainder of the code was written much prior... and was correctly
-// ' achieved through much trial and error.
+// This most recent version uses clarified equations harvested from Wikipedia.
+// The remainder of the code was written much prior... and was correctly
+// achieved through much trial and error.
 
 using System;
 using System.Drawing;
@@ -95,7 +95,7 @@ namespace DataTools.MathTools
             blue = (byte)(crColor >> 16 & 0xFF);
         }
 
-        // ' Single Convert ColorRef to RGB
+        // Single Convert ColorRef to RGB
 
         public static void ColorToRGB(UniColor color, out RGBDATA bits)
         {
@@ -116,7 +116,7 @@ namespace DataTools.MathTools
             bits.Blue = b[0];
         }
 
-        // ' Single Convert RGB to ColorRef
+        // Single Convert RGB to ColorRef
 
         public static UniColor RGBToColor(RGBDATA bits)
         {
@@ -128,7 +128,7 @@ namespace DataTools.MathTools
             return Color.FromArgb(bits.Alpha, bits.Red, bits.Green, bits.Blue);
         }
 
-        // ' Single Convert ColorRef to RGB-reversed
+        // Single Convert ColorRef to RGB-reversed
 
         public static void ColorToBGR(UniColor color, out BGRDATA bits)
         {
@@ -149,7 +149,7 @@ namespace DataTools.MathTools
             bits.Green = tibs.Green;
         }
 
-        // ' Single Convert RGB-reversed to ColorRef
+        // Single Convert RGB-reversed to ColorRef
 
         public static UniColor BGRAToColor(BGRADATA Bits)
         {
@@ -604,10 +604,10 @@ namespace DataTools.MathTools
             return Color.FromArgb(c.A, c.R, c.G, c.B);
         }
 
-        // ' http://en.wikipedia.org/wiki/HSL_and_HSV#Hue_and_chroma
-        // ' I adapted the equation from the one in Wikipedia.
-        // ' I wish I could offer a better explanation.  But this isn't wikipedia, and they'd do a better job.
-        // '
+        // http://en.wikipedia.org/wiki/HSL_and_HSV#Hue_and_chroma
+        // I adapted the equation from the one in Wikipedia.
+        // I wish I could offer a better explanation.  But this isn't wikipedia, and they'd do a better job.
+        //
         public static UniColor HSVToMediaColor(HSVDATA hsv)
         {
 
@@ -647,44 +647,44 @@ namespace DataTools.MathTools
             b = chroma * (1d - Math.Abs(n % 2d - 1d));
             b += c;
 
-            // ' fit the color space in to byte space.
+            // fit the color space in to byte space.
 
             // Get the floored value of n
             n = Math.Floor(n);
             switch (n)
             {
                 case 0d:
-                case 6d: // ' 0, 360 - Red
+                case 6d: // 0, 360 - Red
                     {
                         j = System.Windows.Media.Color.FromArgb(1, (byte)a, (byte)b, (byte)c);
                         break;
                     }
 
-                case 1d: // ' 60 - Yellow
+                case 1d: // 60 - Yellow
                     {
                         j = System.Windows.Media.Color.FromArgb(1, (byte)b, (byte)a, (byte)c);
                         break;
                     }
 
-                case 2d: // ' 120 - Green
+                case 2d: // 120 - Green
                     {
                         j = System.Windows.Media.Color.FromArgb(1, (byte)c, (byte)a, (byte)b);
                         break;
                     }
 
-                case 3d: // ' 180 - Cyan
+                case 3d: // 180 - Cyan
                     {
                         j = System.Windows.Media.Color.FromArgb(1, (byte)c, (byte)b, (byte)a);
                         break;
                     }
 
-                case 4d: // ' 240 - Blue
+                case 4d: // 240 - Blue
                     {
                         j = System.Windows.Media.Color.FromArgb(1, (byte)b, (byte)c, (byte)a);
                         break;
                     }
 
-                case 5d: // ' 300 - Magenta
+                case 5d: // 300 - Magenta
                     {
                         j = System.Windows.Media.Color.FromArgb(1, (byte)a, (byte)c, (byte)b);
                         break;
@@ -694,10 +694,10 @@ namespace DataTools.MathTools
             return j;
         }
 
-        // ' http://en.wikipedia.org/wiki/HSL_and_HSV#Hue_and_chroma
-        // ' I adapted the equation from the one in Wikipedia.
-        // ' I wish I could offer a better explanation.  But this isn't wikipedia, and they'd do a better job.
-        // '
+        // http://en.wikipedia.org/wiki/HSL_and_HSV#Hue_and_chroma
+        // I adapted the equation from the one in Wikipedia.
+        // I wish I could offer a better explanation.  But this isn't wikipedia, and they'd do a better job.
+        //
         public static int HSVToColorRaw(HSVDATA hsv)
         {
             unchecked
@@ -740,7 +740,7 @@ namespace DataTools.MathTools
                 b = chroma * (1d - Math.Abs(n % 2d - 1d));
                 b += c;
 
-                // ' fit the color space in to byte space.
+                // fit the color space in to byte space.
                 ab = (int)Math.Round(a * 255d);
                 bb = (int)Math.Round(b * 255d);
                 cb = (int)Math.Round(c * 255d);
@@ -750,37 +750,37 @@ namespace DataTools.MathTools
                 switch (n)
                 {
                     case 0d:
-                    case 6d: // ' 0, 360 - Red
+                    case 6d: // 0, 360 - Red
                         {
                             j = j | ab << 16 | bb << 8 | cb;
                             break;
                         }
 
-                    case 1d: // ' 60 - Yellow
+                    case 1d: // 60 - Yellow
                         {
                             j = j | bb << 16 | ab << 8 | cb;
                             break;
                         }
 
-                    case 2d: // ' 120 - Green
+                    case 2d: // 120 - Green
                         {
                             j = j | cb << 16 | ab << 8 | bb;
                             break;
                         }
 
-                    case 3d: // ' 180 - Cyan
+                    case 3d: // 180 - Cyan
                         {
                             j = j | cb << 16 | bb << 8 | ab;
                             break;
                         }
 
-                    case 4d: // ' 240 - Blue
+                    case 4d: // 240 - Blue
                         {
                             j = j | bb << 16 | cb << 8 | ab;
                             break;
                         }
 
-                    case 5d: // ' 300 - Magenta
+                    case 5d: // 300 - Magenta
                         {
                             j = j | ab << 16 | cb << 8 | bb;
                             break;
@@ -793,7 +793,7 @@ namespace DataTools.MathTools
 
         public static void ColorToCMY(UniColor Color, ref CMYDATA cmy)
         {
-            // '
+            //
             byte r;
             byte g;
             byte b;
@@ -811,7 +811,7 @@ namespace DataTools.MathTools
         public static UniColor CMYToColor(CMYDATA cmy)
         {
             UniColor CMYToColorRet = default;
-            // '
+            //
             int c;
             int m;
             int y;
@@ -962,7 +962,7 @@ namespace DataTools.MathTools
                 Bits[2].Blue = (byte)(e & 0xFF);
             }
 
-            // ' Get the average alpha
+            // Get the average alpha
             al = (byte)((al + af) / 2d);
             return new UniColor(al, Bits[2].Red, Bits[2].Green, Bits[2].Blue);
         }

@@ -36,10 +36,10 @@ namespace DataTools.Desktop
         {
             var d = new DirectoryObject();
 
-            // 'd.Add(New DirectoryObject("QuickAccessFolder", True, True))
+            //d.Add(New DirectoryObject("QuickAccessFolder", True, True))
             d.Add(new DirectoryObject("MyComputerFolder", true, true, iconSize));
             d.Add(new DirectoryObject("NetworkPlacesFolder", true, false, iconSize));
-            // 'd.Add(New DirectoryObject("ControlPanelFolder", True, True))
+            //d.Add(New DirectoryObject("ControlPanelFolder", True, True))
 
             return d;
         }
@@ -121,7 +121,7 @@ namespace DataTools.Desktop
 
             if (_IsSpecial)
             {
-                // ' let's see if we can parse it.
+                // let's see if we can parse it.
                 IShellItem shitem = null;
                 var mm = new MemPtr();
                 var argriid = Guid.Parse(ShellIIDGuid.IShellItem);
@@ -553,12 +553,12 @@ namespace DataTools.Desktop
 
                     // mm.AllocCoTaskMem((MAX_PATH * 2) + 8)
 
-                    mm2.Alloc(FileApi.MAX_PATH * 2 + 8);
+                    mm2.Alloc(NativeShell.MAX_PATH * 2 + 8);
 
                     do
                     {
                         cf = 0U;
-                        mm2.ZeroMemory(0L, FileApi.MAX_PATH * 2 + 8);
+                        mm2.ZeroMemory(0L, NativeShell.MAX_PATH * 2 + 8);
                         res = enumer.Next(1U, out x, out cf);
                         mm = x;
 

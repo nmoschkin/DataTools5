@@ -1,14 +1,14 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: UsbApi
-// '         USB-related structures, enums and functions.
-// '
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: UsbApi
+//         USB-related structures, enums and functions.
+//
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.ComponentModel;
@@ -318,17 +318,17 @@ namespace DataTools.Hardware.Native
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         public const int LIBUSB_PATH_MAX = 512;
 
-        // '
+        //
         // USB spec information
         // 
         // This is all stuff grabbed from various USB specs and is pretty much
         // not subject to change
-        // '
+        //
 
-        // '
+        //
         // Device and/or Interface Class codes
-        // '
-        public const int USB_CLASS_PER_INTERFACE = 0;  // ' for DeviceClass ''
+        //
+        public const int USB_CLASS_PER_INTERFACE = 0;  // for DeviceClass ''
         public const int USB_CLASS_AUDIO = 1;
         public const int USB_CLASS_COMM = 2;
         public const int USB_CLASS_HID = 3;
@@ -338,9 +338,9 @@ namespace DataTools.Hardware.Native
         public const int USB_CLASS_DATA = 10;
         public const int USB_CLASS_VENDOR_SPEC = 0xFF;
 
-        // '
+        //
         // Descriptor types
-        // '
+        //
         public const int USB_DT_DEVICE = 0x1;
         public const int USB_DT_CONFIG = 0x2;
         public const int USB_DT_STRING = 0x3;
@@ -351,19 +351,19 @@ namespace DataTools.Hardware.Native
         public const int USB_DT_PHYSICAL = 0x23;
         public const int USB_DT_HUB = 0x29;
 
-        // '
+        //
         // Descriptor sizes per descriptor type
-        // '
+        //
         public const int USB_DT_DEVICE_SIZE = 18;
         public const int USB_DT_CONFIG_SIZE = 9;
         public const int USB_DT_INTERFACE_SIZE = 9;
         public const int USB_DT_ENDPOINT_SIZE = 7;
-        public const int USB_DT_ENDPOINT_AUDIO_SIZE = 9;  // ' Audio extension ''
+        public const int USB_DT_ENDPOINT_AUDIO_SIZE = 9;  // Audio extension ''
         public const int USB_DT_HUB_NONVAR_SIZE = 7;
 
-        // ' ensure byte-packed structures ''
+        // ensure byte-packed structures ''
 
-        // ' All standard descriptors have these 2 fields in common ''
+        // All standard descriptors have these 2 fields in common ''
         [StructLayout(LayoutKind.Sequential, Pack = gPack)]
         public struct usb_descriptor_header
         {
@@ -371,7 +371,7 @@ namespace DataTools.Hardware.Native
             public byte bDescriptorType;
         }
 
-        // ' String descriptor ''
+        // String descriptor ''
         [StructLayout(LayoutKind.Sequential, Pack = gPack)]
         public struct usb_string_descriptor
         {
@@ -417,7 +417,7 @@ namespace DataTools.Hardware.Native
             }
         }
 
-        // '' HID descriptor ''
+        //' HID descriptor ''
         // <StructLayout(LayoutKind.Sequential, Pack:=gPack)> _
         // Public Structure usb_hid_descriptor
         // Public bLength As Byte
@@ -427,7 +427,7 @@ namespace DataTools.Hardware.Native
         // Public bNumDescriptors As Byte
         // End Structure
 
-        // ' Endpopublic descriptor as integer ''
+        // Endpopublic descriptor as integer ''
         public const int USB_MAXENDPOINTS = 32;
 
         [StructLayout(LayoutKind.Sequential, Pack = gPack)]
@@ -441,7 +441,7 @@ namespace DataTools.Hardware.Native
             public byte bInterval;
             public byte bRefresh;
             public byte bSynchAddress;
-            public IntPtr extra; // ' Extra descriptors ''
+            public IntPtr extra; // Extra descriptors ''
             public int extralen;
 
             public byte[] extra_desc
@@ -456,15 +456,15 @@ namespace DataTools.Hardware.Native
             }
         }
 
-        public const int USB_ENDPOINT_ADDRESS_MASK = 0xF;    // ' in bEndpointAddress ''
+        public const int USB_ENDPOINT_ADDRESS_MASK = 0xF;    // in bEndpointAddress ''
         public const int USB_ENDPOINT_DIR_MASK = 0x80;
-        public const int USB_ENDPOINT_TYPE_MASK = 0x3;    // ' in bmAttributes ''
+        public const int USB_ENDPOINT_TYPE_MASK = 0x3;    // in bmAttributes ''
         public const int USB_ENDPOINT_TYPE_CONTROL = 0;
         public const int USB_ENDPOINT_TYPE_ISOCHRONOUS = 1;
         public const int USB_ENDPOINT_TYPE_BULK = 2;
         public const int USB_ENDPOINT_TYPE_INTERRUPT = 3;
 
-        // ' Interface descriptor ''
+        // Interface descriptor ''
         public const int USB_MAXINTERFACES = 32;
 
         [StructLayout(LayoutKind.Sequential, Pack = gPack)]
@@ -516,7 +516,7 @@ namespace DataTools.Hardware.Native
             }
         }
 
-        public const int USB_MAXALTSETTING = 128;    // ' Hard limit ''
+        public const int USB_MAXALTSETTING = 128;    // Hard limit ''
 
         [StructLayout(LayoutKind.Sequential, Pack = gPack)]
         public struct usb_interface
@@ -542,7 +542,7 @@ namespace DataTools.Hardware.Native
             }
         }
 
-        // ' Configuration descriptor information.. ''
+        // Configuration descriptor information.. ''
         public const int USB_MAXCONFIG = 8;
 
         [StructLayout(LayoutKind.Sequential, Pack = gPack)]
@@ -569,7 +569,7 @@ namespace DataTools.Hardware.Native
                 }
             }
 
-            public IntPtr extra;  // ' Extra descriptors ''
+            public IntPtr extra;  // Extra descriptors ''
             public int extralen;
 
             public byte[] extra_desc
@@ -584,7 +584,7 @@ namespace DataTools.Hardware.Native
             }
         }
 
-        // ' Device descriptor ''
+        // Device descriptor ''
         [StructLayout(LayoutKind.Sequential, Pack = gPack)]
         public struct usb_device_descriptor
         {
@@ -603,7 +603,7 @@ namespace DataTools.Hardware.Native
             public byte iSerialNumber;
             public byte bNumConfigurations;
         }
-        // ' Device descriptor ''
+        // Device descriptor ''
 
         [StructLayout(LayoutKind.Sequential, Pack = gPack)]
         public struct usb_device_descriptor_strings
@@ -623,14 +623,14 @@ namespace DataTools.Hardware.Native
             public ushort wLength;
         }
 
-        // '
+        //
         // Standard requests
-        // '
+        //
         public const int USB_REQ_GET_STATUS = 0x0;
         public const int USB_REQ_CLEAR_FEATURE = 0x1;
-        // ' = &h02 is reserved ''
+        // = &h02 is reserved ''
         public const int USB_REQ_SET_FEATURE = 0x3;
-        // ' = &h04 is reserved ''
+        // = &h04 is reserved ''
         public const int USB_REQ_SET_ADDRESS = 0x5;
         public const int USB_REQ_GET_DESCRIPTOR = 0x6;
         public const int USB_REQ_SET_DESCRIPTOR = 0x7;
@@ -648,37 +648,37 @@ namespace DataTools.Hardware.Native
         public const int USB_RECIP_ENDPOINT = 0x2;
         public const int USB_RECIP_OTHER = 0x3;
 
-        // '
+        //
         // Various libusb API related stuff
-        // '
+        //
 
         public const int USB_ENDPOINT_IN = 0x80;
         public const int USB_ENDPOINT_OUT = 0x0;
 
-        // ' Error codes ''
+        // Error codes ''
         public const int USB_ERROR_BEGIN = 500000;
 
-        // '
+        //
         // This is supposed to look weird. This file is generated from autoconf
         // and I didn't want to make this too complicated.
-        // '
+        //
         public static ushort USB_LE16_TO_CPU(ushort x)
         {
             return x;
         }
 
-        // '
+        //
         // Device reset types for usb_reset_ex.
         // http://msdn.microsoft.com/en-us/library/ff537269%28VS.85%29.aspx
         // http://msdn.microsoft.com/en-us/library/ff537243%28v=vs.85%29.aspx
-        // '
+        //
         public const int USB_RESET_TYPE_RESET_PORT = 1 << 0;
         public const int USB_RESET_TYPE_CYCLE_PORT = 1 << 1;
         public const int USB_RESET_TYPE_FULL_RESET = USB_RESET_TYPE_CYCLE_PORT | USB_RESET_TYPE_RESET_PORT;
 
-        // ' Data types ''
-        // ' public structure usb_device ''
-        // ' public structure usb_bus ''
+        // Data types ''
+        // public structure usb_device ''
+        // public structure usb_bus ''
 
         [StructLayout(LayoutKind.Sequential, Pack = gPack)]
         public struct usb_device
@@ -1044,7 +1044,7 @@ namespace DataTools.Hardware.Native
             public int nano;
         }
 
-        // ' Version information, Windows specific ''
+        // Version information, Windows specific ''
 
         [StructLayout(LayoutKind.Sequential, Pack = gPack)]
         public struct usb_version
@@ -1059,7 +1059,7 @@ namespace DataTools.Hardware.Native
             public IntPtr ptr;
         }
 
-        // ' Function prototypes ''
+        // Function prototypes ''
 
         // Public Declare Function usb_open Lib "libusb0.dll" (dev As lpusb_device) As IntPtr
         // Public Declare Function usb_close Lib "libusb0.dll" (dev As IntPtr) As USBRESULT
@@ -1171,13 +1171,13 @@ namespace DataTools.Hardware.Native
 
         // Public Declare Function usb_find_devices Lib "libusb0.dll" () As Integer
 
-        // '' usb_devices
+        //' usb_devices
         // Public Declare Function get_usb_device Lib "libusb0.dll" Alias "usb_device" (dev As IntPtr) As IntPtr
 
-        // '' usb_busses
+        //' usb_busses
         // Public Declare Function usb_get_busses Lib "libusb0.dll" () As IntPtr
 
-        // '' Windows specific functions
+        //' Windows specific functions
         // Public Declare Function usb_install_service_np Lib "libusb0.dll" () As USBRESULT
 
         // <DllImport("libusb0.dll", CallingConvention:=CallingConvention.Winapi, CharSet:=CharSet.Ansi)>
@@ -1226,7 +1226,7 @@ namespace DataTools.Hardware.Native
         // cmd_line As String, _
         // starg_arg As Integer) As USBRESULT
 
-        // '' usb_version
+        //' usb_version
         // Public Declare Function usb_get_version Lib "libusb0.dll" () As IntPtr
 
         // Public Declare Function usb_isochronous_setup_async Lib "libusb0.dll" ( _

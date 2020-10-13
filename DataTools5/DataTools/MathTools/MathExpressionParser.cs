@@ -258,11 +258,11 @@ namespace DataTools.MathTools
                     n += 1;
                 }
 
-                // ' just to keep track of the character position in case there's an error
+                // just to keep track of the character position in case there's an error
                 cc += s[i].Length;
             }
 
-            // ' Now, perform the operations!
+            // Now, perform the operations!
 
             c = orderOps.Length - 1;
             n -= 1;
@@ -702,7 +702,7 @@ namespace DataTools.MathTools
                     ops2 = null;
                 }
 
-                // ' numbers that occur together add
+                // numbers that occur together add
 
                 n = ops.Length - 1;
                 e = 0.0d;

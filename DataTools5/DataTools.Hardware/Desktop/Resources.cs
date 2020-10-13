@@ -1,14 +1,14 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: Resources.
-// '         Tools for grabbing resources from EXE and DLL modules.
-// '
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: Resources.
+//         Tools for grabbing resources from EXE and DLL modules.
+//
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License
+// ************************************************* ''
 
 using System;
 using System.Collections.Generic;
@@ -292,18 +292,18 @@ namespace DataTools.Desktop
                 return null;
             }
 
-            // ' let's do some jiggery to figure out what the fileName string actually points to:
-            // ' strip the double quotes sometimes passed in (especially from Registry variables)
+            // let's do some jiggery to figure out what the fileName string actually points to:
+            // strip the double quotes sometimes passed in (especially from Registry variables)
             if (fileName.Substring(0, 1) == "\"")
             {
                 fileName = fileName.Replace("\"", "");
             }
 
-            // ' if we have an @ sign (as is common of resource identifiers) we strip that out.
+            // if we have an @ sign (as is common of resource identifiers) we strip that out.
             if (fileName.Substring(0, 1) == "@")
                 fileName = fileName.Substring(1);
 
-            // ' does this file have an attached resource identifier?
+            // does this file have an attached resource identifier?
             int i = fileName.LastIndexOf(",");
             if (i != -1)
             {
@@ -311,10 +311,10 @@ namespace DataTools.Desktop
                 fileName = fileName.Substring(0, i);
             }
 
-            // ' finally, we expand any embedded environment variables.
+            // finally, we expand any embedded environment variables.
             fileName = Environment.ExpandEnvironmentVariables(fileName);
 
-            // ' after all that, we still don't have a path?  We'll assume system32 is the path.
+            // after all that, we still don't have a path?  We'll assume system32 is the path.
             if (fileName.IndexOf(@"\") == -1)
             {
                 fileName = Environment.ExpandEnvironmentVariables(@"%systemroot%\system32\" + fileName);
@@ -329,7 +329,7 @@ namespace DataTools.Desktop
                 else
                     return fileName;
             }
-            catch (Exception ex)
+            catch
             {
                 return null;
             }
@@ -410,7 +410,7 @@ namespace DataTools.Desktop
             {
                 hmod = Resources.LoadLibraryEx(fileName, IntPtr.Zero, uFlags);
             }
-            catch (Exception ex)
+            catch
             {
                 return null;
             }
@@ -492,7 +492,7 @@ namespace DataTools.Desktop
             {
                 hmod = Resources.LoadLibraryEx(fileName, IntPtr.Zero, uFlags);
             }
-            catch (Exception ex)
+            catch
             {
                 return null;
             }
@@ -632,7 +632,7 @@ namespace DataTools.Desktop
             IntPtr hdata;
             IntPtr hglob;
 
-            // ' if it's an actual icon file, we use our own IconImage class to read it.
+            // if it's an actual icon file, we use our own IconImage class to read it.
             if (Path.GetExtension(fileName) == ".ico")
             {
                 var fi = new IconImage(fileName);
@@ -640,31 +640,31 @@ namespace DataTools.Desktop
                 foreach (var fe in fi.Entries)
                 {
 
-                    // ' find the closest size greater than the requested size image.
+                    // find the closest size greater than the requested size image.
                     if (fe.EntryInfo.wBitsPixel == 32)
                     {
-                        // ' store the image if it's bigger.
+                        // store the image if it's bigger.
                         if (fa is null || fa.Width <= fe.Width)
                             fa = fe;
                         if (fe.StandardIconType == desiredSize)
                             return fe.ToIcon();
                     }
                 }
-                // ' we're done, no need to open a resource.
+                // we're done, no need to open a resource.
                 if (fa is object)
                     return fa.ToIcon();
                 else
                     return null;
             }
 
-            // ' open the library.
+            // open the library.
             if (noh)
             {
                 try
                 {
                     hMod = Resources.LoadLibraryEx(fileName, IntPtr.Zero, uFlags);
                 }
-                catch (Exception ex)
+                catch
                 {
                     return null;
                 }
@@ -675,29 +675,29 @@ namespace DataTools.Desktop
                 }
             }
 
-            // ' pre-initialize the return value with null.
+            // pre-initialize the return value with null.
             _internalLoadLibraryIconRet = null;
 
-            // ' if enumRes was already passed in we don't need to do this step...
-            // ' also, if enumRes was passed in, it was by a particular function enumerating only RT_GROUP_ICON,
-            // ' so a distinction does not have to be made in that case.
+            // if enumRes was already passed in we don't need to do this step...
+            // also, if enumRes was passed in, it was by a particular function enumerating only RT_GROUP_ICON,
+            // so a distinction does not have to be made in that case.
 
-            // ' we want RT_GROUP_ICON resources.
+            // we want RT_GROUP_ICON resources.
             if (enumRes is null)
                 enumRes = EnumResources(hMod, (IntPtr)RT_GROUP_ICON);
 
-            // ' no RT_GROUP_ICONs, they must want an actual ICON.
+            // no RT_GROUP_ICONs, they must want an actual ICON.
             if (enumRes is null)
             {
                 enumRes = EnumResources(hMod, (IntPtr)RT_ICON);
 
-                // ' are we looking for the integer name of the icon resource?
+                // are we looking for the integer name of the icon resource?
                 if (iIcon < 0)
                 {
                     idx = 0;
                     foreach (var n in enumRes)
                     {
-                        // ' looking for resources with this INTRESOURCE id
+                        // looking for resources with this INTRESOURCE id
                         if (n.Handle.ToInt64() == -iIcon)
                         {
                             break;
@@ -706,7 +706,7 @@ namespace DataTools.Desktop
                         {
                             if (n.CharAt(0L) == '#')
                             {
-                                // ' a resource with an string integer name?
+                                // a resource with an string integer name?
                                 string s = n.GetString(1L);
                                 int i;
                                 if (int.TryParse(s, out i))
@@ -717,11 +717,11 @@ namespace DataTools.Desktop
                             }
                             else if ((n.ToString() ?? "") == (resIcon ?? ""))
                             {
-                                // ' a plain string resource name?
+                                // a plain string resource name?
                                 break;
                             }
                         }
-                        // ' iterate the index to find the absolute position of the named resource.
+                        // iterate the index to find the absolute position of the named resource.
                         idx += 1;
                     }
                 }
@@ -740,47 +740,47 @@ namespace DataTools.Desktop
                     return _internalLoadLibraryIconRet;
                 }
 
-                // ' find the icon.
+                // find the icon.
                 hres = FindResourceEx(hMod, new IntPtr(RT_ICON), enumRes[idx].Handle, 0);
 
-                // ' load the resource.
+                // load the resource.
                 hglob = LoadResource(hMod, hres);
 
-                // ' grab the memory handle.
+                // grab the memory handle.
                 hdata = LockResource(hglob);
 
-                // ' Grab the raw bitmap structure from the icon resource, so we
-                // ' can use the actual width and height as opposed to the
-                // ' system-stretched return result.
+                // Grab the raw bitmap structure from the icon resource, so we
+                // can use the actual width and height as opposed to the
+                // system-stretched return result.
                 idata = (PInvoke.BITMAPINFOHEADER)Marshal.PtrToStructure(hdata, typeof(PInvoke.BITMAPINFOHEADER));
 
-                // ' create the icon from the data in the resource.
-                // ' I read a great many articles before I finally figured out that &H30000 MUST be passed, just because.
-                // ' There is no specified reason.  That's simply the magic number and it won't work without it.
+                // create the icon from the data in the resource.
+                // I read a great many articles before I finally figured out that &H30000 MUST be passed, just because.
+                // There is no specified reason.  That's simply the magic number and it won't work without it.
                 hicon = CreateIconFromResourceEx(hdata, SizeofResource(hMod, hres), true, 0x30000, idata.biWidth, idata.biWidth, 0);
 
-                // ' clone the unmanaged icon.
+                // clone the unmanaged icon.
                 icn = (Icon)Icon.FromHandle(hicon).Clone();
-                // ' add to the library cache
+                // add to the library cache
                 AddToLibCache(lk, icn);
 
-                // ' set return value
+                // set return value
                 _internalLoadLibraryIconRet = icn;
 
-                // ' free our unmanaged resources.
+                // free our unmanaged resources.
                 PInvoke.DestroyIcon(hicon);
                 if (noh)
                     PInvoke.FreeLibrary(hMod);
                 return _internalLoadLibraryIconRet;
             }
 
-            // ' are we looking for the integer name of an icon resource?
+            // are we looking for the integer name of an icon resource?
             if (iIcon < 0)
             {
                 idx = 0;
                 foreach (var n in enumRes)
                 {
-                    // ' looking for resources with this INTRESOURCE id
+                    // looking for resources with this INTRESOURCE id
                     if (n.Handle.ToInt64() == -iIcon)
                     {
                         break;
@@ -789,7 +789,7 @@ namespace DataTools.Desktop
                     {
                         if (n.CharAt(0L) == '#')
                         {
-                            // ' a resource with an string integer name?
+                            // a resource with an string integer name?
                             string s = n.GetString(1L);
                             int i;
                             if (int.TryParse(s, out i))
@@ -800,16 +800,16 @@ namespace DataTools.Desktop
                         }
                         else if ((n.ToString() ?? "") == (resIcon ?? ""))
                         {
-                            // ' a plain string resource name?
+                            // a plain string resource name?
                             break;
                         }
                     }
-                    // ' iterate the index to find the absolute position of the named resource.
+                    // iterate the index to find the absolute position of the named resource.
                     idx += 1;
                 }
             }
 
-            // ' we have resources, but the index is too high.
+            // we have resources, but the index is too high.
             if (idx >= enumRes.Count)
             {
                 if (noh)
@@ -817,18 +817,18 @@ namespace DataTools.Desktop
                 return _internalLoadLibraryIconRet;
             }
 
-            // ' find the group icon resource.
+            // find the group icon resource.
             hres = FindResourceEx(hMod, new IntPtr(RT_GROUP_ICON), enumRes[idx].Handle, 0);
             if (hres != IntPtr.Zero)
             {
-                // ' load the resource.
+                // load the resource.
                 hglob = LoadResource(hMod, hres);
 
-                // ' grab the handle
+                // grab the handle
                 hdata = LockResource(hglob);
                 int i;
 
-                // ' lookup the icon by size.
+                // lookup the icon by size.
                 i = LookupIconIdFromDirectoryEx(hdata, true, cx, cy, 0);
                 if (i == 0)
                 {
@@ -837,41 +837,41 @@ namespace DataTools.Desktop
                     return _internalLoadLibraryIconRet;
                 }
 
-                // ' find THAT icon resource.
+                // find THAT icon resource.
                 hres = FindResourceEx(hMod, new IntPtr(RT_ICON), new IntPtr(i), 0);
 
-                // 'load that resource.
+                //load that resource.
                 hglob = LoadResource(hMod, hres);
 
-                // 'grab that handle.
+                //grab that handle.
                 hdata = LockResource(hglob);
 
-                // ' Grab the raw bitmap structure from the icon resource, so we
-                // ' can use the actual width and height as opposed to the
-                // ' system-stretched return result.
+                // Grab the raw bitmap structure from the icon resource, so we
+                // can use the actual width and height as opposed to the
+                // system-stretched return result.
                 idata = (PInvoke.BITMAPINFOHEADER)Marshal.PtrToStructure(hdata, typeof(PInvoke.BITMAPINFOHEADER));
 
-                // ' create the icon.
+                // create the icon.
                 hicon = CreateIconFromResourceEx(hdata, SizeofResource(hMod, hres), true, 0x30000, idata.biWidth, idata.biWidth, 0);
 
-                // ' clone the unmanaged icon.
+                // clone the unmanaged icon.
 
                 if (hicon != IntPtr.Zero)
                 {
                     icn = (Icon)Icon.FromHandle(hicon).Clone();
 
-                    // ' add to the library cache
+                    // add to the library cache
                     AddToLibCache(lk, icn);
 
-                    // ' set return value
+                    // set return value
                     _internalLoadLibraryIconRet = icn;
 
-                    // ' destroy the unmanaged icon.
+                    // destroy the unmanaged icon.
                     PInvoke.DestroyIcon(hicon);
                 }
             }
 
-            // ' free the library.
+            // free the library.
             if (noh)
                 PInvoke.FreeLibrary(hMod);
             return _internalLoadLibraryIconRet;
@@ -948,7 +948,7 @@ namespace DataTools.Desktop
         /// <remarks></remarks>
         public static Icon GetFileIcon(string lpFilename, SystemIconSizes shil, ref int? iIndex)
         {
-            // ' The shell system image list
+            // The shell system image list
             var riid = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
             Icon icn = null;
             IntPtr i = new IntPtr();
@@ -1259,7 +1259,7 @@ namespace DataTools.Desktop
                     bmp = System.Windows.Media.Imaging.BitmapSource.Create(img.Width, img.Height, dpiX, dpiY, System.Windows.Media.PixelFormats.Bgra32, null, bm.Scan0, size, BytesPerRow);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 if (bm is object)
                     img.UnlockBits(bm);
@@ -1334,7 +1334,7 @@ namespace DataTools.Desktop
             var pbmih = default(PInvoke.BITMAPINFOHEADER);
             pbmih.biSize = Marshal.SizeOf(pbmih);
             pbmih.biWidth = img.Width;
-            pbmih.biHeight = img.Height; // ' positive indicates bottom-up DIB
+            pbmih.biHeight = img.Height; // positive indicates bottom-up DIB
             pbmih.biPlanes = 1;
             pbmih.biBitCount = wBitsPerPixel;
             pbmih.biCompression = (int)PInvoke.BI_RGB;
@@ -1352,9 +1352,9 @@ namespace DataTools.Desktop
             bm = img.LockBits(new Rectangle(0, 0, img.Width, img.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppPArgb, bm);
             var pCurrSource = bm.Scan0;
 
-            // ' Our DIBsection is bottom-up...start at the bottom row...
+            // Our DIBsection is bottom-up...start at the bottom row...
             var pCurrDest = pPixels + (img.Width - 1) * BytesPerRow;
-            // ' ... and work our way up
+            // ... and work our way up
             int DestinationStride = -BytesPerRow;
             for (int curY = 0, loopTo = img.Height - 1; curY <= loopTo; curY++)
             {
@@ -1390,7 +1390,7 @@ namespace DataTools.Desktop
             int c;
             b = new int[(bm.Width * bm.Height)];
 
-            // ' take the unmanaged memory and make it something manageable and VB-like.
+            // take the unmanaged memory and make it something manageable and VB-like.
 
             Marshal.Copy(bm.Scan0, b, 0, bm.Stride * bm.Height);
             // NativeLib.Native.MemCpy(bm.Scan0, b, bm.Stride * bm.Height)

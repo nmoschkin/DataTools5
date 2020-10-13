@@ -1,15 +1,15 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: PrinterDeviceInfo
-// '         Descendant class of DeviceInfo for 
-// '         printers.
-// '
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: PrinterDeviceInfo
+//         Descendant class of DeviceInfo for 
+//         printers.
+//
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 
 using System.Collections.Generic;
@@ -102,7 +102,8 @@ namespace DataTools.Hardware.Printers
             return null;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        #region PrinterObject
+
         /// <summary>
         /// Returns the detailed printer information object.
         /// </summary>
@@ -140,14 +141,8 @@ namespace DataTools.Hardware.Printers
             else
                 return FriendlyName;
         }
-
-        public override bool Equals(object obj)
-        {
-            if (!(obj is PrinterDeviceInfo))
-                return false;
-            return (((PrinterDeviceInfo)obj).PrinterInfo.PrinterName ?? "") == (PrinterInfo.PrinterName ?? "");
-        }
+            
     }
 
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    #endregion
 }

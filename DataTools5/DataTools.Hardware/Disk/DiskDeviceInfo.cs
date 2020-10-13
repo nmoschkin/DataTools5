@@ -1,14 +1,14 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: DiskDeviceInfo derived class for disks and
-// '         volumes.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: DiskDeviceInfo derived class for disks and
+//         volumes.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.ComponentModel;
@@ -30,17 +30,17 @@ namespace DataTools.Hardware.Disk
     {
         protected int _PhysicalDevice;
         protected int _PartitionNumber;
-        protected DevClassPresenting.StorageType _Type;
+        protected StorageType _Type;
         protected long _Size;
-        protected DevClassPresenting.DeviceCapabilities _Capabilities;
+        protected DeviceCapabilities _Capabilities;
         protected string[] _BackingStore;
         protected bool _IsVolume;
         protected uint _SerialNumber;
         protected string _FileSystem;
-        protected DevClassPresenting.FileSystemFlags _VolumeFlags;
+        protected FileSystemFlags _VolumeFlags;
         protected string _VolumeGuidPath;
         protected string[] _VolumePaths;
-        protected DevClassPresenting.DiskExtent[] _DiskExtents;
+        protected DiskExtent[] _DiskExtents;
         protected IDiskLayout _DiskLayout;
         protected IDiskPartition _PartInfo;
         protected int _SectorSize;
@@ -116,7 +116,7 @@ namespace DataTools.Hardware.Disk
             {
                 Partitioning.PARTITION_INFORMATION_EX[] p;
 
-                if (Type != DevClassPresenting.StorageType.Volume)
+                if (Type != StorageType.Volume)
                     return null;
 
                 if (_PartInfo == null)
@@ -131,7 +131,7 @@ namespace DataTools.Hardware.Disk
                         p = Partitioning.GetPartitions(@"\\.\PhysicalDrive" + PhysicalDevice, IntPtr.Zero, layInfo: ref arglayInfo);
 
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         return null;
                     }
@@ -202,7 +202,7 @@ namespace DataTools.Hardware.Disk
         {
             get
             {
-                if (Type != DevClassPresenting.StorageType.Volume || string.IsNullOrEmpty(VolumeGuidPath))
+                if (Type != StorageType.Volume || string.IsNullOrEmpty(VolumeGuidPath))
                     return _Size;
                 var a = default(ulong);
                 var b = default(ulong);
@@ -214,7 +214,7 @@ namespace DataTools.Hardware.Disk
 
                     FileApi.GetDiskFreeSpaceEx(VolumeGuidPath, ref a, ref b, ref c);
                 }
-                catch (Exception ex)
+                catch
                 {
                     return new FriendlySizeLong(0);
                 }
@@ -238,7 +238,7 @@ namespace DataTools.Hardware.Disk
         {
             get
             {
-                if (Type != DevClassPresenting.StorageType.Volume || string.IsNullOrEmpty(VolumeGuidPath))
+                if (Type != StorageType.Volume || string.IsNullOrEmpty(VolumeGuidPath))
                     return _Size;
                 var a = default(ulong);
                 var b = default(ulong);
@@ -250,7 +250,7 @@ namespace DataTools.Hardware.Disk
 
                     FileApi.GetDiskFreeSpaceEx(VolumeGuidPath, ref a, ref b, ref c);
                 }
-                catch (Exception ex)
+                catch
                 {
                     return new FriendlySizeLong(0);
                 }
@@ -269,7 +269,7 @@ namespace DataTools.Hardware.Disk
         {
             get
             {
-                if (Type != DevClassPresenting.StorageType.Volume || string.IsNullOrEmpty(VolumeGuidPath))
+                if (Type != StorageType.Volume || string.IsNullOrEmpty(VolumeGuidPath))
                     return _Size;
                 var a = default(ulong);
                 var b = default(ulong);
@@ -283,7 +283,7 @@ namespace DataTools.Hardware.Disk
 
                     return b - c;
                 }
-                catch (Exception ex)
+                catch
                 {
                     return new FriendlySizeLong(0);
                 }
@@ -294,7 +294,7 @@ namespace DataTools.Hardware.Disk
         /// TYpe of storage.
         /// </summary>
         /// <remarks></remarks>
-        public DevClassPresenting.StorageType Type
+        public StorageType Type
         {
             get
             {
@@ -311,11 +311,11 @@ namespace DataTools.Hardware.Disk
         /// Physical device capabilities.
         /// </summary>
         /// <remarks></remarks>
-        public DevClassPresenting.DeviceCapabilities Capabilities
+        public DeviceCapabilities Capabilities
         {
             get
             {
-                DevClassPresenting.DeviceCapabilities CapabilitiesRet = default;
+                DeviceCapabilities CapabilitiesRet = default;
                 CapabilitiesRet = _Capabilities;
                 return CapabilitiesRet;
             }
@@ -343,7 +343,7 @@ namespace DataTools.Hardware.Disk
                 _BackingStore = value;
             }
         }
-        // ' Volume information
+        // Volume information
 
         /// <summary>
         /// Indicates whether or not this structure refers to a volume or a device.
@@ -447,11 +447,11 @@ namespace DataTools.Hardware.Disk
         /// Volume flags and capabilities.
         /// </summary>
         /// <remarks></remarks>
-        public DevClassPresenting.FileSystemFlags VolumeFlags
+        public FileSystemFlags VolumeFlags
         {
             get
             {
-                DevClassPresenting.FileSystemFlags VolumeFlagsRet = default;
+                FileSystemFlags VolumeFlagsRet = default;
                 VolumeFlagsRet = _VolumeFlags;
                 return VolumeFlagsRet;
             }
@@ -503,11 +503,11 @@ namespace DataTools.Hardware.Disk
         /// Partition locations on the physical disk or disks.
         /// </summary>
         /// <remarks></remarks>
-        public DevClassPresenting.DiskExtent[] DiskExtents
+        public DiskExtent[] DiskExtents
         {
             get
             {
-                DevClassPresenting.DiskExtent[] DiskExtentsRet = default;
+                DiskExtent[] DiskExtentsRet = default;
                 DiskExtentsRet = _DiskExtents;
                 return DiskExtentsRet;
             }

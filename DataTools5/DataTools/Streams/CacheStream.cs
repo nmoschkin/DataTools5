@@ -1,15 +1,15 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library 
-// ' Adapted for C#/Xamarin
-// '
-// ' Module: CacheStream
-// '         Wraps FileStream around a temporary file in the cache directory.
-// ' 
-// ' Copyright (C) 2011-2015, 2019 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows 
+// Adapted for C#/Xamarin
+//
+// Module: CacheStream
+//         Wraps FileStream around a temporary file in the cache directory.
+// 
+// Copyright (C) 2011-2015, 2019 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.IO;

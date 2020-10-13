@@ -595,8 +595,8 @@ namespace DataTools.Shell.TextMapping
             Rectangle[] CalculateRet = default;
             Bitmap bmp;
 
-            // ' what we're going to do is map every possible rectangular region in the image.
-            // ' we will accept a certain percentage of white space to add that rectangle to the image.
+            // what we're going to do is map every possible rectangular region in the image.
+            // we will accept a certain percentage of white space to add that rectangle to the image.
 
             double minX;
             double minY;

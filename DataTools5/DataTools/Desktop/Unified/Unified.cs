@@ -294,6 +294,16 @@ namespace DataTools.Desktop.Unified
             }
         }
 
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
         /// <summary>
@@ -700,9 +710,9 @@ namespace DataTools.Desktop.Unified
             bool flip = false;
             bool alf = false;
 
-            // ' if this is a straight integer value, we can return a new color right away.
+            // if this is a straight integer value, we can return a new color right away.
             bool x = int.TryParse(value.Trim().Trim('#'), System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.CurrentCulture, out i);
-            
+
             unchecked
             {
                 if (x)
@@ -725,9 +735,9 @@ namespace DataTools.Desktop.Unified
 
             }
 
-            // ' on with the show!
+            // on with the show!
 
-            // ' first let's parse some separated values, here.
+            // first let's parse some separated values, here.
 
             value = value.ToLower();
             if (value.Substring(0, 5) == "argb(")
@@ -843,7 +853,7 @@ namespace DataTools.Desktop.Unified
 
             value = TextTools.NoSpace(value);
 
-            // ' First, let's see if it's a name:
+            // First, let's see if it's a name:
             bool b1 = false;
             bool b2 = false;
             var c1 = TryFindNamedWPFColor(value, ref b1);
@@ -853,7 +863,7 @@ namespace DataTools.Desktop.Unified
             if (b2)
                 return c2;
 
-            // ' okay, it's not a name, let's see if it's some kind of number.
+            // okay, it's not a name, let's see if it's some kind of number.
             string chIn = value;
             c = chIn.Length - 1;
             if (IsHex(chIn, ref a))
@@ -972,7 +982,7 @@ namespace DataTools.Desktop.Unified
         {
             var cc = Color;
 
-            // ' Make sure we have nothing errant and transparent.
+            // Make sure we have nothing errant and transparent.
             cc.A = 255;
             string s = SharedProp.SharedPropToName((System.Windows.Media.Color)cc, typeof(System.Windows.Media.Colors));
             if (s is null || string.IsNullOrEmpty(s))
@@ -1348,20 +1358,31 @@ namespace DataTools.Desktop.Unified
             return sx + "," + sy;
         }
 
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         /// <summary>
         /// This will universally compare whether this is equals to any object that has valid width and height properties.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public override bool Equals(object obj)
+        public bool IsEquals(object obj)
         {
             var pi = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
             var fi = obj.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
             bool xmatch = false;
             bool ymatch = false;
 
-            // ' compare fields, first.  These sorts of objects are structures, more often than not.
+            // compare fields, first.  These sorts of objects are structures, more often than not.
             foreach (var fe in fi)
             {
                 switch (fe.Name.ToLower() ?? "")
@@ -1374,17 +1395,16 @@ namespace DataTools.Desktop.Unified
                     case "_height":
                     case "_x":
                     case "_dx":
-                        {
-                            if (fe.FieldType.IsPrimitive)
-                            {
-                                if ((double)(fe.GetValue(obj)) == Width)
-                                {
-                                    xmatch = true;
-                                }
-                            }
 
-                            break;
+                        if (fe.FieldType.IsPrimitive)
+                        {
+                            if ((double)(fe.GetValue(obj)) == Width)
+                            {
+                                xmatch = true;
+                            }
                         }
+
+                        break;
 
                     case "cy":
                     case "height":
@@ -1394,30 +1414,27 @@ namespace DataTools.Desktop.Unified
                     case var @case when @case == "_height":
                     case "_y":
                     case "_dy":
-                        {
-                            if (fe.FieldType.IsPrimitive)
-                            {
-                                if ((double)(fe.GetValue(obj)) == Height)
-                                {
-                                    ymatch = true;
-                                }
-                            }
 
-                            break;
+                        if (fe.FieldType.IsPrimitive)
+                        {
+                            if ((double)(fe.GetValue(obj)) == Height)
+                            {
+                                ymatch = true;
+                            }
                         }
+
+                        break;
 
                     default:
-                        {
-                            continue;
-                            break;
-                        }
+                        continue;
+
                 }
 
                 if (xmatch & ymatch)
                     return true;
             }
 
-            // ' now, properties.
+            // now, properties.
             foreach (var pe in pi)
             {
                 switch (pe.Name.ToLower() ?? "")
@@ -1430,17 +1447,16 @@ namespace DataTools.Desktop.Unified
                     case "_height":
                     case "_x":
                     case "_dx":
-                        {
-                            if (pe.PropertyType.IsPrimitive)
-                            {
-                                if ((double)(pe.GetValue(obj)) == Width)
-                                {
-                                    xmatch = true;
-                                }
-                            }
 
-                            break;
+                        if (pe.PropertyType.IsPrimitive)
+                        {
+                            if ((double)(pe.GetValue(obj)) == Width)
+                            {
+                                xmatch = true;
+                            }
                         }
+
+                        break;
 
                     case "cy":
                     case "height":
@@ -1450,23 +1466,19 @@ namespace DataTools.Desktop.Unified
                     case var case1 when case1 == "_height":
                     case "_y":
                     case "_dy":
-                        {
-                            if (pe.PropertyType.IsPrimitive)
-                            {
-                                if ((double)(pe.GetValue(obj)) == Height)
-                                {
-                                    ymatch = true;
-                                }
-                            }
 
-                            break;
+                        if (pe.PropertyType.IsPrimitive)
+                        {
+                            if ((double)(pe.GetValue(obj)) == Height)
+                            {
+                                ymatch = true;
+                            }
                         }
+
+                        break;
 
                     default:
-                        {
-                            continue;
-                            break;
-                        }
+                        continue;
                 }
 
                 if (xmatch & ymatch)

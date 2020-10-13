@@ -1,17 +1,17 @@
-// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: NativeShell
-// '         Wrappers for native and COM shell interfaces.
-// '
-// ' Some enum documentation copied from the MSDN (and in some cases, updated).
-// ' Some classes and interfaces were ported from the WindowsAPICodePack.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: NativeShell
+//         Wrappers for native and COM shell interfaces.
+//
+// Some enum documentation copied from the MSDN (and in some cases, updated).
+// Some classes and interfaces were ported from the WindowsAPICodePack.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.Collections.Generic;
@@ -29,11 +29,11 @@ using System.Text;
 
 namespace DataTools.Shell.Native
 {
-    // '<HideModuleName>
-    // 'Public Module NativeShell
+    //<HideModuleName>
+    //Public Module NativeShell
 
     /* TODO ERROR: Skipped RegionDirectiveTrivia */
-    // ' This code is mostly translated from the Windows API Code Pack. I added some IIDs for Windows 8.1
+    // This code is mostly translated from the Windows API Code Pack. I added some IIDs for Windows 8.1
     /* TODO ERROR: Skipped RegionDirectiveTrivia */
     /* TODO ERROR: Skipped RegionDirectiveTrivia */
     public sealed class ShellIIDGuid

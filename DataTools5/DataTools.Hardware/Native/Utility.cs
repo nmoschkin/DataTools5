@@ -1,14 +1,14 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: Utility
-// '         Miscellaneous Utility Functions
-// '
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: Utility
+//         Miscellaneous Utility Functions
+//
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.ComponentModel;
@@ -51,7 +51,7 @@ namespace DataTools.Hardware.Native
                 Marshal.FreeHGlobal(ptr);
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
@@ -75,7 +75,7 @@ namespace DataTools.Hardware.Native
                 Marshal.FreeHGlobal(ptr);
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
@@ -99,7 +99,7 @@ namespace DataTools.Hardware.Native
                 Marshal.FreeHGlobal(ptr);
                 return output;
             }
-            catch (Exception ex)
+            catch
             {
                 return null;
             }
@@ -124,7 +124,7 @@ namespace DataTools.Hardware.Native
                 stream.Read(b, offset, a);
                 return BytesToStruct(b, ref @struct);
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
@@ -150,7 +150,7 @@ namespace DataTools.Hardware.Native
                 gch.Free();
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
@@ -447,7 +447,7 @@ namespace DataTools.Hardware.Native
             {
                 FileApi.pSetFileTime2(hFile, ref CreationTime, ref LastAccessTime, ref LastWriteTime);
             }
-            catch (Exception ex)
+            catch
             {
                 // MsgBox(ex.Message)
             }
@@ -545,14 +545,19 @@ namespace DataTools.Hardware.Native
         public static bool PathExists(string Path)
         {
             IntPtr h;
+            
             int i;
             string s;
+            
             var wf = new PInvoke.WIN32_FIND_DATA();
             var df = default(bool);
+
             s = Path;
             i = s.Length;
+
             if (i == 0)
                 return false;
+
             if (s.LastIndexOf(@"\") == s.Length - 1 & i != 3)
             {
                 s = s.Substring(0, i - 1);
@@ -587,12 +592,11 @@ namespace DataTools.Hardware.Native
         /// <remarks></remarks>
         public static string GetSpecialFolder(IntPtr hWnd, PInvoke.SpecialFolderConstants fSpcPath)
         {
-            string GetSpecialFolderRet = default;
-            string lpStr;
-            lpStr = new string('\0', 512);
+            var lpStr = new string('\0', 512);
+
             PInvoke.SHGetSpecialFolderPath(hWnd, lpStr, (int)fSpcPath, false);
-            GetSpecialFolderRet = lpStr.Trim('\0');
-            return GetSpecialFolderRet;
+            
+            return lpStr.Trim('\0');
         }
 
 
@@ -604,32 +608,29 @@ namespace DataTools.Hardware.Native
         /// <remarks></remarks>
         public static DateTime FileToLocal(PInvoke.FILETIME lpTime)
         {
-            DateTime FileToLocalRet = default;
             DateTime pDate;
             TimeSpan pTime;
             var lpSystem = new PInvoke.SYSTEMTIME();
             var ftLocal = new PInvoke.FILETIME();
 
-            // ' convert the filetime from UTC to local time
+            // convert the filetime from UTC to local time
             FileApi.FileTimeToLocalFileTime(ref lpTime, ref ftLocal);
 
-            // ' convert the FILETIME structure to a system time structure
+            // convert the FILETIME structure to a system time structure
             FileApi.FileTimeToSystemTime(ref ftLocal, ref lpSystem);
 
-            // ' construct a Date variable from the system time structure.
+            // construct a Date variable from the system time structure.
             pTime = new TimeSpan(0, lpSystem.wHour, lpSystem.wMinute, lpSystem.wSecond, lpSystem.wMilliseconds);
+
             try
             {
                 pDate = new DateTime(lpSystem.wYear, lpSystem.wMonth, lpSystem.wDay);
-                pDate = pDate.Add(pTime);
-                FileToLocalRet = pDate;
+                return pDate.Add(pTime);
             }
-            catch (Exception ex)
+            catch
             {
                 return DateTime.Now;
             }
-
-            return FileToLocalRet;
         }
 
         /// <summary>
@@ -640,16 +641,17 @@ namespace DataTools.Hardware.Native
         /// <remarks></remarks>
         public static DateTime FileToSystem(PInvoke.FILETIME lpTime)
         {
-            DateTime FileToSystemRet = default;
             DateTime pDate;
             TimeSpan pTime;
+
             var lpSystem = new PInvoke.SYSTEMTIME();
+
             FileApi.FileTimeToSystemTime(ref lpTime, ref lpSystem);
+
             pTime = new TimeSpan(lpSystem.wHour, lpSystem.wMinute, lpSystem.wSecond);
             pDate = new DateTime(lpSystem.wYear, lpSystem.wMonth, lpSystem.wDay);
-            pDate = pDate.Add(pTime);
-            FileToSystemRet = pDate;
-            return FileToSystemRet;
+
+            return pDate.Add(pTime);
         }
 
         /// <summary>
@@ -671,17 +673,15 @@ namespace DataTools.Hardware.Native
         /// <remarks></remarks>
         public static void SystemToFileTime(DateTime time, ref PInvoke.FILETIME lpTime)
         {
-            var st = new PInvoke.SYSTEMTIME();
-            var lft = new PInvoke.FILETIME();
+            var st = new PInvoke.SYSTEMTIME()
             {
-                var withBlock = st;
-                withBlock.wYear = (ushort)time.Year;
-                withBlock.wMonth = (ushort)time.Month;
-                withBlock.wDay = (ushort)time.Day;
-                withBlock.wHour = (ushort)time.Hour;
-                withBlock.wMinute = (ushort)time.Minute;
-                withBlock.wSecond = (ushort)time.Second;
-            }
+                wYear = (ushort)time.Year,
+                wMonth = (ushort)time.Month,
+                wDay = (ushort)time.Day,
+                wHour = (ushort)time.Hour,
+                wMinute = (ushort)time.Minute,
+                wSecond = (ushort)time.Second
+            };
 
             FileApi.SystemTimeToFileTime(ref st, ref lpTime);
         }
@@ -694,18 +694,19 @@ namespace DataTools.Hardware.Native
         /// <remarks></remarks>
         public static void LocalToFileTime(DateTime time, ref PInvoke.FILETIME lpTime)
         {
-            var st = new PInvoke.SYSTEMTIME();
-            var lft = new PInvoke.FILETIME();
+            var st = new PInvoke.SYSTEMTIME()
             {
-                var withBlock = st;
-                withBlock.wYear = (ushort)time.Year;
-                withBlock.wMonth = (ushort)time.Month;
-                withBlock.wDay = (ushort)time.Day;
-                withBlock.wHour = (ushort)time.Hour;
-                withBlock.wMinute = (ushort)time.Minute;
-                withBlock.wSecond = (ushort)time.Second;
-                withBlock.wMilliseconds = (ushort)time.Millisecond;
-            }
+                wYear = (ushort)time.Year,
+                wMonth = (ushort)time.Month,
+                wDay = (ushort)time.Day,
+                wHour = (ushort)time.Hour,
+                wMinute = (ushort)time.Minute,
+                wSecond = (ushort)time.Second,
+                wMilliseconds = (ushort)time.Millisecond
+            };
+
+
+            var lft = new PInvoke.FILETIME();
 
             FileApi.SystemTimeToFileTime(ref st, ref lft);
             FileApi.LocalFileTimeToFileTime(ref lft, ref lpTime);
@@ -745,10 +746,5 @@ namespace DataTools.Hardware.Native
         {
             return new IntPtr(i);
         }
-
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        /* TODO ERROR: Skipped IfDirectiveTrivia *//* TODO ERROR: Skipped DisabledTextTrivia *//* TODO ERROR: Skipped EndIfDirectiveTrivia */
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
     }
 }

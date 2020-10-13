@@ -1,13 +1,13 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: BlueTooth information (TO DO)
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: BlueTooth information (TO DO)
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 
 using System.Diagnostics;
@@ -18,7 +18,7 @@ namespace DataTools.Hardware
 {
 
 
-    // ' TO DO!  
+    // TO DO!  
     /* TODO ERROR: Skipped RegionDirectiveTrivia */
     public class BluetoothDeviceInfo : DeviceInfo
     {
@@ -139,7 +139,7 @@ namespace DataTools.Hardware
             // shex.hWnd = 
             // shex.lpVerb = "properties"
 
-            // ' Set the parsing name exactly this way.
+            // Set the parsing name exactly this way.
             shex.lpFile = "ms-settings:bluetooth";
             shex.fMask = PInvoke.SEE_MASK_ASYNCOK | PInvoke.SEE_MASK_FLAG_DDEWAIT | PInvoke.SEE_MASK_UNICODE;
             PInvoke.ShellExecuteEx(ref shex);

@@ -1,14 +1,14 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: Very low level disk partition information
-// '         Utility library.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: Very low level disk partition information
+//         Utility library.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.Collections;
@@ -28,7 +28,7 @@ namespace DataTools.Hardware.Disk.Partitions
     /// of MBR partition codes first.
     /// </summary>
     /// <remarks></remarks>
-    class PartCodeSorter : IComparer<PartitionCodeInfo>
+    internal class PartCodeSorter : IComparer<PartitionCodeInfo>
     {
         private List<string> los1 = new List<string>();
         private List<string> los2 = new List<string>();

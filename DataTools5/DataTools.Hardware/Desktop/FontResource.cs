@@ -301,8 +301,8 @@ namespace DataTools.Desktop
 
 
 
-        // ' The rest of the structure shall be fought with pointers and calculations!!!
-        // ' Which probably means wrapping it up in a nice package.
+        // The rest of the structure shall be fought with pointers and calculations!!!
+        // Which probably means wrapping it up in a nice package.
 
 
 

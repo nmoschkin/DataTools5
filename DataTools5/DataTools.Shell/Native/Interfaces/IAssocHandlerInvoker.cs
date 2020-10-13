@@ -1,17 +1,17 @@
-// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: NativeShell
-// '         Wrappers for native and COM shell interfaces.
-// '
-// ' Some enum documentation copied from the MSDN (and in some cases, updated).
-// ' Some classes and interfaces were ported from the WindowsAPICodePack.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: NativeShell
+//         Wrappers for native and COM shell interfaces.
+//
+// Some enum documentation copied from the MSDN (and in some cases, updated).
+// Some classes and interfaces were ported from the WindowsAPICodePack.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.Collections.Generic;
@@ -31,7 +31,7 @@ namespace DataTools.Shell.Native
 {
     /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
 
-    // ' This code was written, from the ground, up, by me (Nathan Moschkin)
+    // This code was written, from the ground, up, by me (Nathan Moschkin)
     /* TODO ERROR: Skipped RegionDirectiveTrivia */
     [ComImport]
     [Guid("92218CAB-ECAA-4335-8133-807FD234C2EE")]

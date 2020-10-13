@@ -48,7 +48,7 @@ namespace DataTools.Desktop
             {
                 if (_IsSpecial)
                 {
-                    // ' let's see if we can parse it.
+                    // let's see if we can parse it.
                     IShellItem shitem = null;
                     var mm = new MemPtr();
                     var argriid = Guid.Parse(ShellIIDGuid.IShellItem);
@@ -123,7 +123,7 @@ namespace DataTools.Desktop
                 else if (initialize)
                     Refresh(_IconSize);
             }
-            catch (Exception ex)
+            catch
             {
             }
         }
@@ -554,11 +554,12 @@ namespace DataTools.Desktop
                 iconSize = _IconSize;
             else
                 _IconSize = (StandardIcons)iconSize;
+            
             if (!File.Exists(_Filename))
                 return;
+            
             _Type = SystemFileType.FromExtension(Path.GetExtension(_Filename), size: _IconSize);
-            if ((ushort?)_IconSize != (ushort?)iconSize == true)
-                _IconSize = _IconSize;
+
             if (_IsSpecial | (_Parent is object && _Parent.IsSpecial))
             {
                 var st = StandardToSystem(_IconSize);

@@ -1,13 +1,13 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library 
-// '
-// ' Module: Friendly numeric types.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows 
+//
+// Module: Friendly numeric types.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.Runtime.InteropServices;
@@ -366,7 +366,7 @@ namespace DataTools.Text
 
         public static implicit operator long(FriendlySizeLong operand)
         {
-            return System.Convert.ToInt64(operand.Value & 0x7FFFFFFFFFFFFFFFUL);
+            return (long)(operand.Value);
         }
 
         public static implicit operator FriendlySizeLong(ulong operand)

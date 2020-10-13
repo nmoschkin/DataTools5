@@ -1,14 +1,14 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library 
-// '
-// ' Module: Byte Order Marker Library
-// '         For Mulitple Character Encodings
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows 
+//
+// Module: Byte Order Marker Library
+//         For Mulitple Character Encodings
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 
 using System;
@@ -123,7 +123,7 @@ namespace DataTools.Text.ByteOrderMark
         PM = 0x9E,
         APC = 0x9F,
 
-        // ' EBCDIC Specific
+        // EBCDIC Specific
         NSP = 0xE1,
         EO = 0xFF
     }
@@ -566,7 +566,7 @@ namespace DataTools.Text.ByteOrderMark
             UTF8 = new BOM(new byte[] { 0xEF, 0xBB, 0xBF }, "UTF8");
             UTF16BE = new BOM(new byte[] { 0xFE, 0xFF }, "UTF16BE");
 
-            // ' Windows default UTF16LEWindows")
+            // Windows default UTF16LEWindows")
             UTF16LE = new BOM(new byte[] { 0xFF, 0xFE }, "UTF16LE");
 
             UTF32BE = new BOM(new byte[] { 0x0, 0x0, 0xFE, 0xFF }, "UTF32BE");

@@ -1,14 +1,14 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: WNet
-// '         Back-end Windows Networking Resources
-// '
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: WNet
+//         Back-end Windows Networking Resources
+//
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.Runtime.InteropServices;
@@ -17,9 +17,9 @@ using Microsoft.VisualBasic;
 
 namespace DataTools.Hardware.Native
 {
-    // '
-    // '  Network Resources.
-    // '
+    //
+    //  Network Resources.
+    //
     internal static class WNet
     {
         public const int RESOURCE_CONNECTED = 0x1;

@@ -1,16 +1,16 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: NetInfoApi
-// '         Windows Networking Api
-// '
-// '         Enums are documented in part from the API documentation at MSDN.
-// '
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: NetInfoApi
+//         Windows Networking Api
+//
+//         Enums are documented in part from the API documentation at MSDN.
+//
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 
 using System;
@@ -1163,9 +1163,8 @@ namespace DataTools.Hardware.Network
         /// <param name="domain">Optional domain name.  The primary domain of the specified computer is assumed if this parameter is null.</param>
         /// <returns>An array of ServerInfo1 objects.</returns>
         /// <remarks></remarks>
-        public static ServerInfo101[] EnumServers(string computer = null, string domain = null)
+        public static ServerInfo101[] EnumServers()
         {
-            ServerInfo101[] EnumServersRet = default;
             MemPtr adv;
             
             var mm = new MemPtr();
@@ -1179,7 +1178,7 @@ namespace DataTools.Hardware.Network
 
             var inul = new IntPtr();
 
-            NetInfoApi.NetServerEnum(null, 101, ref mm, -1, ref en, ref ten, ServerTypes.WindowsNT, null, ref inul);
+            NetServerEnum(null, 101, ref mm, -1, ref en, ref ten, ServerTypes.WindowsNT, null, ref inul);
 
             adv = mm;
             c = ten;
@@ -1322,7 +1321,7 @@ namespace DataTools.Hardware.Network
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 throw new NativeException();
             }
@@ -1384,7 +1383,7 @@ namespace DataTools.Hardware.Network
                     Array.Resize(ref s, x);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 throw new NativeException();
             }
@@ -1414,7 +1413,7 @@ namespace DataTools.Hardware.Network
 
                 return s;
             }
-            catch (Exception ex)
+            catch
             {
                 throw new NativeException();
             }
@@ -1445,7 +1444,7 @@ namespace DataTools.Hardware.Network
                 {
                     cb = Marshal.SizeOf<UserInfo11>();
                 }
-                catch (Exception ex)
+                catch
                 {
                     //Interaction.MsgBox(ex.Message + "\r\n" + "\r\n" + "Stack Trace: " + ex.StackTrace, MsgBoxStyle.Exclamation);
                 }
@@ -1469,7 +1468,7 @@ namespace DataTools.Hardware.Network
                 return usas;
 
             }
-            catch (Exception ex)
+            catch
             {
                 throw new NativeException();
             }
@@ -1507,7 +1506,7 @@ namespace DataTools.Hardware.Network
 
                 return usas;
             }
-            catch (Exception ex)
+            catch
             {
                 throw new NativeException();
             }

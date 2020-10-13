@@ -1,16 +1,16 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: SecurityDescriptor
-// '         Some system security structures translated 
-// '         from the Windows API.  These are Not used 
-// '         all that often in this assembly.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: SecurityDescriptor
+//         Some system security structures translated 
+//         from the Windows API.  These are Not used 
+//         all that often in this assembly.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 
 
@@ -59,26 +59,26 @@ namespace DataTools.Hardware.Native
         public const int SECURITY_VALID_SQOS_FLAGS = 0x1F0000;
 
 
-        // '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-        // '                                                                    ''
-        // '                             SECURITY_DESCRIPTOR                    ''
-        // '                                                                    ''
-        // '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-        // '
-        // '  Define the Security Descriptor and related data types.
-        // '  This is an opaque data structure.
-        // '
+        //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        //                                                                    ''
+        //                             SECURITY_DESCRIPTOR                    ''
+        //                                                                    ''
+        //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        //
+        //  Define the Security Descriptor and related data types.
+        //  This is an opaque data structure.
+        //
 
-        // ' begin_wdm
-        // '
-        // ' Current security descriptor revision value
-        // '
+        // begin_wdm
+        //
+        // Current security descriptor revision value
+        //
 
         public const int SECURITY_DESCRIPTOR_REVISION = 1;
         public const int SECURITY_DESCRIPTOR_REVISION1 = 1;
 
-        // ' end_wdm
-        // ' begin_ntifs
+        // end_wdm
+        // begin_ntifs
 
         public static int SECURITY_DESCRIPTOR_MIN_LENGTH()
         {
@@ -105,78 +105,78 @@ namespace DataTools.Hardware.Native
             SE_SELF_RELATIVE = 0x8000
         }
 
-        // '
-        // '  Where:
-        // '
-        // '      SE_OWNER_DEFAULTED - This boolean flag, when set, indicates that the
-        // '          SID pointed to by the Owner field was provided by a
-        // '          defaulting mechanism rather than explicitly provided by the
-        // '          original provider of the security descriptor.  This may
-        // '          affect the treatment of the SID with respect to inheritence
-        // '          of an owner.
-        // '
-        // '      SE_GROUP_DEFAULTED - This boolean flag, when set, indicates that the
-        // '          SID in the Group field was provided by a defaulting mechanism
-        // '          rather than explicitly provided by the original provider of
-        // '          the security descriptor.  This may affect the treatment of
-        // '          the SID with respect to inheritence of a primary group.
-        // '
-        // '      SE_DACL_PRESENT - This boolean flag, when set, indicates that the
-        // '          security descriptor contains a discretionary ACL.  If this
-        // '          flag is set and the Dacl field of the SECURITY_DESCRIPTOR is
-        // '          null, then a null ACL is explicitly being specified.
-        // '
-        // '      SE_DACL_DEFAULTED - This boolean flag, when set, indicates that the
-        // '          ACL pointed to by the Dacl field was provided by a defaulting
-        // '          mechanism rather than explicitly provided by the original
-        // '          provider of the security descriptor.  This may affect the
-        // '          treatment of the ACL with respect to inheritence of an ACL.
-        // '          This flag is ignored if the DaclPresent flag is not set.
-        // '
-        // '      SE_SACL_PRESENT - This boolean flag, when set,  indicates that the
-        // '          security descriptor contains a system ACL pointed to by the
-        // '          Sacl field.  If this flag is set and the Sacl field of the
-        // '          SECURITY_DESCRIPTOR is null, then an empty (but present)
-        // '          ACL is being specified.
-        // '
-        // '      SE_SACL_DEFAULTED - This boolean flag, when set, indicates that the
-        // '          ACL pointed to by the Sacl field was provided by a defaulting
-        // '          mechanism rather than explicitly provided by the original
-        // '          provider of the security descriptor.  This may affect the
-        // '          treatment of the ACL with respect to inheritence of an ACL.
-        // '          This flag is ignored if the SaclPresent flag is not set.
-        // '
-        // '      SE_SELF_RELATIVE - This boolean flag, when set, indicates that the
-        // '          security descriptor is in self-relative form.  In this form,
-        // '          all fields of the security descriptor are contiguous in memory
-        // '          and all pointer fields are expressed as offsets from the
-        // '          beginning of the security descriptor.  This form is useful
-        // '          for treating security descriptors as opaque data structures
-        // '          for transmission in communication protocol or for storage on
-        // '          secondary media.
-        // '
-        // '
-        // '
-        // ' Pictorially the structure of a security descriptor is as follows:
-        // '
-        // '       3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
-        // '       1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
-        // '      +---------------------------------------------------------------+
-        // '      |            Control            |Reserved1 (SBZ)|   Revision    |
-        // '      +---------------------------------------------------------------+
-        // '      |                            Owner                              |
-        // '      +---------------------------------------------------------------+
-        // '      |                            Group                              |
-        // '      +---------------------------------------------------------------+
-        // '      |                            Sacl                               |
-        // '      +---------------------------------------------------------------+
-        // '      |                            Dacl                               |
-        // '      +---------------------------------------------------------------+
-        // '
-        // ' In general, this data structure should be treated opaquely to ensure future
-        // ' compatibility.
-        // '
-        // '
+        //
+        //  Where:
+        //
+        //      SE_OWNER_DEFAULTED - This boolean flag, when set, indicates that the
+        //          SID pointed to by the Owner field was provided by a
+        //          defaulting mechanism rather than explicitly provided by the
+        //          original provider of the security descriptor.  This may
+        //          affect the treatment of the SID with respect to inheritence
+        //          of an owner.
+        //
+        //      SE_GROUP_DEFAULTED - This boolean flag, when set, indicates that the
+        //          SID in the Group field was provided by a defaulting mechanism
+        //          rather than explicitly provided by the original provider of
+        //          the security descriptor.  This may affect the treatment of
+        //          the SID with respect to inheritence of a primary group.
+        //
+        //      SE_DACL_PRESENT - This boolean flag, when set, indicates that the
+        //          security descriptor contains a discretionary ACL.  If this
+        //          flag is set and the Dacl field of the SECURITY_DESCRIPTOR is
+        //          null, then a null ACL is explicitly being specified.
+        //
+        //      SE_DACL_DEFAULTED - This boolean flag, when set, indicates that the
+        //          ACL pointed to by the Dacl field was provided by a defaulting
+        //          mechanism rather than explicitly provided by the original
+        //          provider of the security descriptor.  This may affect the
+        //          treatment of the ACL with respect to inheritence of an ACL.
+        //          This flag is ignored if the DaclPresent flag is not set.
+        //
+        //      SE_SACL_PRESENT - This boolean flag, when set,  indicates that the
+        //          security descriptor contains a system ACL pointed to by the
+        //          Sacl field.  If this flag is set and the Sacl field of the
+        //          SECURITY_DESCRIPTOR is null, then an empty (but present)
+        //          ACL is being specified.
+        //
+        //      SE_SACL_DEFAULTED - This boolean flag, when set, indicates that the
+        //          ACL pointed to by the Sacl field was provided by a defaulting
+        //          mechanism rather than explicitly provided by the original
+        //          provider of the security descriptor.  This may affect the
+        //          treatment of the ACL with respect to inheritence of an ACL.
+        //          This flag is ignored if the SaclPresent flag is not set.
+        //
+        //      SE_SELF_RELATIVE - This boolean flag, when set, indicates that the
+        //          security descriptor is in self-relative form.  In this form,
+        //          all fields of the security descriptor are contiguous in memory
+        //          and all pointer fields are expressed as offsets from the
+        //          beginning of the security descriptor.  This form is useful
+        //          for treating security descriptors as opaque data structures
+        //          for transmission in communication protocol or for storage on
+        //          secondary media.
+        //
+        //
+        //
+        // Pictorially the structure of a security descriptor is as follows:
+        //
+        //       3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
+        //       1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
+        //      +---------------------------------------------------------------+
+        //      |            Control            |Reserved1 (SBZ)|   Revision    |
+        //      +---------------------------------------------------------------+
+        //      |                            Owner                              |
+        //      +---------------------------------------------------------------+
+        //      |                            Group                              |
+        //      +---------------------------------------------------------------+
+        //      |                            Sacl                               |
+        //      +---------------------------------------------------------------+
+        //      |                            Dacl                               |
+        //      +---------------------------------------------------------------+
+        //
+        // In general, this data structure should be treated opaquely to ensure future
+        // compatibility.
+        //
+        //
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct SECURITY_DESCRIPTOR_RELATIVE
         {
@@ -297,45 +297,45 @@ namespace DataTools.Hardware.Native
             return StringToSecurityDescriptorRet;
         }
 
-        // ' end_ntifs
+        // end_ntifs
 
-        // ' Where:
-        // '
-        // '     Revision - Contains the revision level of the security
-        // '         descriptor.  This allows this structure to be passed between
-        // '         systems or stored on disk even though it is expected to
-        // '         change in the future.
-        // '
-        // '     Control - A set of flags which qualify the meaning of the
-        // '         security descriptor or individual fields of the security
-        // '         descriptor.
-        // '
-        // '     Owner - is a pointer to an SID representing an object's owner.
-        // '         If this field is null, then no owner SID is present in the
-        // '         security descriptor.  If the security descriptor is in
-        // '         self-relative form, then this field contains an offset to
-        // '         the SID, rather than a pointer.
-        // '
-        // '     Group - is a pointer to an SID representing an object's primary
-        // '         group.  If this field is null, then no primary group SID is
-        // '         present in the security descriptor.  If the security descriptor
-        // '         is in self-relative form, then this field contains an offset to
-        // '         the SID, rather than a pointer.
-        // '
-        // '     Sacl - is a pointer to a system ACL.  This field value is only
-        // '         valid if the DaclPresent control flag is set.  If the
-        // '         SaclPresent flag is set and this field is null, then a null
-        // '         ACL  is specified.  If the security descriptor is in
-        // '         self-relative form, then this field contains an offset to
-        // '         the ACL, rather than a pointer.
-        // '
-        // '     Dacl - is a pointer to a discretionary ACL.  This field value is
-        // '         only valid if the DaclPresent control flag is set.  If the
-        // '         DaclPresent flag is set and this field is null, then a null
-        // '         ACL (unconditionally granting access) is specified.  If the
-        // '         security descriptor is in self-relative form, then this field
-        // '         contains an offset to the ACL, rather than a pointer.
-        // '
+        // Where:
+        //
+        //     Revision - Contains the revision level of the security
+        //         descriptor.  This allows this structure to be passed between
+        //         systems or stored on disk even though it is expected to
+        //         change in the future.
+        //
+        //     Control - A set of flags which qualify the meaning of the
+        //         security descriptor or individual fields of the security
+        //         descriptor.
+        //
+        //     Owner - is a pointer to an SID representing an object's owner.
+        //         If this field is null, then no owner SID is present in the
+        //         security descriptor.  If the security descriptor is in
+        //         self-relative form, then this field contains an offset to
+        //         the SID, rather than a pointer.
+        //
+        //     Group - is a pointer to an SID representing an object's primary
+        //         group.  If this field is null, then no primary group SID is
+        //         present in the security descriptor.  If the security descriptor
+        //         is in self-relative form, then this field contains an offset to
+        //         the SID, rather than a pointer.
+        //
+        //     Sacl - is a pointer to a system ACL.  This field value is only
+        //         valid if the DaclPresent control flag is set.  If the
+        //         SaclPresent flag is set and this field is null, then a null
+        //         ACL  is specified.  If the security descriptor is in
+        //         self-relative form, then this field contains an offset to
+        //         the ACL, rather than a pointer.
+        //
+        //     Dacl - is a pointer to a discretionary ACL.  This field value is
+        //         only valid if the DaclPresent control flag is set.  If the
+        //         DaclPresent flag is set and this field is null, then a null
+        //         ACL (unconditionally granting access) is specified.  If the
+        //         security descriptor is in self-relative form, then this field
+        //         contains an offset to the ACL, rather than a pointer.
+        //
 
     }
 }

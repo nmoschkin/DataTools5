@@ -1,15 +1,15 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library 
-// ' Adapted for C#/Xamarin
-// '
-// ' Module: Prints and Interprets Numeric Values
-// '         From Any Printed Base.
-// ' 
-// ' Copyright (C) 2011-2015, 2019 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows 
+// Adapted for C#/Xamarin
+//
+// Module: Prints and Interprets Numeric Values
+//         From Any Printed Base.
+// 
+// Copyright (C) 2011-2015, 2019 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 

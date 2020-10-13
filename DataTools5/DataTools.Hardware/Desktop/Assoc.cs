@@ -1,13 +1,13 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: System file association utility classes.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: System file association utility classes.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.Collections.Generic;
@@ -200,48 +200,48 @@ namespace DataTools.Desktop
         internal void Refresh(IAssocHandler handler)
         {
             string pth = null;
+
             int idx = 0;
-            uint sz = 0U;
+
             _Handler = handler;
             Preferred = _Handler.IsRecommended() == HResult.Ok;
+
             string argppsz = ExePath;
+
             handler.GetName(out argppsz);
+
             ExePath = argppsz;
+
             if (File.Exists(ExePath) == false)
                 throw new SystemException("Program path not found");
-            string argppsz1 = UIName;
-            handler.GetUIName(out argppsz1);
-            UIName = argppsz1;
+
+            handler.GetUIName(out string strRet);
+            UIName = strRet;
+
             handler.GetIconLocation(out pth, out idx);
             Icon = Resources.LoadLibraryIcon(pth, idx, IconSize);
+
             if (Icon is null)
             {
                 int iix = (int)NativeShell.Shell_GetCachedImageIndex(pth, idx, 0U);
+
                 switch (IconSize)
                 {
                     case StandardIcons.Icon256:
-                        {
-                            Icon = Resources.GetFileIconFromIndex(iix, Resources.SystemIconSizes.Jumbo);
-                            break;
-                        }
+                        Icon = Resources.GetFileIconFromIndex(iix, Resources.SystemIconSizes.Jumbo);
+                        break;
 
                     case StandardIcons.Icon48:
-                        {
-                            Icon = Resources.GetFileIconFromIndex(iix, Resources.SystemIconSizes.ExtraLarge);
-                            break;
-                        }
+                        Icon = Resources.GetFileIconFromIndex(iix, Resources.SystemIconSizes.ExtraLarge);
+                        break;
 
                     case StandardIcons.Icon32:
-                        {
-                            Icon = Resources.GetFileIconFromIndex(iix, Resources.SystemIconSizes.Large);
-                            break;
-                        }
+                        Icon = Resources.GetFileIconFromIndex(iix, Resources.SystemIconSizes.Large);
+                        break;
 
                     default:
-                        {
-                            Icon = Resources.GetFileIconFromIndex(iix, Resources.SystemIconSizes.Small);
-                            break;
-                        }
+                        Icon = Resources.GetFileIconFromIndex(iix, Resources.SystemIconSizes.Small);
+                        break;
                 }
             }
         }
@@ -328,7 +328,7 @@ namespace DataTools.Desktop
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
@@ -353,7 +353,7 @@ namespace DataTools.Desktop
             return UIName;
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string e = null)
+        private void OnPropertyChanged([CallerMemberName] string e = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(e));
         }
@@ -713,7 +713,7 @@ namespace DataTools.Desktop
                 if (_Desc is null || string.IsNullOrEmpty(_Desc))
                     _Desc = _Ext + " file";
             }
-            catch (Exception ex)
+            catch
             {
             }
 
@@ -735,7 +735,7 @@ namespace DataTools.Desktop
         private bool disposedValue; // To detect redundant calls
 
         // IDisposable
-        protected void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
@@ -936,7 +936,7 @@ namespace DataTools.Desktop
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
         private bool disposedValue; // To detect redundant calls
 
-        protected void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
@@ -978,10 +978,14 @@ namespace DataTools.Desktop
             // Create a native context menu submenu populated with "open with" items
             var col = new MenuItemBagCollection();
             var nm = new NativeMenu(hMenu);
+
             string ext = Path.GetExtension(fileName).ToLower();
+
             NativeMenuItem nmi;
             var assoc = NativeShell.EnumFileHandlers(ext);
+
             nm.Items.Clear();
+
             if (assoc is null)
             {
                 nm.Destroy();
@@ -991,18 +995,27 @@ namespace DataTools.Desktop
             foreach (IAssocHandler handler in assoc)
             {
                 Icon icn;
+
                 string pth = null;
+
                 int idx;
+
                 string uiname = null;
                 string pathname = null;
-                uint sz = 0U;
+
                 handler.GetIconLocation(out pth, out idx);
+
                 int iix = (int)NativeShell.Shell_GetCachedImageIndex(pth, idx, 0U);
+
                 icn = Resources.GetFileIconFromIndex(iix, (Resources.SystemIconSizes)(int)(PInvoke.SHIL_SMALL));
+
                 handler.GetName(out pathname);
+
                 if (File.Exists(pathname) == false)
                     continue;
+
                 handler.GetUIName(out uiname);
+
                 if (icn is null)
                 {
                     nmi = nm.Items.Add(uiname);
@@ -1022,5 +1035,5 @@ namespace DataTools.Desktop
             return nm;
         }
     }
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+ 
 }

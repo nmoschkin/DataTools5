@@ -387,7 +387,7 @@ namespace DataTools.Hardware.Disk.Partitions
         private static string[] _internalPopulationInfo()
         {
 
-            // ' This list was adapted from the Wikipedia article: http://en.wikipedia.org/wiki/Partition_type
+            // This list was adapted from the Wikipedia article: http://en.wikipedia.org/wiki/Partition_type
 
             var v = new List<string>();
             v.Add("\"&H00\",\"MBR, EBR\",\"N/A\",\"No\",\"Free\",\"IBM\",\"All\",\"Empty partition entry\"");

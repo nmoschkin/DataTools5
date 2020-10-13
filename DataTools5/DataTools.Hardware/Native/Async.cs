@@ -1,14 +1,14 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: Async
-// '         Native Async.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: Async
+//         Native Async.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 
 using System;
@@ -77,9 +77,9 @@ namespace DataTools.Hardware.Native
         public const uint STATUS_SXS_EARLY_DEACTIVATION = 0xC015000F;
         public const uint STATUS_SXS_INVALID_DEACTIVATION = 0xC0150010;
 
-        // '
-        // ' Used to represent information related to a thread impersonation
-        // '
+        //
+        // Used to represent information related to a thread impersonation
+        //
 
         public const int DISABLE_MAX_PRIVILEGE = 0x1;
         public const int SANDBOX_INERT = 0x2;
@@ -112,10 +112,10 @@ namespace DataTools.Hardware.Native
         public const int PROCESS_SUSPEND_RESUME = 0x800;
         public const int PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
         public const int PROCESS_SET_LIMITED_INFORMATION = 0x2000;
-        // ' (NTDDI_VERSION >= NTDDI_VISTA) Then
+        // (NTDDI_VERSION >= NTDDI_VISTA) Then
         public const int PROCESS_ALL_ACCESS = FileApi.STANDARD_RIGHTS_REQUIRED | FileApi.SYNCHRONIZE | 0xFFFF;
-        // '
-        // ' defined(_WIN64)
+        //
+        // defined(_WIN64)
 
         public static int MAXIMUM_PROC_PER_GROUP
         {
@@ -128,7 +128,7 @@ namespace DataTools.Hardware.Native
             }
         }
 
-        // '
+        //
 
         public readonly static int MAXIMUM_PROCESSORS = MAXIMUM_PROC_PER_GROUP;
         public const int THREAD_TERMINATE = 0x1;
@@ -140,14 +140,14 @@ namespace DataTools.Hardware.Native
         public const int THREAD_SET_THREAD_TOKEN = 0x80;
         public const int THREAD_IMPERSONATE = 0x100;
         public const int THREAD_DIRECT_IMPERSONATION = 0x200;
-        // ' begin_wdm
-        public const int THREAD_SET_LIMITED_INFORMATION = 0x400;  // ' winnt
-        public const int THREAD_QUERY_LIMITED_INFORMATION = 0x800;  // ' winnt
-        public const int THREAD_RESUME = 0x1000;  // ' winnt
-        // ' (NTDDI_VERSION >= NTDDI_VISTA) Then
+        // begin_wdm
+        public const int THREAD_SET_LIMITED_INFORMATION = 0x400;  // winnt
+        public const int THREAD_QUERY_LIMITED_INFORMATION = 0x800;  // winnt
+        public const int THREAD_RESUME = 0x1000;  // winnt
+        // (NTDDI_VERSION >= NTDDI_VISTA) Then
         public const int THREAD_ALL_ACCESS = FileApi.STANDARD_RIGHTS_REQUIRED | FileApi.SYNCHRONIZE | 0xFFFF;
-        // '
-        // '
+        //
+        //
         public const int JOB_OBJECT_ASSIGN_PROCESS = 0x1;
         public const int JOB_OBJECT_SET_ATTRIBUTES = 0x2;
         public const int JOB_OBJECT_QUERY = 0x4;

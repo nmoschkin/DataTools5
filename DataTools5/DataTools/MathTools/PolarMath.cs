@@ -164,7 +164,7 @@ namespace DataTools.MathTools
             {
                 if (rect.Width < p.Radius * 2d + 1d || rect.Height < p.Radius * 2d + 1d)
                 {
-                    // ' fit to rectangle
+                    // fit to rectangle
                     p = new PolarCoordinates(Math.Min(rect.Width, rect.Height) / 2d - 1d, p.Angle);
                 }
 
@@ -218,7 +218,7 @@ namespace DataTools.MathTools
             double radConst = 180.0d / 3.1415926535897931d;
             r = Math.Sqrt(x * x + y * y);
 
-            // ' screen coordinates are funny, had to reverse this.
+            // screen coordinates are funny, had to reverse this.
             a = Math.Atan(x / y);
             a *= radConst;
             a = a - 180.0d;

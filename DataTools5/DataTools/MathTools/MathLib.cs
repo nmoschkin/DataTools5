@@ -12,10 +12,10 @@ namespace DataTools.MathTools
 {
     public static class MathLib
     {
-        // ' Extended mathematic process library for Visual Basic
-        // '
-        // ' Duplication is prohibited, as is commercial use without prior written permission.
-        // ' Copyright (C) 2015 Nathaniel Moschkin.  All Rights Reserved.
+        // Extended mathematic process library for Visual Basic
+        //
+        // Duplication is prohibited, as is commercial use without prior written permission.
+        // Copyright (C) 2015 Nathaniel Moschkin.  All Rights Reserved.
 
         public const double MAX_VALUE = 1.7976931348623157E+308d;
         public const double MIN_VALUE = 4.94065645841247E-324d;
@@ -56,7 +56,7 @@ namespace DataTools.MathTools
         }
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        // ' I actually needed no guidance coming up with the PrintFraction equation.  It was a logical deduction.
+        // I actually needed no guidance coming up with the PrintFraction equation.  It was a logical deduction.
 
 
         /// <summary>
@@ -85,55 +85,55 @@ namespace DataTools.MathTools
                 return "0";
             }
 
-            // ' test to see if there is a whole-number component, and place it off to the side.
+            // test to see if there is a whole-number component, and place it off to the side.
             if ((double)value >= 1.0d)
             {
                 wholePart = Math.Floor(value);
                 value -= wholePart;
 
-                // ' if there is no fractional component, there's no reason to go on.
+                // if there is no fractional component, there's no reason to go on.
                 if (value == 0m)
                     return wholePart.ToString("0");
             }
 
             if (maxSignificantDigits > 28)
                 maxSignificantDigits = 28;
-            // ' Go from 1 to the maximum number of significant digits.
+            // Go from 1 to the maximum number of significant digits.
             var loopTo = maxSignificantDigits;
             for (currSig = 1; currSig <= loopTo; currSig++)
             {
 
-                // ' get the rounded, working value for the test.
+                // get the rounded, working value for the test.
                 workVal = Math.Round(value, currSig);
 
-                // ' iterate the numerator to the maximum denominator value.
+                // iterate the numerator to the maximum denominator value.
                 var loopTo1 = (decimal)maxDenominator;
                 for (numerator = 1m; numerator <= loopTo1; numerator++)
                 {
 
-                    // ' iterate the denomenator to the maximum denominator value.
+                    // iterate the denomenator to the maximum denominator value.
                     var loopTo2 = (decimal)maxDenominator;
                     for (denominator = 1m; denominator <= loopTo2; denominator++)
                     {
 
-                        // ' create the test value.
+                        // create the test value.
                         testVal = Math.Round(numerator / denominator, currSig);
                         if (testVal == workVal)
                         {
-                            // ' at this significant digit, the test and working values
-                            // ' produce the same result, meaning that this is a viable
-                            // ' fraction.  But it may not be the only viable fraction
-                            // ' within the range of possible denominators.
+                            // at this significant digit, the test and working values
+                            // produce the same result, meaning that this is a viable
+                            // fraction.  But it may not be the only viable fraction
+                            // within the range of possible denominators.
 
-                            // ' we'll record the highest significant digit for which
-                            // ' a fraction was found, so far.
+                            // we'll record the highest significant digit for which
+                            // a fraction was found, so far.
                             hSigFound = currSig;
 
-                            // ' add the compatible pair to a list
+                            // add the compatible pair to a list
                             foundFractions.Add(new int[] { (int)numerator, (int)denominator });
 
-                            // ' break to the next significant digit, there's
-                            // ' no reason to do any more work.
+                            // break to the next significant digit, there's
+                            // no reason to do any more work.
                             lastTest = testVal;
                             goto nextSig;
                         }
@@ -145,21 +145,21 @@ namespace DataTools.MathTools
             }
 
 
-            // ' the best fit will be the last found fraction pair,
-            // ' which will have the closest approximation to the the original number,
-            // ' within the bounds of available significant digits.
+            // the best fit will be the last found fraction pair,
+            // which will have the closest approximation to the the original number,
+            // within the bounds of available significant digits.
             numerator = foundFractions[foundFractions.Count - 1][0];
             denominator = foundFractions[foundFractions.Count - 1][1];
 
-            // ' if the higest found fraction was below the maximum number of significant digits,
-            // ' we will optionally add the "~" (quasi) mark to the output string to indicate that
-            // ' this is an approximation (with regard to the number of significant digits).
+            // if the higest found fraction was below the maximum number of significant digits,
+            // we will optionally add the "~" (quasi) mark to the output string to indicate that
+            // this is an approximation (with regard to the number of significant digits).
             if (addQuasiMark == true && hSigFound < maxSignificantDigits && lastTest != value)
             {
                 output += "~ ";
             }
 
-            // ' If we have an integer component, add that to the output string.
+            // If we have an integer component, add that to the output string.
             if (numerator == 1m && denominator == 1m)
                 wholePart = wholePart + 1m;
             if (wholePart > 0m)
@@ -167,11 +167,11 @@ namespace DataTools.MathTools
                 output += wholePart + " ";
             }
 
-            // ' Finally, add the fraction.
+            // Finally, add the fraction.
             if (!(numerator == 1m && denominator == 1m))
                 output += string.Format("{0}/{1}", numerator.ToString("0"), denominator.ToString("0"));
 
-            // ' We're done!
+            // We're done!
             return output;
         }
         /// <summary>

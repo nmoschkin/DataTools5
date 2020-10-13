@@ -1,15 +1,15 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: VirtualDisk
-// '         Create, Mount, and Unmount .vhd and .vhdx
-// '         Virtual Disks.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: VirtualDisk
+//         Create, Mount, and Unmount .vhd and .vhdx
+//         Virtual Disks.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.IO;
@@ -57,7 +57,7 @@ namespace DataTools.Hardware.Disk
     /// Encapsulates a virtual disk device (iso, vhd, or vhdx).
     /// </summary>
     /// <remarks></remarks>
-    public class VirtualDisk
+    public sealed class VirtualDisk
     {
         internal DiskDeviceInfo _info;
         internal IntPtr _Handle = IntPtr.Zero;
@@ -252,19 +252,19 @@ namespace DataTools.Hardware.Disk
         public static VirtualDisk Create(string imageFile, long diskSize, bool fixedSize, ref Guid id, ref Guid resiliencyId, int blockSize = 2097152, int sectorSize = 512, string sourcePath = null, VirtualStorageType sourceDiskType = VirtualStorageType.Unknown)
         {
             VirtualDisk CreateRet = default;
-            
+
             string ext = Path.GetExtension(imageFile).ToLower();
-            
+
             var cp2 = new VDiskDecl.CREATE_VIRTUAL_DISK_PARAMETERS_V2();
             var cp1 = new VDiskDecl.CREATE_VIRTUAL_DISK_PARAMETERS_V1();
-            
+
             VDiskDecl.VIRTUAL_STORAGE_TYPE vst;
-            
+
             var r = default(uint);
             IntPtr handleNew = new IntPtr();
 
             vst.VendorId = VDiskDecl.VIRTUAL_STORAGE_TYPE_VENDOR_MICROSOFT;
-            
+
             switch (ext ?? "")
             {
                 case ".vhd":
@@ -278,7 +278,7 @@ namespace DataTools.Hardware.Disk
                         vst.DeviceId = VDiskDecl.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
 
                         r = VDiskDecl.CreateVirtualDisk(vst, imageFile, VDiskDecl.VIRTUAL_DISK_ACCESS_MASK.VIRTUAL_DISK_ACCESS_ALL, IntPtr.Zero, fixedSize ? VDiskDecl.CREATE_VIRTUAL_DISK_FLAGS.CREATE_VIRTUAL_DISK_FLAG_FULL_PHYSICAL_ALLOCATION : VDiskDecl.CREATE_VIRTUAL_DISK_FLAGS.CREATE_VIRTUAL_DISK_FLAG_NONE, 0U, cp1, IntPtr.Zero, ref handleNew);
-                  
+
                         break;
                     }
 
@@ -381,11 +381,14 @@ namespace DataTools.Hardware.Disk
             VDiskDecl.VIRTUAL_STORAGE_TYPE vst;
             if (_Handle != IntPtr.Zero)
                 Close();
-            long h = 0L;
+
             var vdp1 = new VDiskDecl.OPEN_VIRTUAL_DISK_PARAMETERS_V1();
             var vdp2 = new VDiskDecl.OPEN_VIRTUAL_DISK_PARAMETERS_V2();
+
             uint r;
+
             var am = VDiskDecl.VIRTUAL_DISK_ACCESS_MASK.VIRTUAL_DISK_ACCESS_GET_INFO | VDiskDecl.VIRTUAL_DISK_ACCESS_MASK.VIRTUAL_DISK_ACCESS_DETACH;
+
             if (!openReadOnly)
             {
                 am = am | VDiskDecl.VIRTUAL_DISK_ACCESS_MASK.VIRTUAL_DISK_ACCESS_ATTACH_RW;
@@ -395,29 +398,26 @@ namespace DataTools.Hardware.Disk
             vdp2.ResiliencyGuid = Guid.NewGuid();
             vdp2.ReadOnly = false;
             vdp2.GetInfoOnly = false;
+
             vdp1.RWDepth = 1U;
             vdp1.Version = VDiskDecl.OPEN_VIRTUAL_DISK_VERSION.OPEN_VIRTUAL_DISK_VERSION_1;
+
             vst.VendorId = VDiskDecl.VIRTUAL_STORAGE_TYPE_VENDOR_MICROSOFT;
+
             switch (ext.ToLower() ?? "")
             {
                 case ".vhd":
-                    {
-                        vst.DeviceId = VDiskDecl.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
-                        r = VDiskDecl.OpenVirtualDisk(vst, imageFile, am, VDiskDecl.OPEN_VIRTUAL_DISK_FLAG.OPEN_VIRTUAL_DISK_FLAG_NONE, vdp1, ref _Handle);
-                        break;
-                    }
+                    vst.DeviceId = VDiskDecl.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
+                    r = VDiskDecl.OpenVirtualDisk(vst, imageFile, am, VDiskDecl.OPEN_VIRTUAL_DISK_FLAG.OPEN_VIRTUAL_DISK_FLAG_NONE, vdp1, ref _Handle);
+                    break;
 
                 case ".vhdx":
-                    {
-                        vst.DeviceId = VDiskDecl.VIRTUAL_STORAGE_TYPE_DEVICE_VHDX;
-                        r = VDiskDecl.OpenVirtualDisk(vst, imageFile, am, VDiskDecl.OPEN_VIRTUAL_DISK_FLAG.OPEN_VIRTUAL_DISK_FLAG_NONE, vdp1, ref _Handle);
-                        break;
-                    }
+                    vst.DeviceId = VDiskDecl.VIRTUAL_STORAGE_TYPE_DEVICE_VHDX;
+                    r = VDiskDecl.OpenVirtualDisk(vst, imageFile, am, VDiskDecl.OPEN_VIRTUAL_DISK_FLAG.OPEN_VIRTUAL_DISK_FLAG_NONE, vdp1, ref _Handle);
+                    break;
 
                 default:
-                    {
-                        return false;
-                    }
+                    return false;
             }
 
             if (r == 0L)
@@ -436,9 +436,7 @@ namespace DataTools.Hardware.Disk
         /// <remarks></remarks>
         public bool Attach()
         {
-            bool AttachRet = default;
-            AttachRet = Attach(true);
-            return AttachRet;
+            return Attach(true);
         }
 
         /// <summary>
@@ -449,16 +447,18 @@ namespace DataTools.Hardware.Disk
         /// <remarks></remarks>
         public bool Attach(bool makePermanent)
         {
-            bool AttachRet = default;
             if (_Handle == IntPtr.Zero || Attached)
                 return false;
-            uint sdsize = 0U;
+
             var mm = new MemPtr(8L);
+
             mm.ByteAt(0L) = 1;
+
             uint r = VDiskDecl.AttachVirtualDisk(_Handle, IntPtr.Zero, makePermanent ? VDiskDecl.ATTACH_VIRTUAL_DISK_FLAG.ATTACH_VIRTUAL_DISK_FLAG_PERMANENT_LIFETIME : VDiskDecl.ATTACH_VIRTUAL_DISK_FLAG.ATTACH_VIRTUAL_DISK_FLAG_NONE, 0U, mm.Handle, IntPtr.Zero);
+
             mm.Free();
-            AttachRet = r == 0L;
-            return AttachRet;
+
+            return r == 0L;
         }
 
         /// <summary>
@@ -468,12 +468,11 @@ namespace DataTools.Hardware.Disk
         /// <remarks></remarks>
         public bool Detach()
         {
-            bool DetachRet = default;
-            if (!Attached)
-                return false;
+            if (!Attached) return false;
+
             uint r = VDiskDecl.DetachVirtualDisk(_Handle, VDiskDecl.DETACH_VIRTUAL_DISK_FLAG.DETACH_VIRTUAL_DISK_FLAG_NONE, 0U);
-            DetachRet = r == 0L;
-            return DetachRet;
+
+            return r == 0L;
         }
 
         /// <summary>
@@ -485,9 +484,12 @@ namespace DataTools.Hardware.Disk
         {
             if (_Handle == IntPtr.Zero)
                 return false;
+
             bool r = PInvoke.CloseHandle(_Handle);
+
             if (r)
                 _Handle = IntPtr.Zero;
+
             return r;
         }
 
@@ -541,7 +543,7 @@ namespace DataTools.Hardware.Disk
         /// <value></value>
         /// <returns></returns>
         /// <remarks></remarks>
-        public DevClassPresenting.DeviceCapabilities Capabilities
+        public DeviceCapabilities Capabilities
         {
             get
             {
@@ -613,11 +615,11 @@ namespace DataTools.Hardware.Disk
         /// <value></value>
         /// <returns></returns>
         /// <remarks></remarks>
-        public DevClassPresenting.StorageType Type
+        public StorageType Type
         {
             get
             {
-                return DevClassPresenting.StorageType.Virtual;
+                return StorageType.Virtual;
             }
         }
 
@@ -641,29 +643,14 @@ namespace DataTools.Hardware.Disk
         /// <value></value>
         /// <returns></returns>
         /// <remarks></remarks>
-        public DevClassPresenting.DeviceType DeviceType
+        public DeviceType DeviceType
         {
             get
             {
-                return DevClassPresenting.DeviceType.Disk;
+                return DeviceType.Disk;
             }
         }
 
-        /// <summary>
-        /// Tests the string object for equality.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        /// <remarks></remarks>
-        public override bool Equals(object obj)
-        {
-            if (obj is null)
-                return false;
-            return (obj.ToString() ?? "") == (ToString() ?? "");
-        }
-
-
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
         private bool disposedValue;
 
         /// <summary>
@@ -671,7 +658,7 @@ namespace DataTools.Hardware.Disk
         /// </summary>
         /// <param name="disposing"></param>
         /// <remarks></remarks>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
@@ -690,14 +677,12 @@ namespace DataTools.Hardware.Disk
             Dispose(false);
         }
 
-        // This code added by Visual Basic to correctly implement the disposable pattern.
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         private VirtualDisk()
         {
         }

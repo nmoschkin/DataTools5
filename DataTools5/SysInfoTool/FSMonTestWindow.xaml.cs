@@ -1,4 +1,4 @@
-﻿// ' Example program.  Copyright (C) 2014 Nathan Moschkin
+﻿// Example program.  Copyright (C) 2014 Nathan Moschkin
 
 using System;
 using System.Collections.ObjectModel;
@@ -23,11 +23,11 @@ using System.Windows.Shapes;
 namespace SysInfoTool
 {
 
-    // ' VB example demonstates FSMonitor object.
+    // VB example demonstates FSMonitor object.
 
-    // ' right now we've configured it for adding.  
-    // ' you can comment out the If block, in the event, below, 
-    // ' or change the condition to see other results.
+    // right now we've configured it for adding.  
+    // you can comment out the If block, in the event, below, 
+    // or change the condition to see other results.
 
 
     public partial class FSMonTestWindow : Window
@@ -146,9 +146,9 @@ namespace SysInfoTool
             do
             {
 
-                // ' right now we've configured it for adding.  
-                // ' you can comment out the If block, or change the 
-                // ' condition to see other results.
+                // right now we've configured it for adding.  
+                // you can comment out the If block, or change the 
+                // condition to see other results.
                 if (inf.Action == FileActions.Added)
                 {
                     NotifyCol.Add(inf);

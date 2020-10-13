@@ -1,14 +1,14 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: HardwareCollection 
-// '         Computer information collection class.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: HardwareCollection 
+//         Computer information collection class.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 
 using System.Collections.Generic;
@@ -26,7 +26,7 @@ namespace DataTools.Hardware
 /// <remarks></remarks>
     public class HardwareCollection : ObservableCollection<object>
     {
-        private DevClassPresenting.DeviceClassEnum _Class;
+        private DeviceClassEnum _Class;
         private BitmapSource _Icon;
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace DataTools.Hardware
     /// <value></value>
     /// <returns></returns>
     /// <remarks></remarks>
-        public DevClassPresenting.DeviceClassEnum DeviceClass
+        public DeviceClassEnum DeviceClass
         {
             get
             {
@@ -106,12 +106,12 @@ namespace DataTools.Hardware
             var e = new List<DeviceInfo>();
             var f = new HardwareCollection();
             HardwareCollection g = null;
-            var chw = DevClassPresenting.DeviceClassEnum.Undefined;
+            var chw = DeviceClassEnum.Undefined;
 
-            // ' do the initial enumeration.
+            // do the initial enumeration.
             var d = DevEnumPublic.EnumComputerExhaustive();
 
-            // ' Filter out all non-top-level devices to create the top level.
+            // Filter out all non-top-level devices to create the top level.
             foreach (var x in d)
             {
                 if (((DeviceInfo)x).LinkedParent is null)
@@ -120,12 +120,12 @@ namespace DataTools.Hardware
                 }
             }
 
-            // ' sort all top-level devices by their device class.
+            // sort all top-level devices by their device class.
             c.Sort(new HardwareObjectSorter());
             foreach (var x in c)
             {
 
-                // ' If we don't already have an object devoted to particular type create it
+                // If we don't already have an object devoted to particular type create it
                 if (x.DeviceClass != chw)
                 {
                     chw = x.DeviceClass;

@@ -1,14 +1,14 @@
-﻿// ' ************************************************* ''
-// ' DataTools Visual Basic Utility Library - Interop
-// '
-// ' Module: DeviceEnum
-// '         Native.
-// ' 
-// ' Copyright (C) 2011-2020 Nathan Moschkin
-// ' All Rights Reserved
-// '
-// ' Licensed Under the Microsoft Public License   
-// ' ************************************************* ''
+﻿// ************************************************* ''
+// DataTools C# Native Utility Library For Windows - Interop
+//
+// Module: DeviceEnum
+//         Native.
+// 
+// Copyright (C) 2011-2020 Nathan Moschkin
+// All Rights Reserved
+//
+// Licensed Under the Microsoft Public License   
+// ************************************************* ''
 
 using System;
 using System.Collections.Generic;
@@ -67,19 +67,19 @@ namespace DataTools.Hardware.Native
 
             // Dim part As DeviceInfo() = EnumerateDevices(Of DeviceInfo)(GUID_DEVINTERFACE_PARTITION)
 
-            // ' this collection will never be empty.
+            // this collection will never be empty.
             int i;
             int c = comp.Length;
 
-            // ' We are going to match up the raw device enumeration with the detailed device interface enumerations
-            // ' for the specific kinds of hardware that we know about (so far).  this is a work in progress
-            // ' and I will be doing more classes going forward.
+            // We are going to match up the raw device enumeration with the detailed device interface enumerations
+            // for the specific kinds of hardware that we know about (so far).  this is a work in progress
+            // and I will be doing more classes going forward.
 
             try
             {
                 for (i = 0; i < c; i++)
                 {
-                    if (comp[i].DeviceClass == DevClassPresenting.DeviceClassEnum.DiskDrive || comp[i].DeviceClass == DevClassPresenting.DeviceClassEnum.CdRom)
+                    if (comp[i].DeviceClass == DeviceClassEnum.DiskDrive || comp[i].DeviceClass == DeviceClassEnum.CdRom)
                     {
                         try
                         {
@@ -94,16 +94,16 @@ namespace DataTools.Hardware.Native
                                         break;
                                     }
                                 }
-                                catch (Exception ex)
+                                catch
                                 {
                                 }
                             }
                         }
-                        catch (Exception ex)
+                        catch
                         {
                         }
                     }
-                    else if (comp[i].DeviceClass == DevClassPresenting.DeviceClassEnum.Net)
+                    else if (comp[i].DeviceClass == DeviceClassEnum.Net)
                     {
                         foreach (var nt in net)
                         {
@@ -125,7 +125,7 @@ namespace DataTools.Hardware.Native
                             }
                         }
                     }
-                    else if (comp[i].DeviceClass == DevClassPresenting.DeviceClassEnum.Volume)
+                    else if (comp[i].DeviceClass == DeviceClassEnum.Volume)
                     {
                         foreach (var vl in vol)
                         {
@@ -143,7 +143,7 @@ namespace DataTools.Hardware.Native
                             }
                         }
                     }
-                    else if (comp[i].DeviceClass == DevClassPresenting.DeviceClassEnum.HidClass || comp[i].BusType == BusType.HID)
+                    else if (comp[i].DeviceClass == DeviceClassEnum.HidClass || comp[i].BusType == BusType.HID)
                     {
                         foreach (var hd in hid)
                         {
@@ -155,7 +155,7 @@ namespace DataTools.Hardware.Native
                             }
                         }
                     }
-                    else if (comp[i].DeviceClass == DevClassPresenting.DeviceClassEnum.PrinterQueue)
+                    else if (comp[i].DeviceClass == DeviceClassEnum.PrinterQueue)
                     {
                         foreach (var pr in prt)
                         {
@@ -170,10 +170,10 @@ namespace DataTools.Hardware.Native
                     {
                         if (comp[i].InstanceId.Substring(0, 8) == @"BTHENUM\")
                         {
-                            comp[i].DeviceClass = DevClassPresenting.DeviceClassEnum.Bluetooth;
+                            comp[i].DeviceClass = DeviceClassEnum.Bluetooth;
                         }
 
-                        if (comp[i].DeviceClass == DevClassPresenting.DeviceClassEnum.Bluetooth)
+                        if (comp[i].DeviceClass == DeviceClassEnum.Bluetooth)
                         {
                             foreach (var bt in bth)
                             {
@@ -184,7 +184,7 @@ namespace DataTools.Hardware.Native
                                 }
                             }
                         }
-                        else if (comp[i].DeviceClass == DevClassPresenting.DeviceClassEnum.Processor)
+                        else if (comp[i].DeviceClass == DeviceClassEnum.Processor)
                         {
                             foreach (var proc in procs)
                             {
@@ -199,11 +199,11 @@ namespace DataTools.Hardware.Native
                     }
                 }
             }
-            catch (Exception ex2)
+            catch (Exception)
             {
             }
 
-            // ' Call the shared LinkDevices function to pair parents and offspring to create a coherent tree of the system.
+            // Call the shared LinkDevices function to pair parents and offspring to create a coherent tree of the system.
             DeviceInfo.LinkDevices(ref comp);
             foreach (var dad in comp)
                 col.Add(dad);
@@ -261,7 +261,7 @@ namespace DataTools.Hardware.Native
                     if (devInterface.InterfaceClassGuid != Guid.Empty)
                     {
                         devOut[c].DeviceInterfaceClassGuid = devInterface.InterfaceClassGuid;
-                        devOut[c].DeviceInterfaceClass = DevClassPresenting.GetDevInterfaceClassEnumFromGuid(devOut[c].DeviceInterfaceClassGuid);
+                        devOut[c].DeviceInterfaceClass = DevEnumHelpers.GetDevInterfaceClassEnumFromGuid(devOut[c].DeviceInterfaceClassGuid);
                     }
 
                     if (!lIcon.ContainsKey(devOut[c].DeviceClassGuid))
@@ -285,7 +285,7 @@ namespace DataTools.Hardware.Native
                         devOut[c].DeviceClassIcon = argvalue;
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
                     //Interaction.MsgBox(ex.Message + "\r\n" + "\r\n" + "Stack Trace: " + ex.StackTrace, MsgBoxStyle.Exclamation);
                 }
@@ -482,7 +482,7 @@ namespace DataTools.Hardware.Native
                     if (devInterface.InterfaceClassGuid != Guid.Empty)
                     {
                         devOut[c].DeviceInterfaceClassGuid = devInterface.InterfaceClassGuid;
-                        devOut[c].DeviceInterfaceClass = DevClassPresenting.GetDevInterfaceClassEnumFromGuid(devOut[c].DeviceInterfaceClassGuid);
+                        devOut[c].DeviceInterfaceClass = DevEnumHelpers.GetDevInterfaceClassEnumFromGuid(devOut[c].DeviceInterfaceClassGuid);
                     }
 
                     devOut[c].DeviceClassIcon = icn;
@@ -502,18 +502,21 @@ namespace DataTools.Hardware.Native
 
         public static System.Drawing.Icon GetClassIcon(Guid ClassId)
         {
-            var mm = new SafePtr();
             var hicon = IntPtr.Zero;
-            int picon = 0;
+
             System.Drawing.Icon icn = null;
+
             var hDev = DevProp.SetupDiGetClassDevs(ClassId, IntPtr.Zero, IntPtr.Zero, 0);
+
             if (hDev == DevProp.INVALID_HANDLE_VALUE)
             {
                 return null;
             }
 
-            int argMiniIconIndex = default;
-            DevProp.SetupDiLoadClassIcon(ClassId, ref hicon, ref argMiniIconIndex);
+            int atmp = default;
+
+            DevProp.SetupDiLoadClassIcon(ClassId, ref hicon, ref atmp);
+
             if (hicon != IntPtr.Zero)
             {
                 icn = (System.Drawing.Icon)System.Drawing.Icon.FromHandle(hicon).Clone();
@@ -546,7 +549,6 @@ namespace DataTools.Hardware.Native
                 var diskNumber = new DiskApi.STORAGE_DEVICE_NUMBER();
 
                 uint bytesReturned = 0U;
-                var storageDeviceNumber = new DiskApi.STORAGE_DEVICE_NUMBER();
 
                 info = DevEnumPublic.EnumerateDevices<DiskDeviceInfo>(DiskClass);
 
@@ -560,29 +562,29 @@ namespace DataTools.Hardware.Native
 
                     if (caps != null)
                     {
-                        inf.Capabilities = (DevClassPresenting.DeviceCapabilities)caps;
+                        inf.Capabilities = (DeviceCapabilities)caps;
                     }
-                    if (inf.Capabilities == DevClassPresenting.DeviceCapabilities.None)
+                    if (inf.Capabilities == DeviceCapabilities.None)
                     {
 
                         caps = (_internalGetProperty(inf, DevProp.DEVPKEY_Device_Capabilities, DevPropTypes.Int32, useClassId: true));
 
                         if (caps != null)
                         {
-                            inf.Capabilities = (DevClassPresenting.DeviceCapabilities)caps;
+                            inf.Capabilities = (DeviceCapabilities)caps;
                         }
                     }
 
-                    if (inf.DeviceClass == DevClassPresenting.DeviceClassEnum.CdRom)
+                    if (inf.DeviceClass == DeviceClassEnum.CdRom)
                     {
-                        inf.Type = DevClassPresenting.StorageType.Optical;
+                        inf.Type = StorageType.Optical;
                     }
-                    else if (inf.RemovalPolicy != DevClassPresenting.DeviceRemovalPolicy.ExpectNoRemoval)
+                    else if (inf.RemovalPolicy != DeviceRemovalPolicy.ExpectNoRemoval)
                     {
 
-                        // ' this is a conundrum because these values are not predictable in some cases.
-                        // ' we'll leave it this way, for now.
-                        inf.Type = DevClassPresenting.StorageType.Removable;
+                        // this is a conundrum because these values are not predictable in some cases.
+                        // we'll leave it this way, for now.
+                        inf.Type = StorageType.Removable;
 
                         // If inf.Capabilities And DeviceCapabilities.Removable Then
                         // inf.Type = StorageType.RemovableHardDisk
@@ -626,7 +628,7 @@ namespace DataTools.Hardware.Native
                             DiskApi.PopulateVolumeInfo(inf);
                         }
                     }
-                    else if (inf.Type != DevClassPresenting.StorageType.Optical)
+                    else if (inf.Type != StorageType.Optical)
                     {
                         disk = FileApi.CreateFile(inf.DevicePath, FileApi.GENERIC_READ, FileApi.FILE_SHARE_READ | FileApi.FILE_SHARE_WRITE, IntPtr.Zero, FileApi.OPEN_EXISTING, FileApi.FILE_ATTRIBUTE_NORMAL, IntPtr.Zero);
                         if (disk != DevProp.INVALID_HANDLE_VALUE)
@@ -653,7 +655,7 @@ namespace DataTools.Hardware.Native
 
                     if (inf.FriendlyName == "Microsoft Virtual Disk")
                     {
-                        inf.Type = DevClassPresenting.StorageType.Virtual;
+                        inf.Type = StorageType.Virtual;
                         disk = FileApi.CreateFile(@"\\.\PhysicalDrive" + inf.PhysicalDevice, FileApi.GENERIC_READ, FileApi.FILE_SHARE_READ | FileApi.FILE_SHARE_WRITE, IntPtr.Zero, FileApi.OPEN_EXISTING, FileApi.FILE_ATTRIBUTE_NORMAL, IntPtr.Zero);
                         if (disk == DevProp.INVALID_HANDLE_VALUE)
                             continue;
@@ -699,7 +701,7 @@ namespace DataTools.Hardware.Native
                     hHeap.Dispose();
                 return info;
             }
-            catch (Exception ex)
+            catch // (Exception ex)
             {
                 if (hHeap is object)
                     hHeap.Dispose();
@@ -707,8 +709,8 @@ namespace DataTools.Hardware.Native
             }
         }
 
-        internal readonly static DevClassPresenting.DeviceClassEnum[] StandardStagingClasses = new[] { DevClassPresenting.DeviceClassEnum.Adapter, DevClassPresenting.DeviceClassEnum.Battery, DevClassPresenting.DeviceClassEnum.Biometric, DevClassPresenting.DeviceClassEnum.Bluetooth, DevClassPresenting.DeviceClassEnum.Infrared, DevClassPresenting.DeviceClassEnum.HidClass, DevClassPresenting.DeviceClassEnum.Infrared, DevClassPresenting.DeviceClassEnum.Keyboard, DevClassPresenting.DeviceClassEnum.Media, DevClassPresenting.DeviceClassEnum.Monitor, DevClassPresenting.DeviceClassEnum.Mouse, DevClassPresenting.DeviceClassEnum.Multifunction, DevClassPresenting.DeviceClassEnum.PnpPrinters, DevClassPresenting.DeviceClassEnum.Printer, DevClassPresenting.DeviceClassEnum.PrinterQueue, DevClassPresenting.DeviceClassEnum.Sound, DevClassPresenting.DeviceClassEnum.Usb };
-        internal readonly static DevClassPresenting.DeviceClassEnum[] ExtraStagingClasses = new[] { DevClassPresenting.DeviceClassEnum.Adapter, DevClassPresenting.DeviceClassEnum.Battery, DevClassPresenting.DeviceClassEnum.Biometric, DevClassPresenting.DeviceClassEnum.Bluetooth, DevClassPresenting.DeviceClassEnum.CdRom, DevClassPresenting.DeviceClassEnum.DiskDrive, DevClassPresenting.DeviceClassEnum.FloppyDisk, DevClassPresenting.DeviceClassEnum.Infrared, DevClassPresenting.DeviceClassEnum.HidClass, DevClassPresenting.DeviceClassEnum.Infrared, DevClassPresenting.DeviceClassEnum.Keyboard, DevClassPresenting.DeviceClassEnum.Media, DevClassPresenting.DeviceClassEnum.MediumChanger, DevClassPresenting.DeviceClassEnum.Modem, DevClassPresenting.DeviceClassEnum.Monitor, DevClassPresenting.DeviceClassEnum.Mouse, DevClassPresenting.DeviceClassEnum.Multifunction, DevClassPresenting.DeviceClassEnum.Pcmcia, DevClassPresenting.DeviceClassEnum.PnpPrinters, DevClassPresenting.DeviceClassEnum.Printer, DevClassPresenting.DeviceClassEnum.PrinterQueue, DevClassPresenting.DeviceClassEnum.PrinterUpgrade, DevClassPresenting.DeviceClassEnum.SmartCardReader, DevClassPresenting.DeviceClassEnum.Sound, DevClassPresenting.DeviceClassEnum.TapeDrive, DevClassPresenting.DeviceClassEnum.Usb };
+        internal readonly static DeviceClassEnum[] StandardStagingClasses = new[] { DeviceClassEnum.Adapter, DeviceClassEnum.Battery, DeviceClassEnum.Biometric, DeviceClassEnum.Bluetooth, DeviceClassEnum.Infrared, DeviceClassEnum.HidClass, DeviceClassEnum.Infrared, DeviceClassEnum.Keyboard, DeviceClassEnum.Media, DeviceClassEnum.Monitor, DeviceClassEnum.Mouse, DeviceClassEnum.Multifunction, DeviceClassEnum.PnpPrinters, DeviceClassEnum.Printer, DeviceClassEnum.PrinterQueue, DeviceClassEnum.Sound, DeviceClassEnum.Usb };
+        internal readonly static DeviceClassEnum[] ExtraStagingClasses = new[] { DeviceClassEnum.Adapter, DeviceClassEnum.Battery, DeviceClassEnum.Biometric, DeviceClassEnum.Bluetooth, DeviceClassEnum.CdRom, DeviceClassEnum.DiskDrive, DeviceClassEnum.FloppyDisk, DeviceClassEnum.Infrared, DeviceClassEnum.HidClass, DeviceClassEnum.Infrared, DeviceClassEnum.Keyboard, DeviceClassEnum.Media, DeviceClassEnum.MediumChanger, DeviceClassEnum.Modem, DeviceClassEnum.Monitor, DeviceClassEnum.Mouse, DeviceClassEnum.Multifunction, DeviceClassEnum.Pcmcia, DeviceClassEnum.PnpPrinters, DeviceClassEnum.Printer, DeviceClassEnum.PrinterQueue, DeviceClassEnum.PrinterUpgrade, DeviceClassEnum.SmartCardReader, DeviceClassEnum.Sound, DeviceClassEnum.TapeDrive, DeviceClassEnum.Usb };
 
         /// <summary>
         /// Gets the device icon in some way, including looking at the device stage to get the photo-realistic icons from the Devices and Printers control panel folder.
@@ -717,7 +719,7 @@ namespace DataTools.Hardware.Native
         /// <param name="devInfo"></param>
         /// <param name="infoOut"></param>
         /// <remarks></remarks>
-        public static void _internalGetDeviceIcon(IntPtr hDev, DevProp.SP_DEVINFO_DATA devInfo, DeviceInfo infoOut, DevClassPresenting.DeviceClassEnum[] stagingClasses = null, bool noStaging = false)
+        public static void _internalGetDeviceIcon(IntPtr hDev, DevProp.SP_DEVINFO_DATA devInfo, DeviceInfo infoOut, DeviceClassEnum[] stagingClasses = null, bool noStaging = false)
         {
             IntPtr hIcon = new IntPtr();
             if (stagingClasses is null)
@@ -745,8 +747,8 @@ namespace DataTools.Hardware.Native
 
                         if (mm != IntPtr.Zero)
                         {
-                            // ' Get a WPFImage
-                            infoOut.DeviceIcon = Resources.MakeWPFImage(Resources.GetItemIcon(mm, (Resources.SystemIconSizes)(int)(PInvoke.SHIL_EXTRALARGE)));
+                            // Get a WPFImage
+                            infoOut.DeviceIcon = Resources.MakeWPFImage(Resources.GetItemIcon(mm, (Resources.SystemIconSizes)(PInvoke.SHIL_EXTRALARGE)));
                             mm.Free();
                         }
                     }
@@ -781,12 +783,17 @@ namespace DataTools.Hardware.Native
         public static T _internalPopulateDeviceInfo<T>(IntPtr hDev, Guid ClassId, DevProp.SP_DEVINFO_DATA devInfo, DevProp.SP_DEVICE_INTERFACE_DATA devInterface, SafePtr mm) where T : DeviceInfo, new()
         {
             string dumpFile = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\datatools-error.log";
+
             var devOut = new T();
-            int cbId = 0;
-            uint cbSize = 0U;
+
+            uint cbSize;
+
             var details = default(DevProp.SP_DEVICE_INTERFACE_DETAIL_DATA);
+
             MemPtr pt;
+
             var sb = new System.Text.StringBuilder();
+
             try
             {
                 sb.AppendLine("Class Guid: " + ClassId.ToString("B"));
@@ -795,9 +802,9 @@ namespace DataTools.Hardware.Native
                 sb.AppendLine("DevInfo DevInst: " + devInfo.DevInst);
                 devOut._devInfo = devInfo;
                 devOut.DeviceInterfaceClassGuid = devInterface.InterfaceClassGuid;
-                devOut.DeviceInterfaceClass = DevClassPresenting.GetDevInterfaceClassEnumFromGuid(devOut.DeviceInterfaceClassGuid);
+                devOut.DeviceInterfaceClass = DevEnumHelpers.GetDevInterfaceClassEnumFromGuid(devOut.DeviceInterfaceClassGuid);
 
-                // ' Get the DevicePath from DeviceInterfaceDetail
+                // Get the DevicePath from DeviceInterfaceDetail
                 mm.Length = 0L;
                 mm.Length = Marshal.SizeOf(details);
                 DevProp.SetupDiGetDeviceInterfaceDetail(hDev, ref devInterface, IntPtr.Zero, 0U, out cbSize, IntPtr.Zero);
@@ -818,7 +825,7 @@ namespace DataTools.Hardware.Native
 
                     sb.AppendLine("Getting DeviceInterfaceDetail Succeed");
                 }
-                // ' ClassGuid
+                // ClassGuid
 
                 sb.AppendLine("Property ClassGuid");
                 cbSize = 0U;
@@ -836,10 +843,10 @@ namespace DataTools.Hardware.Native
                     if (cbSize > 0L)
                     {
                         devOut.DeviceClassGuid = new Guid(mm.ToByteArray(0L, 16));
-                        devOut.DeviceClass = DevClassPresenting.GetDevClassEnumFromGuid(devOut.DeviceClassGuid);
+                        devOut.DeviceClass = DevEnumHelpers.GetDevClassEnumFromGuid(devOut.DeviceClassGuid);
                     }
                 }
-                // ' InterfaceClassGuid
+                // InterfaceClassGuid
 
                 sb.AppendLine("Property InterfaceClassGuid");
                 cbSize = 0U;
@@ -854,11 +861,11 @@ namespace DataTools.Hardware.Native
                     if (cbSize > 0L)
                     {
                         devOut.DeviceInterfaceClassGuid = new Guid(mm.ToByteArray(0L, 16));
-                        devOut.DeviceInterfaceClass = DevClassPresenting.GetDevInterfaceClassEnumFromGuid(devOut.DeviceInterfaceClassGuid);
+                        devOut.DeviceInterfaceClass = DevEnumHelpers.GetDevInterfaceClassEnumFromGuid(devOut.DeviceInterfaceClassGuid);
                     }
                 }
 
-                // ' InstallDate
+                // InstallDate
 
                 sb.AppendLine("Property InstallDate");
                 cbSize = 0U;
@@ -873,7 +880,7 @@ namespace DataTools.Hardware.Native
                     if (cbSize > 0L)
                         devOut.InstallDate = (DateTime)(_internalDevPropToObject(DevPropTypes.FileTime, mm, (int)cbSize));
                 }
-                // ' Characteristics
+                // Characteristics
 
                 sb.AppendLine("Property Characteristics");
                 cbSize = 0U;
@@ -886,9 +893,9 @@ namespace DataTools.Hardware.Native
                     uint argPropertyType7 = DevProp.DEVPROP_TYPE_INT32;
                     DevProp.SetupDiGetDeviceProperty(hDev, ref devInfo, ref GetDevPropRef(DevProp.DEVPKEY_Device_Characteristics), out argPropertyType7, mm, cbSize, out cbSize, 0U);
                     if (cbSize > 0L)
-                        devOut.Characteristics = (DevClassPresenting.DeviceCharacteristcs)(int)(mm.IntAt(0L));
+                        devOut.Characteristics = (DeviceCharacteristcs)(int)(mm.IntAt(0L));
                 }
-                // ' Removal Policy
+                // Removal Policy
 
                 sb.AppendLine("Property Removal Policy");
                 cbSize = 0U;
@@ -901,9 +908,9 @@ namespace DataTools.Hardware.Native
                     uint argPropertyType9 = DevProp.DEVPROP_TYPE_INT32;
                     DevProp.SetupDiGetDeviceProperty(hDev, ref devInfo, ref GetDevPropRef(DevProp.DEVPKEY_Device_RemovalPolicy), out argPropertyType9, mm, cbSize, out cbSize, 0U);
                     if (cbSize > 0L)
-                        devOut.RemovalPolicy = (DevClassPresenting.DeviceRemovalPolicy)(int)(mm.IntAt(0L));
+                        devOut.RemovalPolicy = (DeviceRemovalPolicy)(int)(mm.IntAt(0L));
                 }
-                // ' Safe Removal Required
+                // Safe Removal Required
 
                 sb.AppendLine("Property Safe Removal Required");
                 cbSize = 0U;
@@ -919,7 +926,7 @@ namespace DataTools.Hardware.Native
                         devOut.SafeRemovalRequired = (mm.ByteAt(0L) == 1 ? true : false);
                 }
 
-                // ' BusType
+                // BusType
 
                 sb.AppendLine("Property BusType");
                 cbSize = 0U;
@@ -934,7 +941,7 @@ namespace DataTools.Hardware.Native
                     if (cbSize > 0L)
                         devOut.BusType = DevPropDialog.GuidToBusType(new Guid(mm.ToByteArray(0L, 16)));
                 }
-                // ' ContainerId
+                // ContainerId
 
                 sb.AppendLine("Property ContainerId");
                 cbSize = 0U;
@@ -950,7 +957,7 @@ namespace DataTools.Hardware.Native
                         devOut.ContainerId = new Guid(mm.ToByteArray(0L, 16));
                 }
 
-                // ' Children
+                // Children
 
                 sb.AppendLine("Property Children");
                 cbSize = 0U;
@@ -966,7 +973,7 @@ namespace DataTools.Hardware.Native
                     if (cbSize > 0L)
                         devOut.Children = pt.GetStringArray(0L);
                 }
-                // ' HardwareIds
+                // HardwareIds
 
                 sb.AppendLine("Property HardwareIds");
                 cbSize = 0U;
@@ -982,7 +989,7 @@ namespace DataTools.Hardware.Native
                     if (cbSize > 0L)
                         devOut.HardwareIds = pt.GetStringArray(0L);
                 }
-                // ' LocationPaths
+                // LocationPaths
 
                 sb.AppendLine("Property LocationPaths");
                 cbSize = 0U;
@@ -998,7 +1005,7 @@ namespace DataTools.Hardware.Native
                     if (cbSize > 0L)
                         devOut.LocationPaths = pt.GetStringArray(0L);
                 }
-                // ' Parent Device
+                // Parent Device
 
                 sb.AppendLine("Property Parent Device");
                 cbSize = 0U;
@@ -1013,7 +1020,7 @@ namespace DataTools.Hardware.Native
                     if (cbSize > 0L)
                         devOut.Parent = mm.ToString();
                 }
-                // ' Location Info
+                // Location Info
 
                 sb.AppendLine("Property Location Info");
                 cbSize = 0U;
@@ -1028,7 +1035,7 @@ namespace DataTools.Hardware.Native
                     if (cbSize > 0L)
                         devOut.LocationInfo = mm.ToString();
                 }
-                // ' Physical Device Location
+                // Physical Device Location
 
                 sb.AppendLine("Property Physical Device Location");
                 sb.AppendLine("Getting cbSize");
@@ -1049,7 +1056,7 @@ namespace DataTools.Hardware.Native
                         devOut.PhysicalPath = mm.ToByteArray(0L, (int)cbSize);
                     }
                 }
-                // ' PDOName
+                // PDOName
 
                 sb.AppendLine("Property PDOName");
                 cbSize = 0U;
@@ -1064,7 +1071,7 @@ namespace DataTools.Hardware.Native
                     if (cbSize > 0L)
                         devOut.PDOName = mm.ToString();
                 }
-                // ' Description
+                // Description
 
                 sb.AppendLine("Property Description");
                 cbSize = 0U;
@@ -1079,7 +1086,7 @@ namespace DataTools.Hardware.Native
                     if (cbSize > 0L)
                         devOut.Description = mm.ToString();
                 }
-                // ' ClassName
+                // ClassName
 
                 sb.AppendLine("Property ClassName");
                 cbSize = 0U;
@@ -1095,7 +1102,7 @@ namespace DataTools.Hardware.Native
                         devOut.ClassName = mm.ToString();
                 }
 
-                // ' Manufacturer
+                // Manufacturer
 
                 sb.AppendLine("Property Manufacturer");
                 cbSize = 0U;
@@ -1111,7 +1118,7 @@ namespace DataTools.Hardware.Native
                         devOut.Manufacturer = mm.ToString();
                 }
 
-                // ' Model
+                // Model
 
                 sb.AppendLine("Property BusReportedDeviceDesc (string)");
                 cbSize = 0U;
@@ -1127,7 +1134,7 @@ namespace DataTools.Hardware.Native
                         devOut.BusReportedDeviceDesc = mm.ToString();
                 }
 
-                // ' ModelId
+                // ModelId
 
                 sb.AppendLine("Property ModelId");
                 cbSize = 0U;
@@ -1145,7 +1152,7 @@ namespace DataTools.Hardware.Native
                     }
                 }
 
-                // ' UINumber
+                // UINumber
 
                 sb.AppendLine("Property UINumber");
                 cbSize = 0U;
@@ -1161,7 +1168,7 @@ namespace DataTools.Hardware.Native
                         devOut.UINumber = mm.IntAt(0L);
                 }
 
-                // ' FriendlyName
+                // FriendlyName
                 sb.AppendLine("Property FriendlyName");
                 cbSize = 0U;
                 uint argPropertyType42 = DevProp.DEVPROP_TYPE_STRING;
@@ -1175,7 +1182,7 @@ namespace DataTools.Hardware.Native
                     if (cbSize > 0L)
                         devOut.FriendlyName = mm.ToString();
                 }
-                // ' InstanceId
+                // InstanceId
 
                 sb.AppendLine("Property InstanceId");
                 cbSize = 0U;
@@ -1191,7 +1198,7 @@ namespace DataTools.Hardware.Native
                         devOut.InstanceId = mm.ToString();
                 }
 
-                // ' Get the device icon
+                // Get the device icon
                 _internalGetDeviceIcon(hDev, devInfo, devOut);
                 File.AppendAllText(dumpFile, sb.ToString());
                 return devOut;
@@ -1274,7 +1281,7 @@ namespace DataTools.Hardware.Native
                 case DevPropTypes.Currency:
                     {
 
-                        // ' I had to read the documentation on MSDN very carefully to understand why this needs to be.
+                        // I had to read the documentation on MSDN very carefully to understand why this needs to be.
                         return mm.DoubleAt(0L) * 10000.0d;
                     }
 
@@ -1286,8 +1293,8 @@ namespace DataTools.Hardware.Native
                 case DevPropTypes.Date:
                     {
 
-                        // ' based on what the MSDN describes of this property format, this is what
-                        // ' I believe needs to be done to make the value into an acceptable CLR DateTime object.
+                        // based on what the MSDN describes of this property format, this is what
+                        // I believe needs to be done to make the value into an acceptable CLR DateTime object.
                         double d = mm.DoubleAt(0L);
                         var t = new TimeSpan((int)(d * 24d), 0, 0);
                         var dt = DateTime.Parse("1899-12-31");
@@ -1346,7 +1353,7 @@ namespace DataTools.Hardware.Native
 
                 case DevPropTypes.StringIndirect:
                     {
-                        // ' load the string resource, itself, from the file.
+                        // load the string resource, itself, from the file.
                         return Resources.LoadStringResource(mm.ToString());
                     }
 

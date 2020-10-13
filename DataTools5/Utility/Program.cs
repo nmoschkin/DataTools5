@@ -14,7 +14,7 @@ namespace Utility
 
 
             Application.EnableVisualStyles();
-            Application.Run(new Form1());
+            Application.Run(new frmMain());
         }
     }
 
