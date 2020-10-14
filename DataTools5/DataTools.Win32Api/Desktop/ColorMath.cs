@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 using DataTools.Desktop.Unified;
 using DataTools.Desktop.Structures;
 
-namespace DataTools.MathTools
+namespace DataTools.Desktop
 {
     public class ColorMath
     {

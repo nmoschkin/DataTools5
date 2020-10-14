@@ -376,6 +376,37 @@ namespace DataTools.Memory
             gc1.Free();
             gc2.Free();
         }
+        /// <summary>
+        /// Copies a stucture into an array of structures.  
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="U"></typeparam>
+        /// <param name="val1"></param>
+        /// <param name="val2"></param>
+        /// <param name="size"></param>
+        public static void Union<T, U>(ref T val1, ref U[] val2)
+            where T : struct
+            where U : struct
+        {
+            GCHandle gc1, gc2;
+
+            gc1 = GCHandle.Alloc(val1, GCHandleType.Pinned);
+            gc2 = GCHandle.Alloc(val2, GCHandleType.Pinned);
+
+            int x = Marshal.SizeOf<T>();
+            int y = Marshal.SizeOf<U>();
+
+            unsafe
+            {
+                void* h1 = (void*)gc1.AddrOfPinnedObject();
+                void* h2 = (void*)gc2.AddrOfPinnedObject();
+
+                Buffer.MemoryCopy(h1, h2, y, x);
+            }
+
+            gc1.Free();
+            gc2.Free();
+        }
 
         /// <summary>
         /// Converts the contents of an unmanaged pointer into a structure.

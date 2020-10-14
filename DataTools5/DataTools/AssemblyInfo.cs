@@ -6,4 +6,5 @@ using System.Text;
 using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("DataTools.Hardware")]
+[assembly: InternalsVisibleTo("DataTools.Win32Api")]
 [assembly: InternalsVisibleTo("DataTools.Shell")]

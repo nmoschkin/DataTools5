@@ -28,7 +28,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using DataTools.Memory;
 
-namespace DataTools.Hardware.Native
+namespace DataTools.Win32Api
 {
 
     /// <summary>
@@ -1835,8 +1835,8 @@ namespace DataTools.Hardware.Native
             public uint dwFlags;
             public Guid clsid;
 
-            public W32SIZE sizel;
-            public W32POINT pointl;
+            public SIZE sizel;
+            public POINT pointl;
 
             public uint dwFileAttributes;
 
@@ -1858,8 +1858,8 @@ namespace DataTools.Hardware.Native
 
                 ftLastAccessTime = ftLastWriteTime = ftCreationTime = new FILETIME();
 
-                sizel = new W32SIZE();
-                pointl = new W32POINT();
+                sizel = new SIZE();
+                pointl = new POINT();
                 dwFlags = 0;
                 clsid = Guid.Empty;
                 dwFileAttributes = 0;
@@ -2061,7 +2061,7 @@ namespace DataTools.Hardware.Native
             public int Unused1;
             public int Unused2;
             [MarshalAs(UnmanagedType.Struct)]
-            public W32RECT rcImage;
+            public RECT rcImage;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -2576,7 +2576,7 @@ namespace DataTools.Hardware.Native
         {
             public int lopnStyle;
             [MarshalAs(UnmanagedType.Struct)]
-            public W32POINT lopnWidth;
+            public POINT lopnWidth;
             public int lopnColor;
         }
 
@@ -2585,7 +2585,7 @@ namespace DataTools.Hardware.Native
         {
             public IntPtr hDC;
             public int fErase;
-            public W32RECT rcpaint;
+            public RECT rcpaint;
             public int fRestore;
             public int fIncUpdate;
             public int rgbReserved1;
@@ -2611,7 +2611,7 @@ namespace DataTools.Hardware.Native
             public int lParam;
             public int time;
             [MarshalAs(UnmanagedType.Struct)]
-            public W32POINT pt;
+            public POINT pt;
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -2651,14 +2651,14 @@ namespace DataTools.Hardware.Native
         {
             public int cbSize;
             [MarshalAs(UnmanagedType.Struct)]
-            public W32RECT rcExclude;
+            public RECT rcExclude;
         }
 
         public struct MENUBARINFO
         {
             public int cbSize;
             [MarshalAs(UnmanagedType.Struct)]
-            public W32RECT rcBar;
+            public RECT rcBar;
             public int hMenu;
             public int hWndMenu;
             public bool fBarFocused;
@@ -2699,7 +2699,7 @@ namespace DataTools.Hardware.Native
         [DllImport("version.dll", EntryPoint = "VerQueryValueW", CharSet = CharSet.Unicode)]
         public static extern bool VerQueryValue(IntPtr pBlock, [MarshalAs(UnmanagedType.LPTStr)] string lpSubBlock, ref IntPtr lplpVoid, ref uint puInt);
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        public static extern bool GetCursorPos(ref W32POINT lpPoint);
+        public static extern bool GetCursorPos(ref POINT lpPoint);
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         public static extern bool CloseHandle(IntPtr hObject);
 
@@ -2803,7 +2803,7 @@ namespace DataTools.Hardware.Native
         [DllImport("user32.dll", CharSet = CharSet.Unicode, EntryPoint = "SetWindowLongPtrW")]
         public static extern WndProcDelegate SetWindowLongPtr(IntPtr hWnd, int code, WndProcDelegate value);
         [DllImport("user32", CharSet = CharSet.Unicode)]
-        public static extern bool GetWindowRect(IntPtr hWnd, ref W32RECT rc);
+        public static extern bool GetWindowRect(IntPtr hWnd, ref RECT rc);
         [DllImport("user32", EntryPoint = "GetWindowLongW", CharSet = CharSet.Unicode)]
         public static extern IntPtr GetWindowLong(IntPtr hWnd, int code);
         [DllImport("user32", EntryPoint = "GetWindowLongPtrW", CharSet = CharSet.Unicode)]
@@ -3050,7 +3050,7 @@ namespace DataTools.Hardware.Native
         [DllImport("user32", CharSet = CharSet.Unicode)]
         public static extern int GetMenuBarInfo(IntPtr hWnd, int idObject, int idItem, [MarshalAs(UnmanagedType.LPStruct)] ref MENUBARINFO pmbi);
         [DllImport("user32", CharSet = CharSet.Unicode)]
-        public static extern int GetMenuItemRect(IntPtr hWnd, IntPtr Handle, int uItem, [MarshalAs(UnmanagedType.LPStruct)] ref W32RECT lprcItem);
+        public static extern int GetMenuItemRect(IntPtr hWnd, IntPtr Handle, int uItem, [MarshalAs(UnmanagedType.LPStruct)] ref RECT lprcItem);
         [DllImport("user32", CharSet = CharSet.Unicode)]
         public static extern int GetMenuState(IntPtr Handle, int wID, int wFlags);
         [DllImport("user32", EntryPoint = "GetMenuStringW", CharSet = CharSet.Unicode)]
@@ -3134,13 +3134,13 @@ namespace DataTools.Hardware.Native
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
-        public static extern int MoveToEx(IntPtr hDC, int nXOrg, int nYOrg, [MarshalAs(UnmanagedType.Struct)] ref W32POINT lppt);
+        public static extern int MoveToEx(IntPtr hDC, int nXOrg, int nYOrg, [MarshalAs(UnmanagedType.Struct)] ref POINT lppt);
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
         public static extern int LineTo(IntPtr hDC, int x, int y);
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
         public static extern int GdiFlush();
         [DllImport("user32", CharSet = CharSet.Unicode)]
-        public static extern int FillRect(IntPtr hDC, [MarshalAs(UnmanagedType.Struct)] ref W32RECT lpRect, int hBrush);
+        public static extern int FillRect(IntPtr hDC, [MarshalAs(UnmanagedType.Struct)] ref RECT lpRect, int hBrush);
         [DllImport("user32", CharSet = CharSet.Unicode)]
         public static extern int BeginPaint(IntPtr hWnd, [MarshalAs(UnmanagedType.Struct)] ref PAINTSTRUCT lpPaint);
         [DllImport("user32", CharSet = CharSet.Unicode)]
@@ -3152,32 +3152,32 @@ namespace DataTools.Hardware.Native
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
         public static extern int SetBkMode(IntPtr hDC, int nMode);
         [DllImport("user32", CharSet = CharSet.Unicode)]
-        public static extern int DrawTextW(IntPtr hDC, [MarshalAs(UnmanagedType.LPWStr)] ref string lpStr, int nCount, [MarshalAs(UnmanagedType.Struct)] ref W32RECT lpRect, int wFormat);
+        public static extern int DrawTextW(IntPtr hDC, [MarshalAs(UnmanagedType.LPWStr)] ref string lpStr, int nCount, [MarshalAs(UnmanagedType.Struct)] ref RECT lpRect, int wFormat);
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
         public static extern int TextOutW(IntPtr hDC, int x, int y, [MarshalAs(UnmanagedType.LPWStr)] ref string lpString, int nCount);
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
-        public static extern int ExtTextOutW(IntPtr hDC, int x, int y, int wOptions, [MarshalAs(UnmanagedType.Struct)] ref W32RECT lpRect, [MarshalAs(UnmanagedType.LPWStr)] ref string lpString, int nCount, int lpDx);
+        public static extern int ExtTextOutW(IntPtr hDC, int x, int y, int wOptions, [MarshalAs(UnmanagedType.Struct)] ref RECT lpRect, [MarshalAs(UnmanagedType.LPWStr)] ref string lpString, int nCount, int lpDx);
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
-        public static extern int GetTextExtentPoint32W(IntPtr hDC, [MarshalAs(UnmanagedType.LPWStr)] ref string lpsz, int cbString, [MarshalAs(UnmanagedType.LPStruct)] ref W32SIZE lpSize);
+        public static extern int GetTextExtentPoint32W(IntPtr hDC, [MarshalAs(UnmanagedType.LPWStr)] ref string lpsz, int cbString, [MarshalAs(UnmanagedType.LPStruct)] ref SIZE lpSize);
         [DllImport("user32", CharSet = CharSet.Ansi)]
-        public static extern int DrawTextA(IntPtr hDC, [MarshalAs(UnmanagedType.LPStr)] ref string lpStr, int nCount, [MarshalAs(UnmanagedType.Struct)] ref W32RECT lpRect, int wFormat);
+        public static extern int DrawTextA(IntPtr hDC, [MarshalAs(UnmanagedType.LPStr)] ref string lpStr, int nCount, [MarshalAs(UnmanagedType.Struct)] ref RECT lpRect, int wFormat);
         [DllImport("gdi32", CharSet = CharSet.Ansi)]
         public static extern int TextOutA(IntPtr hDC, int x, int y, [MarshalAs(UnmanagedType.LPStr)] ref string lpString, int nCount);
         [DllImport("gdi32", CharSet = CharSet.Ansi)]
-        public static extern int ExtTextOutA(IntPtr hDC, int x, int y, int wOptions, ref W32RECT lpRect, [MarshalAs(UnmanagedType.LPStr)] ref string lpString, int nCount, int lpDx);
+        public static extern int ExtTextOutA(IntPtr hDC, int x, int y, int wOptions, ref RECT lpRect, [MarshalAs(UnmanagedType.LPStr)] ref string lpString, int nCount, int lpDx);
         [DllImport("gdi32", CharSet = CharSet.Ansi)]
-        public static extern int GetTextExtentPoint32A(IntPtr hDC, [MarshalAs(UnmanagedType.LPStr)] ref string lpsz, int cbString, [MarshalAs(UnmanagedType.Struct)] ref W32SIZE lpSize);
+        public static extern int GetTextExtentPoint32A(IntPtr hDC, [MarshalAs(UnmanagedType.LPStr)] ref string lpsz, int cbString, [MarshalAs(UnmanagedType.Struct)] ref SIZE lpSize);
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
         public static extern int GetFontLanguageInfo(IntPtr hDC);
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
         public static extern int SetTextColor(IntPtr hDC, int crColor);
 
         [DllImport("user32", CharSet = CharSet.Unicode)]
-        public static extern int DrawFrameControl(IntPtr hDC, [MarshalAs(UnmanagedType.Struct)] ref W32RECT lpRect, int un1, int un2);
+        public static extern int DrawFrameControl(IntPtr hDC, [MarshalAs(UnmanagedType.Struct)] ref RECT lpRect, int un1, int un2);
         // draw caption text
 
         [DllImport("user32", CharSet = CharSet.Unicode)]
-        public static extern int DrawCaption(IntPtr hWnd, IntPtr hDC, [MarshalAs(UnmanagedType.Struct)] ref W32RECT pcRect, int un);
+        public static extern int DrawCaption(IntPtr hWnd, IntPtr hDC, [MarshalAs(UnmanagedType.Struct)] ref RECT pcRect, int un);
         
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
         public static extern int BitBlt(IntPtr dest, int x, int y, int cx, int cy, IntPtr src, int x2, int y2, int dwROP);
@@ -3185,14 +3185,14 @@ namespace DataTools.Hardware.Native
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
         public static extern IntPtr CreateDIBSection(IntPtr hdc, IntPtr pbmi, uint usage, ref IntPtr ppvBits, IntPtr hSection, int offset);
 
-        public struct W32RECT
+        public struct RECT
         {
             public int left;
             public int top;
             public int right;
             public int bottom;
 
-            public W32RECT(int l, int t, int r, int b)
+            public RECT(int l, int t, int r, int b)
             {
                 left = l;
                 top = t;
@@ -3201,13 +3201,13 @@ namespace DataTools.Hardware.Native
             }
         }
 
-        public struct W32POINT
+        public struct POINT
         {
             public int x;
             public int y;
         }
 
-        public struct W32SIZE
+        public struct SIZE
         {
             public int cx;
             public int cy;

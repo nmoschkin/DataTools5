@@ -34,7 +34,6 @@ namespace DataTools.Hardware.Native
         public const int METHOD_IN_DIRECT = 1;
         public const int METHOD_OUT_DIRECT = 2;
         public const int METHOD_NEITHER = 3;
-        public const int IOCTL_STORAGE_BASE = 0x2D;
         public const int FILE_ANY_ACCESS = 0;
         public const int FILE_SPECIAL_ACCESS = FILE_ANY_ACCESS;
         public const int FILE_READ_ACCESS = 1;    // file & pipe
@@ -85,6 +84,8 @@ namespace DataTools.Hardware.Native
         }
 
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        public const int IOCTL_STORAGE_BASE = 0x2D;
+
         public readonly static CTL_CODE IOCTL_STORAGE_CHECK_VERIFY = new CTL_CODE(IOCTL_STORAGE_BASE, 0x200U, METHOD_BUFFERED, FILE_READ_ACCESS);
         public readonly static CTL_CODE IOCTL_STORAGE_CHECK_VERIFY2 = new CTL_CODE(IOCTL_STORAGE_BASE, 0x200U, METHOD_BUFFERED, FILE_ANY_ACCESS);
         public readonly static CTL_CODE IOCTL_STORAGE_MEDIA_REMOVAL = new CTL_CODE(IOCTL_STORAGE_BASE, 0x201U, METHOD_BUFFERED, FILE_READ_ACCESS);

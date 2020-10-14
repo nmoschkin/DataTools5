@@ -13,7 +13,8 @@
 using System;
 using System.Runtime.InteropServices;
 using DataTools.Memory;
-using Microsoft.VisualBasic;
+
+using Microsoft.Win32;
 using Microsoft.VisualStudio.OLE.Interop;
 
 namespace DataTools.Hardware.Native
@@ -21,6 +22,7 @@ namespace DataTools.Hardware.Native
     internal static class FileApi
     {
 
+        
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
         public const int WAIT_FAILED = unchecked((int)0xFFFFFFFF);
