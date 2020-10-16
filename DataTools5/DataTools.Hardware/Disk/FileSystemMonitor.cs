@@ -17,7 +17,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using DataTools.Memory;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 
 namespace DataTools.Hardware.Disk
 {
@@ -28,7 +28,7 @@ namespace DataTools.Hardware.Disk
         /// Defines the base for all custom messages in this module.
         /// </summary>
         /// <remarks></remarks>
-        public const int WM_MYBASE = PInvoke.WM_USER + 0x100;
+        public const int WM_MYBASE = User32.WM_USER + 0x100;
 
         /// <summary>
         /// Signals that a change has occurred within the context of a watched folder.
@@ -926,7 +926,7 @@ namespace DataTools.Hardware.Disk
                 var cp = new CreateParams();
                 if (_owner != IntPtr.Zero)
                 {
-                    cp.Style = PInvoke.WS_CHILDWINDOW;
+                    cp.Style = User32.WS_CHILDWINDOW;
                     cp.Parent = _owner;
                 }
 
@@ -949,7 +949,7 @@ namespace DataTools.Hardware.Disk
         /// <remarks></remarks>
         protected bool internalOpenFile()
         {
-            _hFile = FileApi.CreateFile(_stor, FileApi.GENERIC_READ | FileApi.FILE_READ_ATTRIBUTES | FileApi.FILE_READ_DATA | FileApi.FILE_READ_EA | FileApi.FILE_LIST_DIRECTORY | FileApi.FILE_TRAVERSE, FileApi.FILE_SHARE_READ | FileApi.FILE_SHARE_WRITE | FileApi.FILE_SHARE_DELETE, IntPtr.Zero, FileApi.OPEN_EXISTING, FileApi.FILE_FLAG_BACKUP_SEMANTICS | FileApi.FILE_FLAG_OVERLAPPED, IntPtr.Zero);
+            _hFile = IO.CreateFile(_stor, IO.GENERIC_READ | IO.FILE_READ_ATTRIBUTES | IO.FILE_READ_DATA | IO.FILE_READ_EA | IO.FILE_LIST_DIRECTORY | IO.FILE_TRAVERSE, IO.FILE_SHARE_READ | IO.FILE_SHARE_WRITE | IO.FILE_SHARE_DELETE, IntPtr.Zero, IO.OPEN_EXISTING, IO.FILE_FLAG_BACKUP_SEMANTICS | IO.FILE_FLAG_OVERLAPPED, IntPtr.Zero);
             if (_hFile == (IntPtr)(-1))
             {
                 return false;
@@ -964,7 +964,7 @@ namespace DataTools.Hardware.Disk
         /// <remarks></remarks>
         protected void internalCloseFile()
         {
-            if (PInvoke.CloseHandle(_hFile))
+            if (User32.CloseHandle(_hFile))
             {
                 _hFile = IntPtr.Zero;
             }
@@ -992,7 +992,7 @@ namespace DataTools.Hardware.Disk
             _thread = new System.Threading.Thread(() =>
             {
                 var notice = IntPtr.Zero;
-                PInvoke.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL_OPEN, IntPtr.Zero, IntPtr.Zero);
+                User32.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL_OPEN, IntPtr.Zero, IntPtr.Zero);
                 do
                 {
                     try
@@ -1006,7 +1006,7 @@ namespace DataTools.Hardware.Disk
 
                         if (!FileSystemMonitor.ReadDirectoryChangesW(_hFile, tbuff, bufflen, true, _Filter, ref blen, IntPtr.Zero, IntPtr.Zero))
                         {
-                            notice = (IntPtr)PInvoke.GetLastError();
+                            notice = (IntPtr)User32.GetLastError();
                             break;
                         }
                     }
@@ -1028,11 +1028,11 @@ namespace DataTools.Hardware.Disk
                     System.Threading.Monitor.Exit(_WaitList);
 
                     // post to the UI thread that there are items to dequeue and continue!
-                    PInvoke.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL, IntPtr.Zero, IntPtr.Zero);
+                    User32.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL, IntPtr.Zero, IntPtr.Zero);
                 }
                 while (true);
                 _thread = null;
-                PInvoke.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL_CLOSE, IntPtr.Zero, IntPtr.Zero);
+                User32.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL_CLOSE, IntPtr.Zero, IntPtr.Zero);
             });
 
             _thread.SetApartmentState(System.Threading.ApartmentState.STA);
@@ -1084,14 +1084,14 @@ namespace DataTools.Hardware.Disk
 
                                 // post a message to the queue cleaner.  if there are more files, it will send the pump back this way.
                                 _lastIndex = i + 1;
-                                PInvoke.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL_CLEAN, IntPtr.Zero, IntPtr.Zero);
+                                User32.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL_CLEAN, IntPtr.Zero, IntPtr.Zero);
                             }
 
                             System.Threading.Monitor.Exit(_WaitList);
                         }
                         // going too fast?  we'll get there, eventually.  At least we know they're queuing.
                         else if (_WaitList.Count > 0)
-                            PInvoke.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL, IntPtr.Zero, IntPtr.Zero);
+                            User32.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL, IntPtr.Zero, IntPtr.Zero);
                         break;
                     }
 
@@ -1120,12 +1120,12 @@ namespace DataTools.Hardware.Disk
 
                             // if we still have more signals in the queue, tell the message pump to keep on truckin'.
                             if (_WaitList.Count > 0)
-                                PInvoke.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL, IntPtr.Zero, IntPtr.Zero);
+                                User32.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL, IntPtr.Zero, IntPtr.Zero);
                         }
                         else
                         {
                             // oh snap!  can't lock it, let's send another clean message to make sure we do finally execute, eventually.
-                            PInvoke.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL_CLEAN, IntPtr.Zero, IntPtr.Zero);
+                            User32.PostMessage(Handle, FileSystemMonitor.WM_SIGNAL_CLEAN, IntPtr.Zero, IntPtr.Zero);
                         }
 
                         break;

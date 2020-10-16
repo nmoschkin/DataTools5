@@ -18,7 +18,7 @@ using System.Runtime.InteropServices;
 using DataTools.Memory;
 using DataTools.Text;
 using DataTools.MathTools;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 using DataTools.Desktop.Structures;
 using DataTools.Shell.Native;
 
@@ -156,10 +156,10 @@ namespace DataTools.Desktop
 
         public enum SystemIconSizes
         {
-            Small = PInvoke.SHIL_SMALL,
-            Large = PInvoke.SHIL_LARGE,
-            ExtraLarge = PInvoke.SHIL_EXTRALARGE,
-            Jumbo = PInvoke.SHIL_JUMBO
+            Small = User32.SHIL_SMALL,
+            Large = User32.SHIL_LARGE,
+            ExtraLarge = User32.SHIL_EXTRALARGE,
+            Jumbo = User32.SHIL_JUMBO
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -417,7 +417,7 @@ namespace DataTools.Desktop
 
             if (hmod == IntPtr.Zero)
             {
-                throw new NativeException(PInvoke.GetLastError());
+                throw new NativeException(User32.GetLastError());
             }
 
             var mm = new MemPtr();
@@ -427,7 +427,7 @@ namespace DataTools.Desktop
             LoadStringResourceRet = (string)(mm);
             mm.Free();
 
-            PInvoke.FreeLibrary(hmod);
+            User32.FreeLibrary(hmod);
             return LoadStringResourceRet;
         }
 
@@ -513,7 +513,7 @@ namespace DataTools.Desktop
                 l.Add(new LibraryIcon(s, MakeWPFImage(_internalLoadLibraryIcon(fileName, i, null, desiredSize, uFlags, enumres, false, hmod))));
             }
 
-            PInvoke.FreeLibrary(hmod);
+            User32.FreeLibrary(hmod);
             return l;
         }
 
@@ -586,7 +586,7 @@ namespace DataTools.Desktop
             string lk = null;
             Icon icn = null;
             bool noh = hMod == IntPtr.Zero;
-            PInvoke.BITMAPINFOHEADER idata;
+            User32.BITMAPINFOHEADER idata;
             if (parseIconIndex)
             {
                 fileName = ParseResourceFilename(fileName, ref iIcon);
@@ -729,14 +729,14 @@ namespace DataTools.Desktop
                 if (enumRes is null)
                 {
                     if (noh)
-                        PInvoke.FreeLibrary(hMod);
+                        User32.FreeLibrary(hMod);
                     return _internalLoadLibraryIconRet;
                 }
 
                 if (idx > enumRes.Count)
                 {
                     if (noh)
-                        PInvoke.FreeLibrary(hMod);
+                        User32.FreeLibrary(hMod);
                     return _internalLoadLibraryIconRet;
                 }
 
@@ -752,7 +752,7 @@ namespace DataTools.Desktop
                 // Grab the raw bitmap structure from the icon resource, so we
                 // can use the actual width and height as opposed to the
                 // system-stretched return result.
-                idata = (PInvoke.BITMAPINFOHEADER)Marshal.PtrToStructure(hdata, typeof(PInvoke.BITMAPINFOHEADER));
+                idata = (User32.BITMAPINFOHEADER)Marshal.PtrToStructure(hdata, typeof(User32.BITMAPINFOHEADER));
 
                 // create the icon from the data in the resource.
                 // I read a great many articles before I finally figured out that &H30000 MUST be passed, just because.
@@ -768,9 +768,9 @@ namespace DataTools.Desktop
                 _internalLoadLibraryIconRet = icn;
 
                 // free our unmanaged resources.
-                PInvoke.DestroyIcon(hicon);
+                User32.DestroyIcon(hicon);
                 if (noh)
-                    PInvoke.FreeLibrary(hMod);
+                    User32.FreeLibrary(hMod);
                 return _internalLoadLibraryIconRet;
             }
 
@@ -813,7 +813,7 @@ namespace DataTools.Desktop
             if (idx >= enumRes.Count)
             {
                 if (noh)
-                    PInvoke.FreeLibrary(hMod);
+                    User32.FreeLibrary(hMod);
                 return _internalLoadLibraryIconRet;
             }
 
@@ -833,7 +833,7 @@ namespace DataTools.Desktop
                 if (i == 0)
                 {
                     if (noh)
-                        PInvoke.FreeLibrary(hMod);
+                        User32.FreeLibrary(hMod);
                     return _internalLoadLibraryIconRet;
                 }
 
@@ -849,7 +849,7 @@ namespace DataTools.Desktop
                 // Grab the raw bitmap structure from the icon resource, so we
                 // can use the actual width and height as opposed to the
                 // system-stretched return result.
-                idata = (PInvoke.BITMAPINFOHEADER)Marshal.PtrToStructure(hdata, typeof(PInvoke.BITMAPINFOHEADER));
+                idata = (User32.BITMAPINFOHEADER)Marshal.PtrToStructure(hdata, typeof(User32.BITMAPINFOHEADER));
 
                 // create the icon.
                 hicon = CreateIconFromResourceEx(hdata, SizeofResource(hMod, hres), true, 0x30000, idata.biWidth, idata.biWidth, 0);
@@ -867,13 +867,13 @@ namespace DataTools.Desktop
                     _internalLoadLibraryIconRet = icn;
 
                     // destroy the unmanaged icon.
-                    PInvoke.DestroyIcon(hicon);
+                    User32.DestroyIcon(hicon);
                 }
             }
 
             // free the library.
             if (noh)
-                PInvoke.FreeLibrary(hMod);
+                User32.FreeLibrary(hMod);
             return _internalLoadLibraryIconRet;
         }
 
@@ -888,7 +888,7 @@ namespace DataTools.Desktop
             var a = new IntPtr();
             var b = new IntPtr();
 
-            return PInvoke.ExtractIconEx(Environment.ExpandEnvironmentVariables(library), -1, ref a , ref b, 0U);
+            return User32.ExtractIconEx(Environment.ExpandEnvironmentVariables(library), -1, ref a , ref b, 0U);
         }
 
         /// <summary>
@@ -900,17 +900,17 @@ namespace DataTools.Desktop
         /// <param name="library"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static Bitmap GetLibraryBitmap(int iBmp, Size iSize, int uFlags = PInvoke.LR_DEFAULTCOLOR + PInvoke.LR_CREATEDIBSECTION, string library = @"%systemroot%\system32\shell32.dll")
+        public static Bitmap GetLibraryBitmap(int iBmp, Size iSize, int uFlags = User32.LR_DEFAULTCOLOR + User32.LR_CREATEDIBSECTION, string library = @"%systemroot%\system32\shell32.dll")
         {
             Bitmap GetLibraryBitmapRet = default;
-            var hInst = PInvoke.LoadLibrary(Environment.ExpandEnvironmentVariables(library));
+            var hInst = User32.LoadLibrary(Environment.ExpandEnvironmentVariables(library));
             IntPtr hBmp;
             if (hInst == IntPtr.Zero)
                 return null;
-            hBmp = PInvoke.LoadImage(hInst, (IntPtr)iBmp, PInvoke.IMAGE_BITMAP, iSize.Width, iSize.Height, uFlags);
+            hBmp = User32.LoadImage(hInst, (IntPtr)iBmp, User32.IMAGE_BITMAP, iSize.Width, iSize.Height, uFlags);
             if (hBmp == IntPtr.Zero)
                 return null;
-            PInvoke.FreeLibrary(hInst);
+            User32.FreeLibrary(hInst);
             GetLibraryBitmapRet = Image.FromHbitmap(hBmp);
             NativeShell.DeleteObject(hBmp);
             return GetLibraryBitmapRet;
@@ -925,15 +925,15 @@ namespace DataTools.Desktop
         {
             var sgfin = default(ShellFileGetAttributesOptions);
             var sgfout = default(ShellFileGetAttributesOptions);
-            var lpInfo = new PInvoke.SHFILEINFO();
+            var lpInfo = new User32.SHFILEINFO();
             IntPtr x;
             int iFlags = 0;
-            iFlags = iFlags | PInvoke.SHGFI_SYSICONINDEX | PInvoke.SHGFI_PIDL;
+            iFlags = iFlags | User32.SHGFI_SYSICONINDEX | User32.SHGFI_PIDL;
             SafePtr mm = (SafePtr)filename;
             mm.Length += 2L;
             NativeShell.SHParseDisplayName(mm.handle, IntPtr.Zero, out x, sgfin, ref sgfout);
             mm.Free();
-            PInvoke.SHGetItemInfo(x, 0, ref lpInfo, Marshal.SizeOf(lpInfo), iFlags);
+            User32.SHGetItemInfo(x, 0, ref lpInfo, Marshal.SizeOf(lpInfo), iFlags);
             Marshal.FreeCoTaskMem(x);
             return lpInfo.iIcon;
         }
@@ -962,12 +962,12 @@ namespace DataTools.Desktop
                 return icn;
             }
 
-            PInvoke.SHGetImageList((int)shil, ref riid, ref i);
-            i = (IntPtr)PInvoke.ImageList_GetIcon(i, iIcon, 0U);
+            User32.SHGetImageList((int)shil, ref riid, ref i);
+            i = (IntPtr)User32.ImageList_GetIcon(i, iIcon, 0U);
             if (i != IntPtr.Zero)
             {
                 icn = (Icon)Icon.FromHandle(i).Clone();
-                PInvoke.DestroyIcon(i);
+                User32.DestroyIcon(i);
                 if (iIndex is object)
                 {
                     iIndex = iIcon;
@@ -1016,19 +1016,19 @@ namespace DataTools.Desktop
         /// <remarks></remarks>
         public static int GetItemIconIndex(IntPtr lpItemID, bool fSmall)
         {
-            var lpInfo = new PInvoke.SHFILEINFO();
+            var lpInfo = new User32.SHFILEINFO();
             int i;
             int fFlags;
             if (fSmall == false)
             {
-                fFlags = PInvoke.SHGFI_SYSICONINDEX + PInvoke.SHGFI_ICON;
+                fFlags = User32.SHGFI_SYSICONINDEX + User32.SHGFI_ICON;
             }
             else
             {
-                fFlags = PInvoke.SHGFI_SYSICONINDEX + PInvoke.SHGFI_SMALLICON;
+                fFlags = User32.SHGFI_SYSICONINDEX + User32.SHGFI_SMALLICON;
             }
 
-            i = (int)PInvoke.SHGetItemInfo(lpItemID, 0, ref lpInfo, Marshal.SizeOf(lpInfo), fFlags | PInvoke.SHGFI_PIDL);
+            i = (int)User32.SHGetItemInfo(lpItemID, 0, ref lpInfo, Marshal.SizeOf(lpInfo), fFlags | User32.SHGFI_PIDL);
             if (i != 0L)
             {
                 return lpInfo.iIcon;
@@ -1046,12 +1046,12 @@ namespace DataTools.Desktop
         /// <remarks></remarks>
         public static int GetFileIconIndex(string lpFilename, SystemIconSizes shil = SystemIconSizes.ExtraLarge)
         {
-            var lpInfo = new PInvoke.SHFILEINFO();
+            var lpInfo = new User32.SHFILEINFO();
             int iFlags = 0;
-            iFlags = iFlags | PInvoke.SHGFI_SYSICONINDEX;
+            iFlags = iFlags | User32.SHGFI_SYSICONINDEX;
             SafePtr mm = (SafePtr)lpFilename;
             mm.Length += sizeof(char);
-            PInvoke.SHGetItemInfo(mm.handle, 0, ref lpInfo, Marshal.SizeOf(lpInfo), iFlags);
+            User32.SHGetItemInfo(mm.handle, 0, ref lpInfo, Marshal.SizeOf(lpInfo), iFlags);
             return lpInfo.iIcon;
         }
 
@@ -1066,7 +1066,7 @@ namespace DataTools.Desktop
             IntPtr i = new IntPtr();
             var riid = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
 
-            PInvoke.SHGetImageList((int)shil, ref riid, ref i);
+            User32.SHGetImageList((int)shil, ref riid, ref i);
             return i;
         }
 
@@ -1084,16 +1084,16 @@ namespace DataTools.Desktop
             var riid = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
 
             int iFlags = 0;
-            iFlags = iFlags | PInvoke.SHGFI_SYSICONINDEX;
+            iFlags = iFlags | User32.SHGFI_SYSICONINDEX;
 
-            PInvoke.SHGetImageList((int)shil, ref riid, ref i);
+            User32.SHGetImageList((int)shil, ref riid, ref i);
 
-            i = (IntPtr)PInvoke.ImageList_GetIcon(i, index, 0U);
+            i = (IntPtr)User32.ImageList_GetIcon(i, index, 0U);
 
             if (i != IntPtr.Zero)
             {
                 icn = (Icon)Icon.FromHandle(i).Clone();
-                PInvoke.DestroyIcon(i);
+                User32.DestroyIcon(i);
                 return icn;
             }
             else
@@ -1111,25 +1111,25 @@ namespace DataTools.Desktop
         /// <remarks></remarks>
         public static Icon GetItemIcon(IntPtr lpItemID, SystemIconSizes shil = SystemIconSizes.ExtraLarge)
         {
-            var lpInfo = new PInvoke.SHFILEINFO();
+            var lpInfo = new User32.SHFILEINFO();
             IntPtr i = new IntPtr();
             Icon icn;
             var riid = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
             // iFlags = SHGFI_ICON
             int iFlags = 0;
-            iFlags = iFlags | PInvoke.SHGFI_SYSICONINDEX | PInvoke.SHGFI_PIDL;
-            i = PInvoke.SHGetItemInfo(lpItemID, 0, ref lpInfo, Marshal.SizeOf(lpInfo), iFlags);
+            iFlags = iFlags | User32.SHGFI_SYSICONINDEX | User32.SHGFI_PIDL;
+            i = User32.SHGetItemInfo(lpItemID, 0, ref lpInfo, Marshal.SizeOf(lpInfo), iFlags);
             if (lpInfo.iIcon == 0)
             {
                 return null;
             }
 
-            PInvoke.SHGetImageList((int)shil, ref riid, ref i);
-            i = (IntPtr)PInvoke.ImageList_GetIcon(i, lpInfo.iIcon, 0U);
+            User32.SHGetImageList((int)shil, ref riid, ref i);
+            i = (IntPtr)User32.ImageList_GetIcon(i, lpInfo.iIcon, 0U);
             if (i != IntPtr.Zero)
             {
                 icn = (Icon)Icon.FromHandle(i).Clone();
-                PInvoke.DestroyIcon(i);
+                User32.DestroyIcon(i);
                 return icn;
             }
             else
@@ -1327,17 +1327,17 @@ namespace DataTools.Desktop
             short wBitsPerPixel = 32;
             int BytesPerRow = (int)((double)(img.Width * wBitsPerPixel + 31 & ~31L) / 8d);
             int size = img.Height * BytesPerRow;
-            var bmpInfo = default(PInvoke.BITMAPINFO);
+            var bmpInfo = default(User32.BITMAPINFO);
             var mm = new MemPtr();
             int bmpSizeOf = Marshal.SizeOf(bmpInfo);
             mm.ReAlloc(bmpSizeOf + size);
-            var pbmih = default(PInvoke.BITMAPINFOHEADER);
+            var pbmih = default(User32.BITMAPINFOHEADER);
             pbmih.biSize = Marshal.SizeOf(pbmih);
             pbmih.biWidth = img.Width;
             pbmih.biHeight = img.Height; // positive indicates bottom-up DIB
             pbmih.biPlanes = 1;
             pbmih.biBitCount = wBitsPerPixel;
-            pbmih.biCompression = (int)PInvoke.BI_RGB;
+            pbmih.biCompression = (int)User32.BI_RGB;
             pbmih.biSizeImage = size;
             pbmih.biXPelsPerMeter = (int)(24.5d * 1000d); // pixels per meter! And these values MUST be correct if you want to pass a DIB to a native menu.
             pbmih.biYPelsPerMeter = (int)(24.5d * 1000d); // pixels per meter!
@@ -1346,7 +1346,7 @@ namespace DataTools.Desktop
             var pPixels = IntPtr.Zero;
             int DIB_RGB_COLORS = 0;
             Marshal.StructureToPtr(pbmih, mm.Handle, false);
-            var hPreviewBitmap = PInvoke.CreateDIBSection(IntPtr.Zero, mm.Handle, (uint)DIB_RGB_COLORS, ref pPixels, IntPtr.Zero, 0);
+            var hPreviewBitmap = User32.CreateDIBSection(IntPtr.Zero, mm.Handle, (uint)DIB_RGB_COLORS, ref pPixels, IntPtr.Zero, 0);
             bitPtr = pPixels;
             var bm = new System.Drawing.Imaging.BitmapData();
             bm = img.LockBits(new Rectangle(0, 0, img.Width, img.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppPArgb, bm);

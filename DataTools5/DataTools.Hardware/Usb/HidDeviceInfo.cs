@@ -13,7 +13,7 @@
 using System;
 using DataTools.Memory;
 using DataTools.Text;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 
 namespace DataTools.Hardware.Usb
 {
@@ -434,7 +434,7 @@ namespace DataTools.Hardware.Usb
         {
             get
             {
-                return Utility.GetEnumDescription(_HidPage);
+                return FileTools.GetEnumDescription(_HidPage);
             }
         }
 

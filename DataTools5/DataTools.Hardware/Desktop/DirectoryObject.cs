@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using DataTools.Memory;
 using System.Drawing;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 using DataTools.Shell.Native;
 
 namespace DataTools.Desktop
@@ -236,12 +236,12 @@ namespace DataTools.Desktop
         {
             get
             {
-                return Utility.GetFileAttributes(ParsingName);
+                return FileTools.GetFileAttributes(ParsingName);
             }
 
             set
             {
-                Utility.SetFileAttributes(ParsingName, value);
+                FileTools.SetFileAttributes(ParsingName, value);
             }
         }
 
@@ -262,7 +262,7 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                Utility.GetFileTime(ParsingName, ref c, ref a, ref m);
+                FileTools.GetFileTime(ParsingName, ref c, ref a, ref m);
                 return c;
             }
 
@@ -271,8 +271,8 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                Utility.GetFileTime(ParsingName, ref c, ref a, ref m);
-                Utility.SetFileTime(ParsingName, value, a, m);
+                FileTools.GetFileTime(ParsingName, ref c, ref a, ref m);
+                FileTools.SetFileTime(ParsingName, value, a, m);
             }
         }
 
@@ -393,7 +393,7 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                Utility.GetFileTime(ParsingName, ref c, ref a, ref m);
+                FileTools.GetFileTime(ParsingName, ref c, ref a, ref m);
                 return a;
             }
 
@@ -402,8 +402,8 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                Utility.GetFileTime(ParsingName, ref c, ref a, ref m);
-                Utility.SetFileTime(ParsingName, c, value, m);
+                FileTools.GetFileTime(ParsingName, ref c, ref a, ref m);
+                FileTools.SetFileTime(ParsingName, c, value, m);
             }
         }
 
@@ -418,7 +418,7 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                Utility.GetFileTime(ParsingName, ref c, ref a, ref m);
+                FileTools.GetFileTime(ParsingName, ref c, ref a, ref m);
                 return m;
             }
 
@@ -427,8 +427,8 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                Utility.GetFileTime(ParsingName, ref c, ref a, ref m);
-                Utility.SetFileTime(ParsingName, c, a, value);
+                FileTools.GetFileTime(ParsingName, ref c, ref a, ref m);
+                FileTools.SetFileTime(ParsingName, c, a, value);
             }
         }
 
@@ -588,14 +588,14 @@ namespace DataTools.Desktop
                             if (inv.CharAt(0L) != '\0')
                             {
                                 fp = (string)inv;
-                                var lpInfo = new PInvoke.SHFILEINFO();
+                                var lpInfo = new User32.SHFILEINFO();
 
                                 // Dim sgfin As ShellFileGetAttributesOptions = 0,
                                 // sgfout As ShellFileGetAttributesOptions = 0
 
-                                int iFlags = PInvoke.SHGFI_PIDL | PInvoke.SHGFI_ATTRIBUTES;
+                                int iFlags = User32.SHGFI_PIDL | User32.SHGFI_ATTRIBUTES;
                                 lpInfo.dwAttributes = 0;
-                                x = PInvoke.SHGetItemInfo(mm.Handle, 0, ref lpInfo, Marshal.SizeOf(lpInfo), iFlags);
+                                x = User32.SHGetItemInfo(mm.Handle, 0, ref lpInfo, Marshal.SizeOf(lpInfo), iFlags);
                                 if (ParsingName is object)
                                 {
                                     if (pname.LastIndexOf(@"\") == pname.Length - 1)
@@ -609,7 +609,7 @@ namespace DataTools.Desktop
 
                                 if (lpInfo.dwAttributes == 0)
                                 {
-                                    lpInfo.dwAttributes = (int)Utility.GetFileAttributes(pout);
+                                    lpInfo.dwAttributes = (int)FileTools.GetFileAttributes(pout);
                                 }
 
                                 FileAttributes drat = (FileAttributes)(int)(lpInfo.dwAttributes);

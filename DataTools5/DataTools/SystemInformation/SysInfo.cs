@@ -866,7 +866,6 @@ namespace DataTools.SystemInformation
             return s;
         }
 
-#if X64
         /// <summary>
         /// Processor mask
         /// </summary>
@@ -910,53 +909,6 @@ namespace DataTools.SystemInformation
         /// </summary>
         [FieldOffset(24)]
         public long Reserved2;
-
-#else
-        /// <summary>
-        /// Processor mask
-        /// </summary>
-        [FieldOffset(0)]
-        public long ProcessorMask;
-
-        /// <summary>
-        /// Processor relationship (entity kind)
-        /// </summary>
-
-        [FieldOffset(4)]
-        public LOGICAL_PROCESSOR_RELATIONSHIP Relationship;
-
-        /// <summary>
-        /// Flags
-        /// </summary>
-        [FieldOffset(8)]
-        public byte Flags;
-
-        /// <summary>
-        /// Node number
-        /// </summary>
-        [FieldOffset(8)]
-        public int NodeNumber;
-
-
-        /// <summary>
-        /// Cache descriptor
-        /// </summary>
-        [FieldOffset(8)]
-        public CACHE_DESCRIPTOR CacheDescriptor;
-
-        /// <summary>
-        /// Reserved 1
-        /// </summary>
-        [FieldOffset(8)]
-        public long Reserved1;
-
-        /// <summary>
-        /// Reserved 2
-        /// </summary>
-        [FieldOffset(12)]
-        public long Reserved2;
-
-#endif
 
     }
 

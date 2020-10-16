@@ -28,7 +28,7 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using DataTools.Memory;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 using DataTools.Shell.Native;
 
 namespace DataTools.Desktop
@@ -214,7 +214,7 @@ namespace DataTools.Desktop
             {
                 Bitmap bmp = (Bitmap)ToImage();
                 var bmi = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format1bppIndexed);
-                var lpicon = default(PInvoke.ICONINFO);
+                var lpicon = default(User32.ICONINFO);
                 int i;
                 var bm = bmi.LockBits(new Rectangle(0, 0, bmi.Width, bmi.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format1bppIndexed);
                 MemPtr mm = bm.Scan0;
@@ -226,11 +226,11 @@ namespace DataTools.Desktop
                 lpicon.hbmColor = bmp.GetHbitmap();
                 lpicon.hbmMask = bmi.GetHbitmap();
                 lpicon.fIcon = 1;
-                var hIcon = PInvoke.CreateIconIndirect(ref lpicon);
+                var hIcon = User32.CreateIconIndirect(ref lpicon);
                 if (hIcon != IntPtr.Zero)
                 {
                     ToIconRet = (Icon)Icon.FromHandle(hIcon).Clone();
-                    PInvoke.DestroyIcon(hIcon);
+                    User32.DestroyIcon(hIcon);
                 }
                 else
                 {
@@ -343,7 +343,7 @@ namespace DataTools.Desktop
             IntPtr bmp = default;
             var hbmp = Resources.MakeDIBSection((Bitmap)ToImage(), ref bmp);
             var mm = new SafePtr();
-            var bm = new PInvoke.BITMAPINFOHEADER();
+            var bm = new User32.BITMAPINFOHEADER();
             int maskSize;
             int w = _entry.cWidth;
             int h = _entry.cHeight;
@@ -363,7 +363,7 @@ namespace DataTools.Desktop
             var ptr2 = mm.DangerousGetHandle() + 40 + bm.biSizeImage;
             Marshal.StructureToPtr(bm, mm.DangerousGetHandle(), false);
             DataTools.Memory.NativeLib.Native.MemCpy(bmp, ptr1, bm.biSizeImage);
-            bm = mm.ToStruct<PInvoke.BITMAPINFOHEADER>();
+            bm = mm.ToStruct<User32.BITMAPINFOHEADER>();
             _setMask(ptr1, ptr2, w, h);
             _entry.dwImageSize = (int)mm.Size;
             _makeBitmapRet = (byte[])mm;
@@ -382,18 +382,18 @@ namespace DataTools.Desktop
             Icon _constructIconRet = default;
             if (_hIcon != IntPtr.Zero)
             {
-                PInvoke.DestroyIcon(_hIcon);
+                User32.DestroyIcon(_hIcon);
                 _hIcon = IntPtr.Zero;
             }
 
             MemPtr mm = (MemPtr)_image;
-            var bmp = mm.ToStruct<PInvoke.BITMAPINFOHEADER>();
+            var bmp = mm.ToStruct<User32.BITMAPINFOHEADER>();
 
             IntPtr hBmp;
             IntPtr ptr;
             IntPtr ppBits = new IntPtr();
 
-            var lpicon = default(PInvoke.ICONINFO);
+            var lpicon = default(User32.ICONINFO);
 
             IntPtr hicon;
             IntPtr hBmpMask = new IntPtr();
@@ -425,7 +425,7 @@ namespace DataTools.Desktop
             if (bmp.biSize != 40)
                 return null;
             
-            hBmp = PInvoke.CreateDIBSection(IntPtr.Zero, mm.Handle, 0U, ref ppBits, IntPtr.Zero, 0);
+            hBmp = User32.CreateDIBSection(IntPtr.Zero, mm.Handle, 0U, ref ppBits, IntPtr.Zero, 0);
             
             DataTools.Memory.NativeLib.Native.MemCpy(ptr, ppBits, bmp.biSizeImage);
             
@@ -435,14 +435,14 @@ namespace DataTools.Desktop
                 bmp.biBitCount = 1;
                 bmp.biSizeImage = 0;
                 Marshal.StructureToPtr(bmp, mm.Handle, false);
-                hBmpMask = PInvoke.CreateDIBSection(IntPtr.Zero, mm.Handle, 0U, ref ppBits, IntPtr.Zero, 0);
+                hBmpMask = User32.CreateDIBSection(IntPtr.Zero, mm.Handle, 0U, ref ppBits, IntPtr.Zero, 0);
                 DataTools.Memory.NativeLib.Native.MemCpy(ptr, ppBits, (long)(Math.Max(bmp.biWidth, 32) * bmp.biHeight / 8d));
             }
 
             lpicon.fIcon = 1;
             lpicon.hbmColor = hBmp;
             lpicon.hbmMask = hBmpMask;
-            hicon = PInvoke.CreateIconIndirect(ref lpicon);
+            hicon = User32.CreateIconIndirect(ref lpicon);
             NativeShell.DeleteObject(hBmp);
             if (hasMask)
                 NativeShell.DeleteObject(hBmpMask);
@@ -608,7 +608,7 @@ namespace DataTools.Desktop
             {
                 if (_hIcon != IntPtr.Zero)
                 {
-                    PInvoke.DestroyIcon(_hIcon);
+                    User32.DestroyIcon(_hIcon);
                 }
             }
 
@@ -970,11 +970,11 @@ namespace DataTools.Desktop
 
             // get the index to the first image's image data
             int offset = f + g * _dir.nImages;
-            bl = bl + Utility.StructToBytes(_dir);
+            bl = bl + FileTools.StructToBytes(_dir);
             foreach (var e in _entries)
             {
                 e._entry.dwOffset = offset;
-                bl = bl + Utility.StructToBytes(e._entry);
+                bl = bl + FileTools.StructToBytes(e._entry);
                 offset += e._entry.dwImageSize;
             }
 

@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Media.Imaging;
 using DataTools.Desktop;
+using DataTools.Win32Api;
 
 namespace DataTools.Hardware
 {
@@ -58,7 +59,7 @@ namespace DataTools.Hardware
         {
             get
             {
-                return Native.Utility.GetEnumDescription(DeviceClass);
+                return FileTools.GetEnumDescription(DeviceClass);
             }
         }
 

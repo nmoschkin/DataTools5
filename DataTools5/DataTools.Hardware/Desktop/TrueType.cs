@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using DataTools.Memory;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 
 namespace DataTools.Desktop
 {
@@ -144,7 +144,7 @@ namespace DataTools.Desktop
                 return null;
             }
 
-            Utility.ReadStruct<TT_OFFSET_TABLE>(fs, ref oft);
+            FileTools.ReadStruct<TT_OFFSET_TABLE>(fs, ref oft);
             oft.uNumOfTables = Swap(oft.uNumOfTables);
             oft.uMajorVersion = Swap(oft.uMajorVersion);
             oft.uMinorVersion = Swap(oft.uMinorVersion);
@@ -155,7 +155,7 @@ namespace DataTools.Desktop
             var loopTo = oft.uNumOfTables - 1;
             for (i = 0; i <= loopTo; i++)
             {
-                Utility.ReadStruct<TT_TABLE_DIRECTORY>(fs, ref tdir);
+                FileTools.ReadStruct<TT_TABLE_DIRECTORY>(fs, ref tdir);
                 if (tdir.Tag.ToLower() == "name")
                 {
                     tdir.uLength = Swap(tdir.uLength);
@@ -168,13 +168,13 @@ namespace DataTools.Desktop
             if (i >= oft.uNumOfTables)
                 return null;
             fs.Seek(tdir.uOffset, SeekOrigin.Begin);
-            Utility.ReadStruct<TT_NAME_TABLE_HEADER>(fs, ref nth);
+            FileTools.ReadStruct<TT_NAME_TABLE_HEADER>(fs, ref nth);
             nth.uStorageOffset = Swap(nth.uStorageOffset);
             nth.uNRCount = Swap(nth.uNRCount);
             var loopTo1 = nth.uNRCount - 1;
             for (i = 0; i <= loopTo1; i++)
             {
-                Utility.ReadStruct<TT_NAME_RECORD>(fs, ref nr);
+                FileTools.ReadStruct<TT_NAME_RECORD>(fs, ref nr);
                 nr.uNameID = Swap(nr.uNameID);
                 if (nr.uNameID == 1)
                 {
@@ -274,9 +274,9 @@ namespace DataTools.Desktop
 
     public enum FontPitch
     {
-        Default = PInvoke.FontPitchAndFamily.DEFAULT_PITCH,
-        Variable = PInvoke.FontPitchAndFamily.VARIABLE_PITCH,
-        Fixed = PInvoke.FontPitchAndFamily.FIXED_PITCH
+        Default = User32.FontPitchAndFamily.DEFAULT_PITCH,
+        Variable = User32.FontPitchAndFamily.VARIABLE_PITCH,
+        Fixed = User32.FontPitchAndFamily.FIXED_PITCH
     }
 
 
@@ -285,8 +285,8 @@ namespace DataTools.Desktop
     /// </summary>
     public sealed class FontInfo
     {
-        internal PInvoke.ENUMLOGFONTEX elf;
-        internal PInvoke.LOGFONT lf;
+        internal User32.ENUMLOGFONTEX elf;
+        internal User32.LOGFONT lf;
 
         /// <summary>
         /// Gets the font name.
@@ -368,35 +368,35 @@ namespace DataTools.Desktop
         {
             get
             {
-                PInvoke.FontPitchAndFamily v = (PInvoke.FontPitchAndFamily)(lf.lfPitchAndFamily >> 2 << 2);
+                User32.FontPitchAndFamily v = (User32.FontPitchAndFamily)(lf.lfPitchAndFamily >> 2 << 2);
                 switch (v)
                 {
-                    case PInvoke.FontPitchAndFamily.FF_DECORATIVE:
+                    case User32.FontPitchAndFamily.FF_DECORATIVE:
                         {
                             return FontFamilies.Decorative;
                         }
 
-                    case PInvoke.FontPitchAndFamily.FF_DONTCARE:
+                    case User32.FontPitchAndFamily.FF_DONTCARE:
                         {
                             return FontFamilies.DontCare;
                         }
 
-                    case PInvoke.FontPitchAndFamily.FF_MODERN:
+                    case User32.FontPitchAndFamily.FF_MODERN:
                         {
                             return FontFamilies.Modern;
                         }
 
-                    case PInvoke.FontPitchAndFamily.FF_ROMAN:
+                    case User32.FontPitchAndFamily.FF_ROMAN:
                         {
                             return FontFamilies.Roman;
                         }
 
-                    case PInvoke.FontPitchAndFamily.FF_SWISS:
+                    case User32.FontPitchAndFamily.FF_SWISS:
                         {
                             return FontFamilies.Swiss;
                         }
 
-                    case PInvoke.FontPitchAndFamily.FF_SCRIPT:
+                    case User32.FontPitchAndFamily.FF_SCRIPT:
                         {
                             return FontFamilies.Script;
                         }
@@ -416,7 +416,7 @@ namespace DataTools.Desktop
             mm.FromStruct(elf);
         }
 
-        internal FontInfo(PInvoke.ENUMLOGFONTEX elf)
+        internal FontInfo(User32.ENUMLOGFONTEX elf)
         {
             this.elf = elf;
             lf = elf.elfLogFont;
@@ -444,7 +444,7 @@ namespace DataTools.Desktop
 
         private List<FontInfo> _List = new List<FontInfo>();
 
-        private delegate int EnumFontFamExProc(ref PInvoke.ENUMLOGFONTEX lpelfe, IntPtr lpntme, uint FontType, IntPtr lparam);
+        private delegate int EnumFontFamExProc(ref User32.ENUMLOGFONTEX lpelfe, IntPtr lpntme, uint FontType, IntPtr lparam);
 
         [DllImport("gdi32.dll", CharSet = CharSet.Auto)]
         private static extern int EnumFontFamiliesEx(IntPtr hdc, IntPtr lpLogFont, [MarshalAs(UnmanagedType.FunctionPtr)] EnumFontFamExProc lpEnumFontFamExProc, IntPtr lparam, uint dwflags);
@@ -455,45 +455,45 @@ namespace DataTools.Desktop
         /// <returns></returns>
         public static FontCollection SystemFonts { get; private set; }
 
-        private static bool CheckFamily(PInvoke.LOGFONT lf, FontFamilies families)
+        private static bool CheckFamily(User32.LOGFONT lf, FontFamilies families)
         {
-            PInvoke.FontPitchAndFamily v = (PInvoke.FontPitchAndFamily)(lf.lfPitchAndFamily >> 2 << 2);
+            User32.FontPitchAndFamily v = (User32.FontPitchAndFamily)(lf.lfPitchAndFamily >> 2 << 2);
             switch (v)
             {
-                case PInvoke.FontPitchAndFamily.FF_DECORATIVE:
+                case User32.FontPitchAndFamily.FF_DECORATIVE:
                     {
                         if ((families & FontFamilies.Decorative) == 0)
                             return false;
                         break;
                     }
 
-                case PInvoke.FontPitchAndFamily.FF_DONTCARE:
+                case User32.FontPitchAndFamily.FF_DONTCARE:
                     {
                         return families == FontFamilies.DontCare ? true : false;
                     }
 
-                case PInvoke.FontPitchAndFamily.FF_MODERN:
+                case User32.FontPitchAndFamily.FF_MODERN:
                     {
                         if ((families & FontFamilies.Modern) == 0)
                             return false;
                         break;
                     }
 
-                case PInvoke.FontPitchAndFamily.FF_ROMAN:
+                case User32.FontPitchAndFamily.FF_ROMAN:
                     {
                         if ((families & FontFamilies.Roman) == 0)
                             return false;
                         break;
                     }
 
-                case PInvoke.FontPitchAndFamily.FF_SWISS:
+                case User32.FontPitchAndFamily.FF_SWISS:
                     {
                         if ((families & FontFamilies.Swiss) == 0)
                             return false;
                         break;
                     }
 
-                case PInvoke.FontPitchAndFamily.FF_SCRIPT:
+                case User32.FontPitchAndFamily.FF_SCRIPT:
                     {
                         if ((families & FontFamilies.Script) == 0)
                             return false;
@@ -518,9 +518,9 @@ namespace DataTools.Desktop
         {
             IntPtr hdc;
             
-            var fonts = new List<PInvoke.ENUMLOGFONTEX>();
+            var fonts = new List<User32.ENUMLOGFONTEX>();
             
-            var lf = new PInvoke.LOGFONT();
+            var lf = new User32.LOGFONT();
             
             string s;
             
@@ -567,12 +567,12 @@ namespace DataTools.Desktop
             lf.lfFaceName = "";
             mm.Alloc(Marshal.SizeOf(lf));
             mm.FromStruct(lf);
-            hdc = PInvoke.CreateDC("DISPLAY", null, IntPtr.Zero, IntPtr.Zero);
+            hdc = User32.CreateDC("DISPLAY", null, IntPtr.Zero, IntPtr.Zero);
 
             int e;
             bool bo = false;
 
-            e = EnumFontFamiliesEx(hdc, mm, (ref PInvoke.ENUMLOGFONTEX lpelfe, IntPtr lpntme, uint FontType, IntPtr lParam) =>
+            e = EnumFontFamiliesEx(hdc, mm, (ref User32.ENUMLOGFONTEX lpelfe, IntPtr lpntme, uint FontType, IntPtr lParam) =>
             {
                 int z;
                 if (fonts is null)
@@ -632,11 +632,11 @@ namespace DataTools.Desktop
                 fonts.Add(lpelfe);
                 return 1;
             }, IntPtr.Zero, 0U);
-            PInvoke.DeleteDC(hdc);
+            User32.DeleteDC(hdc);
             mm.Free();
             if (e == 0)
             {
-                e = PInvoke.GetLastError();
+                e = User32.GetLastError();
                 s = NativeError.Message;
             }
 

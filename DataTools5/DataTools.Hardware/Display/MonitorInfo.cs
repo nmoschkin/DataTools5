@@ -13,9 +13,10 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
+using DataTools.Desktop.Structures;
 
-namespace DataTools.Hardware.Native
+namespace DataTools.Hardware
 {
     static class MultiMon
     {
@@ -31,8 +32,8 @@ namespace DataTools.Hardware.Native
     internal struct MONITORINFOEX
     {
         public uint cbSize;
-        public PInvoke.W32RECT rcMonitor;
-        public PInvoke.W32RECT rcWork;
+        public W32RECT rcMonitor;
+        public W32RECT rcWork;
         public uint dwFlags;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
         public string szDevice;
@@ -59,18 +60,18 @@ namespace DataTools.Hardware.Display
     public class Monitors : ObservableCollection<MonitorInfo>
     {
         [return: MarshalAs(UnmanagedType.Bool)]
-        private delegate bool MonitorEnumProc(IntPtr hMonitor, IntPtr hdcMonitor, ref PInvoke.W32RECT lpRect, IntPtr lParam);
+        private delegate bool MonitorEnumProc(IntPtr hMonitor, IntPtr hdcMonitor, ref W32RECT lpRect, IntPtr lParam);
 
         [DllImport("user32", CharSet = CharSet.Unicode)]
         private static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, [MarshalAs(UnmanagedType.FunctionPtr)] MonitorEnumProc lpfnEnum, IntPtr dwData);
         [DllImport("user32", CharSet = CharSet.Unicode)]
-        private static extern IntPtr MonitorFromPoint(PInvoke.W32POINT pt, MultiMonFlags dwFlags);
+        private static extern IntPtr MonitorFromPoint(W32POINT pt, MultiMonFlags dwFlags);
         [DllImport("user32", CharSet = CharSet.Unicode)]
-        private static extern IntPtr MonitorFromRect(PInvoke.W32RECT pt, MultiMonFlags dwFlags);
+        private static extern IntPtr MonitorFromRect(W32RECT pt, MultiMonFlags dwFlags);
         [DllImport("user32", CharSet = CharSet.Unicode)]
         private static extern IntPtr MonitorFromWindow(IntPtr hWnd, MultiMonFlags dwFlags);
 
-        private bool _enum(IntPtr hMonitor, IntPtr hdcMonitor, ref PInvoke.W32RECT lpRect, IntPtr lParamIn)
+        private bool _enum(IntPtr hMonitor, IntPtr hdcMonitor, ref W32RECT lpRect, IntPtr lParamIn)
         {
             DataTools.Memory.MemPtr lParam = lParamIn;
             Add(new MonitorInfo(hMonitor, lParam.IntAt(0L)));
@@ -84,7 +85,7 @@ namespace DataTools.Hardware.Display
         /// </summary>
         /// <param name="pt"></param>
         /// <returns></returns>
-        public MonitorInfo GetMonitorFromPoint(PInvoke.W32POINT pt, MultiMonFlags flags = MultiMonFlags.DefaultToNull)
+        public MonitorInfo GetMonitorFromPoint(W32POINT pt, MultiMonFlags flags = MultiMonFlags.DefaultToNull)
         {
             if (Count == 0)
                 Refresh();
@@ -105,7 +106,7 @@ namespace DataTools.Hardware.Display
         /// </summary>
         /// <param name="rc"></param>
         /// <returns></returns>
-        public MonitorInfo GetMonitorFromRect(PInvoke.W32RECT rc, MultiMonFlags flags = MultiMonFlags.DefaultToNull)
+        public MonitorInfo GetMonitorFromRect(W32RECT rc, MultiMonFlags flags = MultiMonFlags.DefaultToNull)
         {
             if (Count == 0)
                 Refresh();
@@ -241,13 +242,13 @@ namespace DataTools.Hardware.Display
         /// <value></value>
         /// <returns></returns>
         /// <remarks></remarks>
-        public PInvoke.W32RECT MonitorBounds
+        public W32RECT MonitorBounds
         {
             get
             {
                 {
                     var withBlock = _data.rcMonitor;
-                    return new PInvoke.W32RECT(withBlock.left, withBlock.top, withBlock.right - withBlock.left, withBlock.bottom - withBlock.top);
+                    return new W32RECT(withBlock.left, withBlock.top, withBlock.right - withBlock.left, withBlock.bottom - withBlock.top);
                 }
             }
         }
@@ -258,13 +259,13 @@ namespace DataTools.Hardware.Display
         /// <value></value>
         /// <returns></returns>
         /// <remarks></remarks>
-        public PInvoke.W32RECT WorkBounds
+        public W32RECT WorkBounds
         {
             get
             {
                 {
                     var withBlock = _data.rcWork;
-                    return new PInvoke.W32RECT(withBlock.left, withBlock.top, withBlock.right - withBlock.left, withBlock.bottom - withBlock.top);
+                    return new W32RECT(withBlock.left, withBlock.top, withBlock.right - withBlock.left, withBlock.bottom - withBlock.top);
                 }
             }
         }

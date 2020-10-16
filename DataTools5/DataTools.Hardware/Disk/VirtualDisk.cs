@@ -16,7 +16,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using DataTools.Memory;
 using DataTools.Text;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 
 namespace DataTools.Hardware.Disk
 {
@@ -114,15 +114,15 @@ namespace DataTools.Hardware.Disk
             get
             {
                 long PhysicalSizeRet = default;
-                var info = default(VDiskDecl.GET_VIRTUAL_DISK_INFO_SIZE);
+                var info = default(VirtDisk.GET_VIRTUAL_DISK_INFO_SIZE);
                 uint iSize;
                 var sizeUSed = default(uint);
                 var mm = new MemPtr();
-                info.Version = VDiskDecl.GET_VIRTUAL_DISK_INFO_VERSION.GET_VIRTUAL_DISK_INFO_SIZE;
-                iSize = (uint)Marshal.SizeOf<VDiskDecl.GET_VIRTUAL_DISK_INFO_SIZE>();
+                info.Version = VirtDisk.GET_VIRTUAL_DISK_INFO_VERSION.GET_VIRTUAL_DISK_INFO_SIZE;
+                iSize = (uint)Marshal.SizeOf<VirtDisk.GET_VIRTUAL_DISK_INFO_SIZE>();
                 mm.FromStruct(info);
-                uint r = VDiskDecl.GetVirtualDiskInformation(_Handle, ref iSize, mm, ref sizeUSed);
-                info = mm.ToStruct<VDiskDecl.GET_VIRTUAL_DISK_INFO_SIZE>();
+                uint r = VirtDisk.GetVirtualDiskInformation(_Handle, ref iSize, mm, ref sizeUSed);
+                info = mm.ToStruct<VirtDisk.GET_VIRTUAL_DISK_INFO_SIZE>();
                 PhysicalSizeRet = (long)info.PhysicalSize;
                 mm.Free();
                 return PhysicalSizeRet;
@@ -140,15 +140,15 @@ namespace DataTools.Hardware.Disk
             get
             {
                 long SizeRet = default;
-                var info = default(VDiskDecl.GET_VIRTUAL_DISK_INFO_SIZE);
+                var info = default(VirtDisk.GET_VIRTUAL_DISK_INFO_SIZE);
                 uint iSize;
                 var sizeUSed = default(uint);
                 var mm = new MemPtr();
-                info.Version = VDiskDecl.GET_VIRTUAL_DISK_INFO_VERSION.GET_VIRTUAL_DISK_INFO_SIZE;
+                info.Version = VirtDisk.GET_VIRTUAL_DISK_INFO_VERSION.GET_VIRTUAL_DISK_INFO_SIZE;
                 iSize = (uint)Marshal.SizeOf(info);
                 mm.FromStruct(info);
-                uint r = VDiskDecl.GetVirtualDiskInformation(_Handle, ref iSize, mm, ref sizeUSed);
-                info = mm.ToStruct<VDiskDecl.GET_VIRTUAL_DISK_INFO_SIZE>();
+                uint r = VirtDisk.GetVirtualDiskInformation(_Handle, ref iSize, mm, ref sizeUSed);
+                info = mm.ToStruct<VirtDisk.GET_VIRTUAL_DISK_INFO_SIZE>();
                 SizeRet = (long)info.VirtualSize;
                 mm.Free();
                 return SizeRet;
@@ -166,10 +166,10 @@ namespace DataTools.Hardware.Disk
             get
             {
                 string PhysicalPathRet = default;
-                uint szpath = FileApi.MAX_PATH;
+                uint szpath = IO.MAX_PATH;
                 var mm = new MemPtr();
-                mm.Alloc(FileApi.MAX_PATH * 2);
-                uint r = VDiskDecl.GetVirtualDiskPhysicalPath(_Handle, ref szpath, mm.Handle);
+                mm.Alloc(IO.MAX_PATH * 2);
+                uint r = VirtDisk.GetVirtualDiskPhysicalPath(_Handle, ref szpath, mm.Handle);
                 PhysicalPathRet = mm.ToString();
                 mm.Free();
                 return PhysicalPathRet;
@@ -187,14 +187,14 @@ namespace DataTools.Hardware.Disk
             get
             {
                 Guid IdentifierRet = default;
-                var info = default(VDiskDecl.GET_VIRTUAL_DISK_INFO_SIZE);
+                var info = default(VirtDisk.GET_VIRTUAL_DISK_INFO_SIZE);
                 uint iSize;
                 var sizeUSed = default(uint);
                 var mm = new MemPtr();
-                info.Version = VDiskDecl.GET_VIRTUAL_DISK_INFO_VERSION.GET_VIRTUAL_DISK_INFO_IDENTIFIER;
-                iSize = (uint)Marshal.SizeOf<VDiskDecl.GET_VIRTUAL_DISK_INFO_SIZE>();
+                info.Version = VirtDisk.GET_VIRTUAL_DISK_INFO_VERSION.GET_VIRTUAL_DISK_INFO_IDENTIFIER;
+                iSize = (uint)Marshal.SizeOf<VirtDisk.GET_VIRTUAL_DISK_INFO_SIZE>();
                 mm.FromStruct(info);
-                uint r = VDiskDecl.GetVirtualDiskInformation(_Handle, ref iSize, mm, ref sizeUSed);
+                uint r = VirtDisk.GetVirtualDiskInformation(_Handle, ref iSize, mm, ref sizeUSed);
                 IdentifierRet = mm.GuidAtAbsolute(8L);
                 mm.Free();
                 return IdentifierRet;
@@ -255,29 +255,29 @@ namespace DataTools.Hardware.Disk
 
             string ext = Path.GetExtension(imageFile).ToLower();
 
-            var cp2 = new VDiskDecl.CREATE_VIRTUAL_DISK_PARAMETERS_V2();
-            var cp1 = new VDiskDecl.CREATE_VIRTUAL_DISK_PARAMETERS_V1();
+            var cp2 = new VirtDisk.CREATE_VIRTUAL_DISK_PARAMETERS_V2();
+            var cp1 = new VirtDisk.CREATE_VIRTUAL_DISK_PARAMETERS_V1();
 
-            VDiskDecl.VIRTUAL_STORAGE_TYPE vst;
+            VirtDisk.VIRTUAL_STORAGE_TYPE vst;
 
             var r = default(uint);
             IntPtr handleNew = new IntPtr();
 
-            vst.VendorId = VDiskDecl.VIRTUAL_STORAGE_TYPE_VENDOR_MICROSOFT;
+            vst.VendorId = VirtDisk.VIRTUAL_STORAGE_TYPE_VENDOR_MICROSOFT;
 
             switch (ext ?? "")
             {
                 case ".vhd":
                     {
                         cp1.BlockSizeInBytes = (uint)blockSize;
-                        cp1.Version = VDiskDecl.CREATE_VIRTUAL_DISK_VERSION.CREATE_VIRTUAL_DISK_VERSION_1;
+                        cp1.Version = VirtDisk.CREATE_VIRTUAL_DISK_VERSION.CREATE_VIRTUAL_DISK_VERSION_1;
                         cp1.MaximumSize = (ulong)diskSize;
                         cp1.UniqueId = id;
                         cp1.SourcePath = sourcePath;
                         cp1.SectorSizeInBytes = 512;
-                        vst.DeviceId = VDiskDecl.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
+                        vst.DeviceId = VirtDisk.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
 
-                        r = VDiskDecl.CreateVirtualDisk(vst, imageFile, VDiskDecl.VIRTUAL_DISK_ACCESS_MASK.VIRTUAL_DISK_ACCESS_ALL, IntPtr.Zero, fixedSize ? VDiskDecl.CREATE_VIRTUAL_DISK_FLAGS.CREATE_VIRTUAL_DISK_FLAG_FULL_PHYSICAL_ALLOCATION : VDiskDecl.CREATE_VIRTUAL_DISK_FLAGS.CREATE_VIRTUAL_DISK_FLAG_NONE, 0U, cp1, IntPtr.Zero, ref handleNew);
+                        r = VirtDisk.CreateVirtualDisk(vst, imageFile, VirtDisk.VIRTUAL_DISK_ACCESS_MASK.VIRTUAL_DISK_ACCESS_ALL, IntPtr.Zero, fixedSize ? VirtDisk.CREATE_VIRTUAL_DISK_FLAGS.CREATE_VIRTUAL_DISK_FLAG_FULL_PHYSICAL_ALLOCATION : VirtDisk.CREATE_VIRTUAL_DISK_FLAGS.CREATE_VIRTUAL_DISK_FLAG_NONE, 0U, cp1, IntPtr.Zero, ref handleNew);
 
                         break;
                     }
@@ -285,14 +285,14 @@ namespace DataTools.Hardware.Disk
                 case ".vhdx":
                     {
                         cp2.BlockSizeInBytes = (uint)blockSize;
-                        cp2.Version = VDiskDecl.CREATE_VIRTUAL_DISK_VERSION.CREATE_VIRTUAL_DISK_VERSION_2;
+                        cp2.Version = VirtDisk.CREATE_VIRTUAL_DISK_VERSION.CREATE_VIRTUAL_DISK_VERSION_2;
                         cp2.MaximumSize = (ulong)diskSize;
                         cp2.UniqueId = id;
                         cp2.SourcePath = sourcePath;
                         if (sourcePath is object)
                         {
                             cp2.SourceVirtualStorageType.DeviceId = (uint)sourceDiskType;
-                            cp2.SourceVirtualStorageType.VendorId = VDiskDecl.VIRTUAL_STORAGE_TYPE_VENDOR_MICROSOFT;
+                            cp2.SourceVirtualStorageType.VendorId = VirtDisk.VIRTUAL_STORAGE_TYPE_VENDOR_MICROSOFT;
                         }
 
                         int x = Marshal.SizeOf(cp2);
@@ -307,10 +307,10 @@ namespace DataTools.Hardware.Disk
                             // resiliencyId = cp2.ResiliencyGuid
                         }
 
-                        cp2.OpenFlags = VDiskDecl.OPEN_VIRTUAL_DISK_FLAG.OPEN_VIRTUAL_DISK_FLAG_NONE;
-                        vst.DeviceId = VDiskDecl.VIRTUAL_STORAGE_TYPE_DEVICE_VHDX;
+                        cp2.OpenFlags = VirtDisk.OPEN_VIRTUAL_DISK_FLAG.OPEN_VIRTUAL_DISK_FLAG_NONE;
+                        vst.DeviceId = VirtDisk.VIRTUAL_STORAGE_TYPE_DEVICE_VHDX;
 
-                        r = VDiskDecl.CreateVirtualDisk(vst, imageFile, VDiskDecl.VIRTUAL_DISK_ACCESS_MASK.VIRTUAL_DISK_ACCESS_NONE, IntPtr.Zero, fixedSize ? VDiskDecl.CREATE_VIRTUAL_DISK_FLAGS.CREATE_VIRTUAL_DISK_FLAG_FULL_PHYSICAL_ALLOCATION : VDiskDecl.CREATE_VIRTUAL_DISK_FLAGS.CREATE_VIRTUAL_DISK_FLAG_NONE, 0U, cp2, IntPtr.Zero, ref handleNew);
+                        r = VirtDisk.CreateVirtualDisk(vst, imageFile, VirtDisk.VIRTUAL_DISK_ACCESS_MASK.VIRTUAL_DISK_ACCESS_NONE, IntPtr.Zero, fixedSize ? VirtDisk.CREATE_VIRTUAL_DISK_FLAGS.CREATE_VIRTUAL_DISK_FLAG_FULL_PHYSICAL_ALLOCATION : VirtDisk.CREATE_VIRTUAL_DISK_FLAGS.CREATE_VIRTUAL_DISK_FLAG_NONE, 0U, cp2, IntPtr.Zero, ref handleNew);
                         break;
                     }
             }
@@ -378,42 +378,42 @@ namespace DataTools.Hardware.Disk
         {
             bool OpenRet = default;
             string ext = Path.GetExtension(imageFile).ToLower();
-            VDiskDecl.VIRTUAL_STORAGE_TYPE vst;
+            VirtDisk.VIRTUAL_STORAGE_TYPE vst;
             if (_Handle != IntPtr.Zero)
                 Close();
 
-            var vdp1 = new VDiskDecl.OPEN_VIRTUAL_DISK_PARAMETERS_V1();
-            var vdp2 = new VDiskDecl.OPEN_VIRTUAL_DISK_PARAMETERS_V2();
+            var vdp1 = new VirtDisk.OPEN_VIRTUAL_DISK_PARAMETERS_V1();
+            var vdp2 = new VirtDisk.OPEN_VIRTUAL_DISK_PARAMETERS_V2();
 
             uint r;
 
-            var am = VDiskDecl.VIRTUAL_DISK_ACCESS_MASK.VIRTUAL_DISK_ACCESS_GET_INFO | VDiskDecl.VIRTUAL_DISK_ACCESS_MASK.VIRTUAL_DISK_ACCESS_DETACH;
+            var am = VirtDisk.VIRTUAL_DISK_ACCESS_MASK.VIRTUAL_DISK_ACCESS_GET_INFO | VirtDisk.VIRTUAL_DISK_ACCESS_MASK.VIRTUAL_DISK_ACCESS_DETACH;
 
             if (!openReadOnly)
             {
-                am = am | VDiskDecl.VIRTUAL_DISK_ACCESS_MASK.VIRTUAL_DISK_ACCESS_ATTACH_RW;
+                am = am | VirtDisk.VIRTUAL_DISK_ACCESS_MASK.VIRTUAL_DISK_ACCESS_ATTACH_RW;
             }
 
-            vdp2.Version = VDiskDecl.OPEN_VIRTUAL_DISK_VERSION.OPEN_VIRTUAL_DISK_VERSION_2;
+            vdp2.Version = VirtDisk.OPEN_VIRTUAL_DISK_VERSION.OPEN_VIRTUAL_DISK_VERSION_2;
             vdp2.ResiliencyGuid = Guid.NewGuid();
             vdp2.ReadOnly = false;
             vdp2.GetInfoOnly = false;
 
             vdp1.RWDepth = 1U;
-            vdp1.Version = VDiskDecl.OPEN_VIRTUAL_DISK_VERSION.OPEN_VIRTUAL_DISK_VERSION_1;
+            vdp1.Version = VirtDisk.OPEN_VIRTUAL_DISK_VERSION.OPEN_VIRTUAL_DISK_VERSION_1;
 
-            vst.VendorId = VDiskDecl.VIRTUAL_STORAGE_TYPE_VENDOR_MICROSOFT;
+            vst.VendorId = VirtDisk.VIRTUAL_STORAGE_TYPE_VENDOR_MICROSOFT;
 
             switch (ext.ToLower() ?? "")
             {
                 case ".vhd":
-                    vst.DeviceId = VDiskDecl.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
-                    r = VDiskDecl.OpenVirtualDisk(vst, imageFile, am, VDiskDecl.OPEN_VIRTUAL_DISK_FLAG.OPEN_VIRTUAL_DISK_FLAG_NONE, vdp1, ref _Handle);
+                    vst.DeviceId = VirtDisk.VIRTUAL_STORAGE_TYPE_DEVICE_VHD;
+                    r = VirtDisk.OpenVirtualDisk(vst, imageFile, am, VirtDisk.OPEN_VIRTUAL_DISK_FLAG.OPEN_VIRTUAL_DISK_FLAG_NONE, vdp1, ref _Handle);
                     break;
 
                 case ".vhdx":
-                    vst.DeviceId = VDiskDecl.VIRTUAL_STORAGE_TYPE_DEVICE_VHDX;
-                    r = VDiskDecl.OpenVirtualDisk(vst, imageFile, am, VDiskDecl.OPEN_VIRTUAL_DISK_FLAG.OPEN_VIRTUAL_DISK_FLAG_NONE, vdp1, ref _Handle);
+                    vst.DeviceId = VirtDisk.VIRTUAL_STORAGE_TYPE_DEVICE_VHDX;
+                    r = VirtDisk.OpenVirtualDisk(vst, imageFile, am, VirtDisk.OPEN_VIRTUAL_DISK_FLAG.OPEN_VIRTUAL_DISK_FLAG_NONE, vdp1, ref _Handle);
                     break;
 
                 default:
@@ -454,7 +454,7 @@ namespace DataTools.Hardware.Disk
 
             mm.ByteAt(0L) = 1;
 
-            uint r = VDiskDecl.AttachVirtualDisk(_Handle, IntPtr.Zero, makePermanent ? VDiskDecl.ATTACH_VIRTUAL_DISK_FLAG.ATTACH_VIRTUAL_DISK_FLAG_PERMANENT_LIFETIME : VDiskDecl.ATTACH_VIRTUAL_DISK_FLAG.ATTACH_VIRTUAL_DISK_FLAG_NONE, 0U, mm.Handle, IntPtr.Zero);
+            uint r = VirtDisk.AttachVirtualDisk(_Handle, IntPtr.Zero, makePermanent ? VirtDisk.ATTACH_VIRTUAL_DISK_FLAG.ATTACH_VIRTUAL_DISK_FLAG_PERMANENT_LIFETIME : VirtDisk.ATTACH_VIRTUAL_DISK_FLAG.ATTACH_VIRTUAL_DISK_FLAG_NONE, 0U, mm.Handle, IntPtr.Zero);
 
             mm.Free();
 
@@ -470,7 +470,7 @@ namespace DataTools.Hardware.Disk
         {
             if (!Attached) return false;
 
-            uint r = VDiskDecl.DetachVirtualDisk(_Handle, VDiskDecl.DETACH_VIRTUAL_DISK_FLAG.DETACH_VIRTUAL_DISK_FLAG_NONE, 0U);
+            uint r = VirtDisk.DetachVirtualDisk(_Handle, VirtDisk.DETACH_VIRTUAL_DISK_FLAG.DETACH_VIRTUAL_DISK_FLAG_NONE, 0U);
 
             return r == 0L;
         }
@@ -485,7 +485,7 @@ namespace DataTools.Hardware.Disk
             if (_Handle == IntPtr.Zero)
                 return false;
 
-            bool r = PInvoke.CloseHandle(_Handle);
+            bool r = User32.CloseHandle(_Handle);
 
             if (r)
                 _Handle = IntPtr.Zero;

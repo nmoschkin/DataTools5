@@ -1,5 +1,5 @@
 ﻿using System;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 
 namespace DataTools.Hardware
 {

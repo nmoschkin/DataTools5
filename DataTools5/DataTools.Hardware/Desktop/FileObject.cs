@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Media.Imaging;
 using DataTools.Memory;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 using DataTools.Shell.Native;
 
 namespace DataTools.Desktop
@@ -152,12 +152,12 @@ namespace DataTools.Desktop
         {
             get
             {
-                return Utility.GetFileAttributes(_Filename);
+                return FileTools.GetFileAttributes(_Filename);
             }
 
             set
             {
-                Utility.SetFileAttributes(_Filename, value);
+                FileTools.SetFileAttributes(_Filename, value);
             }
         }
 
@@ -178,7 +178,7 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                Utility.GetFileTime(_Filename, ref c, ref a, ref m);
+                FileTools.GetFileTime(_Filename, ref c, ref a, ref m);
                 return c;
             }
 
@@ -187,8 +187,8 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                Utility.GetFileTime(_Filename, ref c, ref a, ref m);
-                Utility.SetFileTime(_Filename, value, a, m);
+                FileTools.GetFileTime(_Filename, ref c, ref a, ref m);
+                FileTools.SetFileTime(_Filename, value, a, m);
             }
         }
 
@@ -244,7 +244,7 @@ namespace DataTools.Desktop
             {
                 if (_Filename is object)
                 {
-                    if (!Utility.MoveFile(_Filename, value))
+                    if (!FileTools.MoveFile(_Filename, value))
                     {
                         throw new AccessViolationException("Unable to rename/move file.");
                     }
@@ -394,7 +394,7 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                Utility.GetFileTime(_Filename, ref c, ref a, ref m);
+                FileTools.GetFileTime(_Filename, ref c, ref a, ref m);
                 return a;
             }
 
@@ -403,8 +403,8 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                Utility.GetFileTime(_Filename, ref c, ref a, ref m);
-                Utility.SetFileTime(_Filename, c, value, m);
+                FileTools.GetFileTime(_Filename, ref c, ref a, ref m);
+                FileTools.SetFileTime(_Filename, c, value, m);
             }
         }
 
@@ -419,7 +419,7 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                Utility.GetFileTime(_Filename, ref c, ref a, ref m);
+                FileTools.GetFileTime(_Filename, ref c, ref a, ref m);
                 return m;
             }
 
@@ -428,8 +428,8 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                Utility.GetFileTime(_Filename, ref c, ref a, ref m);
-                Utility.SetFileTime(_Filename, c, a, value);
+                FileTools.GetFileTime(_Filename, ref c, ref a, ref m);
+                FileTools.SetFileTime(_Filename, c, a, value);
             }
         }
 
@@ -484,7 +484,7 @@ namespace DataTools.Desktop
         {
             get
             {
-                return Utility.GetFileSize(_Filename);
+                return FileTools.GetFileSize(_Filename);
             }
         }
 
@@ -531,7 +531,7 @@ namespace DataTools.Desktop
                 return false;
             string p = Path.GetFileName(_Filename);
             string f = newDirectory + @"\" + p;
-            if (Utility.MoveFile(_Filename, f))
+            if (FileTools.MoveFile(_Filename, f))
             {
                 _Filename = f;
                 Refresh();
@@ -601,7 +601,7 @@ namespace DataTools.Desktop
                 return false;
             string p = Path.GetDirectoryName(_Filename);
             string f = p + @"\" + newName;
-            if (!Utility.MoveFile(_Filename, f))
+            if (!FileTools.MoveFile(_Filename, f))
             {
                 return false;
             }

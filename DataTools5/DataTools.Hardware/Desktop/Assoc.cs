@@ -16,8 +16,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using DataTools.Hardware.Native;
-using DataTools.Hardware.Native.Menu;
+using DataTools.Win32Api;
+using DataTools.Win32Api.Menu;
 using DataTools.Shell.Native;
 using Microsoft.Win32;
 
@@ -1007,7 +1007,7 @@ namespace DataTools.Desktop
 
                 int iix = (int)NativeShell.Shell_GetCachedImageIndex(pth, idx, 0U);
 
-                icn = Resources.GetFileIconFromIndex(iix, (Resources.SystemIconSizes)(int)(PInvoke.SHIL_SMALL));
+                icn = Resources.GetFileIconFromIndex(iix, (Resources.SystemIconSizes)(int)(User32.SHIL_SMALL));
 
                 handler.GetName(out pathname);
 

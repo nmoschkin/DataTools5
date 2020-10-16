@@ -14,9 +14,9 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using DataTools.Text;
-using DataTools.Hardware.Native;
-using DataTools.Hardware.Disk.Partitions;
-using DataTools.Hardware.Disk.Partitions.Gpt;
+using DataTools.Win32Api;
+using DataTools.Win32Api.PartitionInfo;
+using DataTools.Win32Api.PartitionInfo.Gpt;
 
 namespace DataTools.Hardware.Disk
 {
@@ -212,7 +212,7 @@ namespace DataTools.Hardware.Disk
                     if (!IsVolumeMounted)
                         return new FriendlySizeLong(0);
 
-                    FileApi.GetDiskFreeSpaceEx(VolumeGuidPath, ref a, ref b, ref c);
+                    IO.GetDiskFreeSpaceEx(VolumeGuidPath, ref a, ref b, ref c);
                 }
                 catch
                 {
@@ -248,7 +248,7 @@ namespace DataTools.Hardware.Disk
                     if (!IsVolumeMounted)
                         return new FriendlySizeLong(0);
 
-                    FileApi.GetDiskFreeSpaceEx(VolumeGuidPath, ref a, ref b, ref c);
+                    IO.GetDiskFreeSpaceEx(VolumeGuidPath, ref a, ref b, ref c);
                 }
                 catch
                 {
@@ -279,7 +279,7 @@ namespace DataTools.Hardware.Disk
                     if (!IsVolumeMounted)
                         return new FriendlySizeLong(0);
 
-                    FileApi.GetDiskFreeSpaceEx(VolumeGuidPath, ref a, ref b, ref c);
+                    IO.GetDiskFreeSpaceEx(VolumeGuidPath, ref a, ref b, ref c);
 
                     return b - c;
                 }
@@ -372,7 +372,7 @@ namespace DataTools.Hardware.Disk
         {
             get
             {
-                return GetDriveFlag() != 0L & FileApi.GetLogicalDrives() != 0L;
+                return GetDriveFlag() != 0L & IO.GetLogicalDrives() != 0L;
             }
         }
 

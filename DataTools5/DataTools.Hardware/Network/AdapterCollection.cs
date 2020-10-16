@@ -24,8 +24,9 @@ using System.Security;
 using DataTools.Memory;
 using DataTools.Text;
 using DataTools.Desktop;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 using DataTools.Shell.Native;
+using DataTools.Win32Api.Network;
 
 namespace DataTools.Hardware.Network
 {
@@ -451,7 +452,7 @@ namespace DataTools.Hardware.Network
             if (mm.Handle != IntPtr.Zero)
             {
                 // Get a WPFImage 
-                _Icon = Resources.MakeWPFImage(Resources.GetItemIcon(mm, (Resources.SystemIconSizes)(int)(PInvoke.SHIL_EXTRALARGE)));
+                _Icon = Resources.MakeWPFImage(Resources.GetItemIcon(mm, (Resources.SystemIconSizes)(int)(User32.SHIL_EXTRALARGE)));
                 mm.Free();
                 _canShowNet = true;
             }
@@ -530,9 +531,9 @@ namespace DataTools.Hardware.Network
         {
             if (_deviceInfo is null)
                 return;
-            var shex = new PInvoke.SHELLEXECUTEINFO();
+            var shex = new User32.SHELLEXECUTEINFO();
             shex.cbSize = Marshal.SizeOf(shex);
-            shex.nShow = PInvoke.SW_SHOW;
+            shex.nShow = User32.SW_SHOW;
             shex.hInstApp = Process.GetCurrentProcess().Handle;
             shex.hWnd = hwnd;
             shex.lpVerb = "properties";
@@ -540,8 +541,8 @@ namespace DataTools.Hardware.Network
             // Set the parsing name exactly this way.
             shex.lpDirectory = "::{7007ACC7-3202-11D1-AAD2-00805FC1270E}";
             shex.lpFile = @"::{7007ACC7-3202-11D1-AAD2-00805FC1270E}\" + AdapterName;
-            shex.fMask = PInvoke.SEE_MASK_ASYNCOK | PInvoke.SEE_MASK_FLAG_DDEWAIT | PInvoke.SEE_MASK_UNICODE;
-            PInvoke.ShellExecuteEx(ref shex);
+            shex.fMask = User32.SEE_MASK_ASYNCOK | User32.SEE_MASK_FLAG_DDEWAIT | User32.SEE_MASK_UNICODE;
+            User32.ShellExecuteEx(ref shex);
         }
 
         /// <summary>
@@ -551,16 +552,16 @@ namespace DataTools.Hardware.Network
         /// <remarks></remarks>
         public void ShowNetworkStatusDialog(IntPtr hwnd = default)
         {
-            var shex = new PInvoke.SHELLEXECUTEINFO();
+            var shex = new User32.SHELLEXECUTEINFO();
             shex.cbSize = Marshal.SizeOf(shex);
             shex.hWnd = hwnd;
-            shex.nShow = PInvoke.SW_SHOW;
+            shex.nShow = User32.SW_SHOW;
             shex.lpVerb = "";
             shex.hInstApp = Process.GetCurrentProcess().Handle;
             shex.lpDirectory = "::{7007ACC7-3202-11D1-AAD2-00805FC1270E}";
             shex.lpFile = @"::{7007ACC7-3202-11D1-AAD2-00805FC1270E}\" + AdapterName;
-            shex.fMask = PInvoke.SEE_MASK_ASYNCOK | PInvoke.SEE_MASK_FLAG_DDEWAIT | PInvoke.SEE_MASK_UNICODE;
-            PInvoke.ShellExecuteEx(ref shex);
+            shex.fMask = User32.SEE_MASK_ASYNCOK | User32.SEE_MASK_FLAG_DDEWAIT | User32.SEE_MASK_UNICODE;
+            User32.ShellExecuteEx(ref shex);
         }
 
         /// <summary>

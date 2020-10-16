@@ -12,7 +12,7 @@
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 
 namespace DataTools.Hardware
 {
@@ -55,10 +55,10 @@ namespace DataTools.Hardware
                 var svc = default(ushort);
                 var maj = default(ushort);
                 var min = default(ushort);
-                BluetoothApi.ParseClass(_btClass, ref svc, ref maj, ref min);
-                _service = BluetoothApi.PrintServiceClass(svc);
-                _major = BluetoothApi.PrintMajorClass(maj);
-                _minor = BluetoothApi.PrintMinorClass(maj, min);
+                Bluetooth.ParseClass(_btClass, ref svc, ref maj, ref min);
+                _service = Bluetooth.PrintServiceClass(svc);
+                _major = Bluetooth.PrintMajorClass(maj);
+                _minor = Bluetooth.PrintMinorClass(maj, min);
             }
         }
 
@@ -132,17 +132,17 @@ namespace DataTools.Hardware
 
         public static void ShowBluetoothSettings()
         {
-            var shex = new PInvoke.SHELLEXECUTEINFO();
+            var shex = new User32.SHELLEXECUTEINFO();
             shex.cbSize = Marshal.SizeOf(shex);
-            shex.nShow = PInvoke.SW_SHOW;
+            shex.nShow = User32.SW_SHOW;
             shex.hInstApp = Process.GetCurrentProcess().Handle;
             // shex.hWnd = 
             // shex.lpVerb = "properties"
 
             // Set the parsing name exactly this way.
             shex.lpFile = "ms-settings:bluetooth";
-            shex.fMask = PInvoke.SEE_MASK_ASYNCOK | PInvoke.SEE_MASK_FLAG_DDEWAIT | PInvoke.SEE_MASK_UNICODE;
-            PInvoke.ShellExecuteEx(ref shex);
+            shex.fMask = User32.SEE_MASK_ASYNCOK | User32.SEE_MASK_FLAG_DDEWAIT | User32.SEE_MASK_UNICODE;
+            User32.ShellExecuteEx(ref shex);
 
             // Shell("ms-settings:bluetooth")
         }

@@ -15,7 +15,7 @@ using System.Linq;
 using System.Reflection;
 using DataTools.Text;
 using DataTools.Desktop;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 
 namespace DataTools.Hardware
 {
@@ -670,7 +670,7 @@ namespace DataTools.Hardware
         {
             get
             {
-                return Utility.GetEnumDescription(_DeviceClass);
+                return FileTools.GetEnumDescription(_DeviceClass);
             }
         }
 
@@ -731,7 +731,7 @@ namespace DataTools.Hardware
         {
             get
             {
-                return Utility.GetEnumDescription(DeviceClass);
+                return FileTools.GetEnumDescription(DeviceClass);
             }
         }
 

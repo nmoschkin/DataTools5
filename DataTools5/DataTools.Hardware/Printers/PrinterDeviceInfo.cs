@@ -14,7 +14,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 
 namespace DataTools.Hardware.Printers
 {

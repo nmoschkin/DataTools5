@@ -16,7 +16,7 @@ using System.Security;
 using System.Windows.Forms;
 using DataTools.SystemInformation;
 using DataTools.Hardware.Disk;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 using DataTools.Hardware.Printers;
 using DataTools.Hardware.Processor;
 
@@ -128,8 +128,8 @@ namespace DataTools.Hardware
         /// <returns>Array of <see cref="BluetoothDeviceInfo"/> objects.</returns>
         public static BluetoothDeviceInfo[] EnumBluetoothRadios()
         {
-            var bth = BluetoothApi._internalEnumBluetoothRadios();
-            var p = DevEnumApi._internalEnumerateDevices<BluetoothDeviceInfo>(BluetoothApi.GUID_BTHPORT_DEVICE_INTERFACE, ClassDevFlags.DeviceInterface | ClassDevFlags.Present);
+            var bth = Bluetooth._internalEnumBluetoothRadios();
+            var p = DevEnumApi._internalEnumerateDevices<BluetoothDeviceInfo>(Bluetooth.GUID_BTHPORT_DEVICE_INTERFACE, ClassDevFlags.DeviceInterface | ClassDevFlags.Present);
             if (p is object && p.Count() > 0)
             {
                 foreach (var x in p)
@@ -172,7 +172,7 @@ namespace DataTools.Hardware
         {
             var lOut = new List<BluetoothDeviceInfo>();
 
-            var bth = BluetoothApi._internalEnumBluetoothDevices();
+            var bth = Bluetooth._internalEnumBluetoothDevices();
 
             var p = DevEnumApi._internalEnumerateDevices<BluetoothDeviceInfo>(DevProp.GUID_DEVCLASS_BLUETOOTH, ClassDevFlags.Present);
 

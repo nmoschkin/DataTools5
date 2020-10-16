@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 using DataTools.Memory;
 using DataTools.Text;
 using DataTools.MathTools;
-using DataTools.Hardware.Native;
+using DataTools.Win32Api;
 using DataTools.Desktop.Unified;
 
 namespace DataTools.Hardware.Printers
@@ -2396,13 +2396,13 @@ namespace DataTools.Hardware.Printers
             get
             {
                 int i = 32 + 12 * IntPtr.Size;
-                return (DateTime)(_ptr.ToStructAt<PInvoke.SYSTEMTIME>(i));
+                return (DateTime)(_ptr.ToStructAt<User32.SYSTEMTIME>(i));
             }
 
             set
             {
                 int i = 32 + 12 * IntPtr.Size;
-                _ptr.FromStructAt(i, (PInvoke.SYSTEMTIME)value);
+                _ptr.FromStructAt(i, (User32.SYSTEMTIME)value);
             }
         }
 
@@ -2646,14 +2646,14 @@ namespace DataTools.Hardware.Printers
             dev.PrintQuality = (short)resolution.cx;
             dev.PaperSize = paper;
             dev.Orientation = (short)orientation;
-            var hdc = PInvoke.CreateDC(null, printer.PrinterName, IntPtr.Zero, printer._DevMode._ptr);
+            var hdc = User32.CreateDC(null, printer.PrinterName, IntPtr.Zero, printer._DevMode._ptr);
             if (hdc != IntPtr.Zero)
             {
                 int cx = PrinterModule.GetDeviceCaps(hdc, PrinterModule.PHYSICALWIDTH);
                 int cy = PrinterModule.GetDeviceCaps(hdc, PrinterModule.PHYSICALHEIGHT);
                 int marginX = PrinterModule.GetDeviceCaps(hdc, PrinterModule.PHYSICALOFFSETX);
                 int marginY = PrinterModule.GetDeviceCaps(hdc, PrinterModule.PHYSICALOFFSETY);
-                PInvoke.DeleteDC(hdc);
+                User32.DeleteDC(hdc);
                 rc.Left = marginX / resolution.cx;
                 rc.Top = marginY / resolution.cy;
                 rc.Width = (cx - marginX * 2) / resolution.cx;
