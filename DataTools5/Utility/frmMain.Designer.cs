@@ -156,6 +156,7 @@ namespace Utility
             this.txtCode.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txtCode.Size = new System.Drawing.Size(514, 302);
             this.txtCode.TabIndex = 11;
+            this.txtCode.WordWrap = false;
             // 
             // btnFinish
             // 

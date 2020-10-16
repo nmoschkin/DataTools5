@@ -19,7 +19,7 @@ using DataTools.Memory;
 using DataTools.Text;
 using DataTools.MathTools;
 using DataTools.Win32Api;
-using DataTools.Desktop.Structures;
+using DataTools.Win32Api;
 using DataTools.Shell.Native;
 
 namespace DataTools.Desktop
@@ -586,7 +586,7 @@ namespace DataTools.Desktop
             string lk = null;
             Icon icn = null;
             bool noh = hMod == IntPtr.Zero;
-            User32.BITMAPINFOHEADER idata;
+            BITMAPINFOHEADER idata;
             if (parseIconIndex)
             {
                 fileName = ParseResourceFilename(fileName, ref iIcon);
@@ -752,7 +752,7 @@ namespace DataTools.Desktop
                 // Grab the raw bitmap structure from the icon resource, so we
                 // can use the actual width and height as opposed to the
                 // system-stretched return result.
-                idata = (User32.BITMAPINFOHEADER)Marshal.PtrToStructure(hdata, typeof(User32.BITMAPINFOHEADER));
+                idata = (BITMAPINFOHEADER)Marshal.PtrToStructure(hdata, typeof(BITMAPINFOHEADER));
 
                 // create the icon from the data in the resource.
                 // I read a great many articles before I finally figured out that &H30000 MUST be passed, just because.
@@ -849,7 +849,7 @@ namespace DataTools.Desktop
                 // Grab the raw bitmap structure from the icon resource, so we
                 // can use the actual width and height as opposed to the
                 // system-stretched return result.
-                idata = (User32.BITMAPINFOHEADER)Marshal.PtrToStructure(hdata, typeof(User32.BITMAPINFOHEADER));
+                idata = (BITMAPINFOHEADER)Marshal.PtrToStructure(hdata, typeof(BITMAPINFOHEADER));
 
                 // create the icon.
                 hicon = CreateIconFromResourceEx(hdata, SizeofResource(hMod, hres), true, 0x30000, idata.biWidth, idata.biWidth, 0);
@@ -925,7 +925,7 @@ namespace DataTools.Desktop
         {
             var sgfin = default(ShellFileGetAttributesOptions);
             var sgfout = default(ShellFileGetAttributesOptions);
-            var lpInfo = new User32.SHFILEINFO();
+            var lpInfo = new SHFILEINFO();
             IntPtr x;
             int iFlags = 0;
             iFlags = iFlags | User32.SHGFI_SYSICONINDEX | User32.SHGFI_PIDL;
@@ -1016,7 +1016,7 @@ namespace DataTools.Desktop
         /// <remarks></remarks>
         public static int GetItemIconIndex(IntPtr lpItemID, bool fSmall)
         {
-            var lpInfo = new User32.SHFILEINFO();
+            var lpInfo = new SHFILEINFO();
             int i;
             int fFlags;
             if (fSmall == false)
@@ -1046,7 +1046,7 @@ namespace DataTools.Desktop
         /// <remarks></remarks>
         public static int GetFileIconIndex(string lpFilename, SystemIconSizes shil = SystemIconSizes.ExtraLarge)
         {
-            var lpInfo = new User32.SHFILEINFO();
+            var lpInfo = new SHFILEINFO();
             int iFlags = 0;
             iFlags = iFlags | User32.SHGFI_SYSICONINDEX;
             SafePtr mm = (SafePtr)lpFilename;
@@ -1111,7 +1111,7 @@ namespace DataTools.Desktop
         /// <remarks></remarks>
         public static Icon GetItemIcon(IntPtr lpItemID, SystemIconSizes shil = SystemIconSizes.ExtraLarge)
         {
-            var lpInfo = new User32.SHFILEINFO();
+            var lpInfo = new SHFILEINFO();
             IntPtr i = new IntPtr();
             Icon icn;
             var riid = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
@@ -1327,11 +1327,11 @@ namespace DataTools.Desktop
             short wBitsPerPixel = 32;
             int BytesPerRow = (int)((double)(img.Width * wBitsPerPixel + 31 & ~31L) / 8d);
             int size = img.Height * BytesPerRow;
-            var bmpInfo = default(User32.BITMAPINFO);
+            var bmpInfo = default(BITMAPINFO);
             var mm = new MemPtr();
             int bmpSizeOf = Marshal.SizeOf(bmpInfo);
             mm.ReAlloc(bmpSizeOf + size);
-            var pbmih = default(User32.BITMAPINFOHEADER);
+            var pbmih = default(BITMAPINFOHEADER);
             pbmih.biSize = Marshal.SizeOf(pbmih);
             pbmih.biWidth = img.Width;
             pbmih.biHeight = img.Height; // positive indicates bottom-up DIB

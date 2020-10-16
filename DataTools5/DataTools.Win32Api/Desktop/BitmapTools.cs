@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using DataTools.MathTools;
 using DataTools.Memory;
-using DataTools.Desktop.Structures;
-using DataTools.Desktop.Unified;
+using DataTools.Win32Api;
+using DataTools.Win32Api;
 using System.Drawing;
 using System.Runtime.InteropServices;
 

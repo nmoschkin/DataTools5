@@ -132,7 +132,7 @@ namespace DataTools.Hardware
 
         public static void ShowBluetoothSettings()
         {
-            var shex = new User32.SHELLEXECUTEINFO();
+            var shex = new SHELLEXECUTEINFO();
             shex.cbSize = Marshal.SizeOf(shex);
             shex.nShow = User32.SW_SHOW;
             shex.hInstApp = Process.GetCurrentProcess().Handle;

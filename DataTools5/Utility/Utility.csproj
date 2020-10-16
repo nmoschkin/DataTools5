@@ -9,6 +9,10 @@
 	  <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\DataTools.Hardware\DataTools.Hardware.csproj" />
     <ProjectReference Include="..\DataTools.Shell\DataTools.Shell.csproj" />

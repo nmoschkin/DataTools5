@@ -588,7 +588,7 @@ namespace DataTools.Desktop
                             if (inv.CharAt(0L) != '\0')
                             {
                                 fp = (string)inv;
-                                var lpInfo = new User32.SHFILEINFO();
+                                var lpInfo = new SHFILEINFO();
 
                                 // Dim sgfin As ShellFileGetAttributesOptions = 0,
                                 // sgfout As ShellFileGetAttributesOptions = 0

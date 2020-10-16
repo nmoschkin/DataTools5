@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using DataTools.Desktop.Unified;
 using DataTools.MathTools;
-using DataTools.Desktop.Structures;
+using DataTools.Win32Api;
 
 
 namespace DataTools.Shell.TextMapping

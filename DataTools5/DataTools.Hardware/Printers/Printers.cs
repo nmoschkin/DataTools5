@@ -2396,13 +2396,13 @@ namespace DataTools.Hardware.Printers
             get
             {
                 int i = 32 + 12 * IntPtr.Size;
-                return (DateTime)(_ptr.ToStructAt<User32.SYSTEMTIME>(i));
+                return (DateTime)(_ptr.ToStructAt<SYSTEMTIME>(i));
             }
 
             set
             {
                 int i = 32 + 12 * IntPtr.Size;
-                _ptr.FromStructAt(i, (User32.SYSTEMTIME)value);
+                _ptr.FromStructAt(i, (SYSTEMTIME)value);
             }
         }
 

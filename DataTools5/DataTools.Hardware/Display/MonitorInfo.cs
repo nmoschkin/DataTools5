@@ -14,7 +14,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using DataTools.Win32Api;
-using DataTools.Desktop.Structures;
+using DataTools.Win32Api;
 
 namespace DataTools.Hardware
 {

@@ -24,8 +24,9 @@ using DataTools.Hardware.Disk;
 using DataTools.Hardware.Network;
 using DataTools.Hardware.Usb;
 using DataTools.Text;
-using DataTools.Win32Api.PartitionInfo;
+using DataTools.Win32Api.Disk.Partition;
 using DataTools.Win32Api;
+using DataTools.Win32Api.Disk.VirtualDisk;
 
 namespace DataTools.Hardware
 {
@@ -40,9 +41,9 @@ namespace DataTools.Hardware
         public const int DICLASSPROP_INSTALLER = 1;
 
         [ThreadStatic]
-        private static DevProp.DEVPROPKEY dkref;
+        private static DEVPROPKEY dkref;
 
-        private static ref DevProp.DEVPROPKEY GetDevPropRef(DevProp.DEVPROPKEY val)
+        private static ref DEVPROPKEY GetDevPropRef(DEVPROPKEY val)
         {
             dkref = val;
             return ref dkref;
@@ -221,8 +222,8 @@ namespace DataTools.Hardware
         {
             DeviceInfo[] devOut = null;
             int c = 0;
-            var devInfo = default(DevProp.SP_DEVINFO_DATA);
-            var devInterface = default(DevProp.SP_DEVICE_INTERFACE_DATA);
+            var devInfo = default(SP_DEVINFO_DATA);
+            var devInterface = default(SP_DEVICE_INTERFACE_DATA);
             var lIcon = new Dictionary<Guid, System.Drawing.Icon>();
             var mm = new SafePtr();
             var hicon = IntPtr.Zero;
@@ -300,9 +301,9 @@ namespace DataTools.Hardware
             return devOut;
         }
 
-        public static List<DevProp.DEVPROPKEY> _internalListDeviceProperties(DeviceInfo info, ClassDevFlags flags = ClassDevFlags.Present | ClassDevFlags.DeviceInterface, bool useClassId = true)
+        public static List<DEVPROPKEY> _internalListDeviceProperties(DeviceInfo info, ClassDevFlags flags = ClassDevFlags.Present | ClassDevFlags.DeviceInterface, bool useClassId = true)
         {
-            var nkey = new List<DevProp.DEVPROPKEY>();
+            var nkey = new List<DEVPROPKEY>();
             uint c = 0U;
 
             MemPtr mm = new MemPtr();
@@ -340,7 +341,7 @@ namespace DataTools.Hardware
             DevProp.SetupDiDestroyDeviceInfoList(hDev);
             
             for (int i = 0, loopTo = (int)c - 1; i <= loopTo; i++)
-                nkey.Add(mm.ToStructAt<DevProp.DEVPROPKEY>(i * devpsize));
+                nkey.Add(mm.ToStructAt<DEVPROPKEY>(i * devpsize));
 
             mm.Free();
             return nkey;
@@ -356,7 +357,7 @@ namespace DataTools.Hardware
         /// <param name="useClassId">Optional alternate class Id or interface Id to use.</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static object _internalGetProperty(DeviceInfo info, DevProp.DEVPROPKEY prop, DevPropTypes type, ClassDevFlags flags = ClassDevFlags.Present | ClassDevFlags.DeviceInterface, bool useClassId = false)
+        public static object _internalGetProperty(DeviceInfo info, DEVPROPKEY prop, DevPropTypes type, ClassDevFlags flags = ClassDevFlags.Present | ClassDevFlags.DeviceInterface, bool useClassId = false)
         {
             object ires;
 
@@ -424,8 +425,8 @@ namespace DataTools.Hardware
            
             uint cu = 0U;
             
-            var devInfo = default(DevProp.SP_DEVINFO_DATA);
-            var devInterface = default(DevProp.SP_DEVICE_INTERFACE_DATA);
+            var devInfo = default(SP_DEVINFO_DATA);
+            var devInterface = default(SP_DEVICE_INTERFACE_DATA);
 
             var lIcon = new Dictionary<Guid, System.Drawing.Icon>();
 
@@ -660,20 +661,20 @@ namespace DataTools.Hardware
                         disk = IO.CreateFile(@"\\.\PhysicalDrive" + inf.PhysicalDevice, IO.GENERIC_READ, IO.FILE_SHARE_READ | IO.FILE_SHARE_WRITE, IntPtr.Zero, IO.OPEN_EXISTING, IO.FILE_ATTRIBUTE_NORMAL, IntPtr.Zero);
                         if (disk == DevProp.INVALID_HANDLE_VALUE)
                             continue;
-                        var sdi = default(VirtDisk.STORAGE_DEPENDENCY_INFO_V2);
+                        var sdi = default(STORAGE_DEPENDENCY_INFO_V2);
                         var mm = new SafePtr();
                         uint su = 0U;
                         uint r;
                         int sdic = Marshal.SizeOf(sdi);
                         mm.Length = sdic;
-                        sdi.Version = VirtDisk.STORAGE_DEPENDENCY_INFO_VERSION.STORAGE_DEPENDENCY_INFO_VERSION_2;
-                        mm.IntAt(0L) = (int)VirtDisk.STORAGE_DEPENDENCY_INFO_VERSION.STORAGE_DEPENDENCY_INFO_VERSION_2;
+                        sdi.Version = STORAGE_DEPENDENCY_INFO_VERSION.STORAGE_DEPENDENCY_INFO_VERSION_2;
+                        mm.IntAt(0L) = (int)STORAGE_DEPENDENCY_INFO_VERSION.STORAGE_DEPENDENCY_INFO_VERSION_2;
                         mm.IntAt(1L) = 1;
-                        r = VirtDisk.GetStorageDependencyInformation(disk, VirtDisk.GET_STORAGE_DEPENDENCY_FLAG.GET_STORAGE_DEPENDENCY_FLAG_HOST_VOLUMES | VirtDisk.GET_STORAGE_DEPENDENCY_FLAG.GET_STORAGE_DEPENDENCY_FLAG_DISK_HANDLE, (uint)mm.Length, mm, ref su);
+                        r = VirtDisk.GetStorageDependencyInformation(disk, GET_STORAGE_DEPENDENCY_FLAG.GET_STORAGE_DEPENDENCY_FLAG_HOST_VOLUMES | GET_STORAGE_DEPENDENCY_FLAG.GET_STORAGE_DEPENDENCY_FLAG_DISK_HANDLE, (uint)mm.Length, mm, ref su);
                         if (su != sdic)
                         {
                             mm.Length = su;
-                            r = VirtDisk.GetStorageDependencyInformation(disk, VirtDisk.GET_STORAGE_DEPENDENCY_FLAG.GET_STORAGE_DEPENDENCY_FLAG_HOST_VOLUMES | VirtDisk.GET_STORAGE_DEPENDENCY_FLAG.GET_STORAGE_DEPENDENCY_FLAG_DISK_HANDLE, (uint)mm.Length, mm, ref su);
+                            r = VirtDisk.GetStorageDependencyInformation(disk, GET_STORAGE_DEPENDENCY_FLAG.GET_STORAGE_DEPENDENCY_FLAG_HOST_VOLUMES | GET_STORAGE_DEPENDENCY_FLAG.GET_STORAGE_DEPENDENCY_FLAG_DISK_HANDLE, (uint)mm.Length, mm, ref su);
                         }
 
                         if (r != 0L)
@@ -686,7 +687,7 @@ namespace DataTools.Hardware
                             inf.BackingStore = new string[((int)sdi.NumberEntries)];
                             for (long d = 0L, loopTo = sdi.NumberEntries - 1L; d <= loopTo; d++)
                             {
-                                sdi.Version2Entries = mm.ToStruct<VirtDisk.STORAGE_DEPENDENCY_INFO_TYPE_2>();
+                                sdi.Version2Entries = mm.ToStruct<STORAGE_DEPENDENCY_INFO_TYPE_2>();
                                 inf.BackingStore[(int)d] = Path.GetFullPath(sdi.Version2Entries.DependentVolumeRelativePath.ToString());
                             }
                         }
@@ -798,7 +799,7 @@ namespace DataTools.Hardware
         /// <param name="devInfo"></param>
         /// <param name="infoOut"></param>
         /// <remarks></remarks>
-        public static void _internalGetDeviceIcon(IntPtr hDev, DevProp.SP_DEVINFO_DATA devInfo, DeviceInfo infoOut, DeviceClassEnum[] stagingClasses = null, bool noStaging = false)
+        public static void _internalGetDeviceIcon(IntPtr hDev, SP_DEVINFO_DATA devInfo, DeviceInfo infoOut, DeviceClassEnum[] stagingClasses = null, bool noStaging = false)
         {
             IntPtr hIcon = new IntPtr();
             if (stagingClasses is null)
@@ -859,7 +860,7 @@ namespace DataTools.Hardware
         /// <param name="mm">An open memory object.</param>
         /// <returns>A new instance of T.</returns>
         /// <remarks></remarks>
-        public static T _internalPopulateDeviceInfo<T>(IntPtr hDev, Guid ClassId, DevProp.SP_DEVINFO_DATA devInfo, DevProp.SP_DEVICE_INTERFACE_DATA devInterface, SafePtr mm) where T : DeviceInfo, new()
+        public static T _internalPopulateDeviceInfo<T>(IntPtr hDev, Guid ClassId, SP_DEVINFO_DATA devInfo, SP_DEVICE_INTERFACE_DATA devInterface, SafePtr mm) where T : DeviceInfo, new()
         {
             string dumpFile = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + @"\datatools-error.log";
 
@@ -867,7 +868,7 @@ namespace DataTools.Hardware
 
             uint cbSize;
 
-            var details = default(DevProp.SP_DEVICE_INTERFACE_DETAIL_DATA);
+            var details = default(SP_DEVICE_INTERFACE_DETAIL_DATA);
 
             MemPtr pt;
 
@@ -910,7 +911,7 @@ namespace DataTools.Hardware
                 cbSize = 0U;
                 uint argPropertyType = DevProp.DEVPROP_TYPE_GUID;
 
-                DevProp.DEVPROPKEY prop = DevProp.DEVPKEY_Device_ClassGuid;
+                DEVPROPKEY prop = DevProp.DEVPKEY_Device_ClassGuid;
 
                 DevProp.SetupDiGetDeviceProperty(hDev, ref devInfo, ref GetDevPropRef(DevProp.DEVPKEY_Device_ClassGuid), out argPropertyType, IntPtr.Zero, 0U, out cbSize, 0U);
                 if (cbSize > 0L)
@@ -1388,14 +1389,14 @@ namespace DataTools.Hardware
 
                 case DevPropTypes.FileTime:
                     {
-                        var ft = mm.ToStruct<User32.FILETIME>();
+                        var ft = mm.ToStruct<FILETIME>();
                         return ft.ToDateTime();
                     }
 
                 case DevPropTypes.DevPropKey:
                     {
-                        DevProp.DEVPROPKEY dk;
-                        dk = mm.ToStruct<DevProp.DEVPROPKEY>();
+                        DEVPROPKEY dk;
+                        dk = mm.ToStruct<DEVPROPKEY>();
                         return dk;
                     }
 

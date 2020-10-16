@@ -9,7 +9,7 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using DataTools.Desktop.Unified;
-using DataTools.Desktop.Structures;
+using DataTools.Win32Api;
 
 namespace DataTools.Desktop
 {

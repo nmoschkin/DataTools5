@@ -531,7 +531,7 @@ namespace DataTools.Hardware.Network
         {
             if (_deviceInfo is null)
                 return;
-            var shex = new User32.SHELLEXECUTEINFO();
+            var shex = new SHELLEXECUTEINFO();
             shex.cbSize = Marshal.SizeOf(shex);
             shex.nShow = User32.SW_SHOW;
             shex.hInstApp = Process.GetCurrentProcess().Handle;
@@ -552,7 +552,7 @@ namespace DataTools.Hardware.Network
         /// <remarks></remarks>
         public void ShowNetworkStatusDialog(IntPtr hwnd = default)
         {
-            var shex = new User32.SHELLEXECUTEINFO();
+            var shex = new SHELLEXECUTEINFO();
             shex.cbSize = Marshal.SizeOf(shex);
             shex.hWnd = hwnd;
             shex.nShow = User32.SW_SHOW;

@@ -28,7 +28,7 @@ namespace DataTools.Hardware
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class DeviceInfo
     {
-        internal DevProp.SP_DEVINFO_DATA _devInfo;
+        internal SP_DEVINFO_DATA _devInfo;
         protected string[] _HardwareIds;
         internal ushort _Vid;
         internal ushort _Pid;
