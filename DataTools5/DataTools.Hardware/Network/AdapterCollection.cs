@@ -88,13 +88,13 @@ namespace DataTools.Hardware.Network
         }
 
         /// <summary>
-        /// Refresh the list by calling <see cref="DevEnumPublic.EnumerateNetworkDevices()"/>
+        /// Refresh the list by calling <see cref="DeviceEnum.EnumerateNetworkDevices()"/>
         /// </summary>
         public void Refresh()
         {
             Free();
             
-            var di = DevEnumPublic.EnumerateNetworkDevices();
+            var di = DeviceEnum.EnumerateNetworkDevices();
             
             _Adapters = IfDefApi.GetAdapters(ref _origPtr, true);
 
@@ -361,7 +361,7 @@ namespace DataTools.Hardware.Network
             Free();
             _Adapters = null;
             _Col = new ObservableCollection<NetworkAdapter>();
-            var di = DevEnumPublic.EnumerateNetworkDevices();
+            var di = DeviceEnum.EnumerateNetworkDevices();
 
             // Get the array of unmanaged IP_ADAPTER_ADDRESSES structures 
             _Adapters = IfDefApi.GetAdapters(ref _origPtr, true);

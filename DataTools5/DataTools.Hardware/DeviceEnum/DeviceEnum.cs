@@ -58,13 +58,14 @@ namespace DataTools.Hardware
         {
             var col = new ObservableCollection<object>();
             var comp = _internalGetComputer();
-            var vol = DevEnumPublic.EnumVolumes();
-            var dsk = DevEnumPublic.EnumDisks();
-            var net = DevEnumPublic.EnumerateNetworkDevices();
-            var hid = DevEnumPublic.EnumerateDevices<HidDeviceInfo>(DevProp.GUID_DEVINTERFACE_HID);
-            var prt = DevEnumPublic.EnumPrinters();
-            var bth = DevEnumPublic.EnumBluetoothDevices();
-            var procs = DevEnumPublic.EnumProcessors();
+            var vol = DeviceEnum.EnumVolumes();
+            var dsk = DeviceEnum.EnumDisks();
+            var net = DeviceEnum.EnumerateNetworkDevices();
+            var hid = DeviceEnum.EnumerateDevices<HidDeviceInfo>(DevProp.GUID_DEVINTERFACE_HID);
+            var prt = DeviceEnum.EnumPrinters();
+            var bth = DeviceEnum.EnumBluetoothDevices();
+            var procs = DeviceEnum.EnumProcessors();
+            var mons = DeviceEnum.EnumMonitors();
             var adpt = new AdaptersCollection();
 
             // Dim part As DeviceInfo() = EnumerateDevices(Of DeviceInfo)(GUID_DEVINTERFACE_PARTITION)
@@ -164,6 +165,17 @@ namespace DataTools.Hardware
                             if ((comp[i].FriendlyName ?? "") == (pr.FriendlyName ?? ""))
                             {
                                 comp[i] = pr;
+                                break;
+                            }
+                        }
+                    }
+                    else if (comp[i].DeviceClass == DeviceClassEnum.Monitor)
+                    {
+                        foreach (var mon in mons)
+                        {
+                            if ((comp[i].InstanceId ?? "") == (mon.InstanceId ?? ""))
+                            {
+                                comp[i] = mon;
                                 break;
                             }
                         }
@@ -552,7 +564,7 @@ namespace DataTools.Hardware
 
                 uint bytesReturned = 0U;
 
-                info = DevEnumPublic.EnumerateDevices<DiskDeviceInfo>(DiskClass);
+                info = DeviceEnum.EnumerateDevices<DiskDeviceInfo>(DiskClass);
 
                 if (info is null || info.Count() == 0)
                     return Array.Empty<DiskDeviceInfo>();

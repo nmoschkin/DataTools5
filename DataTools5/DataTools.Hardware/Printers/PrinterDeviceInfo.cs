@@ -15,6 +15,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DataTools.Win32Api;
+using static DataTools.Hardware.DevEnumApi;
 
 namespace DataTools.Hardware.Printers
 {
@@ -39,12 +40,12 @@ namespace DataTools.Hardware.Printers
         public static bool RefreshPrinters()
         {
             var r = new List<PrinterDeviceInfo>();
-            var p = DevEnumPublic.EnumPrinters();
+            var p = DeviceEnum.EnumPrinters();
             if (p is null || p.Count() < 1)
             {
                 IEnumerable<PrinterObject> pr = PrinterObjects.Printers;
                 var ap = new List<PrinterDeviceInfo>();
-                var icn = DevEnumApi.GetClassIcon(DevProp.GUID_DEVCLASS_PRINTER);
+                var icn = GetClassIcon(DevProp.GUID_DEVCLASS_PRINTER);
                 foreach (var pe in pr)
                 {
                     var f = new PrinterDeviceInfo();

@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Interop;
 using DataTools.Hardware.Network;
+using DataTools.Hardware;
 
 namespace SysInfoTool
 {
@@ -156,6 +157,10 @@ namespace SysInfoTool
             ShowHID.Click += ShowHID_Click;
             ShowSysInfo.Click += ShowSysInfo_Click;
             AdapterList.SelectionChanged += AdapterList_SelectionChanged;
+
+
+            var m = DeviceEnum.EnumMonitors();
+
 
         }
 

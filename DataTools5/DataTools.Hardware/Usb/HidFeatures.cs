@@ -115,7 +115,7 @@ namespace DataTools.Hardware.Usb
         /// <remarks></remarks>
         public static HidDeviceInfo[] HidDevicesByUsage(HidUsagePage u)
         {
-            var devs = DevEnumPublic.EnumerateDevices<HidDeviceInfo>(DevProp.GUID_DEVINTERFACE_HID);
+            var devs = DeviceEnum.EnumerateDevices<HidDeviceInfo>(DevProp.GUID_DEVINTERFACE_HID);
             HidDeviceInfo[] devOut = null;
             int c = 0;
             foreach (var blurb in devs)

@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 
-using DataTools.Shell.MessageResources;
+using DataTools.Win32Api.MessageResources;
 //using DataTools.Hardware;
 //using DataTools.Hardware.Native;
 

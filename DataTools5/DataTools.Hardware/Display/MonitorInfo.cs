@@ -14,14 +14,143 @@ using System;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using DataTools.Win32Api;
-using DataTools.Win32Api;
+using DataTools.Memory;
+using static DataTools.Hardware.MultiMon;
+using System.Collections.Generic;
 
 namespace DataTools.Hardware
 {
-    static class MultiMon
+    internal static class MultiMon
     {
         public const int MONITORINFOF_PRIMARY = 0x00000001;
+        public const int PHYSICAL_MONITOR_DESCRIPTION_SIZE = 128;
+        public const int EDD_GET_DEVICE_INTERFACE_NAME = 0x00000001;
+
+
+        [DllImport("Dxva2.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "GetNumberOfPhysicalMonitorsFromHMONITOR")]
+        public static extern bool GetNumberOfPhysicalMonitorsFromHMONITOR
+        (
+            IntPtr hMonitor,
+            out uint pdwNumberOfPhysicalMonitors
+   
+        );
+
+        public static string[] GetPhysicalMonitorNames(IntPtr hMonitor)
+        {
+            var mm = new MemPtr();
+            string[] sOut = null;
+            PHYSICAL_MONITOR pm;
+            
+            uint nmon = 0;
+
+            if (!GetNumberOfPhysicalMonitorsFromHMONITOR(hMonitor, out nmon)) return null;
+
+            int cb = Marshal.SizeOf<PHYSICAL_MONITOR>();
+            int size = cb * (int)nmon;
+
+            mm.Alloc(size);
+
+            if (GetPhysicalMonitorsFromHMONITOR(hMonitor, size, mm))
+            {
+                sOut = new string[size];
+                int i;
+
+                for (i = 0; i < nmon; i++)
+                {
+                    pm = mm.ToStructAt<PHYSICAL_MONITOR>(i * cb);
+                    sOut[i] = pm.szPhysicalMonitorDescription;
+                }
+
+                DestroyPhysicalMonitors((uint)size, mm);
+            }
+            else
+            {
+                sOut = new string[] { NativeErrorMethods.FormatLastError() };
+            }
+
+
+            mm.Free();
+            return sOut;
+
+        }
+
+        //[DllImport("Dxva2.dll")]
+        //internal static extern bool GetNumberOfPhysicalMonitorsFromIDirect3DDevice9
+        //    (
+        //    IDirect3DDevice9* pDirect3DDevice9,
+        //    out uint pdwNumberOfPhysicalMonitors
+
+        //    );
+
+        [DllImport("Dxva2.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "GetPhysicalMonitorsFromHMONITOR")]
+        public static extern bool GetPhysicalMonitorsFromHMONITOR
+            (
+            IntPtr hMonitor,
+            int dwPhysicalMonitorArraySize,
+            MemPtr pPhysicalMonitorArray
+        
+            );
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "EnumDisplayDevicesW")]
+        public static extern bool EnumDisplayDevices(
+            IntPtr lpDevice,
+            uint iDevNum,
+            MemPtr lpDisplayDevice,
+            int dwFlags
+            );
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "EnumDisplayDevicesW")]
+        public static extern bool EnumDisplayDevices(
+            [MarshalAs(UnmanagedType.LPWStr)]
+            string lpDevice,
+            uint iDevNum,
+            MemPtr lpDisplayDevice,
+            int dwFlags
+            );
+
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "EnumDisplaySettingsExW")]
+        public static extern bool EnumDisplaySettingsEx(
+            IntPtr lpszDeviceName,
+            uint iModeNum,
+            ref DEVMODE lpDevMode,
+            uint dwFlags);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "EnumDisplaySettingsExW")]
+        public static extern bool EnumDisplaySettingsEx(
+            [MarshalAs(UnmanagedType.LPWStr)]
+            string lpszDeviceName,
+            uint iModeNum,
+            ref DEVMODE lpDevMode,
+            uint dwFlags);
+
+        //[DllImport("Dxva2.dll")]
+        //internal static extern bool GetPhysicalMonitorsFromIDirect3DDevice9
+        //    (
+        //    _In_ IDirect3DDevice9* pDirect3DDevice9,
+        //    _In_ DWORD dwPhysicalMonitorArraySize,
+        //    _Out_writes_(dwPhysicalMonitorArraySize) LPPHYSICAL_MONITOR pPhysicalMonitorArray
+
+        //    );
+
+        [DllImport("Dxva2.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern bool DestroyPhysicalMonitor(IntPtr hMonitor);
+
+
+        [DllImport("Dxva2.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern bool DestroyPhysicalMonitors
+            (
+                uint dwPhysicalMonitorArraySize,
+                MemPtr pPhysicalMonitorArray
+            );
+
+
+
+
     }
+
+
+
 
 
     /// <summary>
@@ -38,6 +167,67 @@ namespace DataTools.Hardware
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
         public string szDevice;
     }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    struct DISPLAY_DEVICE
+    {
+        public uint cb;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+        public string DeviceName;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+        public string DeviceString;
+
+        public uint StateFlags;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+        public string DeviceID;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+        public string DeviceKey;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    internal struct PHYSICAL_MONITOR
+    {
+        public IntPtr hPhysicalMonitor;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = PHYSICAL_MONITOR_DESCRIPTION_SIZE)]
+        public string szPhysicalMonitorDescription;
+    }
+
+    public struct VIDEOPARAMETERS
+    {
+        public Guid guid;
+
+        public uint dwOffset;
+        public uint dwCommand;
+        public uint dwFlags;
+        public uint dwMode;
+        public uint dwTVStandard;
+        public uint dwAvailableModes;
+        public uint dwAvailableTVStandard;
+        public uint dwFlickerFilter;
+        public uint dwOverScanX;
+        public uint dwOverScanY;
+        public uint dwMaxUnscaledX;
+        public uint dwMaxUnscaledY;
+        public uint dwPositionX;
+        public uint dwPositionY;
+        public uint dwBrightness;
+        public uint dwContrast;
+        public uint dwCPType;
+        public uint dwCPCommand;
+        public uint dwCPStandard;
+        public uint dwCPKey;
+        public uint bCP_APSTriggerBits;
+
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
+        public string bOEMCopyProtection;
+    }
+
 }
 
 namespace DataTools.Hardware.Display
@@ -57,7 +247,7 @@ namespace DataTools.Hardware.Display
     /// Represents a collection of all monitors on the system.
     /// </summary>
     /// <remarks></remarks>
-    public class Monitors : ObservableCollection<MonitorInfo>
+    public class Monitors : List<MonitorInfo>
     {
         [return: MarshalAs(UnmanagedType.Bool)]
         private delegate bool MonitorEnumProc(IntPtr hMonitor, IntPtr hdcMonitor, ref W32RECT lpRect, IntPtr lParam);
@@ -75,6 +265,8 @@ namespace DataTools.Hardware.Display
         {
             DataTools.Memory.MemPtr lParam = lParamIn;
             Add(new MonitorInfo(hMonitor, lParam.IntAt(0L)));
+
+            string[] ss = GetPhysicalMonitorNames(hMonitor);
             lParam.IntAt(0L) += 1;
             return true;
         }
@@ -89,6 +281,7 @@ namespace DataTools.Hardware.Display
         {
             if (Count == 0)
                 Refresh();
+        
             var h = MonitorFromPoint(pt, flags);
             if (h == IntPtr.Zero)
                 return null;
@@ -185,6 +378,39 @@ namespace DataTools.Hardware.Display
             return RefreshRet;
         }
 
+        public static void TransformRect(ref W32RECT wndRect, MonitorInfo m1, MonitorInfo m2, bool resize = false)
+        {
+
+            double wm, hm; 
+
+            wm = (double)(wndRect.left - m1.WorkBounds.left) / m1.WorkBounds.right;
+            hm = (double)(wndRect.top - m1.WorkBounds.top) / m1.WorkBounds.bottom;
+
+            int cx, cy;
+
+            cx = Math.Abs(wndRect.right - wndRect.left);
+            cy = Math.Abs(wndRect.bottom - wndRect.top);
+
+            var newRect = new W32RECT();
+
+            newRect.left = m2.WorkBounds.left + (int)(m2.WorkBounds.right * wm);
+            newRect.top = m2.WorkBounds.top + (int)(m2.WorkBounds.bottom * hm);
+
+            if (resize)
+            {
+                newRect.right = newRect.left + (int)((double)cx * Math.Abs((double)m2.WorkBounds.right / m1.WorkBounds.right));
+                newRect.bottom = newRect.top + (int)((double)cy * Math.Abs((double)m2.WorkBounds.bottom / m1.WorkBounds.bottom));
+            }
+            else
+            {
+                newRect.right = newRect.left + cx;
+                newRect.bottom = newRect.top + cy;
+            }
+
+            wndRect = newRect;
+
+        }
+
         public Monitors()
         {
             Refresh();
@@ -195,14 +421,14 @@ namespace DataTools.Hardware.Display
     /// Represents a monitor device.
     /// </summary>
     /// <remarks></remarks>
-    public class MonitorInfo
+    public class MonitorInfo 
     {
         private IntPtr _hMonitor;
         private MONITORINFOEX _data;
         private int _idx;
 
         [DllImport("user32", EntryPoint = "GetMonitorInfoW", CharSet = CharSet.Unicode)]
-        private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFOEX info);
+        internal static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFOEX info);
 
 
         /// <summary>

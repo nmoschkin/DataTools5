@@ -19,6 +19,11 @@ using DataTools.Hardware.Disk;
 using DataTools.Win32Api;
 using DataTools.Hardware.Printers;
 using DataTools.Hardware.Processor;
+using DataTools.Hardware.Display;
+using System.Runtime.InteropServices;
+
+using static DataTools.Hardware.DevEnumApi;
+using DataTools.Memory;
 
 namespace DataTools.Hardware
 {
@@ -28,7 +33,7 @@ namespace DataTools.Hardware
     /// </summary>
     /// <remarks></remarks>
     [SecurityCritical]
-    public static class DevEnumPublic
+    public static class DeviceEnum
     {
 
 
@@ -48,7 +53,7 @@ namespace DataTools.Hardware
 
         /* TODO ERROR: Skipped ElseDirectiveTrivia *//* TODO ERROR: Skipped DisabledTextTrivia *//* TODO ERROR: Skipped EndIfDirectiveTrivia */
 
-        static DevEnumPublic()
+        static DeviceEnum()
         {
             if (DevLog)
             {
@@ -62,7 +67,7 @@ namespace DataTools.Hardware
         /// <remarks></remarks>
         public static ObservableCollection<object> EnumComputerExhaustive()
         {
-            return DevEnumApi._internalEnumComputerExhaustive();
+            return _internalEnumComputerExhaustive();
         }
 
         /// <summary>
@@ -88,8 +93,8 @@ namespace DataTools.Hardware
         /// <remarks></remarks>
         public static DiskDeviceInfo[] EnumDisks()
         {
-            var d = DevEnumApi._internalEnumDisks();
-            var e = DevEnumApi._internalEnumDisks(DevProp.GUID_DEVINTERFACE_CDROM);
+            var d = _internalEnumDisks();
+            var e = _internalEnumDisks(DevProp.GUID_DEVINTERFACE_CDROM);
             int c = d.Count();
             if (e is null || e.Count() == 0)
                 return d;
@@ -129,7 +134,7 @@ namespace DataTools.Hardware
         public static BluetoothDeviceInfo[] EnumBluetoothRadios()
         {
             var bth = Bluetooth._internalEnumBluetoothRadios();
-            var p = DevEnumApi._internalEnumerateDevices<BluetoothDeviceInfo>(Bluetooth.GUID_BTHPORT_DEVICE_INTERFACE, ClassDevFlags.DeviceInterface | ClassDevFlags.Present);
+            var p = _internalEnumerateDevices<BluetoothDeviceInfo>(Bluetooth.GUID_BTHPORT_DEVICE_INTERFACE, ClassDevFlags.DeviceInterface | ClassDevFlags.Present);
             if (p is object && p.Count() > 0)
             {
                 foreach (var x in p)
@@ -174,7 +179,7 @@ namespace DataTools.Hardware
 
             var bth = Bluetooth._internalEnumBluetoothDevices();
 
-            var p = DevEnumApi._internalEnumerateDevices<BluetoothDeviceInfo>(DevProp.GUID_DEVCLASS_BLUETOOTH, ClassDevFlags.Present);
+            var p = _internalEnumerateDevices<BluetoothDeviceInfo>(DevProp.GUID_DEVCLASS_BLUETOOTH, ClassDevFlags.Present);
 
             if (p != null && p.Length > 0)
             {
@@ -223,7 +228,7 @@ namespace DataTools.Hardware
         /// <returns></returns>
         public static DeviceInfo[] EnumComPorts()
         {
-            var p = DevEnumApi._internalEnumerateDevices<DeviceInfo>(DevProp.GUID_DEVINTERFACE_COMPORT, ClassDevFlags.DeviceInterface | ClassDevFlags.Present);
+            var p = _internalEnumerateDevices<DeviceInfo>(DevProp.GUID_DEVINTERFACE_COMPORT, ClassDevFlags.DeviceInterface | ClassDevFlags.Present);
             if (p is object && p.Count() > 0)
             {
                 foreach (var x in p)
@@ -243,7 +248,7 @@ namespace DataTools.Hardware
 
         public static ProcessorDeviceInfo[] EnumProcessors()
         {
-            var p = DevEnumApi._internalEnumerateDevices<ProcessorDeviceInfo>(DevProp.GUID_DEVCLASS_PROCESSOR, ClassDevFlags.Present);
+            var p = _internalEnumerateDevices<ProcessorDeviceInfo>(DevProp.GUID_DEVCLASS_PROCESSOR, ClassDevFlags.Present);
 
             if (p != null && p.Length > 0)
             {
@@ -336,6 +341,73 @@ namespace DataTools.Hardware
 
         }
 
+
+        /// <summary>
+        /// Enumerate all display monitors.
+        /// </summary>
+        /// <returns>An array of PrinterDeviceInfo objects.</returns>
+        /// <remarks></remarks>
+        public static MonitorDeviceInfo[] EnumMonitors()
+        {
+            var minf = _internalEnumerateDevices<MonitorDeviceInfo>(DevProp.GUID_DEVINTERFACE_MONITOR, ClassDevFlags.DeviceInterface | ClassDevFlags.Present);
+            var mon = new Monitors();
+            uint i = 0;
+            
+            DISPLAY_DEVICE dd;
+            
+            dd.cb = (uint)Marshal.SizeOf<DISPLAY_DEVICE>();
+            var mm = new MemPtr();
+            
+            mm.Alloc(dd.cb);
+            mm.UIntAt(0) = dd.cb;
+
+            if (minf is object && minf.Count() > 0)
+            {
+                foreach (var x in minf)
+                {
+                    foreach (var y in mon)
+                    {
+                        if (MultiMon.EnumDisplayDevices(y.DevicePath, 0, mm, MultiMon.EDD_GET_DEVICE_INTERFACE_NAME))
+                        {
+                            dd = mm.ToStruct<DISPLAY_DEVICE>();
+                            DEVMODE dev = new DEVMODE();
+
+                            dev.dmSize = (ushort)Marshal.SizeOf<DEVMODE>();
+                            dev.dmDriverExtra = 0;
+
+                            var mm2 = new MemPtr(65535 + dev.dmSize);
+
+                            
+
+                            var b = MultiMon.EnumDisplaySettingsEx(y.DevicePath, 0xffffffff, ref dev, 0);
+                            if (!b)
+                            {
+                                var s = NativeErrorMethods.FormatLastError();
+                            }
+
+
+                            mm2.Free();
+
+                            if (dd.DeviceID.ToUpper() == x.DevicePath.ToUpper())
+                            {
+                                x.Source = y;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            mm.Free();
+
+            if (minf is null)
+                return null;
+
+            Array.Sort(minf, new Comparison<MonitorDeviceInfo>((x, y) => { if (x.FriendlyName is object && y.FriendlyName is object) { return string.Compare(x.FriendlyName, y.FriendlyName); } else { return string.Compare(x.Description, y.Description); } }));
+            return minf;
+        }
+
+
         /// <summary>
         /// Enumerate all printer queues available to the local system.
         /// </summary>
@@ -343,7 +415,7 @@ namespace DataTools.Hardware
         /// <remarks></remarks>
         public static PrinterDeviceInfo[] EnumPrinters()
         {
-            var p = DevEnumApi._internalEnumerateDevices<PrinterDeviceInfo>(DevProp.GUID_DEVINTERFACE_PRINTER, ClassDevFlags.DeviceInterface | ClassDevFlags.Present);
+            var p = _internalEnumerateDevices<PrinterDeviceInfo>(DevProp.GUID_DEVINTERFACE_PRINTER, ClassDevFlags.DeviceInterface | ClassDevFlags.Present);
             if (p is object && p.Count() > 0)
             {
                 foreach (var x in p)
@@ -377,7 +449,7 @@ namespace DataTools.Hardware
         public static DiskDeviceInfo[] EnumVolumes()
         {
             DiskDeviceInfo[] EnumVolumesRet = default;
-            EnumVolumesRet = DevEnumApi._internalEnumDisks(DevProp.GUID_DEVINTERFACE_VOLUME);
+            EnumVolumesRet = _internalEnumDisks(DevProp.GUID_DEVINTERFACE_VOLUME);
             return EnumVolumesRet;
         }
 
@@ -392,7 +464,7 @@ namespace DataTools.Hardware
         public static T[] EnumerateDevices<T>(Guid ClassId, ClassDevFlags flags = ClassDevFlags.Present | ClassDevFlags.DeviceInterface) where T : DeviceInfo, new()
         {
             T[] EnumerateDevicesRet = default;
-            EnumerateDevicesRet = DevEnumApi._internalEnumerateDevices<T>(ClassId, flags);
+            EnumerateDevicesRet = _internalEnumerateDevices<T>(ClassId, flags);
             return EnumerateDevicesRet;
         }
 
@@ -403,7 +475,7 @@ namespace DataTools.Hardware
         /// <remarks></remarks>
         public static DeviceInfo[] EnumAllDevices()
         {
-            return DevEnumApi._internalGetComputer();
+            return _internalGetComputer();
         }
     }
 }

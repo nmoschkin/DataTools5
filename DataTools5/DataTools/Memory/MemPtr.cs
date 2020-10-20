@@ -376,6 +376,7 @@ namespace DataTools.Memory
             gc1.Free();
             gc2.Free();
         }
+
         /// <summary>
         /// Copies a stucture into an array of structures.  
         /// </summary>
@@ -394,7 +395,7 @@ namespace DataTools.Memory
             gc2 = GCHandle.Alloc(val2, GCHandleType.Pinned);
 
             int x = Marshal.SizeOf<T>();
-            int y = Marshal.SizeOf<U>();
+            int y = Marshal.SizeOf<U>() * val2.Length;
 
             unsafe
             {
@@ -406,6 +407,43 @@ namespace DataTools.Memory
 
             gc1.Free();
             gc2.Free();
+        }
+
+        /// <summary>
+        /// Copies an array of structures into a structure.  
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="U"></typeparam>
+        /// <param name="val1"></param>
+        /// <param name="val2"></param>
+        /// <param name="size"></param>
+        public static void Union<T, U>(ref T[] val1, out U val2)
+            where T : struct
+            where U : struct
+        {
+            GCHandle gc1, gc2;
+            //U outstr = new U();
+
+            gc1 = GCHandle.Alloc(val1, GCHandleType.Pinned);
+            //gc2 = GCHandle.Alloc(outstr, GCHandleType.Pinned);
+
+            int x = Marshal.SizeOf<T>() * val1.Length;
+            int y = Marshal.SizeOf<U>();
+
+            unsafe
+            {
+                IntPtr h1 = gc1.AddrOfPinnedObject();
+                //void* h2 = (void*)gc2.AddrOfPinnedObject();
+
+                val2 = Marshal.PtrToStructure<U>(h1);
+
+                //Buffer.MemoryCopy(h1, h2, y, x);
+            }
+
+            gc1.Free();
+            //gc2.Free();
+
+            //val2 = outstr;
         }
 
         /// <summary>
@@ -790,7 +828,7 @@ namespace DataTools.Memory
             unsafe
             {
 
-                if (handle == null) return null;
+                if (handle == IntPtr.Zero) return null;
 
                 string s = null;
 

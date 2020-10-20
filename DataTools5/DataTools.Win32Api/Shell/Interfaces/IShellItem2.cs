@@ -37,7 +37,7 @@ namespace DataTools.Shell.Native
         // Not supported: IBindCtx.
         [PreserveSig]
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        HResult BindToHandler(
+        new HResult BindToHandler(
             [In] IntPtr pbc,
             [In] ref Guid bhid,
             [In] ref Guid riid,
@@ -45,7 +45,7 @@ namespace DataTools.Shell.Native
 
         [PreserveSig]
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        HResult GetParent([MarshalAs(UnmanagedType.Interface)] out IShellItem ppsi);
+        new HResult GetParent([MarshalAs(UnmanagedType.Interface)] out IShellItem ppsi);
 
         [PreserveSig]
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -54,7 +54,7 @@ namespace DataTools.Shell.Native
             [MarshalAs(UnmanagedType.LPWStr)] out string ppszName);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        void GetAttributes([In] ShellFileGetAttributesOptions sfgaoMask, out ShellFileGetAttributesOptions psfgaoAttribs);
+        new void GetAttributes([In] ShellFileGetAttributesOptions sfgaoMask, out ShellFileGetAttributesOptions psfgaoAttribs);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void Compare(

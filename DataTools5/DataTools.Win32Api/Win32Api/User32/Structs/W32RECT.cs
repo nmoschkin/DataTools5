@@ -18,5 +18,11 @@ namespace DataTools.Win32Api
             right = r;
             bottom = b;
         }
+
+        public override string ToString()
+        {
+            return $"{left}, {top}, {right}, {bottom}";
+
+        }
     }
 }

@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using DataTools.Memory;
 using DataTools.Win32Api;
 
@@ -397,13 +398,46 @@ namespace DataTools.Win32Api
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
         public const int GWL_WNDPROC = -4;
-        public const int GWL_STYLE = -16;
+
+        /// <summary>
+        /// Retrieves the extended window styles.
+        /// </summary> 
         public const int GWL_EXSTYLE = -20;
+
+        /// <summary>
+        /// Retrieves a handle to the application instance.
+        /// </summary> 
+        public const int GWLP_HINSTANCE = -6;
+
+        /// <summary>
+        /// Retrieves a handle to the parent window, if there is one.
+        /// </summary> 
+        public const int GWLP_HWNDPARENT = -8;
+
+        /// <summary>
+        /// Retrieves the identifier of the window.
+        /// </summary> 
+        public const int GWLP_ID = -12;
+
+        /// <summary>
+        /// Retrieves the window styles.
+        /// </summary> 
+        public const int GWL_STYLE = -16;
+
+        /// <summary>
+        /// Retrieves the user data associated with the window. This data is intended for use by the application that created the window. Its value is initially zero.
+        /// </summary> 
+        public const int GWLP_USERDATA = -21;
+
+        /// <summary>
+        /// Retrieves the pointer to the window procedure, or a handle representing the pointer to the window procedure. You must use the CallWindowProc function to call the window procedure.
+        /// </summary> 
+        public const int GWLP_WNDPROC = -4;
 
         // Window Creation
 
         // Window Styles 1
-        
+
         public const long WS_OVERLAPPED = 0x0L;
         public const int WS_POPUP = unchecked((int)0x80000000);
         public const int WS_CHILD = 0x40000000;
@@ -1723,12 +1757,47 @@ namespace DataTools.Win32Api
         public static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int code, IntPtr value);
         [DllImport("user32.dll", CharSet = CharSet.Unicode, EntryPoint = "SetWindowLongPtrW")]
         public static extern WndProcDelegate SetWindowLongPtr(IntPtr hWnd, int code, WndProcDelegate value);
+
+
+        [DllImport("user32", CharSet = CharSet.Unicode)]
+        public static extern bool MoveWindow(
+          IntPtr hWnd,
+          int X,
+          int Y,
+          int nWidth,
+          int nHeight,
+          bool bRepaint
+        );
+
         [DllImport("user32", CharSet = CharSet.Unicode)]
         public static extern bool GetWindowRect(IntPtr hWnd, ref W32RECT rc);
         [DllImport("user32", EntryPoint = "GetWindowLongW", CharSet = CharSet.Unicode)]
         public static extern IntPtr GetWindowLong(IntPtr hWnd, int code);
         [DllImport("user32", EntryPoint = "GetWindowLongPtrW", CharSet = CharSet.Unicode)]
         public static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int code);
+
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern bool EnumChildWindows(
+              IntPtr hWndParent,
+              [MarshalAs(UnmanagedType.FunctionPtr)] 
+              EnumWindowsProc lpEnumFunc,
+              IntPtr lParam
+            );
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern bool EnumChildWindows(
+              IntPtr hWndParent,
+              [MarshalAs(UnmanagedType.FunctionPtr)]
+              EnumWindowsProcObj lpEnumFunc,
+              object lParam
+            );
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern int GetWindowText(IntPtr hWnd, StringBuilder title, int size);
+        [DllImport("user32.dll")]
+        public static extern uint RealGetWindowClass(IntPtr hWnd, StringBuilder pszType, uint cchType);
+
         [DllImport("user32", EntryPoint = "CreateWindowExW", CharSet = CharSet.Unicode)]
         public static extern IntPtr CreateWindowEx(uint dwExStyle, [MarshalAs(UnmanagedType.LPWStr)] string lpClassName, [MarshalAs(UnmanagedType.LPWStr)] string lpWindowName, uint dwStyle, int x, int y, int nWidth, int nHeight, IntPtr hWndParent, IntPtr hMenu, IntPtr hInstance, IntPtr lpParam);
         [DllImport("user32", CharSet = CharSet.Unicode)]
@@ -1753,6 +1822,8 @@ namespace DataTools.Win32Api
         public static extern bool CloseDesktop(IntPtr hDesk);
         [DllImport("user32")]
         public static extern IntPtr GetThreadDesktop(int dwThreadId);
+
+        public delegate bool EnumWindowsProcObj(IntPtr hwnd, object lParam);
 
         public delegate bool EnumWindowsProc(IntPtr hwnd, IntPtr lParam);
 

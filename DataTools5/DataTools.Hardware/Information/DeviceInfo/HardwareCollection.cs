@@ -110,7 +110,7 @@ namespace DataTools.Hardware
             var chw = DeviceClassEnum.Undefined;
 
             // do the initial enumeration.
-            var d = DevEnumPublic.EnumComputerExhaustive();
+            var d = DeviceEnum.EnumComputerExhaustive();
 
             // Filter out all non-top-level devices to create the top level.
             foreach (var x in d)

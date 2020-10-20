@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DataTools.Shell.MessageResources {
+namespace DataTools.Win32Api.MessageResources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace DataTools.Shell.MessageResources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DataTools.Shell.MessageResources.LocalizedMessages", typeof(LocalizedMessages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DataTools.Win32Api.MessageResources.LocalizedMessages", typeof(LocalizedMessages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -20,7 +20,6 @@
 		
   <ItemGroup>
     <ProjectReference Include="..\DataTools.Hardware\DataTools.Hardware.csproj" />
-    <ProjectReference Include="..\DataTools.Shell\DataTools.Shell.csproj" />
     <ProjectReference Include="..\DataTools\DataTools.csproj" />
   </ItemGroup>
 
