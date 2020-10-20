@@ -47,6 +47,7 @@
             this.colStatus = new System.Windows.Forms.ColumnHeader();
             this.colMonitor = new System.Windows.Forms.ColumnHeader();
             this.colTime = new System.Windows.Forms.ColumnHeader();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.btnQuit = new System.Windows.Forms.Button();
             this.status.SuspendLayout();
@@ -154,9 +155,10 @@
             this.colTime});
             this.lstEvents.FullRowSelect = true;
             this.lstEvents.HideSelection = false;
-            this.lstEvents.Location = new System.Drawing.Point(14, 27);
+            this.lstEvents.Location = new System.Drawing.Point(13, 27);
             this.lstEvents.Name = "lstEvents";
-            this.lstEvents.Size = new System.Drawing.Size(617, 425);
+            this.lstEvents.Size = new System.Drawing.Size(618, 425);
+            this.lstEvents.SmallImageList = this.imageList1;
             this.lstEvents.TabIndex = 4;
             this.lstEvents.UseCompatibleStateImageBehavior = false;
             this.lstEvents.View = System.Windows.Forms.View.Details;
@@ -184,6 +186,12 @@
             this.colTime.Name = "colTime";
             this.colTime.Text = "Timestamp";
             this.colTime.Width = 120;
+            // 
+            // imageList1
+            // 
+            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+            this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // menuStrip1
             // 
@@ -251,6 +259,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.Button btnQuit;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }
 

@@ -1777,6 +1777,14 @@ namespace DataTools.Win32Api
         public static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int code);
 
 
+        [DllImport("user32", EntryPoint = "GetWindowModuleFileNameW", CharSet = CharSet.Unicode)]
+        public static extern uint GetWindowModuleFileName(
+                                  IntPtr hwnd,
+                                  StringBuilder pszFileName,
+                                  int cchFileNameMax
+                                  );
+
+
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern bool EnumChildWindows(
               IntPtr hWndParent,

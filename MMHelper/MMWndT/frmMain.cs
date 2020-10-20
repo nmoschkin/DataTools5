@@ -10,8 +10,10 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using DataTools.Desktop;
 using DataTools.Hardware;
 using DataTools.Hardware.Display;
 using DataTools.Win32Api;
@@ -48,6 +50,7 @@ namespace MMWndT
         public frmMain()
         {
             InitializeComponent();
+            
             SetWindowTheme(lstEvents.Handle, "explorer", null);
 
             Program.Work.WorkLogger += Work_WorkLogger;
@@ -177,17 +180,39 @@ namespace MMWndT
         
         private void AddEvent(WorkerLogEventArgs e)
         {
+            string sPath;
+            
             if (lstEvents.Items.Count > 100)
             {
                 lstEvents.Items.RemoveAt(lstEvents.Items.Count - 1);
             }
 
-            var item = lstEvents.Items.Insert(0, e.WindowName);
+            if (e.Action != Worker.MSG_DESTROYED)
+            {
+                StringBuilder sb = new StringBuilder(512);
+                
+                GetWindowModuleFileName(e.Handle, sb, 512);
+
+                sPath = sb.ToString();
+                int? ixx = null;
+
+                if (!imageList1.Images.ContainsKey(e.Handle.ToString()))
+                {
+                    var icon = Resources.GetFileIcon(sPath, Resources.SystemIconSizes.Small, ref ixx);
+                    
+                    imageList1.Images.Add(e.Handle.ToString(), icon);
+                                    
+                }
+
+            }
+
+            var item = new ListViewItem(e.WindowName, e.Handle.ToString());
+           
             item.Tag = e;
 
             var sitems = item.SubItems;
             string s = "";
-
+            
             switch (e.Action)
             {
 
@@ -207,6 +232,8 @@ namespace MMWndT
             sitems.Add(s);
             sitems.Add(e.Monitor.ToString());
             sitems.Add(DateTime.Now.ToString("g"));
+
+            lstEvents.Items.Insert(0, item);
         }
 
         private void MouseLL_MouseMove(object sender, MouseEventArgs e)
