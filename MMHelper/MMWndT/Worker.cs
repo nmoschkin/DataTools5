@@ -43,6 +43,10 @@ namespace MMWndT
 
         [FieldOffset(16)]
         public long LongData2;
+
+        [FieldOffset(24)]
+        public W32RECT rect;
+
     }
 
     public enum WorkerKind
@@ -51,6 +55,14 @@ namespace MMWndT
         Is64Worker = 2
     }
 
+
+    public struct ActWndInfo 
+    {
+        public DateTime Timestamp;
+
+        public string WindowName;
+    
+    }
 
     public class WorkerLogEventArgs : EventArgs
     {
@@ -118,6 +130,8 @@ namespace MMWndT
         public const int MSG_CREATED = 1;
         public const int MSG_ACTIVATED = 2;
         public const int MSG_DESTROYED = 3;
+        public const int MSG_MOVESIZE = 4;
+        public const int MSG_REPLACED = 5;
         public const int MSG_TERMINATE = 27;
         public const int MSG_INFORM_MY = 124;
         public const int MSG_HW_CHANGE = 129;
@@ -154,7 +168,7 @@ namespace MMWndT
         MonitorInfo mouseMon;
         MonitorInfo wndMon;
 
-        public Dictionary<IntPtr, DateTime> ActiveWindows = new Dictionary<IntPtr, DateTime>();
+        public Dictionary<IntPtr, ActWndInfo> ActiveWindows = new Dictionary<IntPtr, ActWndInfo>();
 
         private Monitors monitors = new Monitors();
 
@@ -170,7 +184,7 @@ namespace MMWndT
 
             foreach (var wnd in dwnds)
             {
-                ActiveWindows.Add(wnd, DateTime.Now);
+                ActiveWindows.Add(wnd, new ActWndInfo() { WindowName = GetWindowName(wnd), Timestamp = DateTime.Now });
             }
 
             var stinfo = new ProcessStartInfo()
@@ -363,6 +377,14 @@ namespace MMWndT
                     {
                         DoDestroyed((IntPtr)os.LongData1);
                     }
+                    else if (os.msg == MSG_REPLACED)
+                    {
+                        DoReplaced((IntPtr)os.LongData1, (IntPtr)os.LongData2);
+                    }
+                    else if (os.msg == MSG_MOVESIZE)
+                    {
+                        DoMoveSize((IntPtr)os.LongData1, os.rect);
+                    }
                     else if (os.msg == MSG_HW_CHANGE)
                     {
                         disp.Invoke(() => {
@@ -435,6 +457,14 @@ namespace MMWndT
                     {
                         DoDestroyed((IntPtr)os.IntData1);
                     }
+                    else if (os.msg == MSG_REPLACED)
+                    {
+                        DoReplaced((IntPtr)os.IntData1, (IntPtr)os.IntData2);
+                    }
+                    else if (os.msg == MSG_MOVESIZE)
+                    {
+                        DoMoveSize((IntPtr)os.IntData1, os.rect);
+                    }
                     else
                     {
                         disp.Invoke(() =>
@@ -452,16 +482,70 @@ namespace MMWndT
             }
         }
 
+
+        private void DoMoveSize(IntPtr handle, W32RECT rc)
+        {
+            disp.Invoke(() =>
+            {
+                wndMon = monitors.GetMonitorFromWindow(handle);
+
+                W32POINT pt = new W32POINT();
+                GetCursorPos(ref pt);
+
+                mouseMon = monitors.GetMonitorFromPoint(pt);
+
+                if (wndMon == null || mouseMon == null)
+                {
+                    AddEvent(handle, 0, MSG_MOVESIZE);
+                    return;
+                }
+
+                AddEvent(handle, wndMon.Index, MSG_MOVESIZE);
+            });
+
+
+        }
+
+        private void DoReplaced(IntPtr oldHandle, IntPtr newHandle)
+        {
+            disp.Invoke(() =>
+            {
+                if (ActiveWindows.ContainsKey(oldHandle))
+                {
+                    var actWnd = ActiveWindows[oldHandle];
+
+                    ActiveWindows.Remove(oldHandle);
+
+                    actWnd.Timestamp = DateTime.Now;
+                    ActiveWindows.Add(newHandle, actWnd);
+
+                    AddEvent(null, actWnd.WindowName, 0, MSG_REPLACED);
+                }
+                else
+                {
+                    AddEvent(oldHandle, 0, MSG_REPLACED);
+                }
+
+            });
+
+        }
+
         private void DoDestroyed(IntPtr Handle)
         {
             disp.Invoke(() =>
             {
                 if (ActiveWindows.ContainsKey(Handle))
                 {
+                    var actWnd = ActiveWindows[Handle];
+
                     ActiveWindows.Remove(Handle);
+                    AddEvent(null, actWnd.WindowName, 0, MSG_DESTROYED);
+                }
+                else
+                {
+                    AddEvent(Handle, 0, MSG_DESTROYED);
                 }
 
-                AddEvent(Handle, 0, MSG_DESTROYED);
             });
         }
 
@@ -496,11 +580,11 @@ namespace MMWndT
         {
             disp.Invoke(() =>
             {
-                var dt = DateTime.Now;
+                ActWndInfo actWnd = default;
 
-                if (ActiveWindows.TryGetValue(Handle, out dt))
+                if (ActiveWindows.TryGetValue(Handle, out actWnd))
                 {
-                    if (DateTime.Now - dt < new TimeSpan(0, 0, 2))
+                    if (DateTime.Now - actWnd.Timestamp < new TimeSpan(0, 0, 2))
                     {
                         DoWindowMove(Handle, x64);
                         return;
@@ -512,7 +596,7 @@ namespace MMWndT
                 }
                 else
                 {
-                    ActiveWindows.Add(Handle, DateTime.Now);
+                    ActiveWindows.Add(Handle, new ActWndInfo() { WindowName = GetWindowName(Handle), Timestamp = DateTime.Now });
                     DoWindowMove(Handle, x64);
                     return;
                 }

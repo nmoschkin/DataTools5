@@ -8,6 +8,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Net;
+using DataTools.Win32Api;
 
 namespace MMHLR
 {
@@ -32,6 +33,9 @@ namespace MMHLR
 
         [FieldOffset(16)]
         public long LongData2;
+
+        [FieldOffset(24)]
+        public W32RECT rect;
     }
 
 
@@ -45,6 +49,8 @@ namespace MMHLR
         public const int MSG_CREATED = 1;
         public const int MSG_ACTIVATED = 2;
         public const int MSG_DESTROYED = 3;
+        public const int MSG_MOVESIZE = 4;
+        public const int MSG_REPLACED = 5;
         public const int MSG_TERMINATE = 27;
         public const int MSG_INFORM_MY = 124;
         public const int MSG_HW_CHANGE = 129;
@@ -64,13 +70,20 @@ namespace MMHLR
         [STAThread]
         static void Main(string[] args)
         {
-            //AllocConsole();
+//#if X64
+//#else
+//            Debugger.Launch();
+//#endif
+//            AllocConsole();
 
             gh = new GlobalHooks(IntPtr.Zero);
 
             gh.Shell.WindowCreated += Shell_WindowCreated;
             gh.Shell.WindowActivated += Shell_WindowActivated;
             gh.Shell.WindowDestroyed += Shell_WindowDestroyed;
+            gh.Shell.WindowReplaced += Shell_WindowReplaced;
+            
+            gh.CBT.MoveSize += CBT_MoveSize;
             gh.HardwareChanged += HardwareChanged;
 
 #if X64
@@ -91,6 +104,7 @@ namespace MMHLR
                     if (connSock == null || !connSock.Connected)
                     {
                         if (gh.Shell.IsActive) gh.Shell.Stop();
+                        if (gh.CBT.IsActive) gh.CBT.Stop();
 
                         listenSock = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
@@ -102,6 +116,7 @@ namespace MMHLR
                         connSock = listenSock.Accept();
 
                         gh.Shell.Start();
+                        gh.CBT.Start();
                     }
 
 
@@ -117,11 +132,13 @@ namespace MMHLR
                         else if (dcmd.msg == MSG_START_MOVER)
                         {
                             if (!gh.Shell.IsActive) gh.Shell.Start();
+                            if (!gh.CBT.IsActive) gh.CBT.Start();
 
                         }
                         else if (dcmd.msg == MSG_STOP_MOVER)
                         {
                             if (gh.Shell.IsActive) gh.Shell.Stop();
+                            if (gh.CBT.IsActive) gh.CBT.Stop();
                         }
 
                         else if (dcmd.msg == MSG_QUERY_STATE)
@@ -154,6 +171,8 @@ namespace MMHLR
                 connSock?.Close();
 
                 gh.Shell.Stop();
+                gh.CBT.Stop();
+
                 gh.DestroyHandle();
 
                 Environment.Exit(0);
@@ -164,7 +183,7 @@ namespace MMHLR
             }
         }
 
-        private static void SendShell(int msg, IntPtr Handle, string text = null)
+        private static void SendShell(int msg, IntPtr Handle, string text = null, IntPtr? extra = null, W32RECT? rect = null)
         {
             int ss = Marshal.SizeOf<OUTPUT_STRUCT>();
             byte[] tbytes = null;
@@ -174,16 +193,26 @@ namespace MMHLR
                 tbytes = Encoding.Unicode.GetBytes(text);
                 ss += tbytes.Length;
             }
+            
+            if (extra == null) extra = IntPtr.Zero;
+            if (rect == null)
+            {
+                rect = new W32RECT();
+            }
 
             var os = new OUTPUT_STRUCT()
             {
                 cb = ss,
                 msg = msg,
 #if X64
-                LongData1 = (long)Handle
+                LongData1 = (long)Handle,
+                LongData2 = (long)extra,
 #else
-                IntData1 = (int)Handle
+                IntData1 = (int)Handle,
+                IntData2 = (int)extra,
 #endif
+
+                rect = (W32RECT)rect
             };
 
             var bcpy = new byte[ss];
@@ -206,6 +235,34 @@ namespace MMHLR
             else
             {
                 HardwareChanged(sender, e);
+            }
+        }
+
+        private static void CBT_MoveSize(IntPtr Handle, W32RECT rc)
+        {
+            if (Monitor.TryEnter(connSock))
+            {
+                SendShell(MSG_MOVESIZE, Handle, null, null, rc);
+                Monitor.Exit(connSock);
+            }
+            else
+            {
+                CBT_MoveSize(Handle, rc);
+            }
+        }
+
+
+
+        private static void Shell_WindowReplaced(IntPtr OldHandle, IntPtr NewHandle)
+        {
+            if (Monitor.TryEnter(connSock))
+            {
+                SendShell(MSG_REPLACED, OldHandle, null, (IntPtr?)NewHandle);
+                Monitor.Exit(connSock);
+            }
+            else
+            {
+                Shell_WindowReplaced(OldHandle, NewHandle);
             }
         }
 

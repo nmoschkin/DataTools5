@@ -37,6 +37,7 @@ HHOOK hookGetMsg = NULL;
 #define DllExport extern "C"  __declspec( dllexport )
 
 HINSTANCE g_appInstance = NULL;
+static RECT CBT_SIZE_RECT;
 
 typedef void (CALLBACK* HookProc)(int code, WPARAM w, LPARAM l);
 
@@ -88,8 +89,11 @@ static LRESULT CALLBACK CbtHookCallback(int code, WPARAM wparam, LPARAM lparam)
 			msg = RegisterWindowMessage(HOOK_PREFIX L"HCBT_DESTROYWND");
 		else if (code == HCBT_MINMAX)
 			msg = RegisterWindowMessage(HOOK_PREFIX L"HCBT_MINMAX");
-		else if (code == HCBT_MOVESIZE)
+		else if (code == HCBT_MOVESIZE) {
+			CBT_SIZE_RECT = *((RECT*)lparam);
+			lparam = (LPARAM)&CBT_SIZE_RECT;
 			msg = RegisterWindowMessage(HOOK_PREFIX L"HCBT_MOVESIZE");
+		}
 		else if (code == HCBT_SETFOCUS)
 			msg = RegisterWindowMessage(HOOK_PREFIX L"HCBT_SETFOCUS");
 		else if (code == HCBT_SYSCOMMAND)
@@ -151,6 +155,10 @@ static LRESULT CALLBACK ShellHookCallback(int code, WPARAM wparam, LPARAM lparam
 			msg = RegisterWindowMessage(HOOK_PREFIX L"HSHELL_WINDOWCREATED");
 		else if (code == HSHELL_WINDOWDESTROYED)
 			msg = RegisterWindowMessage(HOOK_PREFIX L"HSHELL_WINDOWDESTROYED");
+		else if (code == HSHELL_WINDOWREPLACED)
+			msg = RegisterWindowMessage(HOOK_PREFIX L"HSHELL_WINDOWREPLACED");
+		else if (code == HSHELL_WINDOWREPLACING)
+			msg = RegisterWindowMessage(HOOK_PREFIX L"HSHELL_WINDOWREPLACING");
 
 		HWND dstWnd = (HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_SHELL");
 

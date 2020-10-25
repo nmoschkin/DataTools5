@@ -203,7 +203,7 @@
             // 
             // btnQuit
             // 
-            this.btnQuit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnQuit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnQuit.Location = new System.Drawing.Point(542, 460);
             this.btnQuit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnQuit.Name = "btnQuit";

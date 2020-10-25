@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net5.0-windows</TargetFramework>
@@ -15,6 +15,7 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
 	  <DefineConstants>TRACE;X64</DefineConstants>
+	  <OutputPath>..\x64\Release</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>

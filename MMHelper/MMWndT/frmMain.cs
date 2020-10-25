@@ -79,7 +79,7 @@ namespace MMWndT
 
             maindisp = Dispatcher.CurrentDispatcher;
 
-            Program.Work.ActiveWindows.Add(Handle, DateTime.Now);
+            Program.Work.ActiveWindows.Add(Handle, new ActWndInfo() { WindowName = Text, Timestamp = DateTime.Now });
             WindowState = FormWindowState.Minimized;
 
         }
@@ -243,6 +243,16 @@ namespace MMWndT
                         item.ForeColor = Color.DarkGray;
                     }
 
+                    break;
+
+                case Worker.MSG_REPLACED:
+                    s = "Window Replaced";
+                    item.ForeColor = Color.Blue;
+                    break;
+
+                case Worker.MSG_MOVESIZE:
+                    s = "Window Move/Size";
+                    item.ForeColor = Color.DarkSlateBlue;
                     break;
 
                 case Worker.MSG_ACTIVATED:
