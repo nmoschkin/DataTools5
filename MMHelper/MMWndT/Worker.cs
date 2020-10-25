@@ -62,9 +62,16 @@ namespace MMWndT
 
         public int Action { get; private set; }
 
+        public string Message { get; private set; }
 
-        public WorkerLogEventArgs(string name, IntPtr handle, int monitor, int action)
+
+        public WorkerLogEventArgs(string name, IntPtr handle, int monitor, int action) : this(null, name, handle, monitor, action)
+        { 
+        }
+
+        public WorkerLogEventArgs(string smsg, string name, IntPtr handle, int monitor, int action)
         {
+            Message = smsg;
             WindowName = name;
             Monitor = monitor;
             Handle = handle;
@@ -361,7 +368,30 @@ namespace MMWndT
                         disp.Invoke(() => {
                             mouseMon = wndMon = null;
                             monitors = new Monitors();
-                            AddEvent(IntPtr.Zero, 0, MSG_HW_CHANGE);
+                            int x = Marshal.SizeOf<OUTPUT_STRUCT>();
+                            string sname = "";
+                            string smsg = ""; 
+
+                            if (os.cb > x)
+                            {
+                                sname = Encoding.Unicode.GetString(b, x, os.cb - x);
+                            }
+
+                            if ((uint)os.LongData1 == DevNotify.DBT_DEVICEARRIVAL)
+                            {
+                                smsg = "Installed";
+                            }
+                            else if ((uint)os.LongData1 == DevNotify.DBT_DEVICEREMOVECOMPLETE)
+                            {
+                                smsg = "Removed";
+                            }
+                            else
+                            {
+                                smsg = "Changed";
+                            }
+
+                            AddEvent(smsg, sname, (int)os.LongData1, os.msg);
+                           
                         });
                     }
                     else
@@ -473,15 +503,20 @@ namespace MMWndT
                     if (DateTime.Now - dt < new TimeSpan(0, 0, 2))
                     {
                         DoWindowMove(Handle, x64);
+                        return;
+                    }
+                    else
+                    {
+                        wndMon = monitors.GetMonitorFromWindow(Handle);
                     }
                 }
                 else
                 {
                     ActiveWindows.Add(Handle, DateTime.Now);
                     DoWindowMove(Handle, x64);
+                    return;
                 }
 
-                wndMon = monitors.GetMonitorFromWindow(Handle);
 
                 W32POINT pt = new W32POINT();
                 GetCursorPos(ref pt);
@@ -496,6 +531,15 @@ namespace MMWndT
 
                 AddEvent(Handle, wndMon.Index, MSG_ACTIVATED);
             });
+        }
+
+        void AddEvent(string smsg, string wname, int monitor, int action)
+        {
+            _logger?.LogInformation(smsg);
+
+            var e = new WorkerLogEventArgs(smsg, wname, IntPtr.Zero, monitor, action);
+            WorkLogger?.Invoke(this, e);
+
         }
 
         void AddEvent(IntPtr handle, int monitor, int action) 
@@ -612,9 +656,25 @@ namespace MMWndT
 
                     MoveWindow(Handle, rc.left, rc.top, Math.Abs(rc.right - rc.left) + 1, Math.Abs(rc.bottom - rc.top) + 1, true);
 
-                    wndMon = monitors.GetMonitorFromWindow(Handle);
+                    //wndMon = monitors.GetMonitorFromWindow(Handle);
+                    wndMon = mouseMon;
 
                 }
+
+
+                disp.Invoke(() =>
+                {
+                    mouseMon = monitors.GetMonitorFromPoint(pt);
+
+                    if (wndMon == null || mouseMon == null)
+                    {
+                        AddEvent(Handle, 0, MSG_ACTIVATED);
+                        return;
+                    }
+
+                    AddEvent(Handle, wndMon.Index, MSG_ACTIVATED);
+
+                });
 
             });
 

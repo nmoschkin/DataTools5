@@ -71,7 +71,7 @@ namespace MMHLR
             gh.Shell.WindowCreated += Shell_WindowCreated;
             gh.Shell.WindowActivated += Shell_WindowActivated;
             gh.Shell.WindowDestroyed += Shell_WindowDestroyed;
-            gh.MonitorDevicesChanged += Gh_MonitorDevicesChanged;
+            gh.HardwareChanged += HardwareChanged;
 
 #if X64
             var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 53112);
@@ -164,9 +164,17 @@ namespace MMHLR
             }
         }
 
-        private static void SendShell(int msg, IntPtr Handle)
+        private static void SendShell(int msg, IntPtr Handle, string text = null)
         {
             int ss = Marshal.SizeOf<OUTPUT_STRUCT>();
+            byte[] tbytes = null;
+
+            if (text != null && text.Length > 0)
+            {
+                tbytes = Encoding.Unicode.GetBytes(text);
+                ss += tbytes.Length;
+            }
+
             var os = new OUTPUT_STRUCT()
             {
                 cb = ss,
@@ -185,18 +193,19 @@ namespace MMHLR
             gch.Free();
 
             Write(bcpy);
+            if (tbytes != null) Write(tbytes);
         }
 
-        private static void Gh_MonitorDevicesChanged(object sender, EventArgs e)
+        private static void HardwareChanged(object sender, HardwareChangedEventArgs e)
         {
             if (Monitor.TryEnter(connSock))
             {
-                SendShell(MSG_HW_CHANGE, IntPtr.Zero);
+                SendShell(MSG_HW_CHANGE, (IntPtr)e.Message, e.DeviceName);
                 Monitor.Exit(connSock);
             }
             else
             {
-                Gh_MonitorDevicesChanged(sender, e);
+                HardwareChanged(sender, e);
             }
         }
 

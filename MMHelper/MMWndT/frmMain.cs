@@ -206,8 +206,17 @@ namespace MMWndT
 
             }
 
-            var item = new ListViewItem(e.WindowName, e.Handle.ToString());
-           
+            ListViewItem item;
+            
+            if (e.Message != null)
+            {
+                item = new ListViewItem(e.Message, e.Handle.ToString());
+            }
+            else
+            {
+                item = new ListViewItem(e.WindowName, e.Handle.ToString());
+            }
+
             item.Tag = e;
 
             var sitems = item.SubItems;
@@ -216,25 +225,45 @@ namespace MMWndT
             switch (e.Action)
             {
                 case Worker.MSG_HW_CHANGE:
-                    s = "Monitor Plugged In/Unplugged";
+
+
+                    if ((uint)e.Monitor == DevNotify.DBT_DEVICEARRIVAL)
+                    {
+                        s = "Monitor Plugged In";
+                        item.ForeColor = Color.Green;
+                    }
+                    else if ((uint)e.Monitor == DevNotify.DBT_DEVICEREMOVECOMPLETE)
+                    {
+                        s = "Monitor Unplugged";
+                        item.ForeColor = Color.Red;
+                    }
+                    else
+                    {
+                        s = "Hardware Changed";
+                        item.ForeColor = Color.DarkGray;
+                    }
+
                     break;
 
                 case Worker.MSG_ACTIVATED:
                     s = "Activated";
+                    item.ForeColor = Color.Blue;
                     break;
 
                 case Worker.MSG_CREATED:
                     s = "Created";
+                    item.ForeColor = Color.Green;
                     break;
 
                 case Worker.MSG_DESTROYED:
                     s = "Destroyed";
+                    item.ForeColor = Color.Red;
                     break;
             }
 
             sitems.Add(s);
             sitems.Add(e.Monitor.ToString());
-            sitems.Add(DateTime.Now.ToString("g"));
+            sitems.Add(DateTime.Now.ToString("G"));
 
             lstEvents.Items.Insert(0, item);
         }

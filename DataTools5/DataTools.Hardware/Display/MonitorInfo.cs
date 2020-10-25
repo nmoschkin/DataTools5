@@ -277,7 +277,7 @@ namespace DataTools.Hardware.Display
         /// </summary>
         /// <param name="pt"></param>
         /// <returns></returns>
-        public MonitorInfo GetMonitorFromPoint(W32POINT pt, MultiMonFlags flags = MultiMonFlags.DefaultToNull)
+        public MonitorInfo GetMonitorFromPoint(W32POINT pt, MultiMonFlags flags = MultiMonFlags.DefaultToNearest)
         {
             if (Count == 0)
                 Refresh();
@@ -299,7 +299,7 @@ namespace DataTools.Hardware.Display
         /// </summary>
         /// <param name="rc"></param>
         /// <returns></returns>
-        public MonitorInfo GetMonitorFromRect(W32RECT rc, MultiMonFlags flags = MultiMonFlags.DefaultToNull)
+        public MonitorInfo GetMonitorFromRect(W32RECT rc, MultiMonFlags flags = MultiMonFlags.DefaultToNearest)
         {
             if (Count == 0)
                 Refresh();
@@ -321,7 +321,7 @@ namespace DataTools.Hardware.Display
         /// <param name="hwnd"></param>
         /// <param name="flags"></param>
         /// <returns></returns>
-        public MonitorInfo GetMonitorFromWindow(IntPtr hwnd, MultiMonFlags flags = MultiMonFlags.DefaultToNull)
+        public MonitorInfo GetMonitorFromWindow(IntPtr hwnd, MultiMonFlags flags = MultiMonFlags.DefaultToNearest)
         {
             if (Count == 0)
                 Refresh();
@@ -343,7 +343,7 @@ namespace DataTools.Hardware.Display
         /// <param name="window"></param>
         /// <param name="flags"></param>
         /// <returns></returns>
-        public MonitorInfo GetMonitorFromWindow(System.Windows.Window window, MultiMonFlags flags = MultiMonFlags.DefaultToNull)
+        public MonitorInfo GetMonitorFromWindow(System.Windows.Window window, MultiMonFlags flags = MultiMonFlags.DefaultToNearest)
         {
             if (Count == 0)
                 Refresh();

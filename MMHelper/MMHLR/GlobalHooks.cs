@@ -7,6 +7,7 @@ using DataTools.Win32Api;
 using static DataTools.Win32Api.User32;
 using static DataTools.Win32Api.DevNotify;
 using System.Diagnostics;
+using DataTools.Memory;
 
 namespace MMHLR
 {
@@ -23,8 +24,8 @@ namespace MMHLR
 		public delegate void BasicHookEventHandler(IntPtr Handle1, IntPtr Handle2);
 		public delegate void WndProcEventHandler(IntPtr Handle, IntPtr Message, IntPtr wParam, IntPtr lParam);
 
-		public delegate void MonitorDevicesChangedEventHandle(object sender, EventArgs e);
-		public event MonitorDevicesChangedEventHandle MonitorDevicesChanged;
+		public delegate void HardwareChangedEventHandle(object sender, HardwareChangedEventArgs e);
+		public event HardwareChangedEventHandle HardwareChanged;
 
 		// Functions imported from our unmanaged DLL
 
@@ -132,6 +133,11 @@ namespace MMHLR
 		{
 			CreateParams cp = new CreateParams()
 			{
+#if X64
+				Caption = "MMWndT MMHLR64 Window Shell Monitor"
+#else
+				Caption = "MMWndT MMHLR32 Window Shell Monitor"
+#endif
 			};
 
 			CreateHandle(cp);
@@ -177,7 +183,22 @@ namespace MMHLR
 #if X64
 			if (m.Msg == WM_DEVICECHANGE)
             {
-				MonitorDevicesChanged?.Invoke(this, new EventArgs());
+				string sDisplay = "";
+
+				uint msg = (uint)m.WParam;
+
+				if (m.LParam != IntPtr.Zero)
+                {
+					Debugger.Launch();
+
+					MemPtr mm = m.LParam;
+					var ofs = Marshal.SizeOf<DEV_BROADCAST_HDR>() + Marshal.SizeOf<DEV_BROADCAST_DEVICEINTERFACE>() - 2;
+					sDisplay = mm.GetString(ofs);
+				}
+
+				var ea = new HardwareChangedEventArgs((uint)m.WParam, sDisplay);
+
+				HardwareChanged?.Invoke(this, ea);
             }
 			else
             {
