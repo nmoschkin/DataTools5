@@ -105,7 +105,7 @@ namespace MMWndT
                     btnWatch.Text = StartButtonText;
                     IsWatching = false;
                 }
-
+                
             });
 
         }
@@ -215,6 +215,9 @@ namespace MMWndT
             
             switch (e.Action)
             {
+                case Worker.MSG_HW_CHANGE:
+                    s = "Monitor Plugged In/Unplugged";
+                    break;
 
                 case Worker.MSG_ACTIVATED:
                     s = "Activated";

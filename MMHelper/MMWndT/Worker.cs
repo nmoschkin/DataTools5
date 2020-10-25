@@ -113,6 +113,7 @@ namespace MMWndT
         public const int MSG_DESTROYED = 3;
         public const int MSG_TERMINATE = 27;
         public const int MSG_INFORM_MY = 124;
+        public const int MSG_HW_CHANGE = 129;
 
         private Socket x64Sock;
         private Socket x86Sock;
@@ -355,6 +356,14 @@ namespace MMWndT
                     {
                         DoDestroyed((IntPtr)os.LongData1);
                     }
+                    else if (os.msg == MSG_HW_CHANGE)
+                    {
+                        disp.Invoke(() => {
+                            mouseMon = wndMon = null;
+                            monitors = new Monitors();
+                            AddEvent(IntPtr.Zero, 0, MSG_HW_CHANGE);
+                        });
+                    }
                     else
                     {
                         disp.Invoke(() =>
@@ -436,6 +445,12 @@ namespace MMWndT
             disp.Invoke(() =>
             {
                 wndMon = monitors.GetMonitorFromWindow(Handle);
+
+                W32POINT pt = new W32POINT();
+                GetCursorPos(ref pt);
+
+                mouseMon = monitors.GetMonitorFromPoint(pt);
+
                 if (wndMon == null || mouseMon == null)
                 {
                     AddEvent(Handle, 0, MSG_CREATED);
@@ -466,7 +481,13 @@ namespace MMWndT
                     DoWindowMove(Handle, x64);
                 }
 
-                var wndMon = monitors.GetMonitorFromWindow(Handle);
+                wndMon = monitors.GetMonitorFromWindow(Handle);
+
+                W32POINT pt = new W32POINT();
+                GetCursorPos(ref pt);
+
+                mouseMon = monitors.GetMonitorFromPoint(pt);
+
                 if (wndMon == null || mouseMon == null)
                 {
                     AddEvent(Handle, 0, MSG_ACTIVATED);
@@ -503,6 +524,11 @@ namespace MMWndT
                     smsg = $"Window Destroyed {wname}";
                     if (monitor > 0) smsg += $"on monitor #{monitor}";
                     else smsg += "on unknown monitor";
+
+                    break;
+
+                case MSG_HW_CHANGE:
+                    smsg = "Monitor Plugged In/Unplugged";
 
                     break;
 

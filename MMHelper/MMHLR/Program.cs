@@ -47,6 +47,7 @@ namespace MMHLR
         public const int MSG_DESTROYED = 3;
         public const int MSG_TERMINATE = 27;
         public const int MSG_INFORM_MY = 124;
+        public const int MSG_HW_CHANGE = 129;
 
         private static Socket listenSock;
         private static Socket connSock = null;
@@ -70,6 +71,7 @@ namespace MMHLR
             gh.Shell.WindowCreated += Shell_WindowCreated;
             gh.Shell.WindowActivated += Shell_WindowActivated;
             gh.Shell.WindowDestroyed += Shell_WindowDestroyed;
+            gh.MonitorDevicesChanged += Gh_MonitorDevicesChanged;
 
 #if X64
             var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 53112);
@@ -183,6 +185,19 @@ namespace MMHLR
             gch.Free();
 
             Write(bcpy);
+        }
+
+        private static void Gh_MonitorDevicesChanged(object sender, EventArgs e)
+        {
+            if (Monitor.TryEnter(connSock))
+            {
+                SendShell(MSG_HW_CHANGE, IntPtr.Zero);
+                Monitor.Exit(connSock);
+            }
+            else
+            {
+                Gh_MonitorDevicesChanged(sender, e);
+            }
         }
 
         private static void Shell_WindowCreated(IntPtr Handle)

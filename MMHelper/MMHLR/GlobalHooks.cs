@@ -3,6 +3,10 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using DataTools.Win32Api;
+using static DataTools.Win32Api.User32;
+using static DataTools.Win32Api.DevNotify;
+using System.Diagnostics;
 
 namespace MMHLR
 {
@@ -18,6 +22,9 @@ namespace MMHLR
 		public delegate void TaskmanEventHandler();
 		public delegate void BasicHookEventHandler(IntPtr Handle1, IntPtr Handle2);
 		public delegate void WndProcEventHandler(IntPtr Handle, IntPtr Message, IntPtr wParam, IntPtr lParam);
+
+		public delegate void MonitorDevicesChangedEventHandle(object sender, EventArgs e);
+		public event MonitorDevicesChangedEventHandle MonitorDevicesChanged;
 
 		// Functions imported from our unmanaged DLL
 
@@ -119,6 +126,8 @@ namespace MMHLR
 		private CallWndProcHook _CallWndProc;
 		private GetMsgHook _GetMsg;
 
+		private IntPtr dnHandle = IntPtr.Zero;
+
 		public GlobalHooks(IntPtr Handle)
 		{
 			CreateParams cp = new CreateParams()
@@ -137,10 +146,20 @@ namespace MMHLR
 			_MouseLL = new MouseLLHook(_Handle);
 			_CallWndProc = new CallWndProcHook(_Handle);
 			_GetMsg = new GetMsgHook(_Handle);
+
+#if X64
+			dnHandle = DoRegisterDeviceClassNotification(Handle, DevProp.GUID_DEVINTERFACE_MONITOR);
+#endif
 		}
 
 		~GlobalHooks()
 		{
+#if X64
+
+			if (dnHandle != IntPtr.Zero)
+				UnregisterDeviceNotification(dnHandle);
+#endif
+
 			DestroyHandle();
 
 			_CBT?.Stop();
@@ -155,7 +174,18 @@ namespace MMHLR
 
 		protected override void WndProc(ref Message m)
 		{
+#if X64
+			if (m.Msg == WM_DEVICECHANGE)
+            {
+				MonitorDevicesChanged?.Invoke(this, new EventArgs());
+            }
+			else
+            {
+				ProcessWindowMessage(ref m);
+			}
+#else
 			ProcessWindowMessage(ref m);
+#endif
 			base.WndProc(ref m);
 		}
 
