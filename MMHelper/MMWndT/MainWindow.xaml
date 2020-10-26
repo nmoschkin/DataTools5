@@ -1,0 +1,131 @@
+﻿<Window
+    x:Class="MMWndT.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:MMWndT"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+    Title="Dynamic Desktop Windows Tool"
+    Width="800"
+    Height="450"
+    Icon="pack://application:,,,/MMWndT;component/Resources/mmhelper.png"
+    mc:Ignorable="d">
+
+    <Grid
+        Width="{Binding}"
+        Height="{Binding}"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        Background="{x:Static SystemColors.MenuBrush}"
+        ShowGridLines="False">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition />
+            <RowDefinition Height="48" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+
+
+        <Menu
+            x:Name="menuBar"
+            Grid.Row="0"
+            Grid.ColumnSpan="3"
+            Height="20"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top">
+            <MenuItem x:Name="fileMenu" Header="_File">
+                <MenuItem.Items>
+                    <MenuItem x:Name="mnuRestore" Header="_Restore Window" />
+                    <Separator />
+                    <MenuItem x:Name="mnuEnable" Header="_Enable Desktop Monitor" />
+                    <MenuItem x:Name="mnuDisable" Header="_Disable Desktop Monitor" />
+                    <Separator />
+                    <MenuItem x:Name="mnuQuit" Header="_Quit" />
+                </MenuItem.Items>
+            </MenuItem>
+        </Menu>
+
+        <ListView
+            x:Name="WindowList"
+            Grid.Row="1"
+            Margin="8,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="White">
+
+            <!--<ListView.ContextMenu>
+                <ContextMenu
+                    x:Name="netMenu"
+                    DataContext="{Binding IPWindow}"
+                    ItemsSource="{Binding ViewMenu}" />
+
+            </ListView.ContextMenu>-->
+
+            <ListView.View>
+                <GridView x:Name="logGridView">
+                    <GridViewColumn
+                        Width="204"
+                        CellTemplate="{StaticResource ImgCell}"
+                        Header="Window Name" />
+                    <GridViewColumn Width="140" Header="Event">
+
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Foreground="{Binding Event, Converter={StaticResource actsb}}" Text="{Binding EventText}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+
+                    </GridViewColumn>
+                    <GridViewColumn
+                        Width="140"
+                        DisplayMemberBinding="{Binding MonitorText}"
+                        Header="Monitor / Event" />
+                    <GridViewColumn
+                        Width="140"
+                        DisplayMemberBinding="{Binding Message}"
+                        Header="Message" />
+                    <GridViewColumn
+                        Width="140"
+                        DisplayMemberBinding="{Binding TimeStamp, StringFormat='{}{0:G}'}"
+                        Header="Timestamp" />
+
+
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Grid Grid.Row="2" Background="{x:Static SystemColors.MenuBrush}">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Button
+                x:Name="btnWatch"
+                Width="150"
+                Margin="8"
+                HorizontalAlignment="Left"
+                Content="Start Watching Desktop" />
+            <Button
+                x:Name="btnQuit"
+                Grid.Column="1"
+                Width="150"
+                Margin="8"
+                HorizontalAlignment="Right"
+                Content="Quit" />
+
+
+        </Grid>
+
+        <StatusBar Grid.Row="3" Grid.ColumnSpan="3">
+
+            <StatusBarItem x:Name="tss1" />
+        </StatusBar>
+    </Grid>
+</Window>

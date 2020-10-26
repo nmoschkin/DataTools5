@@ -41,6 +41,8 @@ namespace MMWndT
         public const string StartButtonText = "Start Watching Desktop";
         public const string StopButtonText = "Stop Watching Desktop";
 
+        App Program = (App)System.Windows.Application.Current;
+
         CancellationTokenSource cts = null;
         CancellationToken ct = new CancellationToken();
         Dispatcher maindisp;

@@ -189,11 +189,19 @@ namespace MMHLR
 
                 if (m.LParam != IntPtr.Zero)
                 {
-                    Debugger.Launch();
+                    //Debugger.Launch();
 
-                    MemPtr mm = m.LParam;
-                    var ofs = Marshal.SizeOf<DEV_BROADCAST_HDR>() + Marshal.SizeOf<DEV_BROADCAST_DEVICEINTERFACE>() - 2;
-                    sDisplay = mm.GetString(ofs);
+                    try
+                    {
+                        MemPtr mm = m.LParam;
+                        var ofs = Marshal.SizeOf<DEV_BROADCAST_HDR>() + Marshal.SizeOf<DEV_BROADCAST_DEVICEINTERFACE>() - sizeof(char);
+                        sDisplay = mm.GetString(ofs);
+                    }
+                    catch
+                    {
+
+                    }
+
                 }
 
                 var ea = new HardwareChangedEventArgs((uint)m.WParam, sDisplay);

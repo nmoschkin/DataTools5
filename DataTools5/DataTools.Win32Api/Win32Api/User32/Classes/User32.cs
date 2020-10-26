@@ -393,7 +393,50 @@ namespace DataTools.Win32Api
             return wParam.ToInt32() & 0xFFF0;
         }
 
-
+        /// <summary>
+        /// Retrieves an ATOM value that uniquely identifies the window class. This is the same atom that the RegisterClassEx function returns.
+        /// </summary>
+        public const int GCW_ATOM = -32;
+        /// <summary>
+        /// Retrieves the size, in bytes, of the extra memory associated with the class.
+        /// </summary>
+        public const int GCL_CBCLSEXTRA = -20;
+        /// <summary>
+        /// Retrieves the size, in bytes, of the extra window memory associated with each window in the class. For information on how to access this memory, see GetWindowLongPtr.
+        /// </summary>
+        public const int GCL_CBWNDEXTRA = -18;
+        /// <summary>
+        /// Retrieves a handle to the background brush associated with the class.
+        /// </summary>
+        public const int GCLP_HBRBACKGROUND = -10;
+        /// <summary>
+        /// Retrieves a handle to the cursor associated with the class.
+        /// </summary>
+        public const int GCLP_HCURSOR = -12;
+        /// <summary>
+        /// Retrieves a handle to the icon associated with the class.
+        /// </summary>
+        public const int GCLP_HICON = -14;
+        /// <summary>
+        /// Retrieves a handle to the small icon associated with the class.
+        /// </summary>
+        public const int GCLP_HICONSM = -34;
+        /// <summary>
+        /// Retrieves a handle to the module that registered the class.
+        /// </summary>
+        public const int GCLP_HMODULE = -16;
+        /// <summary>
+        /// Retrieves the pointer to the menu name string. The string identifies the menu resource associated with the class.
+        /// </summary>
+        public const int GCLP_MENUNAME = -8;
+        /// <summary>
+        /// Retrieves the window-class style bits.
+        /// </summary>
+        public const int GCL_STYLE = -26;
+        /// <summary>
+        /// Retrieves the address of the window procedure, or a handle representing the address of the window procedure. You must use the CallWindowProc function to call the window procedure.
+        /// </summary>
+        public const int GCLP_WNDPROC = -24;
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
@@ -1775,6 +1818,43 @@ namespace DataTools.Win32Api
         public static extern IntPtr GetWindowLong(IntPtr hWnd, int code);
         [DllImport("user32", EntryPoint = "GetWindowLongPtrW", CharSet = CharSet.Unicode)]
         public static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int code);
+
+
+        [DllImport("user32", EntryPoint = "GetClassLongW", CharSet = CharSet.Unicode)]
+        public static extern IntPtr GetClassLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32", EntryPoint = "GetClassLongPtrW", CharSet = CharSet.Unicode)]
+        public static extern IntPtr GetClassLongPtr(IntPtr hWnd, int nIndex);
+
+
+        public static System.Drawing.Icon GetWindowIcon(IntPtr hwnd, int iconType = 0)
+        {
+            IntPtr hIcon = SendMessage(hwnd, WM_GETICON, iconType, 96);
+            if (hIcon != IntPtr.Zero)
+            {
+                var ico = (Icon)Icon.FromHandle(hIcon).Clone();
+                return ico;
+            }
+
+            if (IntPtr.Size == 8)
+            {
+                hIcon = GetClassLongPtr(hwnd, GCLP_HICON);
+            }
+            else
+            {
+                hIcon = GetClassLong(hwnd, GCLP_HICON);
+            }
+
+            if (hIcon != IntPtr.Zero)
+            {
+                var ico = (Icon)Icon.FromHandle(hIcon).Clone();
+                return ico;
+            }
+
+            return null;
+
+        }
+
 
 
         [DllImport("user32", EntryPoint = "GetWindowModuleFileNameW", CharSet = CharSet.Unicode)]

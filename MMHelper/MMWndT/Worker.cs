@@ -157,6 +157,8 @@ namespace MMWndT
             _logger = null;
         }
 
+        public bool WorkerShutdown { get; private set; } = false;
+
         private CancellationToken ttok;
 
         private Process x86proc;
@@ -177,7 +179,7 @@ namespace MMWndT
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            disp = Program.MainDispatcher;
+            disp = System.Windows.Application.Current.Dispatcher;
             ttok = stoppingToken;
 
             var dwnds = GetCurrentDesktopWindows();
@@ -282,7 +284,6 @@ namespace MMWndT
 
             }
 
-
             OUTPUT_STRUCT os = new OUTPUT_STRUCT()
             {
                 cb = Marshal.SizeOf<OUTPUT_STRUCT>(),
@@ -294,7 +295,8 @@ namespace MMWndT
             x64proc.WaitForExit();
             x86proc.WaitForExit();
 
-            Environment.Exit(0);
+            WorkerShutdown = true;
+            //Environment.Exit(0);
         }
 
         public void StartDeskMover()
