@@ -94,6 +94,15 @@
                         Width="140"
                         DisplayMemberBinding="{Binding TimeStamp, StringFormat='{}{0:G}'}"
                         Header="Timestamp" />
+                    <GridViewColumn Width="140" Header="Module">
+
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Module}" ToolTip="{Binding Module}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+
+                    </GridViewColumn>
 
 
                 </GridView>

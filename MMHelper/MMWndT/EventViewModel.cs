@@ -3,10 +3,14 @@ using DataTools.Win32Api;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -73,6 +77,19 @@ namespace MMWndT
         }
 
 
+        private string module;
+
+        public string Module
+        {
+            get => module;
+            set
+            {
+                if (module == value) return;
+                module = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private string msg;
 
@@ -86,6 +103,8 @@ namespace MMWndT
                 OnPropertyChanged();
             }
         }
+
+
 
 
 
@@ -231,11 +250,71 @@ namespace MMWndT
 
             if (e.Action != Worker.MSG_DESTROYED)
             {
-               
-                ImageSource icon = BitmapTools.MakeWPFImage(GetWindowIcon(e.Handle, 1));
+                ImageSource icon = null;
+
+                var sb = new StringBuilder();
+                sb.Capacity = 512;
+
+                Process p = GetWindowProcess(e.Handle);
+
+                var sp = p.MainModule.FileName;
+                Module = sp;
+
+                if (sp != null)
+                {
+                    sp = Path.GetFileName(sp);
+
+                    if (sp == "chrome.exe")
+                    {
+                        //List<IntPtr> lchild = new List<IntPtr>();
+
+                        //EnumChildWindows(e.Handle, (hwnd, lParam) =>
+                        //{
+                        //    lchild.Add(hwnd);
+                        //    return true;
+                        //}, IntPtr.Zero);
+
+                        Module = GetChromeWindowUrl(WindowName);
+                        var url = Module;
+                        int i = url.IndexOf("/");
+                        if (i != -1) url = url.Substring(0, i);
+                        url = "https://" + url + "/favicon.ico";
+
+                        Task.Run(async () =>
+                        {
+                            if (!cache.ContainsKey(url))
+                            {
+                                HttpClient cli = new HttpClient();
+
+                                var res = cli.GetAsync(new Uri(url));
+                                Stream stream = null;
+
+                                stream = await res.Result.Content.ReadAsStreamAsync();
+
+                                if (stream != null)
+                                {
+                                    icon = BitmapTools.MakeWPFImage(new System.Drawing.Icon(stream));
+                                }
+
+                                cache.Add(url, icon);
+                            }
+                            else
+                            {
+                                icon = cache[url];
+                            }
+
+                            Icon = icon;
+
+                        });
+
+                        return;
+                    }
+
+                }
 
                 if (!cache.ContainsKey(e.Handle.ToString()))
                 {
+                    icon = BitmapTools.MakeWPFImage(GetWindowIcon(e.Handle, 1));
                     cache.Add(e.Handle.ToString(), icon);
                 }
                 else

@@ -23,10 +23,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Automation;
 using DataTools.Memory;
 using DataTools.Win32Api;
 
@@ -1890,6 +1892,14 @@ namespace DataTools.Win32Api
         public static extern IntPtr CreateWindowEx(uint dwExStyle, [MarshalAs(UnmanagedType.LPWStr)] string lpClassName, [MarshalAs(UnmanagedType.LPWStr)] string lpWindowName, uint dwStyle, int x, int y, int nWidth, int nHeight, IntPtr hWndParent, IntPtr hMenu, IntPtr hInstance, IntPtr lpParam);
         [DllImport("user32", CharSet = CharSet.Unicode)]
         public static extern bool DestroyWindow(IntPtr hwnd);
+
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, EntryPoint = "FindWindowW")]
+        public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, EntryPoint = "FindWindowExW")]
+        public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string lclassName, string windowTitle);
+
         [DllImport("user32", CharSet = CharSet.Unicode)]
         public static extern int GetSysColor(int nIndex);
         [DllImport("user32")]
@@ -1968,8 +1978,74 @@ namespace DataTools.Win32Api
             return t;
         }
 
+        public static Process GetWindowProcess(IntPtr hwnd)
+        {
+            int pid = 0;
+            GetWindowThreadProcessId(hwnd, ref pid);
+            return Process.GetProcessById(pid);
+        }
 
 
+        public static Icon GetChromeWindowIcon(string title)
+        {
+            IntPtr hwnd = FindWindow("Chrome_WidgetWin_1", title);
+
+            var hIcon = SendMessage(hwnd, WM_GETICON, 1, 96);
+            if (hIcon != IntPtr.Zero)
+            {
+                var ico = (Icon)Icon.FromHandle(hIcon).Clone();
+                return ico;
+            }
+
+            return null; 
+
+        }
+        public static string GetChromeWindowUrl(string title)
+        {
+            IntPtr hwnd = FindWindow("Chrome_WidgetWin_1", title);
+
+            // find the automation element
+            AutomationElement elm = AutomationElement.FromHandle(hwnd);
+            AutomationElement elmUrlBar = elm.FindFirst(TreeScope.Descendants,
+              new PropertyCondition(AutomationElement.NameProperty, "Address and search bar"));
+            
+            // if it can be found, get the value from the URL bar
+            if (elmUrlBar != null)
+            {
+                AutomationPattern[] patterns = elmUrlBar.GetSupportedPatterns();
+                if (patterns.Length > 0)
+                {
+                    ValuePattern val = (ValuePattern)elmUrlBar.GetCurrentPattern(patterns[0]);
+                    return val.Current.Value;
+                }
+            }
+
+
+            //SafePtr mm = new SafePtr(260 * sizeof(char));
+            //var smr = SendMessage(hwnd, WM_GETTEXT, 260, mm);
+
+            //string example = (string)mm;
+            //mm.ZeroMemory();
+
+            //var wf = FindWindowEx(hwnd, IntPtr.Zero, "Chrome_OmniboxView", null);
+            //if (wf == IntPtr.Zero) return null;
+            
+            //smr = SendMessage(wf, WM_GETTEXT, 260, mm);
+            //string res = (string)mm;
+
+            //mm.Free();
+
+            return null;
+        }
+
+        public static string GetWindowName(IntPtr Hwnd)
+        {
+            // This function gets the name of a window from its handle
+            StringBuilder Title = new StringBuilder(256);
+            GetWindowText(Hwnd, Title, 256);
+
+            return Title.ToString().Trim();
+        }
 
 
 
@@ -2188,5 +2264,24 @@ namespace DataTools.Win32Api
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+
+
+
+        [DllImport("kernel32", EntryPoint = "GetModuleFileNameW")]
+        public static extern int GetModuleFileName(
+            IntPtr hModule,
+            StringBuilder lpFilename,
+            int nSize
+        );
+
+
+
+        //[DllImport("kernel32")]
+        //public static extern int GetWindowThreadProcessId(
+        //    IntPtr hWnd,
+        //    out int lpdwProcessId
+        //);
+
+
     }
 }
