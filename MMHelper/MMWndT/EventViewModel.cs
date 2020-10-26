@@ -260,57 +260,57 @@ namespace MMWndT
                 var sp = p.MainModule.FileName;
                 Module = sp;
 
-                if (sp != null)
-                {
-                    sp = Path.GetFileName(sp);
+                //if (sp != null)
+                //{
+                //    sp = Path.GetFileName(sp);
 
-                    if (sp == "chrome.exe")
-                    {
-                        //List<IntPtr> lchild = new List<IntPtr>();
+                //    if (sp == "chrome.exe")
+                //    {
+                //        //List<IntPtr> lchild = new List<IntPtr>();
 
-                        //EnumChildWindows(e.Handle, (hwnd, lParam) =>
-                        //{
-                        //    lchild.Add(hwnd);
-                        //    return true;
-                        //}, IntPtr.Zero);
+                //        //EnumChildWindows(e.Handle, (hwnd, lParam) =>
+                //        //{
+                //        //    lchild.Add(hwnd);
+                //        //    return true;
+                //        //}, IntPtr.Zero);
 
-                        Module = GetChromeWindowUrl(WindowName);
-                        var url = Module;
-                        int i = url.IndexOf("/");
-                        if (i != -1) url = url.Substring(0, i);
-                        url = "https://" + url + "/favicon.ico";
+                //        Module = GetChromeWindowUrl(WindowName);
+                //        var url = Module;
+                //        int i = url.IndexOf("/");
+                //        if (i != -1) url = url.Substring(0, i);
+                //        url = "https://" + url + "/favicon.ico";
 
-                        Task.Run(async () =>
-                        {
-                            if (!cache.ContainsKey(url))
-                            {
-                                HttpClient cli = new HttpClient();
+                //        Task.Run(async () =>
+                //        {
+                //            if (!cache.ContainsKey(url))
+                //            {
+                //                HttpClient cli = new HttpClient();
 
-                                var res = cli.GetAsync(new Uri(url));
-                                Stream stream = null;
+                //                var res = cli.GetAsync(new Uri(url));
+                //                Stream stream = null;
 
-                                stream = await res.Result.Content.ReadAsStreamAsync();
+                //                stream = await res.Result.Content.ReadAsStreamAsync();
 
-                                if (stream != null)
-                                {
-                                    icon = BitmapTools.MakeWPFImage(new System.Drawing.Icon(stream));
-                                }
+                //                if (stream != null)
+                //                {
+                //                    icon = BitmapTools.MakeWPFImage(new System.Drawing.Icon(stream));
+                //                }
 
-                                cache.Add(url, icon);
-                            }
-                            else
-                            {
-                                icon = cache[url];
-                            }
+                //                cache.Add(url, icon);
+                //            }
+                //            else
+                //            {
+                //                icon = cache[url];
+                //            }
 
-                            Icon = icon;
+                //            Icon = icon;
 
-                        });
+                //        });
 
-                        return;
-                    }
+                //        return;
+                //    }
 
-                }
+                //}
 
                 if (!cache.ContainsKey(e.Handle.ToString()))
                 {
