@@ -92,7 +92,7 @@
                         Header="Message" />
                     <GridViewColumn
                         Width="140"
-                        DisplayMemberBinding="{Binding TimeStamp, StringFormat='{}{0:G}'}"
+                        DisplayMemberBinding="{Binding Timestamp, StringFormat='{}{0:G}'}"
                         Header="Timestamp" />
                     <GridViewColumn Width="140" Header="Module">
 

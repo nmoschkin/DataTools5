@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -228,7 +229,7 @@ namespace MMWndT
 
 
 
-        public void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -237,30 +238,22 @@ namespace MMWndT
         {
             Source = e;
 
-            _ = Task.Run(() =>
+            Timestamp = DateTime.Now;
+
+            Monitor = e.Monitor;
+            Event = e.Action;
+
+            Message = e.Message;
+            WindowName = e.WindowName;
+            Handle = e.Handle;
+
+            // nothing more to do if there's no handle.
+            if (e.Handle == IntPtr.Zero) return;
+
+            _ = Task.Run(async () =>
             {
                 try
                 {
-
-                    //string sPath;
-
-                    //if (lstEvents.Items.Count > 100)
-                    //{
-                    //    lstEvents.Items.RemoveAt(lstEvents.Items.Count - 1);
-                    //}
-
-                    Timestamp = DateTime.Now;
-
-                    Monitor = e.Monitor;
-                    Event = e.Action;
-
-                    Message = e.Message;
-                    WindowName = e.WindowName;
-                    Handle = e.Handle;
-
-                    // nothing more to do if there's no handle.
-                    if (e.Handle == IntPtr.Zero) return;
-
                     if (e.Action != Worker.MSG_DESTROYED)
                     {
                         ImageSource icon = null;
@@ -273,59 +266,67 @@ namespace MMWndT
                         var sp = p.MainModule.FileName;
                         Module = sp;
 
-                        //if (sp != null)
-                        //{
-                        //    sp = Path.GetFileName(sp);
+                        if (sp != null)
+                        {
+                            sp = Path.GetFileName(sp);
 
-                        //    if (sp == "chrome.exe")
-                        //    {
-                        //        //List<IntPtr> lchild = new List<IntPtr>();
+                            if (sp == "chrome.exe")
+                            {
+                                Module = GetChromeWindowUrl(WindowName);
 
-                        //        //EnumChildWindows(e.Handle, (hwnd, lParam) =>
-                        //        //{
-                        //        //    lchild.Add(hwnd);
-                        //        //    return true;
-                        //        //}, IntPtr.Zero);
+                                var url = Module;
 
-                        //        Module = GetChromeWindowUrl(WindowName);
-                        //        var url = Module;
-                        //        int i = url.IndexOf("/");
-                        //        if (i != -1) url = url.Substring(0, i);
-                        //        url = "https://" + url + "/favicon.ico";
+                                int i = url.IndexOf("/");
+                                if (i != -1) url = url.Substring(0, i);
 
-                        //        Task.Run(async () =>
-                        //        {
-                        //            if (!cache.ContainsKey(url))
-                        //            {
-                        //                HttpClient cli = new HttpClient();
+                                if (!url.StartsWith("https://")) url = "https://" + url;
+                                
+                                url += "/favicon.ico";
 
-                        //                var res = cli.GetAsync(new Uri(url));
-                        //                Stream stream = null;
+                                while (!System.Threading.Monitor.TryEnter(cache))
+                                {
+                                    Thread.Yield();
+                                }
 
-                        //                stream = await res.Result.Content.ReadAsStreamAsync();
+                                if (!cache.ContainsKey(url))
+                                {
+                                    System.Threading.Monitor.Exit(cache);
 
-                        //                if (stream != null)
-                        //                {
-                        //                    icon = BitmapTools.MakeWPFImage(new System.Drawing.Icon(stream));
-                        //                }
+                                    HttpClient cli = new HttpClient();
 
-                        //                cache.Add(url, icon);
-                        //            }
-                        //            else
-                        //            {
-                        //                icon = cache[url];
-                        //            }
+                                    var res = await cli.GetAsync(new Uri(url));
+                                    res.EnsureSuccessStatusCode();
 
-                        //            Icon = icon;
+                                    Stream stream = null;
 
-                        //        });
+                                    stream = await res.Content.ReadAsStreamAsync();
 
-                        //        return;
-                        //    }
+                                    if (stream != null)
+                                    {
+                                        icon = BitmapTools.MakeWPFImage(new System.Drawing.Icon(stream));
+                                    }
 
-                        //}
+                                    while (!System.Threading.Monitor.TryEnter(cache))
+                                    {
+                                        Thread.Yield();
+                                    }
 
-                        while(!System.Threading.Monitor.TryEnter(cache))
+                                    cache.Add(url, icon);
+                                }
+                                else
+                                {
+                                    icon = cache[url];
+                                }
+
+                                System.Threading.Monitor.Exit(cache);
+                                Icon = icon;
+
+                                return;
+                            }
+
+                        }
+
+                        while (!System.Threading.Monitor.TryEnter(cache))
                         {
                             Thread.Yield();
                         }
@@ -376,9 +377,9 @@ namespace MMWndT
                         {
                             Message = ex2.Message;
                         }
-                        catch 
-                        { 
-                        
+                        catch
+                        {
+
                         }
                     }
                 }

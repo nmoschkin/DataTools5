@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Automation;
@@ -1900,6 +1901,9 @@ namespace DataTools.Win32Api
         [DllImport("user32.dll", CharSet = CharSet.Unicode, EntryPoint = "FindWindowExW")]
         public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string lclassName, string windowTitle);
 
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, EntryPoint = "GetClassNameW")]
+        public static extern int GetClassName(IntPtr hwnd, StringBuilder lpClassName, int nMaxCount);
+
         [DllImport("user32", CharSet = CharSet.Unicode)]
         public static extern int GetSysColor(int nIndex);
         [DllImport("user32")]
@@ -1985,21 +1989,6 @@ namespace DataTools.Win32Api
             return Process.GetProcessById(pid);
         }
 
-
-        public static Icon GetChromeWindowIcon(string title)
-        {
-            IntPtr hwnd = FindWindow("Chrome_WidgetWin_1", title);
-
-            var hIcon = SendMessage(hwnd, WM_GETICON, 1, 96);
-            if (hIcon != IntPtr.Zero)
-            {
-                var ico = (Icon)Icon.FromHandle(hIcon).Clone();
-                return ico;
-            }
-
-            return null; 
-
-        }
         public static string GetChromeWindowUrl(string title)
         {
             IntPtr hwnd = FindWindow("Chrome_WidgetWin_1", title);
@@ -2019,21 +2008,6 @@ namespace DataTools.Win32Api
                     return val.Current.Value;
                 }
             }
-
-
-            //SafePtr mm = new SafePtr(260 * sizeof(char));
-            //var smr = SendMessage(hwnd, WM_GETTEXT, 260, mm);
-
-            //string example = (string)mm;
-            //mm.ZeroMemory();
-
-            //var wf = FindWindowEx(hwnd, IntPtr.Zero, "Chrome_OmniboxView", null);
-            //if (wf == IntPtr.Zero) return null;
-            
-            //smr = SendMessage(wf, WM_GETTEXT, 260, mm);
-            //string res = (string)mm;
-
-            //mm.Free();
 
             return null;
         }
