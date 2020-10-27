@@ -171,10 +171,10 @@ namespace MMHLR
             {
                 connSock?.Close();
 
-                gh.Shell.Stop();
-                gh.CBT.Stop();
+                gh?.Shell?.Stop();
+                gh?.CBT?.Stop();
 
-                gh.DestroyHandle();
+                gh?.DestroyHandle();
 
                 Environment.Exit(0);
             }

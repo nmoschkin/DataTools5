@@ -325,6 +325,11 @@ namespace MMWndT
 
                         //}
 
+                        while(!System.Threading.Monitor.TryEnter(cache))
+                        {
+                            Thread.Yield();
+                        }
+
                         if (!cache.ContainsKey(e.Handle.ToString()))
                         {
                             icon = BitmapTools.MakeWPFImage(GetWindowIcon(e.Handle, 1));
@@ -336,18 +341,31 @@ namespace MMWndT
                         }
 
                         Icon = icon;
+
+                        System.Threading.Monitor.Exit(cache);
+
                     }
                     else
                     {
+                        while (!System.Threading.Monitor.TryEnter(cache))
+                        {
+                            Thread.Yield();
+                        }
+
                         if (cache.ContainsKey(e.Handle.ToString()))
                         {
                             cache.Remove(e.Handle.ToString());
                         }
+
+                        System.Threading.Monitor.Exit(cache);
                     }
 
                 }
                 catch (Exception ex)
                 {
+                    if (System.Threading.Monitor.IsEntered(cache)) 
+                        System.Threading.Monitor.Exit(cache);
+
                     Message = ex.Message;
                 }
 
