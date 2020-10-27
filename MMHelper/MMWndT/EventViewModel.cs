@@ -363,14 +363,27 @@ namespace MMWndT
                 }
                 catch (Exception ex)
                 {
-                    if (System.Threading.Monitor.IsEntered(cache)) 
-                        System.Threading.Monitor.Exit(cache);
+                    try
+                    {
+                        if (System.Threading.Monitor.IsEntered(cache))
+                            System.Threading.Monitor.Exit(cache);
 
-                    Message = ex.Message;
+                        Message = ex.Message;
+                    }
+                    catch (Exception ex2)
+                    {
+                        try
+                        {
+                            Message = ex2.Message;
+                        }
+                        catch 
+                        { 
+                        
+                        }
+                    }
                 }
 
             });
-
 
         }
 

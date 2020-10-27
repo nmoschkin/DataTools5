@@ -163,7 +163,7 @@ namespace MMWndT
             hwndHelper.EnsureHandle();
 
             InitWinForms();
-
+            
             Program.Work.WorkLogger += Work_WorkLogger;
             Program.Work.WorkNotify += Work_WorkNotify;
 
@@ -198,7 +198,7 @@ namespace MMWndT
             cmnuRestore.Click += MnuRestore_Click;
 
             maindisp = Dispatcher.CurrentDispatcher;
-
+           
             Program.Work.ActiveWindows.Add(hwndHelper.Handle, new ActWndInfo() { WindowName = Title, Timestamp = DateTime.Now });
 
         }
