@@ -202,6 +202,10 @@ namespace MMWndT
                         s = "Destroyed";
                         break;
 
+                    case Worker.MSG_ERROR:
+                        s = "Error";
+                        break;
+
                     default:
                         s = "Unknown Event";
                         break;
@@ -232,98 +236,122 @@ namespace MMWndT
         public EventViewModel(WorkerLogEventArgs e)
         {
             Source = e;
-            string sPath;
 
-            //if (lstEvents.Items.Count > 100)
-            //{
-            //    lstEvents.Items.RemoveAt(lstEvents.Items.Count - 1);
-            //}
-
-            Timestamp = DateTime.Now;
-
-            Monitor = e.Monitor;
-            Event = e.Action;
-
-            Message = e.Message;
-            WindowName = e.WindowName;
-            Handle = e.Handle;
-
-            if (e.Action != Worker.MSG_DESTROYED)
+            _ = Task.Run(() =>
             {
-                ImageSource icon = null;
-
-                var sb = new StringBuilder();
-                sb.Capacity = 512;
-
-                Process p = GetWindowProcess(e.Handle);
-
-                var sp = p.MainModule.FileName;
-                Module = sp;
-
-                //if (sp != null)
-                //{
-                //    sp = Path.GetFileName(sp);
-
-                //    if (sp == "chrome.exe")
-                //    {
-                //        //List<IntPtr> lchild = new List<IntPtr>();
-
-                //        //EnumChildWindows(e.Handle, (hwnd, lParam) =>
-                //        //{
-                //        //    lchild.Add(hwnd);
-                //        //    return true;
-                //        //}, IntPtr.Zero);
-
-                //        Module = GetChromeWindowUrl(WindowName);
-                //        var url = Module;
-                //        int i = url.IndexOf("/");
-                //        if (i != -1) url = url.Substring(0, i);
-                //        url = "https://" + url + "/favicon.ico";
-
-                //        Task.Run(async () =>
-                //        {
-                //            if (!cache.ContainsKey(url))
-                //            {
-                //                HttpClient cli = new HttpClient();
-
-                //                var res = cli.GetAsync(new Uri(url));
-                //                Stream stream = null;
-
-                //                stream = await res.Result.Content.ReadAsStreamAsync();
-
-                //                if (stream != null)
-                //                {
-                //                    icon = BitmapTools.MakeWPFImage(new System.Drawing.Icon(stream));
-                //                }
-
-                //                cache.Add(url, icon);
-                //            }
-                //            else
-                //            {
-                //                icon = cache[url];
-                //            }
-
-                //            Icon = icon;
-
-                //        });
-
-                //        return;
-                //    }
-
-                //}
-
-                if (!cache.ContainsKey(e.Handle.ToString()))
+                try
                 {
-                    icon = BitmapTools.MakeWPFImage(GetWindowIcon(e.Handle, 1));
-                    cache.Add(e.Handle.ToString(), icon);
+
+                    //string sPath;
+
+                    //if (lstEvents.Items.Count > 100)
+                    //{
+                    //    lstEvents.Items.RemoveAt(lstEvents.Items.Count - 1);
+                    //}
+
+                    Timestamp = DateTime.Now;
+
+                    Monitor = e.Monitor;
+                    Event = e.Action;
+
+                    Message = e.Message;
+                    WindowName = e.WindowName;
+                    Handle = e.Handle;
+
+                    // nothing more to do if there's no handle.
+                    if (e.Handle == IntPtr.Zero) return;
+
+                    if (e.Action != Worker.MSG_DESTROYED)
+                    {
+                        ImageSource icon = null;
+
+                        var sb = new StringBuilder();
+                        sb.Capacity = 512;
+
+                        Process p = GetWindowProcess(e.Handle);
+
+                        var sp = p.MainModule.FileName;
+                        Module = sp;
+
+                        //if (sp != null)
+                        //{
+                        //    sp = Path.GetFileName(sp);
+
+                        //    if (sp == "chrome.exe")
+                        //    {
+                        //        //List<IntPtr> lchild = new List<IntPtr>();
+
+                        //        //EnumChildWindows(e.Handle, (hwnd, lParam) =>
+                        //        //{
+                        //        //    lchild.Add(hwnd);
+                        //        //    return true;
+                        //        //}, IntPtr.Zero);
+
+                        //        Module = GetChromeWindowUrl(WindowName);
+                        //        var url = Module;
+                        //        int i = url.IndexOf("/");
+                        //        if (i != -1) url = url.Substring(0, i);
+                        //        url = "https://" + url + "/favicon.ico";
+
+                        //        Task.Run(async () =>
+                        //        {
+                        //            if (!cache.ContainsKey(url))
+                        //            {
+                        //                HttpClient cli = new HttpClient();
+
+                        //                var res = cli.GetAsync(new Uri(url));
+                        //                Stream stream = null;
+
+                        //                stream = await res.Result.Content.ReadAsStreamAsync();
+
+                        //                if (stream != null)
+                        //                {
+                        //                    icon = BitmapTools.MakeWPFImage(new System.Drawing.Icon(stream));
+                        //                }
+
+                        //                cache.Add(url, icon);
+                        //            }
+                        //            else
+                        //            {
+                        //                icon = cache[url];
+                        //            }
+
+                        //            Icon = icon;
+
+                        //        });
+
+                        //        return;
+                        //    }
+
+                        //}
+
+                        if (!cache.ContainsKey(e.Handle.ToString()))
+                        {
+                            icon = BitmapTools.MakeWPFImage(GetWindowIcon(e.Handle, 1));
+                            cache.Add(e.Handle.ToString(), icon);
+                        }
+                        else
+                        {
+                            icon = cache[e.Handle.ToString()];
+                        }
+
+                        Icon = icon;
+                    }
+                    else
+                    {
+                        if (cache.ContainsKey(e.Handle.ToString()))
+                        {
+                            cache.Remove(e.Handle.ToString());
+                        }
+                    }
+
                 }
-                else
+                catch (Exception ex)
                 {
-                    icon = cache[e.Handle.ToString()];
+                    Message = ex.Message;
                 }
 
-                Icon = icon;
-            }
+            });
 
 
         }

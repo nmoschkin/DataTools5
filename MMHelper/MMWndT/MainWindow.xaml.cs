@@ -181,6 +181,9 @@ namespace MMWndT
             mnuDisable.IsEnabled = false;
 
             notify.MouseClick += Notify_MouseClick;
+            notify.MouseDoubleClick += notify_DoubleClick;
+
+            btnToggle.Click += btnToggle_Click;
 
             btnQuit.Click += btnQuit_Click;
 
@@ -260,7 +263,7 @@ namespace MMWndT
                     mnuEnable.IsEnabled = false;
                     mnuDisable.IsEnabled = true;
                     notify.Text = ActiveText;
-                    btnWatch.Content = StopButtonText;
+                    btnToggle.Content = StopButtonText;
                     IsWatching = true;
                 }
                 else if (e.Message == Worker.MSG_STOP_MOVER)
@@ -268,7 +271,7 @@ namespace MMWndT
                     mnuEnable.IsEnabled = true;
                     mnuDisable.IsEnabled = false;
                     notify.Text = InactiveText;
-                    btnWatch.Content = StartButtonText;
+                    btnToggle.Content = StartButtonText;
                     IsWatching = false;
                 }
 

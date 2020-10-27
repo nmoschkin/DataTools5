@@ -116,7 +116,7 @@
             </Grid.ColumnDefinitions>
 
             <Button
-                x:Name="btnWatch"
+                x:Name="btnToggle"
                 Width="150"
                 Margin="8"
                 HorizontalAlignment="Left"

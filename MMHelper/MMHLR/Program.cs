@@ -54,6 +54,7 @@ namespace MMHLR
         public const int MSG_TERMINATE = 27;
         public const int MSG_INFORM_MY = 124;
         public const int MSG_HW_CHANGE = 129;
+        public const int MSG_ERROR = 255;
 
         private static Socket listenSock;
         private static Socket connSock = null;
@@ -160,9 +161,9 @@ namespace MMHLR
                     }
 
                 }
-                catch
+                catch(Exception ex)
                 {
-                    break;
+                    SendShell(MSG_ERROR, IntPtr.Zero, ex.Message);
                 }
             }
             
@@ -179,50 +180,61 @@ namespace MMHLR
             }
             catch
             {
-
+                Environment.Exit(0);
             }
         }
 
         private static void SendShell(int msg, IntPtr Handle, string text = null, IntPtr? extra = null, W32RECT? rect = null)
         {
-            int ss = Marshal.SizeOf<OUTPUT_STRUCT>();
-            byte[] tbytes = null;
 
-            if (text != null && text.Length > 0)
+            try
             {
-                tbytes = Encoding.Unicode.GetBytes(text);
-                ss += tbytes.Length;
-            }
-            
-            if (extra == null) extra = IntPtr.Zero;
-            if (rect == null)
-            {
-                rect = new W32RECT();
-            }
 
-            var os = new OUTPUT_STRUCT()
-            {
-                cb = ss,
-                msg = msg,
+                int ss = Marshal.SizeOf<OUTPUT_STRUCT>();
+                byte[] tbytes = null;
+
+                if (text != null && text.Length > 0)
+                {
+                    tbytes = Encoding.Unicode.GetBytes(text);
+                    ss += tbytes.Length;
+                }
+
+                if (extra == null) extra = IntPtr.Zero;
+                if (rect == null)
+                {
+                    rect = new W32RECT();
+                }
+
+                var os = new OUTPUT_STRUCT()
+                {
+                    cb = ss,
+                    msg = msg,
 #if X64
-                LongData1 = (long)Handle,
-                LongData2 = (long)extra,
+                    LongData1 = (long)Handle,
+                    LongData2 = (long)extra,
 #else
-                IntData1 = (int)Handle,
-                IntData2 = (int)extra,
+                    IntData1 = (int)Handle,
+                    IntData2 = (int)extra,
 #endif
 
-                rect = (W32RECT)rect
-            };
+                    rect = (W32RECT)rect
+                };
 
-            var bcpy = new byte[ss];
-            var gch = GCHandle.Alloc(bcpy, GCHandleType.Pinned);
+                var bcpy = new byte[ss];
+                var gch = GCHandle.Alloc(bcpy, GCHandleType.Pinned);
 
-            Marshal.StructureToPtr(os, gch.AddrOfPinnedObject(), false);
-            gch.Free();
+                Marshal.StructureToPtr(os, gch.AddrOfPinnedObject(), false);
+                gch.Free();
 
-            Write(bcpy);
-            if (tbytes != null) Write(tbytes);
+                Write(bcpy);
+                if (tbytes != null) Write(tbytes);
+            }
+            catch(Exception ex)
+            {
+
+                // usually we'd log an error, but whatfor the logger?
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private static void HardwareChanged(object sender, HardwareChangedEventArgs e)
@@ -318,6 +330,13 @@ namespace MMHLR
 
             while (t < c)
             {
+
+                if (connSock == null || (connSock != null && connSock.Connected == false))
+                {
+                    Thread.Yield();
+                    return null;
+                }
+
                 r = connSock.Receive(input, t, c, SocketFlags.None);
 
                 t += r;
@@ -332,6 +351,12 @@ namespace MMHLR
 
         private static byte[] ReadAuto()
         {
+            if (connSock == null || (connSock != null && connSock.Connected == false))
+            {
+                Thread.Yield();
+                return null;
+            }
+
             Monitor.Enter(connSock);
 
             int count = 4;
@@ -377,6 +402,12 @@ namespace MMHLR
 
         private static void Write(byte[] buffer)
         {
+            if (connSock == null || (connSock != null && connSock.Connected == false))
+            {
+                Thread.Yield();
+                return;
+            }
+
             connSock.Send(buffer);
         }
 

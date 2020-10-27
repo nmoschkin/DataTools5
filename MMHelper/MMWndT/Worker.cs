@@ -135,6 +135,7 @@ namespace MMWndT
         public const int MSG_TERMINATE = 27;
         public const int MSG_INFORM_MY = 124;
         public const int MSG_HW_CHANGE = 129;
+        public const int MSG_ERROR = 255;
 
         private Socket x64Sock;
         private Socket x86Sock;
@@ -244,42 +245,57 @@ namespace MMWndT
                 Application.DoEvents();
                 Thread.Sleep(100);
 
-                if (x64proc.HasExited)
+                try
                 {
-                    stinfo = new ProcessStartInfo()
+
+                    if (x64proc == null || (x64proc != null && x64proc.HasExited))
                     {
-                        FileName = "MMHLR64.exe",
-                        RedirectStandardInput = true,
-                        RedirectStandardOutput = true,
-                        CreateNoWindow = true
-                    };
+                        x64Sock = null;
+                        stinfo = new ProcessStartInfo()
+                        {
+                            FileName = "MMHLR64.exe",
+                            RedirectStandardInput = true,
+                            RedirectStandardOutput = true,
+                            CreateNoWindow = true
+                        };
 
-                    x64proc = Process.Start(stinfo);
+                        x64proc = Process.Start(stinfo);
 
-                    await Task.Delay(1000);
-                    x64Sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
+                        await Task.Delay(1000);
+                    }
 
-                    //x64Sock.ReceiveTimeout = 100;
-                    x64Sock.Connect(ep64);
+                    if (x64Sock == null || (x64Sock != null && x64Sock.Connected == false))
+                    {
+                        x64Sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
+                        x64Sock.Connect(ep64);
+                    }
+
+
+                    if (x86proc == null || (x86proc != null && x86proc.HasExited))
+                    {
+                        x86Sock = null;
+                        stinfo = new ProcessStartInfo()
+                        {
+                            FileName = "MMHLR32.exe",
+                            RedirectStandardInput = true,
+                            RedirectStandardOutput = true,
+                            CreateNoWindow = true
+                        };
+
+                        x86proc = Process.Start(stinfo);
+
+                        await Task.Delay(1000);
+                    }
+                    
+                    if (x86Sock == null || (x86Sock != null && x86Sock.Connected == false)) 
+                    {
+                        x86Sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
+                        x86Sock.Connect(ep32);
+                    }
                 }
-
-                if (x86proc.HasExited)
+                catch(Exception ex)
                 {
-                    stinfo = new ProcessStartInfo()
-                    {
-                        FileName = "MMHLR32.exe",
-                        RedirectStandardInput = true,
-                        RedirectStandardOutput = true,
-                        CreateNoWindow = true
-                    };
-
-                    x86proc = Process.Start(stinfo);
-
-                    await Task.Delay(1000);
-                    x86Sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
-
-                    //x86Sock.ReceiveTimeout = 100;
-                    x86Sock.Connect(ep32);
+                    AddEvent(ex.Message, null, 0, MSG_ERROR);
                 }
 
             }
@@ -359,11 +375,23 @@ namespace MMWndT
             while (!ttok.IsCancellationRequested)
             {
                 Thread.Sleep(0);
+                if (x64Sock == null || (x64Sock != null && x64Sock.Connected == false))
+                {
+                    Thread.Yield();
+                    continue;
+                }
 
                 try
                 {
                     var os = new OUTPUT_STRUCT();
                     var b = Read(x64Sock, cb);
+
+                    if (b == null || b.Length == 0 || x64Sock == null || (x64Sock != null && x64Sock.Connected == false))
+                    {
+                        Thread.Yield();
+                        continue;
+                    }
+
 
                     MemPtr.Union(ref b, out os);
 
@@ -439,11 +467,21 @@ namespace MMWndT
             while (!ttok.IsCancellationRequested)
             {
                 Thread.Sleep(0);
+                if (x86Sock == null || (x86Sock != null && x86Sock.Connected == false))
+                {
+                    Thread.Yield();
+                    continue;
+                }
 
                 try
                 {
                     var os = new OUTPUT_STRUCT();
                     var b = Read(x86Sock, cb);
+                    if (b == null || b.Length == 0 || x86Sock == null || (x86Sock != null && x86Sock.Connected == false))
+                    {
+                        Thread.Yield();
+                        continue;
+                    }
 
                     MemPtr.Union(ref b, out os);
 
@@ -479,7 +517,6 @@ namespace MMWndT
                 {
 
                 }
-                
 
             }
         }
@@ -794,6 +831,12 @@ namespace MMWndT
 
             while (t < c)
             {
+                if (connSock == null || (connSock != null && connSock.Connected == false))
+                {
+                    Thread.Yield();
+                    return null;
+                }
+
                 r = connSock.Receive(input, t, c, SocketFlags.None);
 
                 t += r;
@@ -822,6 +865,12 @@ namespace MMWndT
 
             while (t < c)
             {
+                if (connSock == null || (connSock != null && connSock.Connected == false))
+                {
+                    Thread.Yield();
+                    return null;
+                }
+
                 r = connSock.Receive(input, t, c, SocketFlags.None);
 
                 t += r;
@@ -854,6 +903,12 @@ namespace MMWndT
 
         private static void Write(Socket connSock, byte[] buffer)
         {
+            if (connSock == null || (connSock != null && connSock.Connected == false))
+            {
+                Thread.Yield();
+                return;
+            }
+
             connSock.Send(buffer);
         }
 
