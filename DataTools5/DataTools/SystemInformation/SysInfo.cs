@@ -14,7 +14,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Windows.Navigation;
 using DataTools.Memory;
 using DataTools.Text;
 
@@ -1255,6 +1258,39 @@ namespace DataTools.SystemInformation
             get
             {
                 return _memInfo;
+            }
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether or not the local computer can reach the internet
+        /// </summary>
+        public static bool HasInternet
+        {
+            get
+            {
+                try
+                {
+                    Socket socket = new Socket(SocketType.Raw, ProtocolType.Icmp);
+                    IAsyncResult result = socket.BeginConnect(new IPEndPoint(IPAddress.Parse("8.8.8.8"), 0), null, null);
+
+                    bool success = result.AsyncWaitHandle.WaitOne(2000, true);
+
+                    if (socket.Connected)
+                    {
+                        socket.EndConnect(result);
+                        return true;
+                    }
+                    else
+                    {
+                        socket.Close();
+                        return false;
+                    }
+
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
 
