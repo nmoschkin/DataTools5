@@ -1262,8 +1262,12 @@ namespace DataTools.SystemInformation
         }
 
         /// <summary>
-        /// Returns a value indicating whether or not the local computer can reach the internet
+        /// Returns a value indicating whether or not the local computer can reach the internet.
         /// </summary>
+        /// <remarks>
+        /// May take up to 2 seconds to return false.
+        /// Don't access this property in functions that need to return instantaneously.
+        /// </remarks>
         public static bool HasInternet
         {
             get
