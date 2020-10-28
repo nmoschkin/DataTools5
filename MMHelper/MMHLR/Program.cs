@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Net.Sockets;
 using System.Net;
 using DataTools.Win32Api;
+using DataTools.Streams;
 
 namespace MMHLR
 {
@@ -44,6 +45,7 @@ namespace MMHLR
 
 
         public const int MSG_QUERY_STATE = 411;
+        public const int MSG_HOOK_REPLACED = 339;
         public const int MSG_STOP_MOVER = 206;
         public const int MSG_START_MOVER = 204;
         public const int MSG_CREATED = 1;
@@ -55,6 +57,56 @@ namespace MMHLR
         public const int MSG_INFORM_MY = 124;
         public const int MSG_HW_CHANGE = 129;
         public const int MSG_ERROR = 255;
+
+        public static string PrintMsg(int msg)
+        {
+
+            switch(msg)
+            {
+
+                case MSG_QUERY_STATE:
+                    return "MSG_QUERY_STATE";
+
+                case MSG_HOOK_REPLACED:
+                    return "MSG_HOOK_REPLACED";
+
+                case MSG_STOP_MOVER:
+                    return "MSG_STOP_MOVER";
+
+                case MSG_START_MOVER:
+                    return "MSG_START_MOVER";
+
+                case MSG_CREATED:
+                    return "MSG_CREATED";
+
+                case MSG_ACTIVATED:
+                    return "MSG_ACTIVATED";
+
+                case MSG_DESTROYED:
+                    return "MSG_DESTROYED";
+
+                case MSG_MOVESIZE:
+                    return "MSG_MOVESIZE";
+
+                case MSG_REPLACED:
+                    return "MSG_REPLACED";
+
+                case MSG_TERMINATE:
+                    return "MSG_TERMINATE";
+
+                case MSG_INFORM_MY:
+                    return "MSG_INFORM_MY";
+
+                case MSG_HW_CHANGE:
+                    return "MSG_HW_CHANGE";
+
+                case MSG_ERROR:
+                    return "MSG_ERROR";
+
+                default:
+                    return msg.ToString();
+            }
+        }
 
         private static Socket listenSock;
         private static Socket connSock = null;
@@ -68,22 +120,30 @@ namespace MMHLR
 
         static GlobalHooks gh;
 
+#if X64
+        public static SimpleLog Log { get; set; } = new SimpleLog("MMHLR64.log");
+#else
+        public static SimpleLog Log { get; set; } = new SimpleLog("MMHLR32.log");
+//            Debugger.Launch();
+#endif
+
+
         [STAThread]
         static void Main(string[] args)
         {
-//#if X64
-//#else
-//            Debugger.Launch();
-//#endif
 //            AllocConsole();
 
             gh = new GlobalHooks(IntPtr.Zero);
-
+            
+            gh.Shell.HookReplaced += Shell_HookReplaced;
+            
             gh.Shell.WindowCreated += Shell_WindowCreated;
             gh.Shell.WindowActivated += Shell_WindowActivated;
             gh.Shell.WindowDestroyed += Shell_WindowDestroyed;
             gh.Shell.WindowReplaced += Shell_WindowReplaced;
-            
+
+            gh.CBT.HookReplaced += CBT_HookReplaced;
+
             gh.CBT.MoveSize += CBT_MoveSize;
             gh.HardwareChanged += HardwareChanged;
 
@@ -104,6 +164,7 @@ namespace MMHLR
                 {
                     if (connSock == null || !connSock.Connected)
                     {
+                        Log.Log($"Opening Listening Socket on port {ep.Port}");
                         if (gh.Shell.IsActive) gh.Shell.Stop();
                         if (gh.CBT.IsActive) gh.CBT.Stop();
 
@@ -128,31 +189,42 @@ namespace MMHLR
 
                         var dcmd = Marshal.PtrToStructure<OUTPUT_STRUCT>(gch.AddrOfPinnedObject());
                         gch.Free();
-                        if (dcmd.msg == MSG_TERMINATE) break;
+
+                        if (dcmd.msg == MSG_TERMINATE)
+                        {
+                            Log.Log("Got termination event.  Shutting down.");
+                            break;
+                        }
 
                         else if (dcmd.msg == MSG_START_MOVER)
                         {
+                            Log.Log("Starting mover.");
+
                             if (!gh.Shell.IsActive) gh.Shell.Start();
                             if (!gh.CBT.IsActive) gh.CBT.Start();
 
                         }
                         else if (dcmd.msg == MSG_STOP_MOVER)
                         {
+                            Log.Log("Stopping mover.");
+
                             if (gh.Shell.IsActive) gh.Shell.Stop();
                             if (gh.CBT.IsActive) gh.CBT.Stop();
                         }
 
                         else if (dcmd.msg == MSG_QUERY_STATE)
                         {
-                            if (gh.Shell.IsActive)
+                            if (gh.Shell.IsActive && gh.CBT.IsActive)
                             {
 
+                                Log.Log("Got query state. State: Is Running.");
                                 Monitor.Enter(connSock);
                                 SendShell(MSG_START_MOVER, IntPtr.Zero);
                                 Monitor.Exit(connSock);
                             }
                             else
                             {
+                                Log.Log("Got query state. State: Is Stopped.");
                                 Monitor.Enter(connSock);
                                 SendShell(MSG_STOP_MOVER, IntPtr.Zero);
                                 Monitor.Exit(connSock);
@@ -164,11 +236,25 @@ namespace MMHLR
                 catch(Exception ex)
                 {
                     SendShell(MSG_ERROR, IntPtr.Zero, ex.Message);
+                    Log.Log(ex.Message);
+
+                    if (gh.Shell.IsActive)
+                    {
+                        gh.Shell.Stop();
+                        gh.Shell.Start();
+                    }
+                    if (gh.CBT.IsActive)
+                    {
+                        gh.CBT.Stop();
+                        gh.CBT.Start();
+                    }
+
                 }
             }
             
             try
             {
+                Log.Close();
                 connSock?.Close();
 
                 gh?.Shell?.Stop();
@@ -184,11 +270,23 @@ namespace MMHLR
             }
         }
 
+        private static void CBT_HookReplaced()
+        {
+            SendShell(MSG_HOOK_REPLACED, IntPtr.Zero);
+        }
+
+        private static void Shell_HookReplaced()
+        {
+            SendShell(MSG_HOOK_REPLACED, IntPtr.Zero);
+        }
+
         private static void SendShell(int msg, IntPtr Handle, string text = null, IntPtr? extra = null, W32RECT? rect = null)
         {
 
             try
             {
+
+                Log.Log($"SendShell: Message {PrintMsg(msg)}, Handle: {Handle}, Text: {text}, Extra: {extra}, rect: {rect}");
 
                 int ss = Marshal.SizeOf<OUTPUT_STRUCT>();
                 byte[] tbytes = null;
@@ -231,9 +329,7 @@ namespace MMHLR
             }
             catch(Exception ex)
             {
-
-                // usually we'd log an error, but whatfor the logger?
-                Console.WriteLine(ex.Message);
+                Log.Log(ex.Message);
             }
         }
 

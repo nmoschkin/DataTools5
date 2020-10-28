@@ -27,6 +27,42 @@ namespace MMWndT
 
         private WorkerLogEventArgs source;
 
+
+        private WorkerKind origin;
+
+        public WorkerKind Origin
+        {
+            get => origin;
+            set
+            {
+                if (origin == value) return;
+                origin = value;
+                OnPropertyChanged("OriginText");
+                OnPropertyChanged();
+            }
+        }
+
+        public string OriginText
+        {
+            get
+            {
+                switch (origin)
+                {
+                    case WorkerKind.Is64Worker:
+                        return "64-bit Worker";
+
+                    case WorkerKind.Is86Worker:
+                        return "32-bit Worker";
+
+                    case WorkerKind.IsMainProgram:
+                        return "Main Program";
+
+                    default:
+                        return origin.ToString();
+                }
+            }
+        }
+
         private ImageSource icon;
 
         public ImageSource Icon
@@ -207,6 +243,10 @@ namespace MMWndT
                         s = "Error";
                         break;
 
+                    case Worker.MSG_HOOK_REPLACED:
+                        s = "Hook Replaced";
+                        break;
+
                     default:
                         s = "Unknown Event";
                         break;
@@ -247,6 +287,8 @@ namespace MMWndT
             WindowName = e.WindowName;
             Handle = e.Handle;
 
+            Origin = e.Origin;
+
             // nothing more to do if there's no handle.
             if (e.Handle == IntPtr.Zero) return;
 
@@ -266,6 +308,9 @@ namespace MMWndT
                         var sp = p.MainModule.FileName;
                         Module = sp;
 
+                        App.Current.Work.Log.Log($"Event {EventText}, {MonitorText}, {OriginText}, {WindowName}, {Message}, {Module}");
+
+
                         if (sp != null)
                         {
                             sp = Path.GetFileName(sp);
@@ -273,6 +318,7 @@ namespace MMWndT
                             if (sp == "chrome.exe")
                             {
                                 Module = GetChromeWindowUrl(WindowName);
+                                App.Current.Work.Log.Log($"Detected Chrome Window URL: {Module}");
 
                                 var url = Module;
 
@@ -282,6 +328,7 @@ namespace MMWndT
                                 if (!url.StartsWith("https://")) url = "https://" + url;
                                 
                                 url += "/favicon.ico";
+                                App.Current.Work.Log.Log($"Attempting Favicon URL: {url}");
 
                                 while (!System.Threading.Monitor.TryEnter(cache))
                                 {
@@ -311,6 +358,7 @@ namespace MMWndT
                                         Thread.Yield();
                                     }
 
+                                    App.Current.Work.Log.Log($"Favicon retrieval succeeded");
                                     cache.Add(url, icon);
                                 }
                                 else
@@ -325,7 +373,6 @@ namespace MMWndT
                             }
 
                         }
-
                         while (!System.Threading.Monitor.TryEnter(cache))
                         {
                             Thread.Yield();
@@ -364,8 +411,11 @@ namespace MMWndT
                 }
                 catch (Exception ex)
                 {
+                    App.Current.Work.Log.Log(ex.Message);
+
                     try
                     {
+
                         if (System.Threading.Monitor.IsEntered(cache))
                             System.Threading.Monitor.Exit(cache);
 
@@ -373,6 +423,8 @@ namespace MMWndT
                     }
                     catch (Exception ex2)
                     {
+                        App.Current.Work.Log.Log(ex2.Message);
+
                         try
                         {
                             Message = ex2.Message;
@@ -405,6 +457,8 @@ namespace MMWndT
                         return new SolidColorBrush(Colors.DarkGray);
 
                     case Worker.MSG_REPLACED:
+                    case Worker.MSG_HOOK_REPLACED:
+
                         return new SolidColorBrush(Colors.Blue);
 
                     case Worker.MSG_MOVESIZE:

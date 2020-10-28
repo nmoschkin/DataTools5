@@ -83,13 +83,22 @@
 
                     </GridViewColumn>
                     <GridViewColumn
-                        Width="140"
-                        DisplayMemberBinding="{Binding MonitorText}"
-                        Header="Monitor / Event" />
+                        Width="60"
+                        DisplayMemberBinding="{Binding OriginText}"
+                        Header="Origin" />
                     <GridViewColumn
                         Width="140"
-                        DisplayMemberBinding="{Binding Message}"
-                        Header="Message" />
+                        DisplayMemberBinding="{Binding MonitorText}"
+                        Header="Monitor / Message" />
+                    <GridViewColumn Width="140" Header="Message">
+
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Message}" ToolTip="{Binding Message}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+
+                    </GridViewColumn>
                     <GridViewColumn
                         Width="140"
                         DisplayMemberBinding="{Binding Timestamp, StringFormat='{}{0:G}'}"

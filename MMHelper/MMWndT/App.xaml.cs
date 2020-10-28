@@ -24,6 +24,14 @@ namespace MMWndT
 
         public Dispatcher MainDispatcher;
         
+        public static new App Current
+        {
+            get
+            {
+                return (App)Application.Current;
+            }
+        }
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>

@@ -18,6 +18,7 @@ using static DataTools.Win32Api.User32;
 using System.Text;
 using System.Windows.Threading;
 using System.Windows.Forms;
+using DataTools.Streams;
 
 namespace MMWndT
 {
@@ -51,6 +52,7 @@ namespace MMWndT
 
     public enum WorkerKind
     {
+        IsMainProgram = 0,
         Is86Worker = 1,
         Is64Worker = 2
     }
@@ -76,13 +78,15 @@ namespace MMWndT
 
         public string Message { get; private set; }
 
+        public WorkerKind Origin { get; private set; }
 
-        public WorkerLogEventArgs(string name, IntPtr handle, int monitor, int action) : this(null, name, handle, monitor, action)
+        public WorkerLogEventArgs(string name, IntPtr handle, int monitor, int action, WorkerKind origin) : this(null, name, handle, monitor, action, origin)
         { 
         }
 
-        public WorkerLogEventArgs(string smsg, string name, IntPtr handle, int monitor, int action)
+        public WorkerLogEventArgs(string smsg, string name, IntPtr handle, int monitor, int action, WorkerKind origin)
         {
+            Origin = origin;
             Message = smsg;
             WindowName = name;
             Monitor = monitor;
@@ -125,6 +129,7 @@ namespace MMWndT
 
 
         public const int MSG_QUERY_STATE = 411;
+        public const int MSG_HOOK_REPLACED = 339;
         public const int MSG_STOP_MOVER = 206;
         public const int MSG_START_MOVER = 204;
         public const int MSG_CREATED = 1;
@@ -159,6 +164,7 @@ namespace MMWndT
         }
 
         public bool WorkerShutdown { get; private set; } = false;
+        public SimpleLog Log { get; set; } = new SimpleLog("MMWndT.log");
 
         private CancellationToken ttok;
 
@@ -178,17 +184,34 @@ namespace MMWndT
         private readonly Guid MagicKey = Guid.Parse("{4D8E985F-79C1-4AF9-B481-8846FEB6C7DA}");
         int cb = Marshal.SizeOf<OUTPUT_STRUCT>();
 
+        private bool RefreshWindows()
+        {
+            if (Monitor.TryEnter(ActiveWindows))
+            {
+
+                ActiveWindows.Clear();
+                var dwnds = GetCurrentDesktopWindows();
+
+                foreach (var wnd in dwnds)
+                {
+                    ActiveWindows.Add(wnd, new ActWndInfo() { WindowName = GetWindowName(wnd), Timestamp = DateTime.Now });
+                }
+
+                Monitor.Exit(ActiveWindows);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             disp = System.Windows.Application.Current.Dispatcher;
             ttok = stoppingToken;
 
-            var dwnds = GetCurrentDesktopWindows();
-
-            foreach (var wnd in dwnds)
-            {
-                ActiveWindows.Add(wnd, new ActWndInfo() { WindowName = GetWindowName(wnd), Timestamp = DateTime.Now });
-            }
+            RefreshWindows();
 
             var stinfo = new ProcessStartInfo()
             {
@@ -198,8 +221,9 @@ namespace MMWndT
                 CreateNoWindow = true
             };
 
+            Log.Log("Starting x86 process");
             x86proc = Process.Start(stinfo);
-            
+
             stinfo = new ProcessStartInfo()
             {
                 FileName = "MMHLR64.exe",
@@ -208,9 +232,11 @@ namespace MMWndT
                 CreateNoWindow = true
             };
 
+            Log.Log("Starting x64 process");
             x64proc = Process.Start(stinfo);
 
             await Task.Delay(1000);
+
 
             x64Sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
             x64Sock.Blocking = true;
@@ -224,7 +250,10 @@ namespace MMWndT
             //x64Sock.ReceiveTimeout = 100;
             //x86Sock.ReceiveTimeout = 100;
 
+            Log.Log("Connecting to x64 process on port 53112");
             x64Sock.Connect(ep64);
+
+            Log.Log("Connecting to x86 process on port 53113");
             x86Sock.Connect(ep32);
 
             Thread.CurrentThread.Priority = ThreadPriority.Lowest;
@@ -236,6 +265,7 @@ namespace MMWndT
             x64Thread.Priority = ThreadPriority.Lowest;
 
             x86Thread.Start();
+
             x64Thread.Start();
             
             QueryState();
@@ -247,6 +277,20 @@ namespace MMWndT
 
                 try
                 {
+
+                    if (x86Thread == null || !x86Thread.IsAlive)
+                    {
+                        x86Thread = new Thread(ThreadRunner86);
+                        x86Thread.Priority = ThreadPriority.Lowest;
+                        x86Thread.Start();
+                    }
+
+                    if (x64Thread == null || !x64Thread.IsAlive)
+                    {
+                        x64Thread = new Thread(ThreadRunner64);
+                        x64Thread.Priority = ThreadPriority.Lowest;
+                        x64Thread.Start();
+                    }
 
                     if (x64proc == null || (x64proc != null && x64proc.HasExited))
                     {
@@ -295,11 +339,13 @@ namespace MMWndT
                 }
                 catch(Exception ex)
                 {
-                    AddEvent(ex.Message, null, 0, MSG_ERROR);
+                    AddEvent(ex.Message, null, 0, MSG_ERROR, WorkerKind.IsMainProgram);
+                    Log.Log(ex.Message);
                 }
 
             }
 
+            Log.Log("Shutting down.  Broadcasting shutdown command to child processes.");
             OUTPUT_STRUCT os = new OUTPUT_STRUCT()
             {
                 cb = Marshal.SizeOf<OUTPUT_STRUCT>(),
@@ -308,8 +354,12 @@ namespace MMWndT
 
             BroadcastMessage(os);
 
+            Log.Log("Waiting for child processes to exit.");
             x64proc.WaitForExit();
             x86proc.WaitForExit();
+
+            Log.Log("Exiting.");
+            Log.Close();
 
             WorkerShutdown = true;
             //Environment.Exit(0);
@@ -372,9 +422,11 @@ namespace MMWndT
 
         private void ThreadRunner64()
         {
+            Log.Log("Starting x64 Thread");
             while (!ttok.IsCancellationRequested)
             {
                 Thread.Sleep(0);
+
                 if (x64Sock == null || (x64Sock != null && x64Sock.Connected == false))
                 {
                     Thread.Yield();
@@ -405,15 +457,15 @@ namespace MMWndT
                     }
                     else if (os.msg == MSG_DESTROYED)
                     {
-                        DoDestroyed((IntPtr)os.LongData1);
+                        DoDestroyed((IntPtr)os.LongData1, true);
                     }
                     else if (os.msg == MSG_REPLACED)
                     {
-                        DoReplaced((IntPtr)os.LongData1, (IntPtr)os.LongData2);
+                        DoReplaced((IntPtr)os.LongData1, (IntPtr)os.LongData2, true);
                     }
                     else if (os.msg == MSG_MOVESIZE)
                     {
-                        DoMoveSize((IntPtr)os.LongData1, os.rect);
+                        DoMoveSize((IntPtr)os.LongData1, os.rect, true);
                     }
                     else if (os.msg == MSG_HW_CHANGE)
                     {
@@ -442,20 +494,29 @@ namespace MMWndT
                                 smsg = "Changed";
                             }
 
-                            AddEvent(smsg, sname, (int)os.LongData1, os.msg);
+                            AddEvent(smsg, sname, (int)os.LongData1, os.msg, WorkerKind.Is64Worker);
                            
                         });
                     }
                     else
                     {
+                        if (os.msg == MSG_HOOK_REPLACED)
+                        {
+                            while (!RefreshWindows())
+                            {
+                                Thread.Yield();
+                            }
+                        }
+
                         disp.Invoke(() =>
                         {
                             WorkNotify?.Invoke(this, new WorkerNotifyEventArgs(os, WorkerKind.Is64Worker));
                         });
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Log.Log("64 thread: " + ex.Message);
 
                 }
 
@@ -464,6 +525,7 @@ namespace MMWndT
 
         private void ThreadRunner86()
         {
+            Log.Log("Starting x86 Thread");
             while (!ttok.IsCancellationRequested)
             {
                 Thread.Sleep(0);
@@ -495,26 +557,35 @@ namespace MMWndT
                     }
                     else if (os.msg == MSG_DESTROYED)
                     {
-                        DoDestroyed((IntPtr)os.IntData1);
+                        DoDestroyed((IntPtr)os.IntData1, false);
                     }
                     else if (os.msg == MSG_REPLACED)
                     {
-                        DoReplaced((IntPtr)os.IntData1, (IntPtr)os.IntData2);
+                        DoReplaced((IntPtr)os.IntData1, (IntPtr)os.IntData2, false);
                     }
                     else if (os.msg == MSG_MOVESIZE)
                     {
-                        DoMoveSize((IntPtr)os.IntData1, os.rect);
+                        DoMoveSize((IntPtr)os.IntData1, os.rect, false);
                     }
                     else
                     {
+                        if (os.msg == MSG_HOOK_REPLACED)
+                        {
+                            while (!RefreshWindows())
+                            {
+                                Thread.Yield();
+                            }
+                        }
+
                         disp.Invoke(() =>
                         {
                             WorkNotify?.Invoke(this, new WorkerNotifyEventArgs(os, WorkerKind.Is86Worker));
                         });
                     }
                 }
-                catch
+                catch(Exception ex)
                 {
+                    Log.Log("86 thread: " + ex.Message);
 
                 }
 
@@ -522,7 +593,7 @@ namespace MMWndT
         }
 
 
-        private void DoMoveSize(IntPtr handle, W32RECT rc)
+        private void DoMoveSize(IntPtr handle, W32RECT rc, bool x64)
         {
             disp.Invoke(() =>
             {
@@ -535,17 +606,17 @@ namespace MMWndT
 
                 if (wndMon == null || mouseMon == null)
                 {
-                    AddEvent(handle, 0, MSG_MOVESIZE);
+                    AddEvent(handle, 0, MSG_MOVESIZE, x64 ? WorkerKind.Is64Worker : WorkerKind.Is86Worker);
                     return;
                 }
 
-                AddEvent(handle, wndMon.Index, MSG_MOVESIZE);
+                AddEvent(handle, wndMon.Index, MSG_MOVESIZE, x64 ? WorkerKind.Is64Worker : WorkerKind.Is86Worker);
             });
 
 
         }
 
-        private void DoReplaced(IntPtr oldHandle, IntPtr newHandle)
+        private void DoReplaced(IntPtr oldHandle, IntPtr newHandle, bool x64)
         {
             disp.Invoke(() =>
             {
@@ -558,18 +629,18 @@ namespace MMWndT
                     actWnd.Timestamp = DateTime.Now;
                     ActiveWindows.Add(newHandle, actWnd);
 
-                    AddEvent(null, actWnd.WindowName, 0, MSG_REPLACED);
+                    AddEvent(null, actWnd.WindowName, 0, MSG_REPLACED, x64 ? WorkerKind.Is64Worker : WorkerKind.Is86Worker);
                 }
                 else
                 {
-                    AddEvent(oldHandle, 0, MSG_REPLACED);
+                    AddEvent(oldHandle, 0, MSG_REPLACED, x64 ? WorkerKind.Is64Worker : WorkerKind.Is86Worker);
                 }
 
             });
 
         }
 
-        private void DoDestroyed(IntPtr Handle)
+        private void DoDestroyed(IntPtr Handle, bool x64)
         {
             disp.Invoke(() =>
             {
@@ -578,11 +649,11 @@ namespace MMWndT
                     var actWnd = ActiveWindows[Handle];
 
                     ActiveWindows.Remove(Handle);
-                    AddEvent(null, actWnd.WindowName, 0, MSG_DESTROYED);
+                    AddEvent(null, actWnd.WindowName, 0, MSG_DESTROYED, x64 ? WorkerKind.Is64Worker : WorkerKind.Is86Worker);
                 }
                 else
                 {
-                    AddEvent(Handle, 0, MSG_DESTROYED);
+                    AddEvent(Handle, 0, MSG_DESTROYED, x64 ? WorkerKind.Is64Worker : WorkerKind.Is86Worker);
                 }
 
             });
@@ -606,11 +677,11 @@ namespace MMWndT
 
                 if (wndMon == null || mouseMon == null)
                 {
-                    AddEvent(Handle, 0, MSG_CREATED);
+                    AddEvent(Handle, 0, MSG_CREATED, x64 ? WorkerKind.Is64Worker : WorkerKind.Is86Worker);
                     return;
                 }
 
-                AddEvent(Handle, wndMon.Index, MSG_CREATED);
+                AddEvent(Handle, wndMon.Index, MSG_CREATED, x64 ? WorkerKind.Is64Worker : WorkerKind.Is86Worker);
             });
 
         }
@@ -648,24 +719,25 @@ namespace MMWndT
 
                 if (wndMon == null || mouseMon == null)
                 {
-                    AddEvent(Handle, 0, MSG_ACTIVATED);
+                    AddEvent(Handle, 0, MSG_ACTIVATED, x64 ? WorkerKind.Is64Worker : WorkerKind.Is86Worker);
                     return;
                 }
 
-                AddEvent(Handle, wndMon.Index, MSG_ACTIVATED);
+                AddEvent(Handle, wndMon.Index, MSG_ACTIVATED, x64 ? WorkerKind.Is64Worker : WorkerKind.Is86Worker);
             });
         }
 
-        void AddEvent(string smsg, string wname, int monitor, int action)
+        void AddEvent(string smsg, string wname, int monitor, int action, WorkerKind origin)
         {
             _logger?.LogInformation(smsg);
+            Log.Log(smsg);
 
-            var e = new WorkerLogEventArgs(smsg, wname, IntPtr.Zero, monitor, action);
+            var e = new WorkerLogEventArgs(smsg, wname, IntPtr.Zero, monitor, action, origin);
             WorkLogger?.Invoke(this, e);
 
         }
 
-        void AddEvent(IntPtr handle, int monitor, int action) 
+        void AddEvent(IntPtr handle, int monitor, int action, WorkerKind origin) 
         {
             string smsg;
             string wname = GetWindowName(handle);
@@ -675,21 +747,21 @@ namespace MMWndT
                 case MSG_CREATED:
 
                     smsg = $"Window Created {wname}";
-                    if (monitor > 0) smsg += $"on monitor #{monitor}";
+                    if (monitor > 0) smsg += $" on monitor #{monitor}";
                     else smsg += "on unknown monitor";
 
                     break;
 
                 case MSG_ACTIVATED:
                     smsg = $"Window Activated {wname}";
-                    if (monitor > 0) smsg += $"on monitor #{monitor}";
+                    if (monitor > 0) smsg += $" on monitor #{monitor}";
                     else smsg += "on unknown monitor";
 
                     break;
 
                 case MSG_DESTROYED:
                     smsg = $"Window Destroyed {wname}";
-                    if (monitor > 0) smsg += $"on monitor #{monitor}";
+                    if (monitor > 0) smsg += $" on monitor #{monitor}";
                     else smsg += "on unknown monitor";
 
                     break;
@@ -701,25 +773,32 @@ namespace MMWndT
 
                 default:
                     smsg = $"Unknown Window Event {action} on {wname}";
-                    if (monitor > 0) smsg += $"on monitor #{monitor}";
+                    if (monitor > 0) smsg += $" on monitor #{monitor}";
                     else smsg += "on unknown monitor";
 
                     break;
             }
 
             _logger?.LogInformation(smsg);
+            Log.Log(smsg);
 
-            var e = new WorkerLogEventArgs(wname, handle, monitor, action);
+            var e = new WorkerLogEventArgs(wname, handle, monitor, action, origin);
             WorkLogger?.Invoke(this, e);
         }
 
-        private string GetWindowName(IntPtr Hwnd)
+        private string GetWindowName(IntPtr hwnd)
         {
-            // This function gets the name of a window from its handle
-            StringBuilder Title = new StringBuilder(256);
-            GetWindowText(Hwnd, Title, 256);
+            try
+            {
+                StringBuilder Title = new StringBuilder(256);
+                GetWindowText(hwnd, Title, 256);
 
-            return Title.ToString().Trim();
+                return Title.ToString().Trim();
+            }
+            catch
+            {
+                return "";
+            }
         }
 
 
@@ -791,11 +870,11 @@ namespace MMWndT
 
                     if (wndMon == null || mouseMon == null)
                     {
-                        AddEvent(Handle, 0, MSG_ACTIVATED);
+                        AddEvent(Handle, 0, MSG_ACTIVATED, x64 ? WorkerKind.Is64Worker : WorkerKind.Is86Worker);
                         return;
                     }
 
-                    AddEvent(Handle, wndMon.Index, MSG_ACTIVATED);
+                    AddEvent(Handle, wndMon.Index, MSG_ACTIVATED, x64 ? WorkerKind.Is64Worker : WorkerKind.Is86Worker);
 
                 });
 
