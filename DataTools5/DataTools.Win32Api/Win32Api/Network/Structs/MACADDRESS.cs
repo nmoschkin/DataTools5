@@ -34,6 +34,28 @@ namespace DataTools.Win32Api.Network
         [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = IfDefApi.MAX_ADAPTER_ADDRESS_LENGTH)]
         public byte[] Data;
 
+
+        public static bool operator ==(MACADDRESS val1, MACADDRESS val2)
+        {
+            for (int i = 0; i < IfDefApi.MAX_ADAPTER_ADDRESS_LENGTH; i++)
+            {
+                if (val1.Data[i] != val2.Data[i]) return false;
+            }
+
+            return true;
+        }
+
+        public static bool operator !=(MACADDRESS val1, MACADDRESS val2)
+        {
+            for (int i = 0; i < IfDefApi.MAX_ADAPTER_ADDRESS_LENGTH; i++)
+            {
+                if (val1.Data[i] != val2.Data[i]) return true;
+            }
+
+            return false;
+        }
+
+
         public override string ToString()
         {
             string ToStringRet = default;

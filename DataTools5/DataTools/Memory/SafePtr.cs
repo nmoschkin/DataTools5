@@ -2174,30 +2174,27 @@ namespace DataTools.Memory
 
         public static bool operator ==(IntPtr val1, SafePtr val2)
         {
-            return (val1 == val2.handle);
+            return (val1 == (val2?.handle ?? IntPtr.Zero));
         }
 
         public static bool operator !=(IntPtr val1, SafePtr val2)
         {
-            return (val1 != val2.handle);
+            return (val1 != (val2?.handle ?? IntPtr.Zero));
         }
 
         public static bool operator ==(SafePtr val2, IntPtr val1)
         {
-            return (val1 == val2.handle);
+            return (val1 == (val2?.handle ?? IntPtr.Zero));
         }
 
         public static bool operator !=(SafePtr val2, IntPtr val1)
         {
-            return (val1 != val2.handle);
+            return val1 != (val2?.handle ?? IntPtr.Zero);
         }
 
         public static implicit operator IntPtr(SafePtr val)
         {
-            unsafe
-            {
-                return val.handle;
-            }
+            return val?.handle ?? IntPtr.Zero;
         }
 
         public static implicit operator SafePtr(IntPtr val)

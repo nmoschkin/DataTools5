@@ -21,6 +21,8 @@ using System.Runtime.CompilerServices;
 using System.Windows.Interop;
 using DataTools.Hardware.Network;
 using DataTools.Hardware;
+using DataTools.Win32Api.Network;
+using DataTools.Memory;
 
 namespace SysInfoTool
 {
@@ -159,8 +161,6 @@ namespace SysInfoTool
             AdapterList.SelectionChanged += AdapterList_SelectionChanged;
 
 
-            var m = DeviceEnum.EnumMonitors();
-
 
         }
 
@@ -230,6 +230,7 @@ namespace SysInfoTool
             {
 
                 var ada = new AdaptersCollection();
+
 
                 Dispatcher.Invoke(() =>
                 {

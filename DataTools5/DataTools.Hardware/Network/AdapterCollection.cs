@@ -27,6 +27,10 @@ using DataTools.Desktop;
 using DataTools.Win32Api;
 using DataTools.Shell.Native;
 using DataTools.Win32Api.Network;
+using System.Threading.Tasks;
+using System.Net;
+using System.Net.Sockets;
+using System.Net.NetworkInformation;
 
 namespace DataTools.Hardware.Network
 {
@@ -82,7 +86,7 @@ namespace DataTools.Hardware.Network
             }
         }
 
-        public NetworkAdapters()
+        internal NetworkAdapters()
         {
             Refresh();
         }
@@ -363,6 +367,11 @@ namespace DataTools.Hardware.Network
             _Col = new ObservableCollection<NetworkAdapter>();
             var di = DeviceEnum.EnumerateNetworkDevices();
 
+
+            var iftab = IfTable.GetIfTable();
+
+
+
             // Get the array of unmanaged IP_ADAPTER_ADDRESSES structures 
             _Adapters = IfDefApi.GetAdapters(ref _origPtr, true);
             foreach (var adap in _Adapters)
@@ -373,12 +382,67 @@ namespace DataTools.Hardware.Network
                     if ((de.Description ?? "") == (adap.Description ?? "") || (de.FriendlyName ?? "") == (adap.FriendlyName ?? "") || (de.FriendlyName ?? "") == (adap.Description ?? "") || (de.Description ?? "") == (adap.FriendlyName ?? ""))
                     {
                         newp.DeviceInfo = de;
+
+                        foreach (var iface in iftab)
+                        {
+                            if (newp.PhysicalAddress == iface.bPhysAddr)
+                            {
+                                newp.PhysIfaceInternal.Add(iface);
+                            }
+                        }
+
                         _Col.Add(newp);
+                        _ = Task.Run(() => PopulateInternetStatus(newp));
+
                         break;
                     }
                 }
             }
         }
+
+        private void PopulateInternetStatus(NetworkAdapter adapter)
+        {
+            var addrs = adapter.FirstUnicastAddress.AddressChain;
+
+            foreach (var addr in addrs)
+            {
+                if (addr.IPAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                {
+                    Socket socket = new Socket(SocketType.Raw, ProtocolType.Icmp);
+                    socket.Bind(new IPEndPoint(addr.IPAddress, 0));
+
+                    socket.ReceiveTimeout = 2000;
+                    socket.SendTimeout = 2000;
+
+                    try
+                    {
+                        IAsyncResult result = socket.BeginConnect(new IPEndPoint(IPAddress.Parse("8.8.8.8"), 0), null, null);
+
+                        bool success = result.AsyncWaitHandle.WaitOne(2000, true);
+
+                        if (socket.Connected)
+                        {
+                            socket.EndConnect(result);
+                            adapter.HasInternet = InternetStatus.HasInternet;
+                        }
+                        else
+                        {
+                            socket.Close();
+                            adapter.HasInternet = InternetStatus.NoInternet;
+                        }
+
+                    }
+                    catch
+                    {
+                        adapter.HasInternet = InternetStatus.NoInternet;
+                    }
+                    return;
+                }
+            }
+
+            adapter.HasInternet = InternetStatus.NoInternet;
+        }
+
 
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
         private bool disposedValue; // To detect redundant calls
@@ -420,6 +484,14 @@ namespace DataTools.Hardware.Network
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
     }
 
+
+    public enum InternetStatus
+    {
+        NotDetermined,
+        HasInternet,
+        NoInternet
+    }
+
     /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
     /* TODO ERROR: Skipped RegionDirectiveTrivia */
     /// <summary>
@@ -432,6 +504,8 @@ namespace DataTools.Hardware.Network
         private DeviceInfo _deviceInfo;
         private bool _canShowNet;
         private System.Windows.Media.Imaging.BitmapSource _Icon;
+
+        private List<MIB_IFROW> physifaces = new List<MIB_IFROW>();
 
         // This class should not be created outside of the context of AdaptersCollection.
         internal NetworkAdapter(IP_ADAPTER_ADDRESSES nativeObject)
@@ -1070,6 +1144,36 @@ namespace DataTools.Hardware.Network
                 return _nativeStruct.FirstDnsSuffix;
             }
         }
+
+
+        /// <summary>
+        /// First DNS Suffix
+        /// </summary>
+        /// <returns></returns>
+        [Browsable(true)]
+        [TypeConverter(typeof(ArrayConverter))]
+        public MIB_IFROW[] PhysicalInterfaces
+        {
+            get
+            {
+                return physifaces.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Returns a value indicating whether or not this interface is connected to the internet.
+        /// </summary>
+        public InternetStatus HasInternet { get; internal set; } = InternetStatus.NotDetermined;
+
+        internal List<MIB_IFROW> PhysIfaceInternal
+        {
+            get => physifaces;
+            set
+            {
+                physifaces = value;
+            }
+        }
+
 
         /// <summary>
         /// Returns the adapter's friendly name
