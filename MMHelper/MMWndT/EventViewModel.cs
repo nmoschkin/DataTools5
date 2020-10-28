@@ -315,7 +315,7 @@ namespace MMWndT
                         {
                             sp = Path.GetFileName(sp);
 
-                            if (sp == "chrome.exe")
+                            if (App.Current.Work.HasInternet && sp == "chrome.exe")
                             {
                                 Module = GetChromeWindowUrl(WindowName);
                                 App.Current.Work.Log.Log($"Detected Chrome Window URL: {Module}");
@@ -411,11 +411,10 @@ namespace MMWndT
                 }
                 catch (Exception ex)
                 {
-                    App.Current.Work.Log.Log(ex.Message);
 
                     try
                     {
-
+                        App.Current.Work.Log.Log(ex.Message);
                         if (System.Threading.Monitor.IsEntered(cache))
                             System.Threading.Monitor.Exit(cache);
 
@@ -423,10 +422,9 @@ namespace MMWndT
                     }
                     catch (Exception ex2)
                     {
-                        App.Current.Work.Log.Log(ex2.Message);
-
                         try
                         {
+                            App.Current.Work.Log.Log(ex2.Message);
                             Message = ex2.Message;
                         }
                         catch

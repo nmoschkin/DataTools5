@@ -20,6 +20,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using DataTools.SystemInformation;
 
 namespace MMWndT
 {
@@ -187,6 +188,8 @@ namespace MMWndT
 
             btnQuit.Click += btnQuit_Click;
 
+            btnClear.Click += BtnClear_Click;
+
             mnuQuit.Click += MnuQuit_Click;
             mnuEnable.Click += MnuEnable_Click;
             mnuDisable.Click += MnuDisable_Click;
@@ -201,6 +204,11 @@ namespace MMWndT
            
             Program.Work.ActiveWindows.Add(hwndHelper.Handle, new ActWndInfo() { WindowName = Title, Timestamp = DateTime.Now });
 
+        }
+
+        private void BtnClear_Click(object sender, RoutedEventArgs e)
+        {
+            eventLog.Clear();
         }
 
         private void MainWindow_StateChanged(object sender, EventArgs e)
@@ -256,7 +264,7 @@ namespace MMWndT
         private void Work_WorkNotify(object sender, WorkerNotifyEventArgs e)
         {
 
-            maindisp.Invoke(() =>
+            maindisp.Invoke(async () =>
             {
                 if (e.Message == Worker.MSG_START_MOVER)
                 {
@@ -274,6 +282,8 @@ namespace MMWndT
                     btnToggle.Content = StartButtonText;
                     IsWatching = false;
                 }
+
+                await UpdateConnectedStatus();
 
             });
 
@@ -335,15 +345,34 @@ namespace MMWndT
 
         private void AddEvent(WorkerLogEventArgs e)
         {
-            
-            if (eventLog.Count > 100)
-            {
-                eventLog.RemoveAt(eventLog.Count - 1);
-            }
+            //if (eventLog.Count > 100)
+            //{
+            //    eventLog.RemoveAt(eventLog.Count - 1);
+            //}
 
             var item = new EventViewModel(e);
 
             eventLog.Insert(0, item);
+
+            if (e.Action == Worker.MSG_HW_CHANGE)
+            {
+                _ = UpdateConnectedStatus();
+            }
+
+        }
+
+        private async Task UpdateConnectedStatus()
+        {
+
+            if (await SysInfo.GetHasInternetAsync())
+            {
+                tss2.Content = "Online";
+            }
+            else
+            {
+                tss2.Content = "Offline";
+            }
+
         }
 
         private void MouseLL_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)

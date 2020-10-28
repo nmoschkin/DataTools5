@@ -19,6 +19,7 @@ using System.Text;
 using System.Windows.Threading;
 using System.Windows.Forms;
 using DataTools.Streams;
+using DataTools.SystemInformation;
 
 namespace MMWndT
 {
@@ -163,6 +164,8 @@ namespace MMWndT
             _logger = null;
         }
 
+        public bool HasInternet { get; private set; } = false;
+
         public bool WorkerShutdown { get; private set; } = false;
         public SimpleLog Log { get; set; } = new SimpleLog("MMWndT.log");
 
@@ -267,7 +270,12 @@ namespace MMWndT
             x86Thread.Start();
 
             x64Thread.Start();
-            
+
+            _ = Task.Run(async () =>
+            {
+                HasInternet = await SysInfo.GetHasInternetAsync();
+            });
+
             QueryState();
 
             while (!stoppingToken.IsCancellationRequested)
@@ -470,11 +478,12 @@ namespace MMWndT
                     else if (os.msg == MSG_HW_CHANGE)
                     {
                         disp.Invoke(() => {
+
                             mouseMon = wndMon = null;
                             monitors = new Monitors();
                             int x = Marshal.SizeOf<OUTPUT_STRUCT>();
                             string sname = "";
-                            string smsg = ""; 
+                            string smsg = "";
 
                             if (os.cb > x)
                             {
@@ -495,8 +504,13 @@ namespace MMWndT
                             }
 
                             AddEvent(smsg, sname, (int)os.LongData1, os.msg, WorkerKind.Is64Worker);
-                           
                         });
+
+                        _ = Task.Run(async () =>
+                        {
+                            HasInternet = await SysInfo.GetHasInternetAsync();
+                        });
+
                     }
                     else
                     {

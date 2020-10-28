@@ -65,7 +65,15 @@ namespace DataTools.Streams
 
         public void Log(string message)
         {
-            Stream.Write(Encoding.UTF8.GetBytes($"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.FFFFFFF")}]: {message}\r\n"));
+            try
+            {
+                if (!IsOpened) return;
+                Stream.Write(Encoding.UTF8.GetBytes($"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.FFFFFFF")}]: {message}\r\n"));
+            }
+            catch
+            {
+
+            }
         }
 
     }

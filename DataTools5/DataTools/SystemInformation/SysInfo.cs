@@ -15,8 +15,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Navigation;
 using DataTools.Memory;
 using DataTools.Text;
@@ -1268,33 +1270,26 @@ namespace DataTools.SystemInformation
         /// May take up to 2 seconds to return false.
         /// Don't access this property in functions that need to return instantaneously.
         /// </remarks>
-        public static bool HasInternet
+        public static async Task<bool> GetHasInternetAsync()
         {
-            get
+            try
             {
-                try
+                Ping ping = new Ping();
+
+                var reply = await ping.SendPingAsync("8.8.8.8", 2000);
+                if (reply.Status == IPStatus.Success)
                 {
-                    Socket socket = new Socket(SocketType.Raw, ProtocolType.Icmp);
-                    IAsyncResult result = socket.BeginConnect(new IPEndPoint(IPAddress.Parse("8.8.8.8"), 0), null, null);
-
-                    bool success = result.AsyncWaitHandle.WaitOne(2000, true);
-
-                    if (socket.Connected)
-                    {
-                        socket.EndConnect(result);
-                        return true;
-                    }
-                    else
-                    {
-                        socket.Close();
-                        return false;
-                    }
-
+                    return true;
                 }
-                catch
+                else
                 {
                     return false;
                 }
+
+            }
+            catch
+            {
+                return false;
             }
         }
 

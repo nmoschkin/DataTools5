@@ -28,7 +28,7 @@
             <RowDefinition Height="20" />
             <RowDefinition />
             <RowDefinition Height="48" />
-            <RowDefinition Height="20" />
+            <RowDefinition Height="28" />
         </Grid.RowDefinitions>
 
 
@@ -122,6 +122,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
             <Button
@@ -130,9 +131,20 @@
                 Margin="8"
                 HorizontalAlignment="Left"
                 Content="Start Watching Desktop" />
+
+
+            <Button
+                x:Name="btnClear"
+                Grid.Column="1"
+                Width="150"
+                Margin="8"
+                HorizontalAlignment="Center"
+                Content="Clear Events" />
+
+
             <Button
                 x:Name="btnQuit"
-                Grid.Column="1"
+                Grid.Column="2"
                 Width="150"
                 Margin="8"
                 HorizontalAlignment="Right"
@@ -143,7 +155,14 @@
 
         <StatusBar Grid.Row="3" Grid.ColumnSpan="3">
 
-            <StatusBarItem x:Name="tss1" />
+            <StatusBarItem x:Name="tss1" Margin="4" />
+
+            <StatusBarItem
+                x:Name="tss2"
+                Margin="4"
+                HorizontalAlignment="Right"
+                Content="Online" />
+
         </StatusBar>
     </Grid>
 </Window>
