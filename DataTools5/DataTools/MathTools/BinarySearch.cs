@@ -116,7 +116,7 @@ namespace DataTools.MathTools
 
 
         /// <summary>
-        /// Find an object in the specified sorted array of objects with a property that implements <see cref="IComparable{U}"/>.
+        /// Find an object in the specified sorted array of objects with a property whose type implements <see cref="IComparable{U}"/>.
         /// </summary>
         /// <typeparam name="T">The type of class object to search.</typeparam>
         /// <typeparam name="U">The type of the property to search.</typeparam>
