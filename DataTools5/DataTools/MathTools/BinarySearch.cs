@@ -182,6 +182,8 @@ namespace DataTools.MathTools
                         } while (--p >= 0);
 
                         ++p;
+                        elem = values[p];
+                       
                     }
 
                     retobj = elem;
