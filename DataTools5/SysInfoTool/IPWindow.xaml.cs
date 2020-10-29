@@ -166,7 +166,7 @@ namespace SysInfoTool
 
 
 
-            //string[] example = new string[] { "Test", "Fox", "Goaff", "Rable", "Echo", "Echo", "Echo", "Feeling", "Atomic", "Atomic", "Feeling", "Gable", "Rable", "Forlorn", "Widening", "Mumble", "Joan", "Deco", "Lorentz", "Scat", "Quixotic", "Glenda", "Verdant", "Nexus", "Gable", "Zebulon", "Rubric", "Covert", "Atomic", "Burden" };
+            //string[] example = new string[] { "Test", "Fox", "Fox", "Feeling", "Table", "Rable", "Goaff", "Rable", "Echo", "Echo", "Echo", "Feeling", "Atomic", "Atomic", "Feeling", "Gable", "Rable", "Forlorn", "Widening", "Mumble", "Joan", "Deco", "Lorentz", "Scat", "Quixotic", "Glenda", "Verdant", "Nexus", "Gable", "Zebulon", "Rubric", "Covert", "Atomic", "Burden" };
 
             //var s = @"D:\Downloads\sample-2mb-text-file.txt";
 
@@ -177,17 +177,17 @@ namespace SysInfoTool
             //QuickSort.Sort(ref example);
 
             //var i = BinarySearch.Search(example, "glenda");
+            //int x = 1;
+            //var example = new Hazmonic[] { new Hazmonic("Test", x++), new Hazmonic("Feeling", x++), new Hazmonic("Feeling", x++), new Hazmonic("Fable", x++), new Hazmonic("Fox", x++), new Hazmonic("Goaff", x++), new Hazmonic("Rable", x++), new Hazmonic("Echo", x++), new Hazmonic("Echo", x++), new Hazmonic("Echo", x++), new Hazmonic("Feeling", x++), new Hazmonic("Atomic", x++), new Hazmonic("Atomic", x++), new Hazmonic("Feeling", x++), new Hazmonic("Gable", x++), new Hazmonic("Rable", x++), new Hazmonic("Forlorn", x++), new Hazmonic("Widening", x++), new Hazmonic("Mumble", x++), new Hazmonic("Joan", x++), new Hazmonic("Deco", x++), new Hazmonic("Lorentz", x++), new Hazmonic("Scat", x++), new Hazmonic("Quixotic", x++), new Hazmonic("Glenda", x++), new Hazmonic("Verdant", x++), new Hazmonic("Nexus", x++), new Hazmonic("Gable", x++), new Hazmonic("Zebulon", x++), new Hazmonic("Rubric", x++), new Hazmonic("Covert", x++), new Hazmonic("Atomic", x++), new Hazmonic("Burden", x++) };
 
-            var example = new Hazmonic[] { new Hazmonic("Test"), new Hazmonic("Fox"), new Hazmonic("Goaff"), new Hazmonic("Rable"), new Hazmonic("Echo"), new Hazmonic("Echo"), new Hazmonic("Echo"), new Hazmonic("Feeling"), new Hazmonic("Atomic"), new Hazmonic("Atomic"), new Hazmonic("Feeling"), new Hazmonic("Gable"), new Hazmonic("Rable"), new Hazmonic("Forlorn"), new Hazmonic("Widening"), new Hazmonic("Mumble"), new Hazmonic("Joan"), new Hazmonic("Deco"), new Hazmonic("Lorentz"), new Hazmonic("Scat"), new Hazmonic("Quixotic"), new Hazmonic("Glenda"), new Hazmonic("Verdant"), new Hazmonic("Nexus"), new Hazmonic("Gable"), new Hazmonic("Zebulon"), new Hazmonic("Rubric"), new Hazmonic("Covert"), new Hazmonic("Atomic"), new Hazmonic("Burden") };
+            //QuickSort.Sort(ref example, (a, b) =>
+            //{
+            //    return string.Compare(a.Text, b.Text);
+            //});
 
-            QuickSort.Sort(ref example, (a, b) =>
-            {
-                return string.Compare(a.Text, b.Text);
-            });
+            //Hazmonic ret;
 
-            Hazmonic ret;
-
-            var i = BinarySearch.Search(example, "Fox", "Text", out ret);
+            //var i = BinarySearch.Search(example, "Zebulon", "Text", out ret);
 
 
         }
@@ -204,6 +204,11 @@ namespace SysInfoTool
             {
                 Text = t;
                 Value = v;
+            }
+
+            public override string ToString()
+            {
+                return $"{Text}, Value: {Value}, Guid: {Guid:g}";
             }
 
         }

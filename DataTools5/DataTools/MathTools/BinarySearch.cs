@@ -34,7 +34,7 @@ namespace DataTools.MathTools
             });
 
 
-            return Search(values, comp, value, first);
+            return Search(values, value, comp, first);
         }
 
         /// <summary>
@@ -42,11 +42,11 @@ namespace DataTools.MathTools
         /// </summary>
         /// <typeparam name="T">The type of the object to search.</typeparam>
         /// <param name="values">The array of values to search.</param>
-        /// <param name="comparison">The comparison function to use.</param>
         /// <param name="value">The value to find.</param>
+        /// <param name="comparison">The comparison function to use.</param>
         /// <param name="first">Set true to return the index of the first occurrence of value, otherwise, the first found index will be returned.</param>
         /// <returns>The index to the specified element, or -1 if not found.</returns>
-        public static int Search<T>(T[] values, Comparison<T> comparison, T value, bool first = true) 
+        public static int Search<T>(T[] values, T value, Comparison<T> comparison, bool first = true) 
         {
             int lo = 0, hi = values.Length - 1;
 
@@ -116,7 +116,7 @@ namespace DataTools.MathTools
             });
 
 
-            return Search(values, comp, value, propertyName, out retobj, first);
+            return Search(values, value, comp, propertyName, out retobj, first);
         }
 
 
@@ -126,8 +126,8 @@ namespace DataTools.MathTools
         /// <typeparam name="T">The type of class object to search.</typeparam>
         /// <typeparam name="U">The type of the property to search.</typeparam>
         /// <param name="values">The array of values to search.</param>
-        /// <param name="comparison">The comparison function to use.</param>
         /// <param name="value">The value of the specified property to find.</param>
+        /// <param name="comparison">The comparison function to use.</param>
         /// <param name="propertyName">The name of the property to search.</param>
         /// <param name="retobj">Contains the object found, or null if not found.</param>
         /// <param name="first">Set true to return the index of the first occurrence of value, otherwise, the first found index will be returned.</param>
@@ -136,7 +136,7 @@ namespace DataTools.MathTools
         /// T must be a class type.
         /// propertyName must specify an instance property.
         /// </remarks>
-        public static int Search<T, U>(T[] values, Comparison<U> comparison, U value, string propertyName, out T retobj, bool first = true) where T: class
+        public static int Search<T, U>(T[] values, U value, Comparison<U> comparison, string propertyName, out T retobj, bool first = true) where T: class
         {
             if (values == null || values.Length == 0)
             {
