@@ -13,6 +13,24 @@ namespace DataTools.MathTools
     public static class BinarySearch
     {
 
+        #region Public Methods
+
+        /// <summary>
+        /// Sorts an array and find an object in the specified sorted array of objects that implement <see cref="IComparable{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to sort and search.</typeparam>
+        /// <param name="values">The array of values to sort and search.</param>
+        /// <param name="value">The value to find.</param>
+        /// <param name="first">Set true to return the index of the first occurrence of value, otherwise, the first found index will be returned.</param>
+        /// <returns>The index to the specified element, or -1 if not found.</returns>
+        /// <remarks>
+        /// T must implement <see cref="IComparable{T}"/>.
+        /// </remarks>
+        public static int Search<T>(ref T[] values, T value, bool first = true) where T : IComparable<T>
+        {
+            QuickSort.Sort(ref values);
+            return Search(values, value, first);
+        }
 
         /// <summary>
         /// Find an object in the specified sorted array of objects that implement <see cref="IComparable{T}"/>.
@@ -35,6 +53,50 @@ namespace DataTools.MathTools
 
 
             return Search(values, value, comp, first);
+        }
+
+        /// <summary>
+        /// Sort an arra and find an object in the specified sorted array.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to search.</typeparam>
+        /// <param name="values">The array of values to sort and search.</param>
+        /// <param name="value">The value to find.</param>
+        /// <param name="comparer">The comparer to use.</param>
+        /// <param name="first">Set true to return the index of the first occurrence of value, otherwise, the first found index will be returned.</param>
+        /// <returns>The index to the specified element, or -1 if not found.</returns>
+        public static int Search<T>(ref T[] values, T value, IComparer<T> comparer, bool first = true)
+        {
+            return Search(ref values, value, comparer.Compare, first);
+        }
+
+        /// <summary>
+        /// Find an object in the specified sorted array.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to search.</typeparam>
+        /// <param name="values">The array of values to search.</param>
+        /// <param name="value">The value to find.</param>
+        /// <param name="comparer">The comparer to use.</param>
+        /// <param name="first">Set true to return the index of the first occurrence of value, otherwise, the first found index will be returned.</param>
+        /// <returns>The index to the specified element, or -1 if not found.</returns>
+        public static int Search<T>(T[] values, T value, IComparer<T> comparer, bool first = true)
+        {
+            return Search(values, value, comparer.Compare, first);
+        }
+
+
+        /// <summary>
+        /// Sort an array and find an object in the specified sorted array.
+        /// </summary>
+        /// <typeparam name="T">The type of the object to search.</typeparam>
+        /// <param name="values">The array of values to sort and search.</param>
+        /// <param name="value">The value to find.</param>
+        /// <param name="comparison">The comparison function to use.</param>
+        /// <param name="first">Set true to return the index of the first occurrence of value, otherwise, the first found index will be returned.</param>
+        /// <returns>The index to the specified element, or -1 if not found.</returns>
+        public static int Search<T>(ref T[] values, T value, Comparison<T> comparison, bool first = true)
+        {
+            QuickSort.Sort(ref values, comparison);
+            return Search(values, value, comparison, first);
         }
 
         /// <summary>
@@ -116,6 +178,42 @@ namespace DataTools.MathTools
 
 
         /// <summary>
+        /// Sort an array and find an object in the specified sorted array of objects with a property whose type implements <see cref="IComparable{U}"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of class object to search.</typeparam>
+        /// <typeparam name="U">The type of the property to search.</typeparam>
+        /// <param name="values">The array of values to sort and search.</param>
+        /// <param name="value">The value of the specified property to find.</param>
+        /// <param name="propertyName">The name of the property to search.</param>
+        /// <param name="retobj">Contains the object found, or null if not found.</param>
+        /// <param name="first">Set true to return the index of the first occurrence of value, otherwise, the first found index will be returned.</param>
+        /// <returns>The index to the specified element, or -1 if not found.</returns>
+        /// <remarks>
+        /// T must be a class type.
+        /// U must implement <see cref="IComparable{U}"/>.
+        /// propertyName must specify an instance property.
+        /// </remarks>
+        public static int Search<T, U>(ref T[] values, U value, string propertyName, out T retobj, bool first = true) where T : class where U : IComparable<U>
+        {
+
+            PropertyInfo prop = typeof(T).GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+            if (prop == null) throw new ArgumentException(nameof(propertyName));
+
+            var dynComp = new Comparison<T>((a, b) =>
+            {
+                U vA = (U)prop.GetValue(a);
+                U vB = (U)prop.GetValue(b);
+
+                return vA.CompareTo(vB);
+            });
+
+            QuickSort.Sort(ref values, dynComp);
+            return Search(values, value, propertyName, out retobj, first);
+        }
+
+
+        /// <summary>
         /// Find an object in the specified sorted array of objects with a property whose type implements <see cref="IComparable{U}"/>.
         /// </summary>
         /// <typeparam name="T">The type of class object to search.</typeparam>
@@ -140,6 +238,40 @@ namespace DataTools.MathTools
 
 
             return Search(values, value, comp, propertyName, out retobj, first);
+        }
+
+        /// <summary>
+        /// Sort an array and find an object in the specified sorted array.
+        /// </summary>
+        /// <typeparam name="T">The type of class object to search.</typeparam>
+        /// <typeparam name="U">The type of the property to search.</typeparam>
+        /// <param name="values">The array of values to sort and search.</param>
+        /// <param name="value">The value of the specified property to find.</param>
+        /// <param name="comparison">The comparison function to use.</param>
+        /// <param name="propertyName">The name of the property to search.</param>
+        /// <param name="retobj">Contains the object found, or null if not found.</param>
+        /// <param name="first">Set true to return the index of the first occurrence of value, otherwise, the first found index will be returned.</param>
+        /// <returns>The index to the specified element, or -1 if not found.</returns>
+        /// <remarks>
+        /// T must be a class type.
+        /// propertyName must specify an instance property.
+        /// </remarks>
+        public static int Search<T, U>(ref T[] values, U value, Comparison<U> comparison, string propertyName, out T retobj, bool first = true) where T : class
+        {
+            PropertyInfo prop = typeof(T).GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+            if (prop == null) throw new ArgumentException(nameof(propertyName));
+
+            var dynComp = new Comparison<T>((a, b) =>
+            {
+                U vA = (U)prop.GetValue(a);
+                U vB = (U)prop.GetValue(b);
+
+                return comparison(vA, vB);
+            });
+
+            QuickSort.Sort(ref values, dynComp);
+            return Search(values, value, comparison, propertyName, out retobj, first);
         }
 
 
@@ -226,7 +358,7 @@ namespace DataTools.MathTools
             return -1;
         }
 
-
+        #endregion Public Methods
 
     }
 }

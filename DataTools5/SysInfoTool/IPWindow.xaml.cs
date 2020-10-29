@@ -163,9 +163,6 @@ namespace SysInfoTool
             AdapterList.SelectionChanged += AdapterList_SelectionChanged;
 
 
-
-
-
             //string[] example = new string[] { "Test", "Fox", "Fox", "Feeling", "Table", "Rable", "Goaff", "Rable", "Echo", "Echo", "Echo", "Feeling", "Atomic", "Atomic", "Feeling", "Gable", "Rable", "Forlorn", "Widening", "Mumble", "Joan", "Deco", "Lorentz", "Scat", "Quixotic", "Glenda", "Verdant", "Nexus", "Gable", "Zebulon", "Rubric", "Covert", "Atomic", "Burden" };
 
             //var s = @"D:\Downloads\sample-2mb-text-file.txt";
