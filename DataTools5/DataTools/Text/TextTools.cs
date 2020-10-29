@@ -15,6 +15,8 @@ using System;
 using System.Text;
 
 using System.Reflection;
+using System.Windows.Documents;
+using System.Collections.Generic;
 
 namespace DataTools.Text
 {
@@ -244,7 +246,7 @@ namespace DataTools.Text
             int e = 0;
             int g = 0;
 
-            string[] sOut = null;
+            List<string> sOut = new List<string>();
             int c = 0;
 
             char[] chOut = null;
@@ -330,12 +332,9 @@ namespace DataTools.Text
                     {
                         if (WithToken && !WithTokenIn && d != 0)
                         {
-                            Array.Resize(ref sOut, d + 1);
-                            sOut[d] = Separator;
+                            sOut.Add(Separator);
                             d++;
                         }
-
-                        Array.Resize(ref sOut, d + 1);
 
                         if (WithToken && WithTokenIn)
                         {
@@ -346,7 +345,7 @@ namespace DataTools.Text
                             }
                         }
 
-                        sOut[d] = new string(chOut).Substring(0, g);
+                        sOut.Add(new string(chOut, 0, g));
                         g = 0;
 
                         d++;
@@ -371,11 +370,10 @@ namespace DataTools.Text
 
             if (g != 0)
             {
-                Array.Resize(ref sOut, d + 1);
-                sOut[d] = new string(chOut).Substring(0, g);
+                sOut.Add(new string(chOut, 0, g));
             }
 
-            return sOut;
+            return sOut.ToArray();
         }
 
         /// <summary>

@@ -23,6 +23,8 @@ using DataTools.Hardware.Network;
 using DataTools.Hardware;
 using DataTools.Win32Api.Network;
 using DataTools.Memory;
+using DataTools.MathTools;
+using DataTools.Text;
 
 namespace SysInfoTool
 {
@@ -161,6 +163,48 @@ namespace SysInfoTool
             AdapterList.SelectionChanged += AdapterList_SelectionChanged;
 
 
+
+
+
+            //string[] example = new string[] { "Test", "Fox", "Goaff", "Rable", "Echo", "Echo", "Echo", "Feeling", "Atomic", "Atomic", "Feeling", "Gable", "Rable", "Forlorn", "Widening", "Mumble", "Joan", "Deco", "Lorentz", "Scat", "Quixotic", "Glenda", "Verdant", "Nexus", "Gable", "Zebulon", "Rubric", "Covert", "Atomic", "Burden" };
+
+            //var s = @"D:\Downloads\sample-2mb-text-file.txt";
+
+            //var x = System.IO.File.ReadAllText(s);
+
+            //var example = TextTools.Words(x, " ");
+
+            //QuickSort.Sort(ref example);
+
+            //var i = BinarySearch.Search(example, "glenda");
+
+            var example = new Hazmonic[] { new Hazmonic("Test"), new Hazmonic("Fox"), new Hazmonic("Goaff"), new Hazmonic("Rable"), new Hazmonic("Echo"), new Hazmonic("Echo"), new Hazmonic("Echo"), new Hazmonic("Feeling"), new Hazmonic("Atomic"), new Hazmonic("Atomic"), new Hazmonic("Feeling"), new Hazmonic("Gable"), new Hazmonic("Rable"), new Hazmonic("Forlorn"), new Hazmonic("Widening"), new Hazmonic("Mumble"), new Hazmonic("Joan"), new Hazmonic("Deco"), new Hazmonic("Lorentz"), new Hazmonic("Scat"), new Hazmonic("Quixotic"), new Hazmonic("Glenda"), new Hazmonic("Verdant"), new Hazmonic("Nexus"), new Hazmonic("Gable"), new Hazmonic("Zebulon"), new Hazmonic("Rubric"), new Hazmonic("Covert"), new Hazmonic("Atomic"), new Hazmonic("Burden") };
+
+            QuickSort.Sort(ref example, (a, b) =>
+            {
+                return string.Compare(a.Text, b.Text);
+            });
+
+            Hazmonic ret;
+
+            var i = BinarySearch.Search(example, "Fox", "Text", out ret);
+
+
+        }
+
+        public class Hazmonic
+        {
+            public string Text { get; set; }
+
+            public int Value { get; set; }
+
+            public Guid Guid { get; set; } = Guid.NewGuid();
+
+            public Hazmonic(string t, int v = 0)
+            {
+                Text = t;
+                Value = v;
+            }
 
         }
 
