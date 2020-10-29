@@ -92,6 +92,29 @@ namespace DataTools.MathTools
             return -1;
         }
 
+
+        /// <summary>
+        /// Find an object in the specified sorted array of objects that implement <see cref="IComparable{U}"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of class object to search.</typeparam>
+        /// <typeparam name="U">The type of the property to search.</typeparam>
+        /// <param name="values">The array of values to search.</param>
+        /// <param name="value">The value of the specified property to find.</param>
+        /// <param name="comparer">The comparer to use.</param>
+        /// <param name="propertyName">The name of the property to search.</param>
+        /// <param name="retobj">Contains the object found, or null if not found.</param>
+        /// <param name="first">Set true to return the index of the first occurrence of value, otherwise, the first found index will be returned.</param>
+        /// <returns>The index to the specified element, or -1 if not found.</returns>
+        /// <remarks>
+        /// T must be a class type.
+        /// propertyName must specify an instance property.
+        /// </remarks>
+        public static int Search<T, U>(T[] values, U value, IComparer<U> comparer, string propertyName, out T retobj, bool first = true) where T : class
+        {
+            return Search(values, value, comparer.Compare, propertyName, out retobj, first);
+        }
+
+
         /// <summary>
         /// Find an object in the specified sorted array of objects that implement <see cref="IComparable{U}"/>.
         /// </summary>
@@ -145,7 +168,7 @@ namespace DataTools.MathTools
             }
 
             int lo = 0, hi = values.Length - 1;
-            PropertyInfo prop = typeof(T).GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public);
+            PropertyInfo prop = typeof(T).GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
             if (prop == null) throw new ArgumentException(nameof(propertyName));
 
