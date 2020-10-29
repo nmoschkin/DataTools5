@@ -182,12 +182,20 @@ namespace SysInfoTool
 
             //QuickSort.Sort(ref example, (a, b) =>
             //{
-            //    return string.Compare(a.Text, b.Text);
+            //    int z;
+                
+            //    if ((z = string.Compare(a.Text, b.Text)) == 0)
+            //    {
+            //        z = a.Value - b.Value;
+            //    }
+
+            //    return z;
+            
             //});
 
             //Hazmonic ret;
 
-            //var i = BinarySearch.Search(example, "Zebulon", "Text", out ret);
+            //var i = BinarySearch.Search(example, "Feeling", "Text", out ret);
 
 
         }
