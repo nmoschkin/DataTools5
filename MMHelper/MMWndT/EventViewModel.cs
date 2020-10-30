@@ -243,6 +243,14 @@ namespace MMWndT
                         s = "Error";
                         break;
 
+                    case Worker.MSG_TERMINATE:
+                        s = "Terminate";
+                        break;
+
+                    case Worker.MSG_SHUTDOWN:
+                        s = "Shutdown";
+                        break;
+
                     case Worker.MSG_HOOK_REPLACED:
                         s = "Hook Replaced";
                         break;

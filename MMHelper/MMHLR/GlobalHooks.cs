@@ -24,8 +24,12 @@ namespace MMHLR
         public delegate void BasicHookEventHandler(IntPtr Handle1, IntPtr Handle2);
         public delegate void WndProcEventHandler(IntPtr Handle, IntPtr Message, IntPtr wParam, IntPtr lParam);
 
-        public delegate void HardwareChangedEventHandle(object sender, HardwareChangedEventArgs e);
-        public event HardwareChangedEventHandle HardwareChanged;
+        public delegate void HardwareChangedEventHandler(object sender, HardwareChangedEventArgs e);
+        public event HardwareChangedEventHandler HardwareChanged;
+
+
+        public delegate void SystemShutdownEventHandler(object sender, SystemShutdownEventArgs e);
+        public event SystemShutdownEventHandler SystemShutdown;
 
         // Functions imported from our unmanaged DLL
 
@@ -204,9 +208,11 @@ namespace MMHLR
 
                 }
 
-                var ea = new HardwareChangedEventArgs((uint)m.WParam, sDisplay);
-
-                HardwareChanged?.Invoke(this, ea);
+                HardwareChanged?.Invoke(this, new HardwareChangedEventArgs((uint)m.WParam, sDisplay));
+            }
+            else if (m.Msg == WM_ENDSESSION)
+            {
+                SystemShutdown?.Invoke(this, new SystemShutdownEventArgs(m.WParam, m.LParam));
             }
             else
             {

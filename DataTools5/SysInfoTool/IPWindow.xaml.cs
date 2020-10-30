@@ -174,26 +174,25 @@ namespace SysInfoTool
             //QuickSort.Sort(ref example);
 
             //var i = BinarySearch.Search(example, "glenda");
-            //int x = 1;
-            //var example = new Hazmonic[] { new Hazmonic("Test", x++), new Hazmonic("Feeling", x++), new Hazmonic("Feeling", x++), new Hazmonic("Fable", x++), new Hazmonic("Fox", x++), new Hazmonic("Goaff", x++), new Hazmonic("Rable", x++), new Hazmonic("Echo", x++), new Hazmonic("Echo", x++), new Hazmonic("Echo", x++), new Hazmonic("Feeling", x++), new Hazmonic("Atomic", x++), new Hazmonic("Atomic", x++), new Hazmonic("Feeling", x++), new Hazmonic("Gable", x++), new Hazmonic("Rable", x++), new Hazmonic("Forlorn", x++), new Hazmonic("Widening", x++), new Hazmonic("Mumble", x++), new Hazmonic("Joan", x++), new Hazmonic("Deco", x++), new Hazmonic("Lorentz", x++), new Hazmonic("Scat", x++), new Hazmonic("Quixotic", x++), new Hazmonic("Glenda", x++), new Hazmonic("Verdant", x++), new Hazmonic("Nexus", x++), new Hazmonic("Gable", x++), new Hazmonic("Zebulon", x++), new Hazmonic("Rubric", x++), new Hazmonic("Covert", x++), new Hazmonic("Atomic", x++), new Hazmonic("Burden", x++) };
+            int x = 1;
+            var example = new Hazmonic[] { new Hazmonic("Test", x++), new Hazmonic("Feeling", x++), new Hazmonic("Feeling", x++), new Hazmonic("Fable", x++), new Hazmonic("Fox", x++), new Hazmonic("Goaff", x++), new Hazmonic("Rable", x++), new Hazmonic("Echo", x++), new Hazmonic("Echo", x++), new Hazmonic("Echo", x++), new Hazmonic("Feeling", x++), new Hazmonic("Atomic", x++), new Hazmonic("Atomic", x++), new Hazmonic("Feeling", x++), new Hazmonic("Gable", x++), new Hazmonic("Rable", x++), new Hazmonic("Forlorn", x++), new Hazmonic("Widening", x++), new Hazmonic("Mumble", x++), new Hazmonic("Joan", x++), new Hazmonic("Deco", x++), new Hazmonic("Lorentz", x++), new Hazmonic("Scat", x++), new Hazmonic("Quixotic", x++), new Hazmonic("Glenda", x++), new Hazmonic("Verdant", x++), new Hazmonic("Nexus", x++), new Hazmonic("Gable", x++), new Hazmonic("Zebulon", x++), new Hazmonic("Rubric", x++), new Hazmonic("Covert", x++), new Hazmonic("Atomic", x++), new Hazmonic("Burden", x++) };
 
-            //QuickSort.Sort(ref example, (a, b) =>
-            //{
-            //    int z;
-                
-            //    if ((z = string.Compare(a.Text, b.Text)) == 0)
-            //    {
-            //        z = a.Value - b.Value;
-            //    }
+            QuickSort.Sort(ref example, (a, b) =>
+            {
+                int z;
 
-            //    return z;
-            
-            //});
+                if ((z = string.Compare(a.Text, b.Text)) == 0)
+                {
+                    z = a.Value - b.Value;
+                }
 
-            //Hazmonic ret;
+                return z;
 
-            //var i = BinarySearch.Search(example, "Feeling", "Text", out ret);
+            });
 
+            Hazmonic ret;
+
+            var i = BinarySearch.Search(example, "Feeling", "Text", out ret);
 
         }
 

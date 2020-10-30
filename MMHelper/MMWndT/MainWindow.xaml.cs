@@ -282,6 +282,12 @@ namespace MMWndT
                     btnToggle.Content = StartButtonText;
                     IsWatching = false;
                 }
+                else if (e.Message == Worker.MSG_SHUTDOWN)
+                {
+                    Shutdown();
+                    return;
+                }
+
 
                 await UpdateConnectedStatus();
 

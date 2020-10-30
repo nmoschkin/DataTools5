@@ -142,6 +142,7 @@ namespace MMWndT
         public const int MSG_INFORM_MY = 124;
         public const int MSG_HW_CHANGE = 129;
         public const int MSG_ERROR = 255;
+        public const int MSG_SHUTDOWN = 600;
 
         private Socket x64Sock;
         private Socket x86Sock;

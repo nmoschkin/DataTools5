@@ -42,8 +42,6 @@ namespace MMHLR
 
     public static class Program
     {
-
-
         public const int MSG_QUERY_STATE = 411;
         public const int MSG_HOOK_REPLACED = 339;
         public const int MSG_STOP_MOVER = 206;
@@ -57,6 +55,7 @@ namespace MMHLR
         public const int MSG_INFORM_MY = 124;
         public const int MSG_HW_CHANGE = 129;
         public const int MSG_ERROR = 255;
+        public const int MSG_SHUTDOWN = 600;
 
         public static string PrintMsg(int msg)
         {
@@ -93,6 +92,8 @@ namespace MMHLR
 
                 case MSG_TERMINATE:
                     return "MSG_TERMINATE";
+                case MSG_SHUTDOWN:
+                    return "MSG_SHUTDOWN";
 
                 case MSG_INFORM_MY:
                     return "MSG_INFORM_MY";
@@ -146,6 +147,7 @@ namespace MMHLR
 
             gh.CBT.MoveSize += CBT_MoveSize;
             gh.HardwareChanged += HardwareChanged;
+            gh.SystemShutdown += SystemShutdown;
 
 #if X64
             var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 53112);
@@ -268,6 +270,11 @@ namespace MMHLR
             {
                 Environment.Exit(0);
             }
+        }
+
+        private static void SystemShutdown(object sender, SystemShutdownEventArgs e)
+        {
+            SendShell(MSG_SHUTDOWN, IntPtr.Zero);
         }
 
         private static void CBT_HookReplaced()
