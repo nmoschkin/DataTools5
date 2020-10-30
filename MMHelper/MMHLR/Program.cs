@@ -10,6 +10,7 @@ using System.Net.Sockets;
 using System.Net;
 using DataTools.Win32Api;
 using DataTools.Streams;
+using System.Threading.Tasks;
 
 namespace MMHLR
 {
@@ -274,7 +275,13 @@ namespace MMHLR
 
         private static void SystemShutdown(object sender, SystemShutdownEventArgs e)
         {
-            SendShell(MSG_SHUTDOWN, IntPtr.Zero);
+            _ = Task.Run(() =>
+            {
+                SendShell(MSG_SHUTDOWN, (IntPtr)(e.IsShuttingDown == true ? 1 : 0), "System is shutting down.", (IntPtr?)e.EndSessionType);
+            });
+
+            Thread.Sleep(100);
+            Canceller.Cancel();
         }
 
         private static void CBT_HookReplaced()

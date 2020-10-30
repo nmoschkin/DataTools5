@@ -210,9 +210,9 @@ namespace MMHLR
 
                 HardwareChanged?.Invoke(this, new HardwareChangedEventArgs((uint)m.WParam, sDisplay));
             }
-            else if (m.Msg == WM_ENDSESSION)
+            else if (m.Msg == WM_QUERYENDSESSION)
             {
-                SystemShutdown?.Invoke(this, new SystemShutdownEventArgs(m.WParam, m.LParam));
+                SystemShutdown?.Invoke(this, new SystemShutdownEventArgs(m.WParam, m.LParam));                
             }
             else
             {
@@ -221,6 +221,15 @@ namespace MMHLR
 #else
             ProcessWindowMessage(ref m);
 #endif
+
+
+            if (m.Msg == WM_QUERYENDSESSION)
+            {
+#if X64
+                SystemShutdown?.Invoke(this, new SystemShutdownEventArgs(m.WParam, m.LParam));
+#endif
+            }
+
             base.WndProc(ref m);
         }
 

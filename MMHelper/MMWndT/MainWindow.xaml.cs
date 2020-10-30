@@ -237,20 +237,26 @@ namespace MMWndT
 
         private bool isShutdown = false;
 
-        private void Shutdown(bool close = true)
+        private void Shutdown(bool close = true, bool exit = false)
         {
             StopService();
 
             notify.Visible = false;
 
             Program.CTS.Cancel();
-            
+
+            isShutdown = true;
+            App.Current.Work.Log.Close();
+
+            if (exit)
+            {
+                Environment.Exit(0);
+            }
+
             while (!Program.Work.WorkerShutdown)
             {
                 Thread.Yield();
             }
-
-            isShutdown = true;
 
             if (close) Close();
         }
@@ -284,7 +290,32 @@ namespace MMWndT
                 }
                 else if (e.Message == Worker.MSG_SHUTDOWN)
                 {
-                    Shutdown();
+                    string shut = "";
+                    if (e.LongData1 == 1)
+                    {
+                        shut += "System is shutting down.";
+                    }
+
+                    EndSessionTypes t = (EndSessionTypes)e.LongData2;
+
+                    if (t == EndSessionTypes.Critical)
+                    {
+                        shut += " App is being forced closed.";
+                    }
+                    else if (t == EndSessionTypes.LogOff)
+                    {
+                        shut += " User is logging off. Closing gracefully.";
+                    }
+                    else if (t == EndSessionTypes.CloseApp) 
+                    {
+                        shut += " App has been asked to close by the system for a reason other than shutdown. Closing gracefully.";
+                    }
+
+                    eventLog.Add(new EventViewModel(e));
+
+                    App.Current.Work.Log.Log(shut);
+
+                    Shutdown(true, true);
                     return;
                 }
 
@@ -437,5 +468,23 @@ namespace MMWndT
         }
 
     }
+
+    public enum EndSessionTypes : uint
+    {
+        /// <summary>
+        /// If wParam is TRUE, the application must shut down. Any data should be saved automatically without prompting the user (for more information, see Remarks). The Restart Manager sends this message when the application is using a file that needs to be replaced, when it must service the system, or when system resources are exhausted. The application will be restarted if it has registered for restart using the RegisterApplicationRestart function. For more information, see Guidelines for Applications.
+        /// If wParam is FALSE, the application should not shut down.
+        /// </summary>
+        CloseApp = 0x1,
+        /// <summary>
+        /// The application is forced to shut down.
+        /// </summary>
+        Critical = 0x40000000,
+        /// <summary>
+        /// The user is logging off. For more information, see Logging Off.
+        /// </summary>
+        LogOff = 0x80000000
+    }
+
 
 }

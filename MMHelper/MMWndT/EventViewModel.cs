@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Security.Policy;
 using System.Text;
 using System.Threading;
@@ -25,7 +26,7 @@ namespace MMWndT
 
         private static Dictionary<string, ImageSource> cache = new Dictionary<string, ImageSource>();
 
-        private WorkerLogEventArgs source;
+        private EventArgs source;
 
 
         private WorkerKind origin;
@@ -76,9 +77,31 @@ namespace MMWndT
             }
         }
 
-        public WorkerLogEventArgs Source
+        public WorkerLogEventArgs LogSource
         {
-            get => source;
+            get
+            {
+                if (source is WorkerLogEventArgs e)
+                    return e;
+                else
+                    return null;
+            }
+            private set
+            {
+                source = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public WorkerNotifyEventArgs NotifySource
+        {
+            get
+            {
+                if (source is WorkerNotifyEventArgs e)
+                    return e;
+                else
+                    return null;
+            }
             private set
             {
                 source = value;
@@ -141,10 +164,6 @@ namespace MMWndT
             }
         }
 
-
-
-
-
         private int monitor;
 
         public int Monitor
@@ -167,13 +186,33 @@ namespace MMWndT
                 {
                     return $"Event #{Monitor}";
                 }
+                else if (Event == Worker.MSG_SHUTDOWN)
+                {
+                    EndSessionTypes t = (EndSessionTypes)NotifySource.LongData2;
+
+                    if (t == EndSessionTypes.Critical)
+                    {
+                        return "Force Close";
+                    }
+                    else if (t == EndSessionTypes.LogOff)
+                    {
+                        return "Logging Off";
+                    }
+                    else if (t == EndSessionTypes.CloseApp)
+                    {
+                        return "Shutting Down App";
+                    }
+                    else
+                    {
+                        return $"Shutdown Event #{t}";
+                    }
+                }
                 else
                 {
                     return $"Monitor {monitor}";
                 }
             }
         }
-
 
         private DateTime timeStamp;
 
@@ -274,17 +313,52 @@ namespace MMWndT
             get => eventText;
         }
 
-
-
-
         public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public EventViewModel(WorkerNotifyEventArgs e)
+        {
+            NotifySource = e;
+
+            if (e.Message == Worker.MSG_SHUTDOWN)
+            {
+
+                string shut = "";
+
+                if (e.LongData1 == 1)
+                {
+                    shut += "System is shutting down.";
+                }
+
+                EndSessionTypes t = (EndSessionTypes)e.LongData2;
+
+                if (t == EndSessionTypes.Critical)
+                {
+                    shut += " App is being forced closed.";
+                }
+                else if (t == EndSessionTypes.LogOff)
+                {
+                    shut += " User is logging off. Closing gracefully.";
+                }
+                else if (t == EndSessionTypes.CloseApp)
+                {
+                    shut += " App has been asked to close by the system for a reason other than shutdown. Closing gracefully.";
+                }
+
+                Message = shut;
+            }
+
+            Event = e.Message;
+            Origin = e.Kind;
+
+            Timestamp = DateTime.Now;
+        }
+
         public EventViewModel(WorkerLogEventArgs e)
         {
-            Source = e;
+            LogSource = e;
 
             Timestamp = DateTime.Now;
 
