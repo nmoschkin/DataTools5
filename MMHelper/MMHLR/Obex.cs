@@ -25,7 +25,11 @@ using System.Threading.Tasks;
 using System.Data;
 
 
-namespace DataTools.ObjectExchange
+#if X64
+namespace MMHLR64
+#else
+namespace MMHLR32
+#endif
 {
 
     /// <summary>
@@ -92,13 +96,26 @@ namespace DataTools.ObjectExchange
     }
 
 
+    /// <summary>
+    /// Contains details of state change events.
+    /// </summary>
     public class StateChangedEventArgs : EventArgs
     {
+        /// <summary>
+        /// The new state.
+        /// </summary>
         public ObexStates State { get; private set; } 
 
+        /// <summary>
+        /// Exception if error state.
+        /// </summary>
         public Exception Exception { get; private set; } = null;
 
+        /// <summary>
+        /// Is error state.
+        /// </summary>
         public bool IsErrorState { get; private set; } = false;
+
 
         public StateChangedEventArgs(ObexStates state)
         {
@@ -124,6 +141,9 @@ namespace DataTools.ObjectExchange
 
     }
 
+    /// <summary>
+    /// Contains information about an object received event.
+    /// </summary>
     public class ObjectReceivedEventArgs : EventArgs
     {
         protected object obj;
@@ -131,6 +151,9 @@ namespace DataTools.ObjectExchange
         protected byte[] rawdata;
         protected DateTime timestamp;
 
+        /// <summary>
+        /// Timestamp of the event.
+        /// </summary>
         public virtual DateTime Timestamp
         {
             get => timestamp;
@@ -140,6 +163,9 @@ namespace DataTools.ObjectExchange
             }
         }
 
+        /// <summary>
+        /// True if deserialization was successful.
+        /// </summary>
         public virtual bool Deserialized
         {
             get => deserialized;
@@ -148,6 +174,10 @@ namespace DataTools.ObjectExchange
                 deserialized = value;
             }
         }
+
+        /// <summary>
+        /// The deserialized object.
+        /// </summary>
         public virtual object Object
         {
             get => obj;
@@ -157,6 +187,9 @@ namespace DataTools.ObjectExchange
             }
         }
 
+        /// <summary>
+        /// The raw byte data of the exchange.
+        /// </summary>
         public virtual byte[] RawData
         {
             get => rawdata;
@@ -185,6 +218,9 @@ namespace DataTools.ObjectExchange
 
     }
 
+    /// <summary>
+    /// Socket-based object exchanger.
+    /// </summary>
     public class Obex : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
@@ -567,6 +603,89 @@ namespace DataTools.ObjectExchange
 
         }
 
+        protected virtual void ListenThreadProc(object param)
+        {
+            bool disc = false;
+            bool fAccept = (bool)param;
+
+            try
+            {
+                if (socket == null) return;
+
+                if (!socket.Connected)
+                {
+                    if (fAccept && IsSocketOwner)
+                    {
+                        disc = true;
+                        socket.Blocking = true;
+
+                        _ = Task.Run(() =>
+                        {
+                            State = ObexStates.Waiting;
+                        });
+
+                        socket = socket.Accept();
+                    }
+                    else
+                    {
+                        State = ObexStates.ErrorDisconnected;
+                        return;
+                    }
+                }
+
+                _ = Task.Run(() =>
+                {
+                    State = ObexStates.Serving | ObexStates.Connected;
+                });
+
+                byte[] buff;
+                int r;
+
+                while (!cts.IsCancellationRequested)
+                {
+                    buff = new byte[4];
+                    r = socket.Receive(buff, 0, 4, SocketFlags.Peek);
+
+                    if (r == 4)
+                    {
+                        var obj = ReceiveObject(true, out buff);
+                        ObjectReceived?.Invoke(this, new ObjectReceivedEventArgs(obj, buff));
+                    }
+
+                    Thread.Yield();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                state = ObexStates.Error;
+                _ = Task.Run(() =>
+                {
+                    StateChanged?.Invoke(this, new StateChangedEventArgs(state, ex));
+
+                });
+            }
+
+            if (disc == true)
+            {
+                socket.Close();
+                _ = Task.Run(() =>
+                {
+                    State = ObexStates.Closed;
+                });
+            }
+            else
+            {
+                _ = Task.Run(() =>
+                {
+                    State = ObexStates.Connected;
+                });
+            }
+
+            cts = null;
+
+        }
+
         /// <summary>
         /// Start the listener.
         /// </summary>
@@ -580,90 +699,10 @@ namespace DataTools.ObjectExchange
 
             cts = new CancellationTokenSource();
 
-            thRecv = new Thread(() =>
-            {
-                bool disc = false;
-
-                try
-                {
-                    if (socket == null) return;
-
-                    if (!socket.Connected)
-                    {
-                        if (fAccept && IsSocketOwner)
-                        {
-                            disc = true;
-                            socket.Blocking = true;
-
-                            _ = Task.Run(() =>
-                            {
-                                State = ObexStates.Waiting;
-                            });
-
-                            socket = socket.Accept();
-                        }
-                        else
-                        {
-                            State = ObexStates.ErrorDisconnected;
-                            return;
-                        }
-                    }
-
-                    _ = Task.Run(() =>
-                    {
-                        State = ObexStates.Serving | ObexStates.Connected;
-                    });
-
-                    byte[] buff;
-                    int r;
-
-                    while (!cts.IsCancellationRequested)
-                    {
-                        buff = new byte[4];
-                        r = socket.Receive(buff, 0, 4, SocketFlags.Peek);
-
-                        if (r == 4)
-                        {
-                            var obj = ReceiveObject(true, out buff);
-                            ObjectReceived?.Invoke(this, new ObjectReceivedEventArgs(obj, buff));
-                        }
-
-                        Thread.Yield();
-                    }
-
-                }
-                catch(Exception ex)
-                {
-                    state = ObexStates.Error;
-                    _ = Task.Run(() =>
-                    {
-                        StateChanged?.Invoke(this, new StateChangedEventArgs(state, ex));
-
-                    });
-                }
-
-                if (disc == true)
-                {
-                    socket.Close();
-                    _ = Task.Run(() =>
-                    {
-                        State = ObexStates.Closed;
-                    });
-                }
-                else
-                {
-                    _ = Task.Run(() =>
-                    {
-                        State = ObexStates.Connected;
-                    });
-                }
-
-                cts = null;
-
-            });
+            thRecv = new Thread(ListenThreadProc);
 
             thRecv.Priority = priority;
-            thRecv.Start();
+            thRecv.Start(fAccept);
 
         }
               

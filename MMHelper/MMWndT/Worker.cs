@@ -213,6 +213,8 @@ namespace MMWndT
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+
+
             disp = System.Windows.Application.Current.Dispatcher;
             ttok = stoppingToken;
 
