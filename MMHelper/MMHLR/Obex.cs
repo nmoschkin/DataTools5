@@ -150,6 +150,39 @@ namespace MMHLR32
         protected bool deserialized;
         protected byte[] rawdata;
         protected DateTime timestamp;
+        protected string typeName;
+        protected Type type;
+
+        /// <summary>
+        /// Retrieves the type name intended for the object. 
+        /// </summary>
+        /// <remarks>
+        /// This value should be present even if deserialization did not succeed.
+        /// </remarks>
+        public virtual string TypeName
+        {
+            get => typeName;
+            protected set
+            {
+                typeName = value;
+            }
+        }
+
+
+        /// <summary>
+        /// Retrieves the type of the received object.
+        /// </summary>
+        /// <remarks>
+        /// This value can be present even if deserialization did not succeed.
+        /// </remarks>
+        public virtual Type Type
+        {
+            get => type;
+            protected set
+            {
+                type = value;
+            }
+        }
 
         /// <summary>
         /// Timestamp of the event.
@@ -199,20 +232,31 @@ namespace MMHLR32
             }
         }
 
-        public ObjectReceivedEventArgs(object obj, byte[] raw)
+        public ObjectReceivedEventArgs(object obj, byte[] raw, string typeName, Type type)
         {
             Object = obj;
+            TypeName = typeName;
             RawData = raw;
-            Deserialized = obj != null;
+
+            if (obj != null)
+            {
+                Deserialized = true;
+                Type = obj.GetType();
+            }
+            else
+            {
+                Type = type;
+            }
+
             Timestamp = DateTime.Now;
         }
 
-        public ObjectReceivedEventArgs(object obj) : this(obj, null)
+        public ObjectReceivedEventArgs(object obj) : this(obj, null, null, null)
         {
 
         }
 
-        public ObjectReceivedEventArgs(byte[] raw) : this(null, raw)
+        public ObjectReceivedEventArgs(byte[] raw) : this(null, raw, null, null)
         {
         }
 
@@ -585,6 +629,7 @@ namespace MMHLR32
             while (DateTime.Now - n < ts)
             {
                 Thread.Yield();
+                if (socket.Poll(100, SelectMode.SelectWrite)) break;
             }
 
             if (!socket.Connected)
@@ -603,6 +648,10 @@ namespace MMHLR32
 
         }
 
+        /// <summary>
+        /// Thread proc used to listen for incoming requests and messages.
+        /// </summary>
+        /// <param name="param"></param>
         protected virtual void ListenThreadProc(object param)
         {
             bool disc = false;
@@ -648,8 +697,10 @@ namespace MMHLR32
 
                     if (r == 4)
                     {
-                        var obj = ReceiveObject(true, out buff);
-                        ObjectReceived?.Invoke(this, new ObjectReceivedEventArgs(obj, buff));
+                        string tn;
+
+                        var obj = ReceiveObject(true, out buff, out tn);
+                        ObjectReceived?.Invoke(this, new ObjectReceivedEventArgs(obj, buff, tn, obj?.GetType()));
                     }
 
                     Thread.Yield();
@@ -691,7 +742,7 @@ namespace MMHLR32
         /// </summary>
         /// <param name="priority">Thread priority.</param>
         /// <param name="fAccept">True to accept a new connection.</param>
-        public void StartListening(ThreadPriority priority = ThreadPriority.Lowest, bool fAccept = true)
+        public virtual void StartListening(ThreadPriority priority = ThreadPriority.Lowest, bool fAccept = true)
         {
             if (fDisposed) throw new ObjectDisposedException(nameof(Obex));
 
@@ -702,6 +753,7 @@ namespace MMHLR32
             thRecv = new Thread(ListenThreadProc);
 
             thRecv.Priority = priority;
+            Debugger.NotifyOfCrossThreadDependency();
             thRecv.Start(fAccept);
 
         }
@@ -804,7 +856,7 @@ namespace MMHLR32
                 socket.Send(ms.ToArray());
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
                 return false;
             }
@@ -812,16 +864,16 @@ namespace MMHLR32
 
         public object ReceiveObject()
         {
-            return ReceiveObject(true, out _);
+            return ReceiveObject(true, out _, out _);
         }
 
 
         public object ReceiveObject(bool wait)
         {
-            return ReceiveObject(wait, out _);
+            return ReceiveObject(wait, out _, out _);
         }
 
-        public virtual object ReceiveObject(bool wait, out byte[] raw, JsonSerializerSettings jsettings = null)
+        public virtual object ReceiveObject(bool wait, out byte[] raw, out string typeName, JsonSerializerSettings jsettings = null)
         {
             if (jsettings == null)
             {
@@ -832,6 +884,7 @@ namespace MMHLR32
             {
                 Thread.Yield();
                 raw = null;
+                typeName = null;
                 return default;
             }
 
@@ -863,6 +916,7 @@ namespace MMHLR32
                 else if (wait == false)
                 {
                     raw = input;
+                    typeName = null;
                     return default;
                 }
 
@@ -890,6 +944,7 @@ namespace MMHLR32
                 else if (wait == false)
                 {
                     raw = input;
+                    typeName = null;
                     return default;
                 }
 
@@ -901,10 +956,12 @@ namespace MMHLR32
             raw = input;
 
             code = BitConverter.ToInt32(input, sizeof(int));
-            if (code != ObexCode) return default;
-
             tnsize = BitConverter.ToInt32(input, sizeof(int) * 2);
             typename = Encoding.UTF8.GetString(input, sizeof(int) * 3, tnsize);
+
+            typeName = typename;
+            if (code != ObexCode) return default;
+
 
             string s = Encoding.UTF8.GetString(input, (sizeof(int) * 3) + tnsize, count - ((sizeof(int) * 3) + tnsize));
 
@@ -1015,20 +1072,13 @@ namespace MMHLR32
 
         public static byte[] FromBase64String(string s)
         {
-            FromBase64Transform t = new FromBase64Transform();
-
             byte[] pret = Encoding.ASCII.GetBytes(s);
-            byte[] fin = t.TransformFinalBlock(pret, 0, pret.Length);
-
-            return fin;
+            return DataTools.Text.Base64.FromBase64(pret);
         }
 
         public static string ToBase64String(byte[] data)
         {
-            byte[] fin;
-            ToBase64Transform t = new ToBase64Transform();
-
-            fin = t.TransformFinalBlock(data, 0, data.Length);
+            var fin = DataTools.Text.Base64.ToBase64(data);
             return Encoding.ASCII.GetString(fin);
         }
 

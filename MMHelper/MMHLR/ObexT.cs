@@ -37,6 +37,9 @@ namespace MMHLR32
     /// </summary>
     public class ObjectReceivedEventArgs<T> : ObjectReceivedEventArgs
     {
+        /// <summary>
+        /// Retrieve the received object.
+        /// </summary>
         public new T Object
         {
             get => (T)obj;
@@ -46,15 +49,15 @@ namespace MMHLR32
             }
         }
 
-        public ObjectReceivedEventArgs(T obj, byte[] raw) : base(obj, raw)
+        public ObjectReceivedEventArgs(T obj, byte[] raw, string typeName, Type type) : base(obj, raw, typeName, type)
         {
         }
 
-        public ObjectReceivedEventArgs(T obj) : base(obj, null)
+        public ObjectReceivedEventArgs(T obj) : base(obj, null, null, null)
         {
         }
 
-        public ObjectReceivedEventArgs(byte[] raw) : base(null, raw)
+        public ObjectReceivedEventArgs(byte[] raw) : base(null, raw, null, null)
         {
         }
 
@@ -287,18 +290,18 @@ namespace MMHLR32
 
         public new T ReceiveObject()
         {
-            return ReceiveObject(true, out _);
+            return ReceiveObject(true, out _, out _);
         }
 
 
         public new T ReceiveObject(bool wait)
         {
-            return ReceiveObject(wait, out _);
+            return ReceiveObject(wait, out _, out _);
         }
 
-        public new T ReceiveObject(bool wait, out byte[] raw, JsonSerializerSettings jsettings = null)
+        public new T ReceiveObject(bool wait, out byte[] raw, out string typeName, JsonSerializerSettings jsettings = null)
         {
-            return (T)base.ReceiveObject(wait, out raw, jsettings);
+            return (T)base.ReceiveObject(wait, out raw, out typeName, jsettings);
         }
 
         protected override void ListenThreadProc(object param)
@@ -339,15 +342,16 @@ namespace MMHLR32
                 byte[] buff;
                 int r;
 
-                while (!cts.IsCancellationRequested)
+                while (!(cts?.IsCancellationRequested ?? true))
                 {
                     buff = new byte[4];
                     r = socket.Receive(buff, 0, 4, SocketFlags.Peek);
 
                     if (r == 4)
                     {
-                        var obj = ReceiveObject(true, out buff);
-                        ObjectReceived?.Invoke(this, new ObjectReceivedEventArgs<T>(obj, buff));
+                        string tn;
+                        var obj = ReceiveObject(true, out buff, out tn);
+                        ObjectReceived?.Invoke(this, new ObjectReceivedEventArgs<T>(obj, buff, tn, typeof(T)));
                     }
 
                     Thread.Yield();
@@ -366,7 +370,7 @@ namespace MMHLR32
 
             if (disc == true)
             {
-                socket.Close();
+                socket?.Dispose();
                 _ = Task.Run(() =>
                 {
                     State = ObexStates.Closed;
@@ -381,6 +385,28 @@ namespace MMHLR32
             }
 
             cts = null;
+
+        }
+
+
+        /// <summary>
+        /// Start the listener.
+        /// </summary>
+        /// <param name="priority">Thread priority.</param>
+        /// <param name="fAccept">True to accept a new connection.</param>
+        public override void StartListening(ThreadPriority priority = ThreadPriority.Lowest, bool fAccept = true)
+        {
+            if (fDisposed) throw new ObjectDisposedException(nameof(Obex));
+
+            if ((state & ObexStates.ListenMask) != ObexStates.Unknown) return;
+
+            cts = new CancellationTokenSource();
+
+            thRecv = new Thread(ListenThreadProc);
+
+            thRecv.Priority = priority;
+            Debugger.NotifyOfCrossThreadDependency();
+            thRecv.Start(fAccept);
 
         }
 
