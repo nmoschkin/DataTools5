@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
 using static DataTools.Win32Api.User32;
+using MMHLR64;
 
 namespace MMWndT
 {
@@ -366,7 +367,7 @@ namespace MMWndT
             Event = e.Action;
 
             Message = e.Message;
-            WindowName = e.WindowName;
+            Module = WindowName = e.WindowName;
             Handle = e.Handle;
 
             Origin = e.Origin;
@@ -455,23 +456,23 @@ namespace MMWndT
                             }
 
                         }
+            
                         while (!System.Threading.Monitor.TryEnter(cache))
                         {
                             Thread.Yield();
                         }
 
-                        if (!cache.ContainsKey(e.Handle.ToString()))
+                        if (!cache.ContainsKey(Module))
                         {
                             icon = BitmapTools.MakeWPFImage(GetWindowIcon(e.Handle, 1));
-                            cache.Add(e.Handle.ToString(), icon);
+                            cache.Add(Module, icon);
                         }
                         else
                         {
-                            icon = cache[e.Handle.ToString()];
+                            icon = cache[Module];
                         }
 
                         Icon = icon;
-
                         System.Threading.Monitor.Exit(cache);
 
                     }
@@ -480,11 +481,6 @@ namespace MMWndT
                         while (!System.Threading.Monitor.TryEnter(cache))
                         {
                             Thread.Yield();
-                        }
-
-                        if (cache.ContainsKey(e.Handle.ToString()))
-                        {
-                            cache.Remove(e.Handle.ToString());
                         }
 
                         System.Threading.Monitor.Exit(cache);
@@ -496,7 +492,7 @@ namespace MMWndT
 
                     try
                     {
-                        App.Current.Work.Log.Log(ex.Message);
+                        App.Current?.Work?.Log?.Log(ex.Message);
                         if (System.Threading.Monitor.IsEntered(cache))
                             System.Threading.Monitor.Exit(cache);
 
@@ -506,7 +502,10 @@ namespace MMWndT
                     {
                         try
                         {
-                            App.Current.Work.Log.Log(ex2.Message);
+                            if (System.Threading.Monitor.IsEntered(cache))
+                                System.Threading.Monitor.Exit(cache);
+
+                            App.Current?.Work?.Log?.Log(ex2.Message);
                             Message = ex2.Message;
                         }
                         catch

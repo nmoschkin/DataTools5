@@ -8,6 +8,7 @@
 		<Platforms>AnyCPU;x64;x86</Platforms>
 		<ApplicationIcon>mmhelper.ico</ApplicationIcon>
 		<StartupObject></StartupObject>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -41,6 +42,7 @@
 	<ItemGroup>
 	  <Compile Remove="frmMain.cs" />
 	  <Compile Remove="frmMain.Designer.cs" />
+	  <Compile Remove="GlobalHooks.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -59,6 +61,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0-rc.2.20475.5" />
+	  <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>

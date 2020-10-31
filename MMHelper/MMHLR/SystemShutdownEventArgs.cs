@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MMHLR
+#if X64
+namespace MMHLR64
+#else
+namespace MMHLR32
+#endif
 {
 
     public enum EndSessionTypes : uint

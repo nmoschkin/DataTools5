@@ -9,7 +9,11 @@ using static DataTools.Win32Api.DevNotify;
 using System.Diagnostics;
 using DataTools.Memory;
 
-namespace MMHLR
+#if X64
+namespace MMHLR64
+#else
+namespace MMHLR32
+#endif
 {
     public class GlobalHooks : NativeWindow
     {
@@ -225,9 +229,7 @@ namespace MMHLR
 
             if (m.Msg == WM_QUERYENDSESSION)
             {
-#if X64
                 SystemShutdown?.Invoke(this, new SystemShutdownEventArgs(m.WParam, m.LParam));
-#endif
             }
 
             base.WndProc(ref m);

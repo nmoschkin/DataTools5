@@ -20,6 +20,7 @@ using System.Windows.Threading;
 using System.Windows.Forms;
 using DataTools.Streams;
 using DataTools.SystemInformation;
+using MMHLR64;
 
 namespace MMWndT
 {
@@ -186,7 +187,7 @@ namespace MMWndT
         private Monitors monitors = new Monitors();
 
         private readonly Guid MagicKey = Guid.Parse("{4D8E985F-79C1-4AF9-B481-8846FEB6C7DA}");
-        int cb = Marshal.SizeOf<OUTPUT_STRUCT>();
+        int osLen = Marshal.SizeOf<OUTPUT_STRUCT>();
 
         private bool RefreshWindows()
         {
@@ -241,7 +242,6 @@ namespace MMWndT
 
             await Task.Delay(1000);
 
-
             x64Sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
             x64Sock.Blocking = true;
 
@@ -251,14 +251,13 @@ namespace MMWndT
             var ep64 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 53112);
             var ep32 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 53113);
 
-            //x64Sock.ReceiveTimeout = 100;
-            //x86Sock.ReceiveTimeout = 100;
-
             Log.Log("Connecting to x64 process on port 53112");
             x64Sock.Connect(ep64);
+            x64Sock.ReceiveBufferSize = 10240;
 
             Log.Log("Connecting to x86 process on port 53113");
             x86Sock.Connect(ep32);
+            x86Sock.ReceiveBufferSize = 10240;
 
             Thread.CurrentThread.Priority = ThreadPriority.Lowest;
 
@@ -269,7 +268,6 @@ namespace MMWndT
             x64Thread.Priority = ThreadPriority.Lowest;
 
             x86Thread.Start();
-
             x64Thread.Start();
 
             _ = Task.Run(async () =>
@@ -432,6 +430,16 @@ namespace MMWndT
         private void ThreadRunner64()
         {
             Log.Log("Starting x64 Thread");
+
+            //var ob = new Obex(x64Sock);
+
+            //var example = ob.ReceiveObject();
+
+            //if (example is HardwareChangedEventArgs e)
+            //{
+            //    Log.Log("Received HardwareChangedEvent");
+            //}
+
             while (!ttok.IsCancellationRequested)
             {
                 Thread.Sleep(0);
@@ -445,7 +453,7 @@ namespace MMWndT
                 try
                 {
                     var os = new OUTPUT_STRUCT();
-                    var b = Read(x64Sock, cb);
+                    var b = Read(x64Sock, osLen);
 
                     if (b == null || b.Length == 0 || x64Sock == null || (x64Sock != null && x64Sock.Connected == false))
                     {
@@ -553,7 +561,7 @@ namespace MMWndT
                 try
                 {
                     var os = new OUTPUT_STRUCT();
-                    var b = Read(x86Sock, cb);
+                    var b = Read(x86Sock, osLen);
                     if (b == null || b.Length == 0 || x86Sock == null || (x86Sock != null && x86Sock.Connected == false))
                     {
                         Thread.Yield();

@@ -12,7 +12,11 @@ using DataTools.Win32Api;
 using DataTools.Streams;
 using System.Threading.Tasks;
 
-namespace MMHLR
+#if X64
+namespace MMHLR64
+#else
+namespace MMHLR32
+#endif
 {
 
     [StructLayout(LayoutKind.Explicit)]
@@ -257,7 +261,7 @@ namespace MMHLR
             
             try
             {
-                Log.Close();
+                Log?.Close();
                 connSock?.Close();
 
                 gh?.Shell?.Stop();
@@ -275,13 +279,37 @@ namespace MMHLR
 
         private static void SystemShutdown(object sender, SystemShutdownEventArgs e)
         {
+
+
+            string shut = "System is shutting down.";
+
+            EndSessionTypes t = e.EndSessionType;
+
+            if (t == EndSessionTypes.Critical)
+            {
+                shut += "App is being forced closed.";
+            }
+            else if (t == EndSessionTypes.LogOff)
+            {
+                shut += "User is logging off. Closing gracefully.";
+            }
+            else if (t == EndSessionTypes.CloseApp)
+            {
+                shut += "App has been asked to close by the system.";
+            }
+
+            //Log?.Log(shut);
+            //Log?.Close();
+            //Log = null;
+#if X64
             _ = Task.Run(() =>
             {
                 SendShell(MSG_SHUTDOWN, (IntPtr)(e.IsShuttingDown == true ? 1 : 0), "System is shutting down.", (IntPtr?)e.EndSessionType);
             });
 
             Thread.Sleep(100);
-            Canceller.Cancel();
+#endif
+            //Canceller.Cancel();
         }
 
         private static void CBT_HookReplaced()
