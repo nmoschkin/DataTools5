@@ -187,7 +187,6 @@ namespace MMWndT
 
             gh.MouseLL.MouseMove += MouseLL_MouseMove;
             gh.MouseLL.MouseHWheel += MouseLL_MouseHWheel;
-            gh.MouseLL.Start();
 
             notify.Text = InactiveText;
             
@@ -217,10 +216,11 @@ namespace MMWndT
             cmnuRestore.Click += MnuRestore_Click;
 
             maindisp = Dispatcher.CurrentDispatcher;
-           
+
             Program.Work.ActiveWindows.Add(hwndHelper.Handle, new ActWndInfo() { WindowName = Title, Timestamp = DateTime.Now });
+            gh.MouseLL.Start();
         }
-        
+
         ScrollViewer scrollView;
 
         public static DependencyObject GetScrollViewer(DependencyObject o)
@@ -252,8 +252,10 @@ namespace MMWndT
             {
                 scrollView = GetScrollViewer(WindowList) as ScrollViewer;
             }
-
-            scrollView?.ScrollToHorizontalOffset(scrollView.HorizontalOffset + e.Delta);
+            if (InputHitTest(Mouse.GetPosition(this)) != null)
+            {
+                scrollView?.ScrollToHorizontalOffset(scrollView.HorizontalOffset + (e.Delta / 60));
+            }
         }
 
         private void BtnClear_Click(object sender, RoutedEventArgs e)
