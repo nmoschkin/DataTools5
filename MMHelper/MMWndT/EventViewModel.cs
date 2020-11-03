@@ -208,6 +208,14 @@ namespace MMWndT
                         return $"Shutdown Event #{t}";
                     }
                 }
+                else if (Event == Worker.MSG_START_MOVER)
+                {
+                    return "Start Event";
+                }
+                else if (Event == Worker.MSG_STOP_MOVER)
+                {
+                    return "Stop Event";
+                }
                 else
                 {
                     return $"Monitor {monitor}";
@@ -295,6 +303,14 @@ namespace MMWndT
                         s = "Hook Replaced";
                         break;
 
+                    case Worker.MSG_START_MOVER:
+                        s = "Worker Started";
+                        break;
+
+                    case Worker.MSG_STOP_MOVER:
+                        s = "Worker Stopped";
+                        break;
+
                     default:
                         s = "Unknown Event";
                         break;
@@ -349,6 +365,29 @@ namespace MMWndT
                 }
 
                 Message = shut;
+            }
+            else if (e.Message == Worker.MSG_START_MOVER)
+            {
+                if (e.Kind == WorkerKind.Is64Worker)
+                {
+                    Message = "64-bit Worker Started";
+                }
+                else if (e.Kind == WorkerKind.Is86Worker)
+                {
+                    Message = "32-bit Worker Started";
+                }
+            }
+            else if (e.Message == Worker.MSG_STOP_MOVER)
+            {
+                if (e.Kind == WorkerKind.Is64Worker)
+                {
+                    Message = "64-bit Worker Stopped";
+                }
+                else if (e.Kind == WorkerKind.Is86Worker)
+                {
+                    Message = "32-bit Worker Stopped";
+                }
+
             }
 
             Event = e.Message;

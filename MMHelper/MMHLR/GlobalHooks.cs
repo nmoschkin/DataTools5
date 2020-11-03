@@ -1,4 +1,7 @@
-﻿// Credit goes to Chris Wilson for pretty much all of this.
+﻿// Credit goes to Chris Wilson 2007 for the original framework of this code.
+// It has been heavily updated and modified to compile for different architectures
+// Several new hooks have been added, and the window proc function has been 
+// expanded to fit the needs of this program.
 
 using System;
 using System.Runtime.InteropServices;

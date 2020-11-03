@@ -52,13 +52,13 @@ namespace MMWndT
 
     }
 
+    [Flags]
     public enum WorkerKind
     {
         IsMainProgram = 0,
         Is86Worker = 1,
         Is64Worker = 2
     }
-
 
     public struct ActWndInfo 
     {
@@ -411,7 +411,6 @@ namespace MMWndT
 
         private void BroadcastMessage(OUTPUT_STRUCT os)
         {
-
             var by = new byte[os.cb];
 
             MemPtr.Union(ref os, ref by);

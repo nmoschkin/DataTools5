@@ -37,6 +37,18 @@ namespace MMWndT
            [MarshalAs(UnmanagedType.LPWStr)] string pszSubAppName,
            [MarshalAs(UnmanagedType.LPWStr)] string pszSubIdList);
 
+        WorkerKind currState = WorkerKind.IsMainProgram;
+
+        public WorkerKind CurrentState
+        {
+            get => currState;
+            set
+            {
+                if (currState == value) return;
+                currState = value;
+            }
+        }
+
         public bool IsWatching { get; private set; }
 
         Monitors monitors = new Monitors();
@@ -280,6 +292,18 @@ namespace MMWndT
                     notify.Text = ActiveText;
                     btnToggle.Content = StopButtonText;
                     IsWatching = true;
+
+                    if (e.Kind == WorkerKind.Is64Worker)
+                    {
+                        CurrentState |= WorkerKind.Is64Worker;
+                    }
+                    else if (e.Kind == WorkerKind.Is86Worker)
+                    {
+                        CurrentState |= WorkerKind.Is86Worker;
+                    }
+
+
+                    AddEvent(e);
                 }
                 else if (e.Message == Worker.MSG_STOP_MOVER)
                 {
@@ -288,6 +312,20 @@ namespace MMWndT
                     notify.Text = InactiveText;
                     btnToggle.Content = StartButtonText;
                     IsWatching = false;
+
+
+                    if (e.Kind == WorkerKind.Is64Worker)
+                    {
+                        CurrentState &= ~WorkerKind.Is64Worker;
+                    }
+                    else if (e.Kind == WorkerKind.Is86Worker)
+                    {
+                        CurrentState &= ~WorkerKind.Is86Worker;
+                    }
+
+                    AddEvent(e);
+
+
                 }
                 else if (e.Message == Worker.MSG_SHUTDOWN)
                 {
@@ -395,6 +433,19 @@ namespace MMWndT
 
         }
 
+        private void AddEvent(WorkerNotifyEventArgs e)
+        {
+            var item = new EventViewModel(e);
+
+            eventLog.Insert(0, item);
+
+            if (e.Message == Worker.MSG_HW_CHANGE)
+            {
+                _ = UpdateConnectedStatus();
+            }
+
+
+        }
         private async Task UpdateConnectedStatus()
         {
 

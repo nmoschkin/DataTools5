@@ -1,6 +1,10 @@
 
-// Credit goes to Chris Wilson for pretty much all of this.
-// I fixed it to compile for modern times.
+// Credit goes to Chris Wilson 2007 for the original framework, here.
+//
+// created new C++ projects updated for modern compilers.
+// Modified the code for use in 32-bit or 64-bit exclusive environments
+// Created new routes for new hooks that have come into being since 2007.
+//
 // - Nathan Moschkin (2020)
 
 #include "pch.h"
