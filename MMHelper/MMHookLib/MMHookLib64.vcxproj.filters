@@ -30,7 +30,7 @@
     <ClInclude Include="MessageFilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
+    <ClInclude Include="resource64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -46,7 +46,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Resource.rc">
+    <ResourceCompile Include="Resource64.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

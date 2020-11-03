@@ -171,6 +171,8 @@ namespace MMWndT
         public MainWindow()
         {
             InitializeComponent();
+
+
             WindowList.ItemsSource = EventLog;
 
             hwndHelper = new WindowInteropHelper(this);
@@ -184,6 +186,7 @@ namespace MMWndT
             gh = new GlobalHooks(hwndHelper.Handle);
 
             gh.MouseLL.MouseMove += MouseLL_MouseMove;
+            gh.MouseLL.MouseHWheel += MouseLL_MouseHWheel;
             gh.MouseLL.Start();
 
             notify.Text = InactiveText;
@@ -216,7 +219,41 @@ namespace MMWndT
             maindisp = Dispatcher.CurrentDispatcher;
            
             Program.Work.ActiveWindows.Add(hwndHelper.Handle, new ActWndInfo() { WindowName = Title, Timestamp = DateTime.Now });
+        }
+        
+        ScrollViewer scrollView;
 
+        public static DependencyObject GetScrollViewer(DependencyObject o)
+        {
+            // Return the DependencyObject if it is a ScrollViewer
+            if (o is ScrollViewer)
+            { return o; }
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(o); i++)
+            {
+                var child = VisualTreeHelper.GetChild(o, i);
+
+                var result = GetScrollViewer(child);
+                if (result == null)
+                {
+                    continue;
+                }
+                else
+                {
+                    return result;
+                }
+            }
+            return null;
+        }
+
+        private void MouseLL_MouseHWheel(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            if (scrollView == null)
+            {
+                scrollView = GetScrollViewer(WindowList) as ScrollViewer;
+            }
+
+            scrollView?.ScrollToHorizontalOffset(scrollView.HorizontalOffset + e.Delta);
         }
 
         private void BtnClear_Click(object sender, RoutedEventArgs e)

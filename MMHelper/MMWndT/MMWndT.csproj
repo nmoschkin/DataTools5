@@ -9,6 +9,10 @@
 		<ApplicationIcon>mmhelper.ico</ApplicationIcon>
 		<StartupObject></StartupObject>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<PackageId>Multi-Monitor Helper Utility</PackageId>
+		<Authors>Nathaniel Moschkin</Authors>
+		<Product>Multi-Monitor Helper Utility</Product>
+		<Copyright>Copyright (C) 2020 Nathaniel Moschkin</Copyright>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -22,7 +26,7 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DefineConstants>TRACE;X64</DefineConstants>
-		<OutputPath>..\x64\debug</OutputPath>
+		<OutputPath>..\Debug</OutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -36,7 +40,7 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DefineConstants>TRACE;X64</DefineConstants>
-		<OutputPath>..\x64\Release</OutputPath>
+		<OutputPath>..\Release</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -74,7 +78,6 @@
 	  <ProjectReference Include="..\..\DataTools5\DataTools\DataTools.csproj" />
 	  <ProjectReference Include="..\MMHLR\MMHLR32.csproj" />
 	  <ProjectReference Include="..\MMHLR\MMHLR64.csproj" />
-	  <ProjectReference Include="..\MMHookLib\MMHookLib.vcxproj" />
 	</ItemGroup>
 
 </Project>

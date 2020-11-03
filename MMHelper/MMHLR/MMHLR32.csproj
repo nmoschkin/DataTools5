@@ -1,10 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net5.0-windows</TargetFramework>
 		<OutputType>WinExe</OutputType>
 		<UseWindowsForms>true</UseWindowsForms>
 		<Platforms>AnyCPU;x64;x86</Platforms>
+		<PackageId>Multi-Monitor Helper Utility 32 bit Windows Hook Servlet</PackageId>
+		<Authors>Nathaniel Moschkin</Authors>
+		<Product>Multi-Monitor Helper Utility 32 bit Windows Hook Servlet</Product>
+		<Copyright>Copyright (C) 2020 Nathaniel Moschkin</Copyright>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -17,12 +21,12 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-	  <OutputPath>..\x64\Debug</OutputPath>
+	  <OutputPath>..\Debug</OutputPath>
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-	  <OutputPath>..\x64\Release</OutputPath>
+	  <OutputPath>..\Release</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>

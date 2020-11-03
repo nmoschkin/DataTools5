@@ -207,6 +207,7 @@ namespace MMHLR32
                         MemPtr mm = m.LParam;
                         var ofs = Marshal.SizeOf<DEV_BROADCAST_HDR>() + Marshal.SizeOf<DEV_BROADCAST_DEVICEINTERFACE>() - sizeof(char);
                         sDisplay = mm.GetString(ofs);
+                        mm.Free();
                     }
                     catch
                     {
@@ -431,7 +432,7 @@ namespace MMHLR32
                 }
                 else if (m.Msg == MsgID_CBT_SysCommand)
                 {
-                    SysCommand?.Invoke(m.WParam.ToInt32(), m.LParam.ToInt32());
+                    SysCommand?.Invoke((int)m.WParam, (int)m.LParam);
                 }
             }
         }
@@ -680,18 +681,20 @@ namespace MMHLR32
             public event MouseEventHandler MouseDown;
             public event MouseEventHandler MouseMove;
             public event MouseEventHandler MouseUp;
+            public event MouseEventHandler MouseWheel;
+            public event MouseEventHandler MouseHWheel;
 
-            private const int WM_MOUSEMOVE = 0x0200;
-            private const int WM_LBUTTONDOWN = 0x0201;
-            private const int WM_LBUTTONUP = 0x0202;
-            private const int WM_LBUTTONDBLCLK = 0x0203;
-            private const int WM_RBUTTONDOWN = 0x0204;
-            private const int WM_RBUTTONUP = 0x0205;
-            private const int WM_RBUTTONDBLCLK = 0x0206;
-            private const int WM_MBUTTONDOWN = 0x0207;
-            private const int WM_MBUTTONUP = 0x0208;
-            private const int WM_MBUTTONDBLCLK = 0x0209;
-            private const int WM_MOUSEWHEEL = 0x020A;
+            //private const int WM_MOUSEMOVE = 0x0200;
+            //private const int WM_LBUTTONDOWN = 0x0201;
+            //private const int WM_LBUTTONUP = 0x0202;
+            //private const int WM_LBUTTONDBLCLK = 0x0203;
+            //private const int WM_RBUTTONDOWN = 0x0204;
+            //private const int WM_RBUTTONUP = 0x0205;
+            //private const int WM_RBUTTONDBLCLK = 0x0206;
+            //private const int WM_MBUTTONDOWN = 0x0207;
+            //private const int WM_MBUTTONUP = 0x0208;
+            //private const int WM_MBUTTONDBLCLK = 0x0209;
+            //private const int WM_MOUSEWHEEL = 0x020A;
 
             struct MSLLHOOKSTRUCT
             {
@@ -731,31 +734,69 @@ namespace MMHLR32
 
                     MSLLHOOKSTRUCT M = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(m.LParam, typeof(MSLLHOOKSTRUCT));
 
-                    if (m.WParam.ToInt32() == WM_MOUSEMOVE)
+                    if ((int)m.WParam == WM_MOUSEMOVE)
                     {
                         if (MouseMove != null)
                             MouseMove(this, new MouseEventArgs(MouseButtons.None, 0, M.pt.X, M.pt.Y, 0));
                     }
-                    else if (m.WParam.ToInt32() == WM_LBUTTONDOWN)
+                    else if ((int)m.WParam == WM_LBUTTONDOWN)
                     {
                         if (MouseDown != null)
                             MouseDown(this, new MouseEventArgs(MouseButtons.Left, 0, M.pt.X, M.pt.Y, 0));
                     }
-                    else if (m.WParam.ToInt32() == WM_RBUTTONDOWN)
+                    else if ((int)m.WParam == WM_RBUTTONDOWN)
                     {
                         if (MouseDown != null)
                             MouseDown(this, new MouseEventArgs(MouseButtons.Right, 0, M.pt.X, M.pt.Y, 0));
                     }
-                    else if (m.WParam.ToInt32() == WM_LBUTTONUP)
+                    else if ((int)m.WParam == WM_LBUTTONUP)
                     {
                         if (MouseUp != null)
                             MouseUp(this, new MouseEventArgs(MouseButtons.Left, 0, M.pt.X, M.pt.Y, 0));
                     }
-                    else if (m.WParam.ToInt32() == WM_RBUTTONUP)
+                    else if ((int)m.WParam == WM_RBUTTONUP)
                     {
                         if (MouseUp != null)
                             MouseUp(this, new MouseEventArgs(MouseButtons.Right, 0, M.pt.X, M.pt.Y, 0));
                     }
+                    else if ((int)m.WParam == WM_MOUSEWHEEL)
+                    {
+                        var delta = M.mouseData >> 16;
+                        MouseWheel?.Invoke(this, new MouseEventArgs(MouseButtons.None, 0, M.pt.X, M.pt.Y, delta));
+                    }
+                    else if ((int)m.WParam == WM_MOUSEHWHEEL)
+                    {
+                        var delta = M.mouseData >> 16;
+                        MouseHWheel?.Invoke(this, new MouseEventArgs(MouseButtons.Middle, 0, M.pt.X, M.pt.Y, delta));
+                    }
+                    else if ((int)m.WParam == WM_XBUTTONDOWN)
+                    {
+                        var xbtn = M.mouseData >> 16;
+                        if (xbtn == 1)
+                        {
+                            MouseDown?.Invoke(this, new MouseEventArgs(MouseButtons.XButton1, 0, M.pt.X, M.pt.Y, 0));
+                        }
+                        else if (xbtn == 2)
+                        {
+                            MouseDown?.Invoke(this, new MouseEventArgs(MouseButtons.XButton2, 0, M.pt.X, M.pt.Y, 0));
+                        }
+
+                    }
+                    else if ((int)m.WParam == WM_XBUTTONUP)
+                    {
+                        var xbtn = M.mouseData >> 16;
+                        if (xbtn == 1)
+                        {
+                            MouseUp?.Invoke(this, new MouseEventArgs(MouseButtons.XButton1, 0, M.pt.X, M.pt.Y, 0));
+                        }
+                        else if (xbtn == 2)
+                        {
+                            MouseUp?.Invoke(this, new MouseEventArgs(MouseButtons.XButton2, 0, M.pt.X, M.pt.Y, 0));
+                        }
+
+
+                    }
+
                 }
                 else if (m.Msg == MsgID_MouseLL_HookReplaced)
                 {

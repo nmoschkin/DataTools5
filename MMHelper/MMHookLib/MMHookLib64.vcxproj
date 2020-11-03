@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{485d0325-3c76-4828-b46d-a5859143d7c5}</ProjectGuid>
+    <ProjectGuid>{CEF03210-9735-4045-8353-6E171C49DB4A}</ProjectGuid>
     <RootNamespace>MMHookLib</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -74,22 +74,22 @@
     <LinkIncremental>true</LinkIncremental>
     <TargetName>MMHookLib</TargetName>
     <OutDir>$(SolutionDir)$(Configuration)\net5.0-windows\</OutDir>
-    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\Intermediate</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>MMHookLib</TargetName>
-    <OutDir>$(SolutionDir)$(Configuration)\net5.0-windows\</OutDir>
-    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\Intermediate</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>MMHookLib64</TargetName>
     <OutDir>$(SolutionDir)$(Configuration)\net5.0-windows\</OutDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\Intermediate</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <TargetName>MMHookLib64</TargetName>
+    <OutDir>$(SolutionDir)$(Configuration)\net5.0-windows\</OutDir>
+    <IntDir>$(SolutionDir)$(Platform)\$(Configuration)\Intermediate</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -167,7 +167,7 @@
     <ClInclude Include="MessageFilter.h" />
     <ClInclude Include="MMHookLib.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="resource64.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -180,7 +180,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Resource.rc" />
+    <ResourceCompile Include="Resource64.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

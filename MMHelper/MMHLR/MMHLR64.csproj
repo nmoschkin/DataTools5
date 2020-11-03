@@ -5,17 +5,21 @@
 		<OutputType>WinExe</OutputType>
 		<UseWindowsForms>true</UseWindowsForms>
 		<Platforms>AnyCPU;x64;x86</Platforms>
+		<PackageId>Multi-Monitor Helper Utility 64 bit Windows Hook Servlet</PackageId>
+		<Authors>Nathaniel Moschkin</Authors>
+		<Product>Multi-Monitor Helper Utility 64 bit Windows Hook Servlet</Product>
+		<Copyright>Copyright (C) 2020 Nathaniel Moschkin</Copyright>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
 	  <DefineConstants>TRACE;X64</DefineConstants>
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	  <OutputPath>..\x64\Debug</OutputPath>
+	  <OutputPath>..\Debug</OutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
 	  <DefineConstants>TRACE;X64</DefineConstants>
-	  <OutputPath>..\x64\Release</OutputPath>
+	  <OutputPath>..\Release</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
