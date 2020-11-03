@@ -50,26 +50,33 @@ namespace DataTools.Hardware
 
             mm.Alloc(size);
 
-            if (GetPhysicalMonitorsFromHMONITOR(hMonitor, size, mm))
+            try
             {
-                sOut = new string[size];
-                int i;
-
-                for (i = 0; i < nmon; i++)
+                if (GetPhysicalMonitorsFromHMONITOR(hMonitor, size, mm))
                 {
-                    pm = mm.ToStructAt<PHYSICAL_MONITOR>(i * cb);
-                    sOut[i] = pm.szPhysicalMonitorDescription;
+                    sOut = new string[size];
+                    int i;
+
+                    for (i = 0; i < nmon; i++)
+                    {
+                        pm = mm.ToStructAt<PHYSICAL_MONITOR>(i * cb);
+                        sOut[i] = pm.szPhysicalMonitorDescription;
+                    }
+
+                    DestroyPhysicalMonitors((uint)size, mm);
+                }
+                else
+                {
+                    sOut = new string[] { NativeErrorMethods.FormatLastError() };
                 }
 
-                DestroyPhysicalMonitors((uint)size, mm);
+                mm.Free();
             }
-            else
+            catch
             {
-                sOut = new string[] { NativeErrorMethods.FormatLastError() };
+                mm.Free();
             }
 
-
-            mm.Free();
             return sOut;
 
         }
@@ -266,7 +273,7 @@ namespace DataTools.Hardware.Display
             DataTools.Memory.MemPtr lParam = lParamIn;
             Add(new MonitorInfo(hMonitor, lParam.IntAt(0L)));
 
-            string[] ss = GetPhysicalMonitorNames(hMonitor);
+            //string[] ss = GetPhysicalMonitorNames(hMonitor);
             lParam.IntAt(0L) += 1;
             return true;
         }
