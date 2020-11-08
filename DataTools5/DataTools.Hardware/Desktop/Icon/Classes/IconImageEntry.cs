@@ -282,7 +282,7 @@ namespace DataTools.Desktop
             DataTools.Memory.NativeLib.Native.MemCpy(bmp, ptr1, bm.biSizeImage);
             bm = mm.ToStruct<BITMAPINFOHEADER>();
             _setMask(ptr1, ptr2, w, h);
-            _entry.dwImageSize = (int)mm.Size;
+            _entry.dwImageSize = (int)mm.Length;
             _makeBitmapRet = (byte[])mm;
             mm.Free();
             NativeShell.DeleteObject(hbmp);

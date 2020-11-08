@@ -69,7 +69,7 @@ namespace DataTools.Win32Api
 
                 mm.Alloc(260 * 2);
                 mm.SetString(0L, value, false);
-                Marshal.Copy(mm.handle, _cFilename, 0, (int)mm.Size);
+                Marshal.Copy(mm.handle, _cFilename, 0, (int)mm.Length);
                 mm.Free();
             }
         }
@@ -91,7 +91,7 @@ namespace DataTools.Win32Api
                 mm.Alloc(14 * 2);
                 mm.SetString(0L, value, false);
 
-                Marshal.Copy(mm, _cAlternate, 0, (int)mm.Size);
+                Marshal.Copy(mm, _cAlternate, 0, (int)mm.Length);
                 mm.Free();
             }
         }

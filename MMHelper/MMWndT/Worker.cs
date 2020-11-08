@@ -21,6 +21,7 @@ using System.Windows.Forms;
 using DataTools.Streams;
 using DataTools.SystemInformation;
 using MMHLR64;
+using Newtonsoft.Json.Linq;
 
 namespace MMWndT
 {
@@ -100,8 +101,8 @@ namespace MMWndT
 
     public class WorkerNotifyEventArgs : EventArgs
     {
-
         public WorkerKind Kind { get; private set; }
+
         public int Message { get; private set; }
 
         public int IntData1 { get; private set; }
@@ -129,6 +130,31 @@ namespace MMWndT
     public class Worker : BackgroundService
     {
 
+        //private uint GetIdleTime()
+        //{
+        //    LastInputInfo info = new LastInputInfo();
+        //    info.cbSize = Marshal.SizeOf(info);
+        //    GetLastInputInfo(ref info);
+        //    uint tick = GetTickCount();
+        //    uint msec = tick - info.dwTime;
+        //    return msec;
+        //}
+
+        //[StructLayout(LayoutKind.Sequential)]
+        //private struct LastInputInfo
+        //{
+        //    public int cbSize;
+        //    public uint dwTime;
+        //}
+
+        //[DllImport("user32.dll")]
+        //private static extern bool GetLastInputInfo(ref LastInputInfo info);
+
+        //[DllImport("kernel32.dll")]
+        //private static extern uint GetTickCount();
+
+        public const int X64Port = 53112;
+        public const int X86Port = 53113;
 
         public const int MSG_QUERY_STATE = 411;
         public const int MSG_HOOK_REPLACED = 339;
@@ -171,7 +197,10 @@ namespace MMWndT
         public bool WorkerShutdown { get; private set; } = false;
         public SimpleLog Log { get; set; } = new SimpleLog("MMWndT.log");
 
-        private CancellationToken ttok;
+        private CancellationToken GlobalCT;
+
+        private CancellationTokenSource X86CTS;
+        private CancellationTokenSource X64CTS;
 
         private Process x86proc;
         private Process x64proc;
@@ -214,9 +243,11 @@ namespace MMWndT
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
 
+            Thread.CurrentThread.Priority = ThreadPriority.Lowest;
 
             disp = System.Windows.Application.Current.Dispatcher;
-            ttok = stoppingToken;
+            
+            GlobalCT = stoppingToken;
 
             RefreshWindows();
 
@@ -244,62 +275,24 @@ namespace MMWndT
 
             await Task.Delay(1000);
 
-            x64Sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
-            x64Sock.Blocking = true;
-
-            x86Sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
-            x86Sock.Blocking = true;
-
-            var ep64 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 53112);
-            var ep32 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 53113);
-
-            Log.Log("Connecting to x64 process on port 53112");
-            x64Sock.Connect(ep64);
-            x64Sock.ReceiveBufferSize = 10240;
-
-            Log.Log("Connecting to x86 process on port 53113");
-            x86Sock.Connect(ep32);
-            x86Sock.ReceiveBufferSize = 10240;
-
-            Thread.CurrentThread.Priority = ThreadPriority.Lowest;
-
-            x86Thread = new Thread(ThreadRunner86);
-            x64Thread = new Thread(ThreadRunner64);
-
-            x86Thread.Priority = ThreadPriority.Lowest;
-            x64Thread.Priority = ThreadPriority.Lowest;
-
-            x86Thread.Start();
-            x64Thread.Start();
+            var ep64 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), X64Port);
+            var ep32 = new IPEndPoint(IPAddress.Parse("127.0.0.1"), X86Port);
 
             _ = Task.Run(async () =>
             {
                 HasInternet = await SysInfo.GetHasInternetAsync();
             });
 
-            QueryState();
-
             while (!stoppingToken.IsCancellationRequested)
             {
                 Application.DoEvents();
                 Thread.Sleep(100);
 
+                // watch the worker threads and try to repair anything that has gone awry.
                 try
                 {
 
-                    if (x86Thread == null || !x86Thread.IsAlive)
-                    {
-                        x86Thread = new Thread(ThreadRunner86);
-                        x86Thread.Priority = ThreadPriority.Lowest;
-                        x86Thread.Start();
-                    }
-
-                    if (x64Thread == null || !x64Thread.IsAlive)
-                    {
-                        x64Thread = new Thread(ThreadRunner64);
-                        x64Thread.Priority = ThreadPriority.Lowest;
-                        x64Thread.Start();
-                    }
+                    #region X64 Worker
 
                     if (x64proc == null || (x64proc != null && x64proc.HasExited))
                     {
@@ -312,17 +305,37 @@ namespace MMWndT
                             CreateNoWindow = true
                         };
 
-                        x64proc = Process.Start(stinfo);
+                        Log.Log("Starting 64-bit Service Process");
 
+                        x64proc = Process.Start(stinfo);
                         await Task.Delay(1000);
                     }
 
                     if (x64Sock == null || (x64Sock != null && x64Sock.Connected == false))
                     {
                         x64Sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
+
+                        Log.Log($"Opening 64-bit Service Port {X64Port}");
+
                         x64Sock.Connect(ep64);
                     }
 
+                    if (x64Thread == null || !x64Thread.IsAlive)
+                    {
+                        Log.Log("Starting 64-bit Service Thread");
+
+                        X64CTS = new CancellationTokenSource();
+                        x64Thread = new Thread(ThreadRunner64);
+                        x64Thread.Priority = ThreadPriority.Lowest;
+                        x64Thread.Start();
+
+                        QueryState(WorkerKind.Is64Worker); 
+                    }
+
+                    #endregion
+
+
+                    #region X86 Worker
 
                     if (x86proc == null || (x86proc != null && x86proc.HasExited))
                     {
@@ -335,18 +348,42 @@ namespace MMWndT
                             CreateNoWindow = true
                         };
 
+
+                        Log.Log("Starting 32-bit Service Process");
+
                         x86proc = Process.Start(stinfo);
 
                         await Task.Delay(1000);
-                    }
-                    
-                    if (x86Sock == null || (x86Sock != null && x86Sock.Connected == false)) 
-                    {
+
                         x86Sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
                         x86Sock.Connect(ep32);
                     }
+
+                    if (x86Sock == null || (x86Sock != null && x86Sock.Connected == false))
+                    {
+                        x86Sock = new Socket(SocketType.Stream, ProtocolType.Tcp);
+
+                        Log.Log($"Opening 32-bit Service Port {X64Port}");
+
+                        x86Sock.Connect(ep32);
+                    }
+
+
+                    if (x86Thread == null || !x86Thread.IsAlive)
+                    {
+                        Log.Log("Starting 32-bit Service Thread");
+
+                        X86CTS = new CancellationTokenSource();
+                        x86Thread = new Thread(ThreadRunner86);
+                        x86Thread.Priority = ThreadPriority.Lowest;
+                        x86Thread.Start();
+
+                        QueryState(WorkerKind.Is86Worker);
+                    }
+
+                    #endregion
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     AddEvent(ex.Message, null, 0, MSG_ERROR, WorkerKind.IsMainProgram);
                     Log.Log(ex.Message);
@@ -374,7 +411,7 @@ namespace MMWndT
             //Environment.Exit(0);
         }
 
-        public void StartDeskMover()
+        public void StartDeskMover(WorkerKind kind = WorkerKind.Is64Worker | WorkerKind.Is86Worker)
         {
 
             OUTPUT_STRUCT os = new OUTPUT_STRUCT()
@@ -383,10 +420,10 @@ namespace MMWndT
                 msg = MSG_START_MOVER
             };
 
-            BroadcastMessage(os);
+            BroadcastMessage(os, kind);
         }
 
-        public void StopDeskMover()
+        public void StopDeskMover(WorkerKind kind = WorkerKind.Is64Worker | WorkerKind.Is86Worker)
         {
 
             OUTPUT_STRUCT os = new OUTPUT_STRUCT()
@@ -395,10 +432,10 @@ namespace MMWndT
                 msg = MSG_STOP_MOVER
             };
 
-            BroadcastMessage(os);
+            BroadcastMessage(os, kind);
         }
 
-        public void QueryState()
+        public void QueryState(WorkerKind kind = WorkerKind.Is64Worker | WorkerKind.Is86Worker)
         {
             OUTPUT_STRUCT os = new OUTPUT_STRUCT()
             {
@@ -406,24 +443,36 @@ namespace MMWndT
                 msg = MSG_QUERY_STATE
             };
 
-            BroadcastMessage(os);
+            BroadcastMessage(os, kind);
+
         }
 
-        private void BroadcastMessage(OUTPUT_STRUCT os)
+        private void BroadcastMessage(OUTPUT_STRUCT os, WorkerKind kind = WorkerKind.Is64Worker | WorkerKind.Is86Worker)
         {
             var by = new byte[os.cb];
 
             MemPtr.Union(ref os, ref by);
 
-            if (x64Sock != null && x64Sock.Connected)
-            {
-                Write(x64Sock, by);
-            }
-
-            if (x86Sock != null && x86Sock.Connected)
-            {
-                Write(x86Sock, by);
-            }
+            Parallel.Invoke(
+                () => {
+                    if ((kind & WorkerKind.Is64Worker) == WorkerKind.Is64Worker)
+                    {
+                        if (x64Sock != null && x64Sock.Connected)
+                        {
+                            Write(x64Sock, by);
+                        }
+                    }
+                },
+                () => {
+                    if ((kind & WorkerKind.Is86Worker) == WorkerKind.Is86Worker)
+                    {
+                        if (x86Sock != null && x86Sock.Connected)
+                        {
+                            Write(x86Sock, by);
+                        }
+                    }
+                }
+            );
 
         }
 
@@ -441,7 +490,7 @@ namespace MMWndT
             //    Log.Log("Received HardwareChangedEvent");
             //}
 
-            while (!ttok.IsCancellationRequested)
+            while (!GlobalCT.IsCancellationRequested && !X64CTS.Token.IsCancellationRequested)
             {
                 Thread.Sleep(0);
 
@@ -550,7 +599,7 @@ namespace MMWndT
         private void ThreadRunner86()
         {
             Log.Log("Starting x86 Thread");
-            while (!ttok.IsCancellationRequested)
+            while (!GlobalCT.IsCancellationRequested && !X86CTS.Token.IsCancellationRequested)
             {
                 Thread.Sleep(0);
                 if (x86Sock == null || (x86Sock != null && x86Sock.Connected == false))

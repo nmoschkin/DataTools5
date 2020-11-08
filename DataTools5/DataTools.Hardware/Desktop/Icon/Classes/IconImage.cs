@@ -385,7 +385,7 @@ namespace DataTools.Desktop
                 bl = bl + e._image;
 
             // write the icon file
-            stream.Write((byte[])bl, 0, (int)bl.Size);
+            stream.Write((byte[])bl, 0, (int)bl.Length);
             stream.Close();
             bl.Dispose();
             _internalSaveToStreamRet = true;

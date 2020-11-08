@@ -63,7 +63,7 @@ DllExport bool InitializeCbtHook(int threadID, HWND destination)
 
 	if (GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_CBT") != NULL)
 	{
-		SendNotifyMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_CBT"), RegisterWindowMessage(HOOK_PREFIX L"CBT_REPLACED"), 0, 0);
+		PostMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_CBT"), RegisterWindowMessage(HOOK_PREFIX L"CBT_REPLACED"), 0, 0);
 	}
 
 	SetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_CBT", destination);
@@ -106,7 +106,7 @@ static LRESULT CALLBACK CbtHookCallback(int code, WPARAM wparam, LPARAM lparam)
 		HWND dstWnd = (HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_CBT");
 
 		if (msg != 0)
-			SendNotifyMessage(dstWnd, msg, wparam, lparam);
+			PostMessage(dstWnd, msg, wparam, lparam);
 	}
 
 	return CallNextHookEx(hookCbt, code, wparam, lparam);
@@ -121,7 +121,7 @@ DllExport bool InitializeShellHook(int threadID, HWND destination)
 
 	if (GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_SHELL") != NULL)
 	{
-		SendNotifyMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_SHELL"), RegisterWindowMessage(HOOK_PREFIX L"SHELL_REPLACED"), 0, 0);
+		PostMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_SHELL"), RegisterWindowMessage(HOOK_PREFIX L"SHELL_REPLACED"), 0, 0);
 	}
 
 	SetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_SHELL", destination);
@@ -167,7 +167,7 @@ static LRESULT CALLBACK ShellHookCallback(int code, WPARAM wparam, LPARAM lparam
 		HWND dstWnd = (HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_SHELL");
 
 		if (msg != 0)
-			SendNotifyMessage(dstWnd, msg, wparam, lparam);
+			PostMessage(dstWnd, msg, wparam, lparam);
 	}
 
 	return CallNextHookEx(hookShell, code, wparam, lparam);
@@ -182,7 +182,7 @@ DllExport bool InitializeKeyboardHook(int threadID, HWND destination)
 
 	if (GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_KEYBOARD") != NULL)
 	{
-		SendNotifyMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_KEYBOARD"), RegisterWindowMessage(HOOK_PREFIX L"KEYBOARD_REPLACED"), 0, 0);
+		PostMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_KEYBOARD"), RegisterWindowMessage(HOOK_PREFIX L"KEYBOARD_REPLACED"), 0, 0);
 	}
 
 	SetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_KEYBOARD", destination);
@@ -209,7 +209,7 @@ static LRESULT CALLBACK KeyboardHookCallback(int code, WPARAM wparam, LPARAM lpa
 		HWND dstWnd = (HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_KEYBOARD");
 
 		if (msg != 0)
-			SendNotifyMessage(dstWnd, msg, wparam, lparam);
+			PostMessage(dstWnd, msg, wparam, lparam);
 	}
 
 	return CallNextHookEx(hookKeyboard, code, wparam, lparam);
@@ -224,7 +224,7 @@ DllExport bool InitializeMouseHook(int threadID, HWND destination)
 
 	if (GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_MOUSE") != NULL)
 	{
-		SendNotifyMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_MOUSE"), RegisterWindowMessage(HOOK_PREFIX L"MOUSE_REPLACED"), 0, 0);
+		PostMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_MOUSE"), RegisterWindowMessage(HOOK_PREFIX L"MOUSE_REPLACED"), 0, 0);
 	}
 
 	SetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_MOUSE", destination);
@@ -251,7 +251,7 @@ static LRESULT CALLBACK MouseHookCallback(int code, WPARAM wparam, LPARAM lparam
 		HWND dstWnd = (HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_MOUSE");
 
 		if (msg != 0)
-			SendNotifyMessage(dstWnd, msg, wparam, lparam);
+			PostMessage(dstWnd, msg, wparam, lparam);
 	}
 
 	return CallNextHookEx(hookMouse, code, wparam, lparam);
@@ -266,7 +266,7 @@ DllExport bool InitializeKeyboardLLHook(int threadID, HWND destination)
 
 	if (GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_KEYBOARDLL") != NULL)
 	{
-		SendNotifyMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_KEYBOARDLL"), RegisterWindowMessage(HOOK_PREFIX L"KEYBOARDLL_REPLACED"), 0, 0);
+		PostMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_KEYBOARDLL"), RegisterWindowMessage(HOOK_PREFIX L"KEYBOARDLL_REPLACED"), 0, 0);
 	}
 
 	SetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_KEYBOARDLL", destination);
@@ -293,7 +293,7 @@ static LRESULT CALLBACK KeyboardLLHookCallback(int code, WPARAM wparam, LPARAM l
 		HWND dstWnd = (HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_KEYBOARDLL");
 
 		if (msg != 0)
-			SendNotifyMessage(dstWnd, msg, wparam, lparam);
+			PostMessage(dstWnd, msg, wparam, lparam);
 	}
 
 	return CallNextHookEx(hookKeyboardLL, code, wparam, lparam);
@@ -308,7 +308,7 @@ DllExport bool InitializeMouseLLHook(int threadID, HWND destination)
 
 	if (GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_MOUSELL") != NULL)
 	{
-		SendNotifyMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_MOUSELL"), RegisterWindowMessage(HOOK_PREFIX L"MOUSELL_REPLACED"), 0, 0);
+		PostMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_MOUSELL"), RegisterWindowMessage(HOOK_PREFIX L"MOUSELL_REPLACED"), 0, 0);
 	}
 
 	SetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_MOUSELL", destination);
@@ -335,7 +335,7 @@ static LRESULT CALLBACK MouseLLHookCallback(int code, WPARAM wparam, LPARAM lpar
 		HWND dstWnd = (HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_MOUSELL");
 
 		if (msg != 0)
-			SendNotifyMessage(dstWnd, msg, wparam, lparam);
+			PostMessage(dstWnd, msg, wparam, lparam);
 	}
 
 	return CallNextHookEx(hookMouseLL, code, wparam, lparam);
@@ -350,7 +350,7 @@ DllExport bool InitializeCallWndProcHook(int threadID, HWND destination)
 
 	if (GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_CALLWNDPROC") != NULL)
 	{
-		SendNotifyMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_CALLWNDPROC"), RegisterWindowMessage(HOOK_PREFIX L"CALLWNDPROC_REPLACED"), 0, 0);
+		PostMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_CALLWNDPROC"), RegisterWindowMessage(HOOK_PREFIX L"CALLWNDPROC_REPLACED"), 0, 0);
 	}
 
 	SetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_CALLWNDPROC", destination);
@@ -382,8 +382,8 @@ static LRESULT CALLBACK CallWndProcHookCallback(int code, WPARAM wparam, LPARAM 
 
 		if (msg != 0 && pCwpStruct->message != msg && pCwpStruct->message != msg2)
 		{
-			SendNotifyMessage(dstWnd, msg, (WPARAM)pCwpStruct->hwnd, pCwpStruct->message);
-			SendNotifyMessage(dstWnd, msg2, pCwpStruct->wParam, pCwpStruct->lParam);
+			PostMessage(dstWnd, msg, (WPARAM)pCwpStruct->hwnd, pCwpStruct->message);
+			PostMessage(dstWnd, msg2, pCwpStruct->wParam, pCwpStruct->lParam);
 		}
 	}
 
@@ -399,7 +399,7 @@ DllExport bool InitializeGetMsgHook(int threadID, HWND destination)
 
 	if (GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_GETMSG") != NULL)
 	{
-		SendNotifyMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_GETMSG"), RegisterWindowMessage(HOOK_PREFIX L"GETMSG_REPLACED"), 0, 0);
+		PostMessage((HWND)GetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_GETMSG"), RegisterWindowMessage(HOOK_PREFIX L"GETMSG_REPLACED"), 0, 0);
 	}
 
 	SetProp(GetDesktopWindow(), HOOK_PREFIX L"HWND_GETMSG", destination);
@@ -431,8 +431,8 @@ static LRESULT CALLBACK GetMsgHookCallback(int code, WPARAM wparam, LPARAM lpara
 
 		if (msg != 0 && pMsg->message != msg && pMsg->message != msg2)
 		{
-			SendNotifyMessage(dstWnd, msg, (WPARAM)pMsg->hwnd, pMsg->message);
-			SendNotifyMessage(dstWnd, msg2, pMsg->wParam, pMsg->lParam);
+			PostMessage(dstWnd, msg, (WPARAM)pMsg->hwnd, pMsg->message);
+			PostMessage(dstWnd, msg2, pMsg->wParam, pMsg->lParam);
 		}
 	}
 

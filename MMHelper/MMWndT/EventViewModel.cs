@@ -27,10 +27,18 @@ namespace MMWndT
 
         private static Dictionary<string, ImageSource> cache = new Dictionary<string, ImageSource>();
 
+        public static Dictionary<string, ImageSource> ImageCache
+        {
+            get => cache;
+        }
+
         private EventArgs source;
 
 
         private WorkerKind origin;
+
+
+        
 
         public WorkerKind Origin
         {

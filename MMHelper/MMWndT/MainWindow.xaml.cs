@@ -254,12 +254,13 @@ namespace MMWndT
             }
             if (InputHitTest(Mouse.GetPosition(this)) != null)
             {
-                scrollView?.ScrollToHorizontalOffset(scrollView.HorizontalOffset + (e.Delta / 60));
+                scrollView?.ScrollToHorizontalOffset(scrollView.HorizontalOffset + (e.Delta / 30));
             }
         }
 
         private void BtnClear_Click(object sender, RoutedEventArgs e)
         {
+            EventViewModel.ImageCache.Clear();
             eventLog.Clear();
         }
 

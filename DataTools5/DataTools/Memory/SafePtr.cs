@@ -15,21 +15,21 @@ namespace DataTools.Memory
 
         public override bool IsInvalid => handle == (IntPtr)0;
 
-        public long Size { get; private set; }
+        private long buffLen;
 
         public long Length
         {
-            get => Size;
+            get => buffLen;
             set
             {
-                if (Size == value) return;
+                if (buffLen == value) return;
 
                 if (value == 0)
                 {
                     TFree();
                     return;
                 }                
-                else if (handle == IntPtr.Zero || MemoryType == MemoryType.Aligned || MemoryType == MemoryType.HGlobal)
+                else if (handle == IntPtr.Zero || MemoryType == MemoryType.HGlobal)
                 {
                     ReAlloc(value);
                 }
@@ -83,7 +83,7 @@ namespace DataTools.Memory
         public SafePtr(IntPtr ptr, int size, MemoryType t, bool fOwn) : base((IntPtr)0, fOwn)
         {
             handle = ptr;
-            Size = size;
+            buffLen = size;
             MemoryType = t;
             IsOwner = fOwn;
         }
@@ -91,13 +91,13 @@ namespace DataTools.Memory
         public SafePtr(IntPtr ptr, long size) : base((IntPtr)0, false)
         {
             handle = ptr;
-            Size = size;
+            buffLen = size;
         }
 
         public SafePtr(IntPtr ptr, int size) : base((IntPtr)0, false)
         {
             handle = ptr;
-            Size = size;
+            buffLen = size;
         }
 
         public SafePtr(IntPtr ptr) : base((IntPtr)0, false)
@@ -114,27 +114,27 @@ namespace DataTools.Memory
         public SafePtr(IntPtr ptr, long size, bool fOwn) : base((IntPtr)0, fOwn)
         {
             handle = ptr;
-            Size = size;
+            buffLen = size;
             IsOwner = fOwn;
         }
 
         public SafePtr(IntPtr ptr, int size, bool fOwn) : base((IntPtr)0, fOwn)
         {
             handle = ptr;
-            Size = size;
+            buffLen = size;
             IsOwner = fOwn;
         }
 
         public unsafe SafePtr(void* ptr, int size) : base((IntPtr)0, false)
         {
             handle = (IntPtr)ptr;
-            Size = size;
+            buffLen = size;
         }
 
         public unsafe SafePtr(void* ptr, long size) : base((IntPtr)0, false)
         {
             handle = (IntPtr)ptr;
-            Size = size;
+            buffLen = size;
         }
 
         public unsafe SafePtr(void* ptr) : base((IntPtr)0, false)
@@ -151,14 +151,14 @@ namespace DataTools.Memory
         public unsafe SafePtr(void* ptr, long size, bool fOwn) : base((IntPtr)0, fOwn)
         {
             handle = (IntPtr)ptr;
-            Size = size;
+            buffLen = size;
             IsOwner = fOwn;
         }
 
         public unsafe SafePtr(void* ptr, int size, bool fOwn) : base((IntPtr)0, fOwn)
         {
             handle = (IntPtr)ptr;
-            Size = size;
+            buffLen = size;
             IsOwner = fOwn;
         }
 
@@ -197,7 +197,7 @@ namespace DataTools.Memory
 
         public uint CalculateCrc32()
         {
-            long c = Size;
+            long c = buffLen;
             if (handle == IntPtr.Zero || c <= 0) return 0;
 
             unsafe
@@ -448,7 +448,7 @@ namespace DataTools.Memory
 
         public void Append<T>(T value) where T: struct
         {
-            FromStructAt(Size, value);
+            FromStructAt(buffLen, value);
         }
 
         public void Append(IntPtr buffer, int buffLen)
@@ -490,7 +490,7 @@ namespace DataTools.Memory
         {
             int cb = Marshal.SizeOf(val);
 
-            if (cb > Size) ReAlloc(cb);
+            if (cb > buffLen) ReAlloc(cb);
 
             Marshal.StructureToPtr(val, handle, false);
         }
@@ -520,7 +520,7 @@ namespace DataTools.Memory
         {
             int cb = Marshal.SizeOf(val);
 
-            if (byteIndex + cb > Size) ReAlloc(byteIndex + cb);
+            if (byteIndex + cb > buffLen) ReAlloc(byteIndex + cb);
 
             Marshal.StructureToPtr(val, (IntPtr)((long)handle + byteIndex), false);
         }
@@ -529,7 +529,7 @@ namespace DataTools.Memory
         public byte[] ToByteArray(long index = 0, int length = 0)
         {
             long len = length;
-            long size = Size;
+            long size = buffLen;
 
             if (len == 0) len = (size - index);
             if (size - index < length) len = size - index;
@@ -556,7 +556,7 @@ namespace DataTools.Memory
         public char[] ToCharArray(long index = 0, int length = 0)
         {
             long len = length * sizeof(char);
-            long size = Size;
+            long size = buffLen;
 
             if (len == 0) len = (size - index);
             if (size - index < length) len = size - index;
@@ -592,7 +592,7 @@ namespace DataTools.Memory
                 int tlen = typeof(T) == typeof(char) ? sizeof(char) : Marshal.SizeOf<T>();
 
                 long len = length * tlen;
-                long size = Size;
+                long size = buffLen;
 
                 if (len == 0) len = (size - index);
                 if (size - index < length) len = size - index;
@@ -623,7 +623,7 @@ namespace DataTools.Memory
 
         public void FromByteArray(byte[] value, long index = 0)
         {
-            if (Size < value.Length + index)
+            if (buffLen < value.Length + index)
             {
                 ReAlloc(value.Length + index);
             }
@@ -638,7 +638,7 @@ namespace DataTools.Memory
 
         public void FromCharArray(char[] value, long index = 0)
         {
-            if (Size < (value.Length * 2) + index)
+            if (buffLen < (value.Length * 2) + index)
             {
                 ReAlloc((value.Length * 2) + index);
             }
@@ -655,7 +655,7 @@ namespace DataTools.Memory
         {
             var cb = Marshal.SizeOf<T>();
 
-            if (Size < (value.Length * cb) + index)
+            if (buffLen < (value.Length * cb) + index)
             {
                 ReAlloc((value.Length * cb) + index);
             }
@@ -809,7 +809,7 @@ namespace DataTools.Memory
         {
             unsafe
             {
-                if (handle == null) return null;
+                if (handle == IntPtr.Zero) return null;
 
                 string s = null;
 
@@ -860,10 +860,10 @@ namespace DataTools.Memory
         /// <remarks></remarks>
         public virtual bool Reverse()
         {
-            if (handle == IntPtr.Zero || Size == 0)
+            if (handle == IntPtr.Zero || buffLen == 0)
                 return false;
 
-            long l = Size;
+            long l = buffLen;
 
             unsafe
             {
@@ -944,17 +944,17 @@ namespace DataTools.Memory
         /// <remarks></remarks>
         public virtual long PullIn(long index, long amount, bool removePressure = false)
         {
-            long hl = Size;
-            if (Size == 0 || 0 > index || index >= (hl - 1))
+            long hl = buffLen;
+            if (buffLen == 0 || 0 > index || index >= (hl - 1))
             {
                 throw new IndexOutOfRangeException("Index out of bounds DataTools.Memory.MemPtr.PullIn().");
             }
 
             long a = index + amount;
-            long b = Size - a;
+            long b = buffLen - a;
             Slide(a, b, -amount);
             ReAlloc(hl - amount);
-            return Size;
+            return buffLen;
         }
 
         /// <summary>
@@ -978,7 +978,7 @@ namespace DataTools.Memory
                 throw new IndexOutOfRangeException("Index out of bounds DataTools.Memory.MemPtr.PushOut().");
             }
 
-            long ol = Size - index;
+            long ol = buffLen - index;
             ReAlloc(hl + amount);
             Slide(index, ol, amount);
 
@@ -994,7 +994,7 @@ namespace DataTools.Memory
                 }
             }
 
-            return Size;
+            return buffLen;
         }
 
         /// <summary>
@@ -1048,7 +1048,7 @@ namespace DataTools.Memory
                 return;
             }
 
-            long l = Size;
+            long l = buffLen;
             if (l <= 0)
                 return;
 
@@ -1116,7 +1116,7 @@ namespace DataTools.Memory
         /// <remarks></remarks>
         public virtual void Consume(long index, long amount, bool removePressure = false)
         {
-            long hl = Size;
+            long hl = buffLen;
             if (hl <= 0 || amount > index || index >= ((hl - amount) + 1))
             {
                 throw new IndexOutOfRangeException("Index out of bounds DataTools.Memory.Heap:Consume.");
@@ -1137,7 +1137,7 @@ namespace DataTools.Memory
         /// <remarks></remarks>
         public virtual void ConsumeChar(long index, long amount, bool removePressure = false)
         {
-            long hl = Size;
+            long hl = buffLen;
             if (hl <= 0 || amount > index || index >= (System.Convert.ToInt64(hl >> 1) - (amount + 1)))
             {
                 throw new IndexOutOfRangeException("Index out of bounds DataTools.Memory.Heap:Consume.");
@@ -1173,7 +1173,7 @@ namespace DataTools.Memory
                     return false;
             }
 
-            long l = Size;
+            long l = buffLen;
             bool al;
 
             if (hHeap == null || (IntPtr)hHeap == IntPtr.Zero)
@@ -1200,7 +1200,7 @@ namespace DataTools.Memory
                 if (hHeap != null) currentHeap = (IntPtr)hHeap;
                 MemoryType = MemoryType.HGlobal;
 
-                Size = (long)Native.HeapSize(currentHeap, 0, handle);
+                buffLen = (long)Native.HeapSize(currentHeap, 0, handle);
             }
 
             return al;
@@ -1302,7 +1302,7 @@ namespace DataTools.Memory
             MemoryType = MemoryType.Aligned;
             if (hHeap != null) currentHeap = (IntPtr)hHeap;
 
-            Size = size;
+            buffLen = size;
 
             return true;
         }
@@ -1335,7 +1335,7 @@ namespace DataTools.Memory
                 HasGCPressure = false;
                 currentHeap = procHeap;
                 MemoryType = MemoryType.Invalid;
-                Size = 0;
+                buffLen = 0;
 
                 return true;
             }
@@ -1357,9 +1357,9 @@ namespace DataTools.Memory
         {
             if (handle == IntPtr.Zero) return Alloc(size);
 
-            if (MemoryType != MemoryType.HGlobal && MemoryType != MemoryType.Aligned) return false;
+            if (MemoryType != MemoryType.HGlobal) return false;
 
-            long l = Size;
+            long l = buffLen;
             bool ra;
 
             // While the function doesn't need to call HeapReAlloc, it hasn't necessarily failed, either.
@@ -1383,7 +1383,7 @@ namespace DataTools.Memory
                     GC.AddMemoryPressure(size - l);
             }
 
-            Size = size;
+            buffLen = size;
             return ra;
         }
 
@@ -1402,12 +1402,18 @@ namespace DataTools.Memory
             long l = 0;
 
             // While the function doesn't need to call HeapFree, it hasn't necessarily failed, either.
-            if (handle == IntPtr.Zero)
+            if (handle == IntPtr.Zero) 
+            {
                 return true;
+            }
+            else if (MemoryType != MemoryType.HGlobal)
+            {
+                return TFree();
+            }
             else
             {
                 // see if we need to tell the garbage collector anything.
-                if (HasGCPressure) l = Size;
+                if (HasGCPressure) l = buffLen;
 
                 var res = Native.HeapFree(currentHeap, 0, handle);
 
@@ -1424,7 +1430,7 @@ namespace DataTools.Memory
                     MemoryType = MemoryType.Invalid;
                     HasGCPressure = false;
 
-                    Size = 0;
+                    buffLen = 0;
 
                     currentHeap = procHeap;
                 }
@@ -1465,7 +1471,7 @@ namespace DataTools.Memory
                 handle = IntPtr.Zero;
                 MemoryType = MemoryType.Invalid;
                 HasGCPressure = false;
-                Size = 0;
+                buffLen = 0;
 
                 return true;
             }
@@ -1488,7 +1494,7 @@ namespace DataTools.Memory
                 MemoryType = MemoryType.Invalid;
                 HasGCPressure = false;
 
-                Size = 0;
+                buffLen = 0;
 
                 return true;
             }
@@ -1519,7 +1525,7 @@ namespace DataTools.Memory
             if (r == 0)
             {
                 MemoryType = MemoryType.Network;
-                Size = size;
+                buffLen = size;
                 return true;
             }
             else
@@ -1540,7 +1546,7 @@ namespace DataTools.Memory
             Native.NetApiBufferFree(handle);
             MemoryType = MemoryType.Invalid;
             handle = IntPtr.Zero;
-            Size = 0;
+            buffLen = 0;
         }
 
         // Virtual Memory should be used carefully and not within the context
@@ -1570,14 +1576,58 @@ namespace DataTools.Memory
 
             va = handle != IntPtr.Zero;
 
-            Size = VirtualLength();
+            buffLen = GetVirtualLength();
 
             if (va && addPressure)
-                GC.AddMemoryPressure(Size);
+                GC.AddMemoryPressure(buffLen);
 
             HasGCPressure = addPressure;
 
             return va;
+        }
+
+        public bool VirtualReAlloc(long size)
+        {
+            if (buffLen == size)
+            {
+                return true;
+            }
+            else if (buffLen == 0)
+            {
+                return VirtualAlloc(size, HasGCPressure);
+            }
+            else if (size <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(size));
+            }
+
+            var olds = buffLen;
+
+            var cpysize = olds > size ? size : olds;
+
+            var nhandle = Native.VirtualAlloc(IntPtr.Zero, (IntPtr)size, VMemAllocFlags.MEM_COMMIT | VMemAllocFlags.MEM_RESERVE, MemoryProtectionFlags.PAGE_READWRITE);
+
+            if (nhandle == IntPtr.Zero) return false;
+
+            Native.MemCpy(handle, nhandle, cpysize);
+            Native.VirtualFree(handle);
+
+            handle = nhandle;
+
+            if (HasGCPressure)
+            {
+                if (olds > size)
+                {
+                    GC.RemoveMemoryPressure(olds - size);
+                }
+                else
+                {
+                    GC.AddMemoryPressure(size - olds);
+                }
+            }
+
+            buffLen = size;
+            return true;
         }
 
         /// <summary>
@@ -1598,7 +1648,7 @@ namespace DataTools.Memory
             {
                 // see if we need to tell the garbage collector anything.
                 if (HasGCPressure)
-                    l = VirtualLength();
+                    l = GetVirtualLength();
 
                 vf = Native.VirtualFree(handle);
 
@@ -1613,7 +1663,7 @@ namespace DataTools.Memory
                     MemoryType = MemoryType.Invalid;
 
                     currentHeap = procHeap;
-                    Size = 0;
+                    buffLen = 0;
                 }
             }
 
@@ -1625,7 +1675,7 @@ namespace DataTools.Memory
         /// </summary>
         /// <returns>The size of a virtual memory region or zero.</returns>
         /// <remarks></remarks>
-        private long VirtualLength()
+        private long GetVirtualLength()
         {
             if (handle == IntPtr.Zero)
                 return 0;
@@ -1640,7 +1690,7 @@ namespace DataTools.Memory
 
         public void FreeCoTaskMem()
         {
-            Size = 0;
+            buffLen = 0;
             currentHeap = procHeap;
             HasGCPressure = false;
             Marshal.FreeCoTaskMem(handle);
@@ -1652,7 +1702,7 @@ namespace DataTools.Memory
             handle = Marshal.AllocCoTaskMem(size);
             if (handle != IntPtr.Zero)
             {
-                Size = size;
+                buffLen = size;
                 MemoryType = MemoryType.CoTaskMem;
                 currentHeap = procHeap;
                 HasGCPressure = false;
@@ -1692,33 +1742,29 @@ namespace DataTools.Memory
             }
         }
 
-        private void TFree()
+        private bool TFree()
         {
             switch (MemoryType)
             {
                 case MemoryType.HGlobal:
-                    Free();
-                    return;
+                    return Free();
 
                 case MemoryType.Aligned:
-                    AlignedFree();
-                    return;
+                    return AlignedFree();
 
                 case MemoryType.CoTaskMem:
                     FreeCoTaskMem();
-                    return;
+                    return true;
 
                 case MemoryType.Virtual:
-                    VirtualFree();
-                    return;
+                    return VirtualFree();
 
                 case MemoryType.Network:
                     NetFree();
-                    return;
+                    return true;
 
                 default:
-                    Free();
-                    return;
+                    return Free();
             }
         }
 
@@ -1727,9 +1773,9 @@ namespace DataTools.Memory
             unsafe
             {
                 void* p = (void*)handle;
-                if (p == null || Size == 0) return;
+                if (p == null || buffLen == 0) return;
 
-                Native.ZeroMemory(p, Size);
+                Native.ZeroMemory(p, buffLen);
             }
         }
 
@@ -1940,9 +1986,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, byte[] val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length);
+            val1.Alloc(val1.buffLen + val2.Length);
             val1.FromByteArray(val2, c);
 
             return val1;
@@ -1950,9 +1996,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, char[] val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length * sizeof(char));
+            val1.Alloc(val1.buffLen + val2.Length * sizeof(char));
             val1.FromCharArray(val2, c);
 
             return val1;
@@ -1960,9 +2006,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, string val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length * sizeof(char));
+            val1.Alloc(val1.buffLen + val2.Length * sizeof(char));
             val1.FromCharArray(val2.ToCharArray(), c);
 
             return val1;
@@ -1970,9 +2016,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, sbyte[] val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length);
+            val1.Alloc(val1.buffLen + val2.Length);
             val1.FromArray(val2, c);
 
             return val1;
@@ -1980,9 +2026,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, short[] val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length * sizeof(short));
+            val1.Alloc(val1.buffLen + val2.Length * sizeof(short));
             val1.FromArray(val2, c);
 
             return val1;
@@ -1990,9 +2036,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, ushort[] val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length * sizeof(ushort));
+            val1.Alloc(val1.buffLen + val2.Length * sizeof(ushort));
             val1.FromArray(val2, c);
 
             return val1;
@@ -2000,9 +2046,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, int[] val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length * sizeof(int));
+            val1.Alloc(val1.buffLen + val2.Length * sizeof(int));
             val1.FromArray(val2, c);
 
             return val1;
@@ -2010,9 +2056,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, uint[] val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length * sizeof(uint));
+            val1.Alloc(val1.buffLen + val2.Length * sizeof(uint));
             val1.FromArray(val2, c);
 
             return val1;
@@ -2020,9 +2066,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, long[] val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length * sizeof(long));
+            val1.Alloc(val1.buffLen + val2.Length * sizeof(long));
             val1.FromArray(val2, c);
 
             return val1;
@@ -2030,9 +2076,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, ulong[] val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length * sizeof(ulong));
+            val1.Alloc(val1.buffLen + val2.Length * sizeof(ulong));
             val1.FromArray(val2, c);
 
             return val1;
@@ -2040,9 +2086,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, float[] val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length * sizeof(float));
+            val1.Alloc(val1.buffLen + val2.Length * sizeof(float));
             val1.FromArray(val2, c);
 
             return val1;
@@ -2050,9 +2096,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, double[] val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length * sizeof(double));
+            val1.Alloc(val1.buffLen + val2.Length * sizeof(double));
             val1.FromArray(val2, c);
 
             return val1;
@@ -2060,9 +2106,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, decimal[] val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length * sizeof(decimal));
+            val1.Alloc(val1.buffLen + val2.Length * sizeof(decimal));
             val1.FromArray(val2, c);
 
             return val1;
@@ -2070,9 +2116,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, DateTime[] val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length * Marshal.SizeOf<DateTime>());
+            val1.Alloc(val1.buffLen + val2.Length * Marshal.SizeOf<DateTime>());
             val1.FromArray(val2, c);
 
             return val1;
@@ -2080,9 +2126,9 @@ namespace DataTools.Memory
 
         public static SafePtr operator +(SafePtr val1, Guid[] val2)
         {
-            var c = val1.Size;
+            var c = val1.buffLen;
 
-            val1.Alloc(val1.Size + val2.Length * Marshal.SizeOf<Guid>());
+            val1.Alloc(val1.buffLen + val2.Length * Marshal.SizeOf<Guid>());
             val1.FromArray(val2, c);
 
             return val1;

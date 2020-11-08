@@ -375,14 +375,20 @@ namespace DataTools.Hardware.Display
         /// <remarks></remarks>
         public bool Refresh()
         {
-            bool RefreshRet = default;
+            bool ret;
             Clear();
-            var mm = new DataTools.Memory.MemPtr(IntPtr.Size);
+
+            var mm = new SafePtr(IntPtr.Size);
+
             mm.IntAt(0L) = 1;
+
             int i = mm.IntAt(0L);
-            RefreshRet = EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, _enum, mm.Handle);
+
+            ret = EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, _enum, mm.handle);
+
             mm.Free();
-            return RefreshRet;
+
+            return ret;
         }
 
         public static void TransformRect(ref W32RECT wndRect, MonitorInfo m1, MonitorInfo m2, bool resize = false)
