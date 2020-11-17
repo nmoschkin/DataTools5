@@ -27,21 +27,57 @@ namespace WizBulb
         {
             InitializeComponent();
 
+            var loc = Settings.LastWindowLocation;
+            var size = Settings.LastWindowSize;
 
-            var b = new Bulb("192.168.1.28");
-            var b2 = new Bulb("192.168.1.27");
+            Left = loc.X;
+            Top = loc.Y;
 
-            PredefinedScene p = PredefinedScene.Nightlight;
+            Width = size.Width;
+            Height = size.Height;
 
-            b.SetScene(p);
 
+            var b = new Bulb("192.168.1.12");
+            var b2 = new Bulb("192.168.1.8");
+
+            PredefinedScene p = PredefinedScene.GoldenWhite;
 
             List<Action> paras = new List<Action>();
 
-            paras.Add(() => { b.SetScene(p); });
-            paras.Add(() => { b2.SetScene(p); });
+            paras.Add(() => { b.SetScene(p, 64); });
+            paras.Add(() => { b2.SetScene(p, 64); });
+            //paras.Add(() => { b.SetScene(p, System.Drawing.Color.Aqua, 255); });
+            //paras.Add(() => { b2.SetScene(p, System.Drawing.Color.Violet, 255); });
 
             Parallel.Invoke(paras.ToArray());
+
+            this.Loaded += MainWindow_Loaded;
+            this.LocationChanged += MainWindow_LocationChanged;
+            this.SizeChanged += MainWindow_SizeChanged;
+        }
+
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Settings.LastWindowSize = e.NewSize;
+        }
+
+        private void MainWindow_LocationChanged(object sender, EventArgs e)
+        {
+            Settings.LastWindowLocation = new Point(Left, Top);
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            
+            
+            var loc = Settings.LastWindowLocation;
+            var size = Settings.LastWindowSize;
+
+            Left = loc.X;
+            Top = loc.Y;
+
+            Width = size.Width;
+            Height = size.Height;
 
         }
     }

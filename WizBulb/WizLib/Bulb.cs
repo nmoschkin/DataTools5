@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -19,6 +20,7 @@ namespace WizLib
         private EndPoint ep;
 
         private IPAddress addr;
+
 
         public int Timeout
         {
@@ -68,15 +70,56 @@ namespace WizLib
         {
         }
 
-        public void ToggleState(bool state)
+        public void TurnOn()
         {
             var cmd = new PilotCommand();
 
-            cmd.Params.State = state;
+            cmd.Params.State = true;
             SendCommand(cmd);
         }
 
+        public void TurnOff()
+        {
+            var cmd = new PilotCommand();
+
+            cmd.Params.State = false;
+            SendCommand(cmd);
+        }
+
+        public void Switch(bool switchOn)
+        {
+            if (switchOn) TurnOn();
+            else TurnOff();
+        }
+
         public void SetScene(PredefinedScene scene)
+        {
+            var cmd = new PilotCommand();
+
+            if (scene.Code == 0)
+            {
+                // shut off
+                TurnOff();
+                return;
+            }
+            else
+            {
+                if (scene.Settings != null)
+                {
+                    cmd.Params = scene.Settings;
+                }
+                else
+                {
+                    // set scene
+                    cmd.Params.State = true;
+                    cmd.Params.Scene = scene.Code;
+                }
+            }
+
+            SendCommand(cmd);
+        }
+
+        public void SetScene(PredefinedScene scene, byte brightness)
         {
             var cmd = new PilotCommand();
 
@@ -89,12 +132,60 @@ namespace WizLib
             {
                 // set scene
                 cmd.Params.State = true;
+                cmd.Params.Brightness = brightness;
                 cmd.Params.Scene = scene.Code;
             }
 
             SendCommand(cmd);
 
         }
+
+        public void SetScene(PredefinedScene scene, Color c)
+        {
+            var cmd = new PilotCommand();
+
+            if (scene.Code == 0)
+            {
+                // shut off
+                cmd.Params.State = false;
+            }
+            else
+            {
+                // set scene
+                cmd.Params.State = true;
+                cmd.Params.Red = c.R;
+                cmd.Params.Green = c.G;
+                cmd.Params.Blue = c.B;
+                cmd.Params.Scene = scene.Code;
+            }
+
+            SendCommand(cmd);
+        }
+
+        public void SetScene(PredefinedScene scene, Color c, byte brightness)
+        {
+            var cmd = new PilotCommand();
+
+            if (scene.Code == 0)
+            {
+                // shut off
+                cmd.Params.State = false;
+            }
+            else
+            {
+                // set scene
+                cmd.Params.State = true;
+                cmd.Params.Brightness = brightness;
+                cmd.Params.Red = c.R;
+                cmd.Params.Green = c.G;
+                cmd.Params.Blue = c.B;
+                //cmd.Params.Scene = scene.Code;
+            }
+
+            SendCommand(cmd);
+        }
+
+
 
         private void SendCommand(PilotCommand cmd)
         {

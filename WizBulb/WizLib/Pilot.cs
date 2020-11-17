@@ -32,7 +32,7 @@ namespace WizLib
 
     }
 
-    public class Pilot : INotifyPropertyChanged
+    public class Pilot : INotifyPropertyChanged, ICloneable
     {
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -69,6 +69,11 @@ namespace WizLib
                 storage = value;
                 OnPropertyChanged(propertyName);
             }
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
 
         [JsonProperty("dimming")]

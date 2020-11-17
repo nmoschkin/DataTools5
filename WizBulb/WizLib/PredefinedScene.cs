@@ -8,8 +8,13 @@ namespace WizLib
 {
     public class PredefinedScene
     {
+        public const int UserStartIdx = 2000;
+
+
         private int code;
         private string description;
+
+        private Pilot settings;
 
         public int Code
         {
@@ -32,35 +37,68 @@ namespace WizLib
 
         }
 
-        protected static List<PredefinedScene> scenes = new List<PredefinedScene>();
-        public static IReadOnlyCollection<PredefinedScene> Scenes
+        public Pilot Settings
         {
-            get => scenes.ToArray();
+            get => settings;
+            set
+            {
+                if (settings == value) return;
+                settings = value;
+            }
         }
 
-        protected PredefinedScene(int code, string desc)
+        protected static Dictionary<int, PredefinedScene> scenes = new Dictionary<int, PredefinedScene>();
+        public static IReadOnlyDictionary<int, PredefinedScene> Scenes
+        {
+            get => scenes;
+        }
+
+        protected PredefinedScene(int code, string desc, Pilot settings = null)
         {
             Code = code;
             Description = desc;
+            Settings = settings;
         }
 
-        public static PredefinedScene RegisterScene(int code, string desc)
+
+        public static PredefinedScene RegisterScene(string desc, Pilot settings)
         {
-            // if that code already exists, it will be renamed and returned
+            int i = UserStartIdx;
+            while (scenes.ContainsKey(i))
+            {
+                i++;
+            }
+            
+            var scnew = new PredefinedScene(i, desc, settings);
+
+            scenes.Add(i, scnew);
+            return scnew;
+
+        }
+
+        public static PredefinedScene RegisterScene(int code, string desc, Pilot settings = null)
+        {
+            // if that code already exists, it will be reassigned and returned
             // the alternatives are to throw an exception or return null
             // and I don't want to do that.
-            foreach (var sc in scenes)
+
+
+            if (scenes.ContainsKey(code))
             {
-                if (sc.code == code)
+                var sc = scenes[code];
+
+                sc.description = desc;
+                if (settings != null)
                 {
-                    sc.description = desc;
-                    return sc;
+                    sc.settings = settings;
                 }
+                return sc;
+
             }
 
-            var scnew = new PredefinedScene(code, desc);
+            var scnew = new PredefinedScene(code, desc, settings);
 
-            scenes.Add(scnew);
+            scenes.Add(code, scnew);
             return scnew;
         }
 

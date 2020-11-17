@@ -5,12 +5,83 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:WizBulb"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="MainWindow"
+    Title="Bulb Utility"
     Width="630"
     Height="365"
     mc:Ignorable="d">
-    <Grid Background="AliceBlue" />
+
+    <Window.Resources>
+        <ResourceDictionary>
 
 
+            <Style TargetType="Button">
+
+                <Setter Property="Background" Value="DarkSlateBlue" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Padding" Value="8" />
+            </Style>
+
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="AliceBlue">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Label Margin="8,8,8,2" Content="Bulbs:" />
+
+        <ListView Grid.Row="1" Margin="8,2,8,8" />
+
+        <StackPanel
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="2"
+            Margin="16,8"
+            VerticalAlignment="Center"
+            Orientation="Vertical">
+
+            <Label Content="IP Address:" />
+
+            <TextBox
+                x:Name="txtIP"
+                Margin="0,2,0,8"
+                Padding="4" />
+
+            <Label Content="Name:" />
+
+            <TextBox
+                x:Name="txtName"
+                Margin="0,2,0,8"
+                Padding="4" />
+
+            <Button Content="Add Bulb" />
+        </StackPanel>
+
+
+        <StatusBar
+            Grid.Row="2"
+            Grid.ColumnSpan="3"
+            Background="DarkSlateBlue">
+
+            <StatusBarItem>
+                <TextBlock
+                    Margin="8,2"
+                    Foreground="White"
+                    Text="0 Bulbs" />
+
+            </StatusBarItem>
+        </StatusBar>
+
+    </Grid>
 
 </Window>
