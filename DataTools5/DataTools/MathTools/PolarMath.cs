@@ -252,7 +252,7 @@ namespace DataTools.MathTools.PolarMath
             }
             else if (x < 0 && y >= 0)
             {
-                a =90 + (90 - a);
+                a = 90 + (90 - a);
             }
 
 

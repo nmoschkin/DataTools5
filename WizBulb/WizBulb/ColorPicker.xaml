@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="256"
     d:DesignWidth="256"
-    Cursor="Pen"
+    Cursor="Cross"
     mc:Ignorable="d">
     <Grid>
 
