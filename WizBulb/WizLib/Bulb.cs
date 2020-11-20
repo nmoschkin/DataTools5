@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
@@ -21,6 +22,42 @@ namespace WizLib
 
         private IPAddress addr;
 
+        private string name;
+
+        private Pilot settings;
+
+        public static bool HasConsole { get; set; }
+
+        public Pilot Settings
+        {
+            get => settings;
+            set
+            {
+                if (settings == value) return;
+
+                if (settings != null)
+                {
+                    settings.PropertyChanged -= SettingsChanged;
+                }
+
+                settings = value;
+
+                if (settings != null)
+                {
+                    settings.PropertyChanged += SettingsChanged;
+                }
+            }
+        }
+
+        public string Name
+        {
+            get => name;
+            set
+            {
+                if (name == value) return;
+                name = value;
+            }
+        }
 
         public int Timeout
         {
@@ -55,7 +92,6 @@ namespace WizLib
                 ep = new IPEndPoint(addr, Port);
             }
         }
-
 
         public Bulb(IPAddress addr, int port = DefaultPort, int timeout = 60000)
         {
@@ -162,38 +198,69 @@ namespace WizLib
             SendCommand(cmd);
         }
 
-        public void SetScene(PredefinedScene scene, Color c, byte brightness)
+        public void SetScene(Color c, byte brightness)
         {
             var cmd = new PilotCommand();
 
-            if (scene.Code == 0)
-            {
-                // shut off
-                cmd.Params.State = false;
-            }
-            else
-            {
-                // set scene
-                cmd.Params.State = true;
-                cmd.Params.Brightness = brightness;
-                cmd.Params.Red = c.R;
-                cmd.Params.Green = c.G;
-                cmd.Params.Blue = c.B;
-                //cmd.Params.Scene = scene.Code;
-            }
+            cmd.Params.State = true;
+            cmd.Params.Brightness = brightness;
+            cmd.Params.Red = c.R;
+            cmd.Params.Green = c.G;
+            cmd.Params.Blue = c.B;
+            cmd.Params.Scene = 0;
 
             SendCommand(cmd);
         }
 
-
-
-        private void SendCommand(PilotCommand cmd)
+        public override string ToString()
         {
-            byte[] bOut = Encoding.UTF8.GetBytes(cmd.AssembleCommand());
-            SendUDP(bOut);
+            if (!string.IsNullOrEmpty(name))
+            {
+                return name;
+            }
+            else if (Settings?.MACAddress != null)
+            {
+                return Settings?.MACAddress;
+            }
+            else
+            {
+                return addr?.ToString();
+            }
+
         }
 
-        private void SendUDP(byte[] cmd)
+
+        private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+
+        }
+
+        public void GetPilot()
+        {
+            var cmd = new PilotCommand() { Method = "getPilot" };
+            cmd = SendCommand(cmd);
+
+            Settings = cmd.Params;
+        }
+
+        private PilotCommand SendCommand(PilotCommand cmd)
+        {
+            byte[] bOut = Encoding.UTF8.GetBytes(cmd.AssembleCommand());
+            var buffer = SendUDP(bOut);
+
+            if (buffer?.Length > 0)
+            {
+                var s = Encoding.UTF8.GetString(buffer).Trim('\x0');
+                return new PilotCommand(s);
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
+        private byte[] SendUDP(byte[] cmd)
         {
             int maxdg = 100;
             int time = 500;
@@ -233,13 +300,92 @@ namespace WizLib
                 Task.Delay(time);
             }
 
-            if (r > 0)
-            {
-                string s = Encoding.UTF8.GetString(buffer).Trim('\x0');
-            }
-
             sock?.Close();
             sock = null;
+
+            return buffer;
+        }
+
+
+
+        public static async Task<List<Bulb>> ScanForBulbs(bool scanOnly = false)
+        {
+            if (HasConsole) Console.WriteLine("Scanning For Bulbs...");
+            List<Bulb> bulbs = new List<Bulb>();
+
+            int PORT = 38899;
+            UdpClient udpClient = new UdpClient();
+            udpClient.Client.Bind(new IPEndPoint(IPAddress.Parse("192.168.1.10"), PORT));
+
+            var from = new IPEndPoint(0, 0);
+            var timeout = (DateTime.Now.AddSeconds(5));
+
+            var t = Task.Run(async () =>
+            {
+                while (timeout > DateTime.Now)
+                {
+                    if (udpClient.Available > 0)
+                    {
+                        string json = null;
+                        Bulb bulb = null;
+                        PilotCommand p = null;
+
+                        var recvBuffer = udpClient.Receive(ref from);
+
+                        try
+                        {
+                            json = Encoding.UTF8.GetString(recvBuffer);
+                            if (HasConsole) Console.WriteLine(json + " Addr: " + from.Address.ToString());
+
+                            p = new PilotCommand(json);
+
+                            if (p != null)
+                            {
+                                bulb = new Bulb(from.Address);
+                                bulb.Settings = p.Result;
+                                bulbs.Add(bulb);
+
+                                bulb = null;
+                                json = null;
+                                p = null;
+                            }
+
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+
+                    }
+
+                    await Task.Delay(100);
+                }
+
+                if (HasConsole) Console.WriteLine("Finished");
+            });
+
+            var pilot = new PilotCommand();
+
+            if (scanOnly)
+            {
+                pilot.Method = "registration";
+                pilot.Params.PhoneMac = "94e6f7a27e66";
+                pilot.Params.Register = false;
+                pilot.Params.PhoneIp = "192.168.1.10";
+                pilot.Params.ID = "12";
+            }
+            else
+            {
+                pilot.Method = "getPilot";
+            }
+
+            var data = pilot.AssembleCommand();
+            var buffer = Encoding.UTF8.GetBytes(data);
+
+            udpClient.Send(buffer, buffer.Length, "255.255.255.255", PORT);
+            await t;
+
+            return bulbs;
         }
 
     }

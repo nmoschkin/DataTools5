@@ -17,7 +17,15 @@ namespace WizLib
         public string Method { get; set; } = "setPilot";
 
         [JsonProperty("params")]
-        public Pilot Params { get; set; } = new Pilot();
+        public Pilot Params { get; set; }
+
+        [JsonProperty("result")]
+        public Pilot Result { get; set; }
+
+        [JsonProperty("env")]
+        public string Environment { get; set; }
+
+
 
         public string AssembleCommand()
         {
@@ -30,6 +38,16 @@ namespace WizLib
             return JsonConvert.SerializeObject(this, settings);
         }
 
+        public PilotCommand()
+        {
+            Params = new Pilot();
+        }
+
+        public PilotCommand(string json)
+        {
+            JsonConvert.PopulateObject(json, this);
+        }
+
     }
 
     public class Pilot : INotifyPropertyChanged, ICloneable
@@ -37,7 +55,7 @@ namespace WizLib
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -62,9 +80,30 @@ namespace WizLib
 
         private byte? dimming;
 
-        private void SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
+        // registration params
+
+        private string phoneMac;
+
+        private bool? register;
+
+        private string phoneIp;
+
+        private string id;
+
+        // results
+
+        private int? rssi;
+
+        private string src;
+
+        private string macaddr;
+
+        private bool? success;
+
+
+        private void SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
-            if (!Equals(storage, value)) 
+            if (!Equals(storage, value))
             {
                 storage = value;
                 OnPropertyChanged(propertyName);
@@ -83,7 +122,7 @@ namespace WizLib
             set
             {
                 double pctval;
-                
+
                 if (value != null)
                 {
                     pctval = ((double)value / 255) * 100;
@@ -178,6 +217,39 @@ namespace WizLib
             }
         }
 
+        [JsonIgnore]
+        public System.Drawing.Color? Color
+        {
+            get
+            {
+                if (r != null && g != null & b != null)
+                {
+                    return System.Drawing.Color.FromArgb((byte)r, (byte)g, (byte)b);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (value == null)
+                {
+                    Red = Green = Blue = null;
+                }
+                else
+                {
+                    var c = (System.Drawing.Color)value;
+
+                    Red = c.R;
+                    Green = c.G;
+                    Blue = c.B;
+                }
+
+                OnPropertyChanged();
+            }
+        }
+
         [JsonProperty("w")]
         public byte? WarmWhite
         {
@@ -195,6 +267,86 @@ namespace WizLib
             set
             {
                 SetProperty(ref c, value);
+            }
+        }
+
+        [JsonProperty("phoneMac")]
+        public string PhoneMac
+        {
+            get => phoneMac;
+            set
+            {
+                SetProperty(ref phoneMac, value);
+            }
+        }
+
+        [JsonProperty("register")]
+        public bool? Register
+        {
+            get => register;
+            set
+            {
+                SetProperty(ref register, value);
+            }
+        }
+
+        [JsonProperty("phoneIp")]
+        public string PhoneIp
+        {
+            get => phoneIp;
+            set
+            {
+                SetProperty(ref phoneIp, value);
+            }
+        }
+
+        [JsonProperty("id")]
+        public string ID
+        {
+            get => id;
+            set
+            {
+                SetProperty(ref id, value);
+            }
+        }
+
+        [JsonProperty("rssi")]
+        public int? Rssi
+        {
+            get => rssi;
+            set
+            {
+                SetProperty(ref rssi, value);
+            }
+        }
+
+        [JsonProperty("src")]
+        public string Source
+        {
+            get => src;
+            set
+            {
+                SetProperty(ref src, value);
+            }
+        }
+
+        [JsonProperty("mac")]
+        public string MACAddress
+        {
+            get => macaddr;
+            set
+            {
+                SetProperty(ref macaddr, value);
+            }
+        }
+
+        [JsonProperty("success")]
+        public bool? Success
+        {
+            get => success;
+            set
+            {
+                SetProperty(ref success, value);
             }
         }
 

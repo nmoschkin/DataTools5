@@ -13,7 +13,6 @@
     <Window.Resources>
         <ResourceDictionary>
 
-
             <Style TargetType="Button">
 
                 <Setter Property="Background" Value="DarkSlateBlue" />
@@ -21,6 +20,16 @@
                 <Setter Property="Padding" Value="8" />
             </Style>
 
+            <DataTemplate x:Key="BulbTemplate">
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding}" />
+                </Grid>
+            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -40,7 +49,20 @@
 
         <Label Margin="8,8,8,2" Content="Bulbs:" />
 
-        <ListView Grid.Row="1" Margin="8,2,8,8" />
+        <ListView
+            x:Name="BulbList"
+            Grid.Row="1"
+            Margin="8,2,8,8">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn
+                        Width="170"
+                        CellTemplate="{StaticResource BulbTemplate}"
+                        Header="Bulbs" />
+
+                </GridView>
+            </ListView.View>
+        </ListView>
 
         <StackPanel
             Grid.Row="0"
@@ -75,6 +97,7 @@
 
             <StatusBarItem>
                 <TextBlock
+                    x:Name="BulbCounter"
                     Margin="8,2"
                     Foreground="White"
                     Text="0 Bulbs" />

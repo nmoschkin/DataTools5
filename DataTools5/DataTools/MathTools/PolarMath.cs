@@ -4,6 +4,7 @@
 // This is the fourth rewriting of this module since 1999.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
@@ -26,49 +27,6 @@ namespace DataTools.MathTools.PolarMath
         Radians = 0x4 | 0x8 | 0x40,
         StandardScientific = 0x2,
         RadiansScientific = 0x2 | 0x4 | 0x8 | 0x40
-    }
-
-
-    public enum ColorWheelShapes
-    {
-        Point = 1,
-        Hexagon = 2
-    }
-
-    public struct ColorWheel
-    {
-        public ColorWheelElement[] Elements;
-        public Rectangle Bounds;
-        public byte[] Bitmap;
-
-        public Color HitTest(int x, int y)
-        {
-            foreach (ColorWheelElement e in Elements)
-            {
-                foreach (Point f in e.FillPoints)
-                {
-                    if (f.X == x & f.Y == y)
-                        return e.Color;
-                }
-            }
-
-            return Color.Empty;
-        }
-
-        public Color HitTest(Point pt)
-        {
-            return HitTest(pt.X, pt.Y);
-        }
-    }
-
-    public struct ColorWheelElement
-    {
-        public Color Color;
-        public PolarCoordinates Polar;
-        public Point Center;
-        public Rectangle Bounds;
-        public Point[] FillPoints;
-        public ColorWheelShapes Shape;
     }
 
     public struct LinearCoordinates
