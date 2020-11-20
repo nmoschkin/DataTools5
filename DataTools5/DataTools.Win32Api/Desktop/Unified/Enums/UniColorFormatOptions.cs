@@ -132,6 +132,11 @@ namespace DataTools.Desktop.Unified
         /// Print hex letters in lower case.
         /// </summary>
         /// <remarks></remarks>
-        LowerCase = 0x8000
+        LowerCase = 0x8000,
+
+        /// <summary>
+        /// Returns the closest named color
+        /// </summary>
+        ClosestNamedColor = 0x10000
     }
 }

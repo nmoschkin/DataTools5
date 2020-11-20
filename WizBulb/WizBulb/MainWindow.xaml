@@ -64,6 +64,11 @@
             </ListView.View>
         </ListView>
 
+        <local:ColorPicker
+            x:Name="Picker"
+            Grid.Row="1"
+            Grid.Column="1" />
+
         <StackPanel
             Grid.Row="0"
             Grid.RowSpan="2"
@@ -103,6 +108,39 @@
                     Text="0 Bulbs" />
 
             </StatusBarItem>
+            <Separator />
+
+            <StatusBarItem>
+
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
+                        x:Name="ColorLabel"
+                        Margin="8,2"
+                        VerticalAlignment="Center"
+                        Foreground="White"
+                        Text="Color:" />
+
+                    <TextBlock
+                        x:Name="ColorText"
+                        Margin="8,2"
+                        VerticalAlignment="Center"
+                        FontFamily="Consolas"
+                        Foreground="White"
+                        Text="#FFFFFFFF" />
+
+                    <Label
+                        x:Name="ColorSwatch"
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Background="White"
+                        BorderBrush="Black"
+                        BorderThickness="1" />
+
+                </StackPanel>
+
+            </StatusBarItem>
+
         </StatusBar>
 
     </Grid>

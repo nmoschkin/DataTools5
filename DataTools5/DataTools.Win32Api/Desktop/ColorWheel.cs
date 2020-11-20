@@ -92,14 +92,20 @@ namespace DataTools.Desktop
             PolarCoordinates pc;
             HSVDATA hsv;
 
-            int color; 
-
+            int color;
+            
             Bounds = new Rectangle(0, 0, x2, y2);
 
-            for (int i = x1; i < x2; i++)
+            for (int j = y1; j < y2; j++)
             {
-                for (int j = y1; j < y2; j++)
+                for (int i = x1; i < x2; i++)
                 {
+
+                    if (i == pixelRadius && j == pixelRadius)
+                    {
+                        var s = true;
+                    }
+
                     pc = PolarCoordinates.ToPolarCoordinates(i - pixelRadius, j - pixelRadius);
                     if (pc.Radius > pixelRadius)
                     {
@@ -107,14 +113,31 @@ namespace DataTools.Desktop
                         continue;
                     }
 
-                    hsv = new HSVDATA()
+                    if (double.IsNaN(pc.Arc))
                     {
-                        Hue = pc.Arc,
-                        Saturation = pc.Radius,
-                        Value = 1
-                    };
+                        color = -1;
+                    }
+                    else
+                    {
+                        hsv = new HSVDATA()
+                        {
+                            Hue = pc.Arc,
+                            Saturation = (pc.Radius / pixelRadius),
+                            Value = 1
+                        };
 
-                    color = ColorMath.HSVToColorRaw(hsv);
+                        color = ColorMath.HSVToColorRaw(hsv);
+                    }
+
+                    var el = new ColorWheelElement();
+                    el.FillPoints = new Point[1] { new Point(i, j) };
+                    el.Color = Color.FromArgb(color);
+                    el.Polar = pc;
+                    el.Shape = ColorWheelShapes.Point;
+                    el.Bounds = new Rectangle(i, j, 1, 1);
+                    el.Center = el.FillPoints[0];
+                    
+                    Elements.Add(el);
                     rawColors.Add(color);
                 }
 

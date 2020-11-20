@@ -416,7 +416,17 @@ namespace DataTools.Desktop.Unified
             else if ((format & UniColorFormatOptions.HexArgbWebFormat) == UniColorFormatOptions.HexArgbWebFormat || format == UniColorFormatOptions.Default || (format & (UniColorFormatOptions.DetailNamedColors | UniColorFormatOptions.Hex)) > UniColorFormatOptions.Hex)
             {
                 str2 = "#" + (_Value & 0xFFFFFFFFL).ToString(hexCase + "8");
-                str1 = TryGetColorName(this);
+                
+                if ((format & UniColorFormatOptions.ClosestNamedColor) == UniColorFormatOptions.ClosestNamedColor)
+                {
+                    str1 = TryGetColorName(this, true);
+                }
+                else
+                {
+                    str1 = TryGetColorName(this);
+                }
+
+
                 if ((format & (UniColorFormatOptions.DetailNamedColors | UniColorFormatOptions.Hex)) > UniColorFormatOptions.Hex || format == UniColorFormatOptions.Default & DetailedDefaultToString == true)
                 {
                     if (str1 is object)
@@ -849,22 +859,67 @@ namespace DataTools.Desktop.Unified
         /// <summary>
         /// Attempt to retrieve a color name for a specific color.
         /// </summary>
-        /// <param name="Color"></param>
+        /// <param name="color"></param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static string TryGetColorName(UniColor Color)
+        public static string TryGetColorName(UniColor color, bool closest = false)
         {
-            var cc = Color;
+            var cc = color;
 
             // Make sure we have nothing errant and transparent.
             cc.A = 255;
+
             string s = SharedProp.SharedPropToName((System.Windows.Media.Color)cc, typeof(System.Windows.Media.Colors));
+
             if (s is null || string.IsNullOrEmpty(s))
             {
-                s = SharedProp.SharedPropToName((Color)Color, typeof(Color));
+                s = SharedProp.SharedPropToName((Color)color, typeof(Color));
+            }
+            if (s == null && closest)
+            {
+                s = GetClosestColor(color);
             }
 
             return s;
+        }
+
+        private static string GetClosestColor(UniColor value)
+        {
+            PropertyInfo[] p;
+            p = typeof(System.Windows.Media.Colors).GetProperties(BindingFlags.Public | BindingFlags.Static);
+
+            System.Windows.Media.Color vl;
+            System.Windows.Media.Color closest = new System.Windows.Media.Color();
+
+            PropertyInfo cr = null;
+            var hsv1 = new HSVDATA();
+
+            ColorMath.ColorToHSV(value, ref hsv1);
+
+            double lhue = 360;
+            double lsat = 1;
+
+            foreach (var pe in p)
+            {
+                vl = (System.Windows.Media.Color)pe.GetValue(value);
+
+                var hsv2 = new HSVDATA();
+
+                ColorMath.ColorToHSV(vl, ref hsv2);
+
+                
+                if (Math.Abs(hsv2.Hue - hsv1.Hue) <= lhue &&
+                    Math.Abs(hsv2.Saturation - hsv1.Saturation) <= lsat)
+                {
+                    lhue = Math.Abs(hsv2.Hue - hsv1.Hue);
+                    lsat = Math.Abs(hsv2.Saturation - hsv1.Saturation);
+
+                    closest = vl;
+                    cr = pe;
+                }
+            }
+
+            return cr?.Name;
         }
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */

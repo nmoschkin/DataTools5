@@ -17,6 +17,8 @@ using System.Runtime.InteropServices;
 using WizLib;
 using System.Net.Sockets;
 using System.Net;
+using DataTools.Desktop.Unified;
+using DataTools.Text;
 
 namespace WizBulb
 {
@@ -60,9 +62,36 @@ namespace WizBulb
 
             //Parallel.Invoke(paras.ToArray());
 
+            Picker.ColorHit += Picker_ColorHit;
             this.Loaded += MainWindow_Loaded;
             this.LocationChanged += MainWindow_LocationChanged;
             this.SizeChanged += MainWindow_SizeChanged;
+        }
+
+        private void Picker_ColorHit(object sender, ColorHitEventArgs e)
+        {
+            UniColor uc = e.Color;
+
+            var s  = uc.ToString(UniColorFormatOptions.DetailNamedColors | UniColorFormatOptions.ClosestNamedColor);
+            if (!string.IsNullOrEmpty(s))
+            {
+                int i = s.IndexOf("[");
+                if (i != -1)
+                {
+                    var s1 = s.Substring(0, i);
+                    var s2 = s.Substring(i);
+
+                    s = TextTools.SeparateCamel(s1).Trim() + " " + s2.Trim();
+                }
+
+                ColorText.Text = s;
+            }
+            else
+            {
+                ColorText.Text = "";
+            }
+
+            ColorSwatch.Background = new SolidColorBrush(e.Color);
         }
 
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -90,12 +119,13 @@ namespace WizBulb
 
             _ = Task.Run(async () =>
             {
-                var bulbs = await Bulb.ScanForBulbs();
+                var bulbs = await Bulb.ScanForBulbs("192.168.1.10");
 
                 if (bulbs != null && bulbs.Count > 0)
                 {
                     disp.Invoke(() => {
                         Bulbs = new ObservableCollection<Bulb>(bulbs);
+                        BulbCounter.Text = Bulbs?.Count.ToString() + " Bulbs";
                         BulbList.ItemsSource = Bulbs;
                     });
                 }

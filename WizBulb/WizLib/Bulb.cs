@@ -308,14 +308,14 @@ namespace WizLib
 
 
 
-        public static async Task<List<Bulb>> ScanForBulbs(bool scanOnly = false)
+        public static async Task<List<Bulb>> ScanForBulbs(string localAddr, bool scanOnly = false)
         {
             if (HasConsole) Console.WriteLine("Scanning For Bulbs...");
             List<Bulb> bulbs = new List<Bulb>();
 
             int PORT = 38899;
             UdpClient udpClient = new UdpClient();
-            udpClient.Client.Bind(new IPEndPoint(IPAddress.Parse("192.168.1.10"), PORT));
+            udpClient.Client.Bind(new IPEndPoint(IPAddress.Parse(localAddr), PORT));
 
             var from = new IPEndPoint(0, 0);
             var timeout = (DateTime.Now.AddSeconds(5));
@@ -339,7 +339,7 @@ namespace WizLib
 
                             p = new PilotCommand(json);
 
-                            if (p != null)
+                            if (p != null && p.Result?.MACAddress != null)
                             {
                                 bulb = new Bulb(from.Address);
                                 bulb.Settings = p.Result;
@@ -371,7 +371,7 @@ namespace WizLib
                 pilot.Method = "registration";
                 pilot.Params.PhoneMac = "94e6f7a27e66";
                 pilot.Params.Register = false;
-                pilot.Params.PhoneIp = "192.168.1.10";
+                pilot.Params.PhoneIp = localAddr;
                 pilot.Params.ID = "12";
             }
             else
