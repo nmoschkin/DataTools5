@@ -1948,8 +1948,8 @@ namespace DataTools.Text
             int a = 0;
             int b = 0;
 
-            string varOut = "";
-            bool isP = false;
+            StringBuilder varOut = new StringBuilder();
+            bool nextCap = false;
             bool iQ = false;
 
             if (input == null)
@@ -1961,35 +1961,34 @@ namespace DataTools.Text
             {
                 if ((iQ == true))
                 {
-                    varOut += input[a];
-                    if ((input[a] == '\"'))
+                    varOut.Append(input[a]);
+                    if (input[a] == '\"')
                     {
                         iQ = false;
                     }
                 }
                 else
                 {
-                    if ((input[a] == (char)(32)) && (isP == false))
+                    if (!char.IsLetter(input[a]))
                     {
-                        isP = true;
-                        varOut += " ";
-
+                        nextCap = true;
+                        varOut.Append(input[a]);
                     }
-                    else if ((input[a] != (char)(32)))
+                    else if (char.IsLetter(input[a]))
                     {
-                        if ((a == 0) | (isP == true))
+                        if (a == 0 || nextCap)
                         {
-                            varOut += input[a].ToString().ToUpper();
-
+                            varOut.Append(input[a].ToString().ToUpper());
                         }
-                        else if ((isP == false))
+                        else 
                         {
-                            varOut += input[a].ToString().ToLower();
+                            varOut.Append(input[a].ToString().ToLower());
                         }
 
-                        if ((isP == true))
-                            isP = false;
-                        if ((input[a] == '\"'))
+                        if (nextCap)
+                            nextCap = false;
+
+                        if (input[a] == '\"')
                         {
                             iQ = true;
                         }
@@ -1999,9 +1998,9 @@ namespace DataTools.Text
             }
 
             if (stripSpaces)
-                return SearchReplace(varOut, " ", "");
+                return varOut.ToString().Replace(" ", "");
             else
-                return varOut;
+                return varOut.ToString();
         }
 
         /// <summary>

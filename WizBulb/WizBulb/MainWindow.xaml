@@ -2,6 +2,7 @@
     x:Class="WizBulb.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:color="clr-namespace:DataTools.ColorControls;assembly=DataTools.ColorControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:WizBulb"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -64,10 +65,39 @@
             </ListView.View>
         </ListView>
 
-        <local:ColorPicker
-            x:Name="Picker"
-            Grid.Row="1"
-            Grid.Column="1" />
+        <Grid Grid.Row="1" Grid.Column="1">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <color:ColorPicker
+                x:Name="Picker"
+                Grid.Column="0"
+                Margin="8"
+                InvertSaturation="True"
+                Mode="Linearvertical" />
+
+            <Slider
+                x:Name="ValueSlider"
+                Grid.Column="1"
+                Margin="8"
+                Maximum="100"
+                Minimum="0"
+                Orientation="Vertical"
+                ValueChanged="ValueSlider_ValueChanged"
+                Value="100">
+
+                <Slider.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Offset="1" Color="Black" />
+                        <GradientStop Offset="0" Color="White" />
+                    </LinearGradientBrush>
+                </Slider.Background>
+            </Slider>
+
+        </Grid>
 
         <StackPanel
             Grid.Row="0"

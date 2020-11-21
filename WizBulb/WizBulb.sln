@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTools.Hardware", "..\Da
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTools.Win32Api", "..\DataTools5\DataTools.Win32Api\DataTools.Win32Api.csproj", "{CFAA4414-9A00-4F9B-B13D-15EB205CCF4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTools.ColorControls", "..\DataTools5\ColorControls\DataTools.ColorControls.csproj", "{2A39E5B1-BA5B-4AEC-8077-27CBBBDC3014}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,18 @@ Global
 		{CFAA4414-9A00-4F9B-B13D-15EB205CCF4F}.Release|x64.Build.0 = Release|x64
 		{CFAA4414-9A00-4F9B-B13D-15EB205CCF4F}.Release|x86.ActiveCfg = Release|x86
 		{CFAA4414-9A00-4F9B-B13D-15EB205CCF4F}.Release|x86.Build.0 = Release|x86
+		{2A39E5B1-BA5B-4AEC-8077-27CBBBDC3014}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A39E5B1-BA5B-4AEC-8077-27CBBBDC3014}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A39E5B1-BA5B-4AEC-8077-27CBBBDC3014}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2A39E5B1-BA5B-4AEC-8077-27CBBBDC3014}.Debug|x64.Build.0 = Debug|Any CPU
+		{2A39E5B1-BA5B-4AEC-8077-27CBBBDC3014}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2A39E5B1-BA5B-4AEC-8077-27CBBBDC3014}.Debug|x86.Build.0 = Debug|Any CPU
+		{2A39E5B1-BA5B-4AEC-8077-27CBBBDC3014}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A39E5B1-BA5B-4AEC-8077-27CBBBDC3014}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A39E5B1-BA5B-4AEC-8077-27CBBBDC3014}.Release|x64.ActiveCfg = Release|Any CPU
+		{2A39E5B1-BA5B-4AEC-8077-27CBBBDC3014}.Release|x64.Build.0 = Release|Any CPU
+		{2A39E5B1-BA5B-4AEC-8077-27CBBBDC3014}.Release|x86.ActiveCfg = Release|Any CPU
+		{2A39E5B1-BA5B-4AEC-8077-27CBBBDC3014}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +111,7 @@ Global
 		{36DE43F7-134F-4A18-BE76-0650AC8EBC1C} = {47779BB9-848A-4D16-9ED5-C9F15720D3FF}
 		{3826F90D-1094-4BFC-8874-ED44B403D3D4} = {47779BB9-848A-4D16-9ED5-C9F15720D3FF}
 		{CFAA4414-9A00-4F9B-B13D-15EB205CCF4F} = {47779BB9-848A-4D16-9ED5-C9F15720D3FF}
+		{2A39E5B1-BA5B-4AEC-8077-27CBBBDC3014} = {47779BB9-848A-4D16-9ED5-C9F15720D3FF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {72FE0CD9-A88E-4ECD-9078-99C6632E304C}

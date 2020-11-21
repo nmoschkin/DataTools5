@@ -19,6 +19,7 @@ using System.Net.Sockets;
 using System.Net;
 using DataTools.Desktop.Unified;
 using DataTools.Text;
+using DataTools.ColorControls;
 
 namespace WizBulb
 {
@@ -71,27 +72,19 @@ namespace WizBulb
         private void Picker_ColorHit(object sender, ColorHitEventArgs e)
         {
             UniColor uc = e.Color;
+            var nc = NamedColor.FindColor(uc, true);
 
-            var s  = uc.ToString(UniColorFormatOptions.DetailNamedColors | UniColorFormatOptions.ClosestNamedColor);
-            if (!string.IsNullOrEmpty(s))
+            if (nc != null)
             {
-                int i = s.IndexOf("[");
-                if (i != -1)
-                {
-                    var s1 = s.Substring(0, i);
-                    var s2 = s.Substring(i);
-
-                    s = TextTools.SeparateCamel(s1).Trim() + " " + s2.Trim();
-                }
-
-                ColorText.Text = s;
+                ColorText.Text = nc.Name;
+                uc = nc.Color;
             }
             else
             {
                 ColorText.Text = "";
             }
 
-            ColorSwatch.Background = new SolidColorBrush(e.Color);
+            ColorSwatch.Background = new SolidColorBrush((Color)uc);
         }
 
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -131,6 +124,11 @@ namespace WizBulb
                 }
             });
 
+        }
+
+        private void ValueSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Picker.ColorValue = ValueSlider.Value / 100;
         }
     }
 }

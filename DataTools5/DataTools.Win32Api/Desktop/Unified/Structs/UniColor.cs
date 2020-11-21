@@ -27,7 +27,7 @@ namespace DataTools.Desktop.Unified
     /// </summary>
     /// <remarks></remarks>
     [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
-    public struct UniColor
+    public struct UniColor : IComparable<UniColor>
     {
         public static readonly UniColor Empty = new UniColor(0, 0, 0, 0);
         [FieldOffset(0)]
@@ -368,6 +368,20 @@ namespace DataTools.Desktop.Unified
             _R = r;
             _G = g;
             _B = b;
+        }
+
+        public HSVDATA ToHSV()
+        {
+            var hsv = new HSVDATA();
+            ColorMath.ColorToHSV(this, ref hsv);
+            return hsv;
+        }
+
+        public CMYDATA ToCMY()
+        {
+            var cmy = new CMYDATA();
+            ColorMath.ColorToCMY(this, ref cmy);
+            return cmy;
         }
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
@@ -920,6 +934,32 @@ namespace DataTools.Desktop.Unified
             }
 
             return cr?.Name;
+        }
+
+        public int CompareTo(UniColor other)
+        {
+            HSVDATA hsv1 = new HSVDATA();
+            HSVDATA hsv2 = new HSVDATA();
+
+            ColorMath.ColorToHSV(this, ref hsv1);
+            ColorMath.ColorToHSV(other, ref hsv2);
+
+            if (hsv1.Hue == hsv2.Hue)
+            {
+                if (hsv1.Saturation == hsv2.Saturation)
+                {
+                    return hsv1.Value > hsv2.Value ? 1 : hsv1.Value < hsv2.Value ? -1 : 0;
+                }
+                else
+                {
+                    return hsv1.Saturation > hsv2.Saturation ? 1 : hsv1.Saturation < hsv2.Saturation ? -1 : 0;
+                }
+            }
+            else
+            {
+                return hsv1.Hue > hsv2.Hue ? 1 : hsv1.Hue < hsv2.Hue ? -1 : 0;
+            }
+
         }
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */

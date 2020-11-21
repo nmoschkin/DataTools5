@@ -11,6 +11,12 @@ using DataTools.Memory;
 
 namespace DataTools.Desktop
 {
+    public enum ColorPickerMode
+    {
+        Wheel = 0,
+        LinearHorizontal = 1,
+        LinearVertical = 2
+    }
 
     public enum ColorWheelShapes
     {
@@ -20,15 +26,20 @@ namespace DataTools.Desktop
 
     public class ColorWheel
     {
-        public List<ColorWheelElement> Elements { get; set; } = new List<ColorWheelElement>();
-        public Rectangle Bounds { get; set; }
+        public List<ColorWheelElement> Elements { get; private set; } = new List<ColorWheelElement>();
+
+        public ColorPickerMode Mode { get; private set; }
+
+        public Rectangle Bounds { get; private set; }
+
+        public bool InvertSaturation { get; private set; }
 
         private byte[] imageBytes;
         
         public byte[] ImageBytes
         {
             get => imageBytes;
-            set
+            private set
             {
                 imageBytes = value;
             }
@@ -79,7 +90,104 @@ namespace DataTools.Desktop
             return HitTest(pt.X, pt.Y);
         }
 
-        public ColorWheel(int pixelRadius)
+        public ColorWheel(int width, int height, double value = 1d, double offset = 0d, bool invert = false, bool vertical = false)
+        {
+
+            List<int> rawColors = new List<int>();
+
+            int x1 = 0;
+            int x2 = width;
+
+            int y1 = 0;
+            int y2 = height;
+
+            PolarCoordinates pc;
+            HSVDATA hsv;
+
+            int color;
+
+            Bounds = new Rectangle(0, 0, x2, y2);
+
+            InvertSaturation = invert;
+
+            if (vertical)
+            {
+                Mode = ColorPickerMode.LinearVertical;
+            }
+            else
+            {
+                Mode = ColorPickerMode.LinearHorizontal;
+            }
+
+            for (int j = y1; j < y2; j++)
+            {
+                for (int i = x1; i < x2; i++)
+                {
+                    double arc;
+
+                    if (vertical)
+                    {
+                        arc = ((double)j / y2) * 360;
+                        arc -= offset;
+                        if (arc < 0) arc += 360;
+
+                        hsv = new HSVDATA()
+                        {
+                            Hue = arc,
+                            Saturation = invert ? 1 - ((double)i / x2) : ((double)i / x2),
+                            Value = value
+                        };
+
+
+                    }
+                    else
+                    {
+                        arc = ((double)i / x2) * 360;
+                        arc -= offset;
+                        if (arc < 0) arc += 360;
+
+                        hsv = new HSVDATA()
+                        {
+                            Hue = arc,
+                            Saturation = invert ? 1 - ((double)j/y2) : ((double)j/y2),
+                            Value = value
+                        };
+                    }
+
+                    color = ColorMath.HSVToColorRaw(hsv);
+
+                    var el = new ColorWheelElement();
+
+                    el.FillPoints = new Point[1] { new Point(i, j) };
+                    el.Color = Color.FromArgb(color);
+                    el.Shape = ColorWheelShapes.Point;
+                    el.Bounds = new Rectangle(i, j, 1, 1);
+                    el.Center = el.FillPoints[0];
+
+                    Elements.Add(el);
+                    rawColors.Add(color);
+                }
+            }
+
+            var arrColors = rawColors.ToArray();
+            imageBytes = new byte[arrColors.Length * sizeof(int)];
+
+            unsafe
+            {
+                var gch1 = GCHandle.Alloc(arrColors, GCHandleType.Pinned);
+                var gch2 = GCHandle.Alloc(imageBytes, GCHandleType.Pinned);
+
+                Buffer.MemoryCopy((void*)gch1.AddrOfPinnedObject(), (void*)gch2.AddrOfPinnedObject(), imageBytes.Length, imageBytes.Length);
+
+                gch1.Free();
+                gch2.Free();
+
+            }
+
+            ToBitmap();
+        }
+
+        public ColorWheel(int pixelRadius, double rotation = 0d, double value = 1d, bool invert = false)
         {
             List<int> rawColors = new List<int>();
 
@@ -95,6 +203,8 @@ namespace DataTools.Desktop
             int color;
             
             Bounds = new Rectangle(0, 0, x2, y2);
+            InvertSaturation = invert;
+            Mode = ColorPickerMode.Wheel;
 
             for (int j = y1; j < y2; j++)
             {
@@ -112,24 +222,27 @@ namespace DataTools.Desktop
                         rawColors.Add(0);
                         continue;
                     }
-
                     if (double.IsNaN(pc.Arc))
                     {
                         color = -1;
                     }
                     else
                     {
+                        double arc = pc.Arc - rotation;
+                        if (arc < 0) arc += 360;
+
                         hsv = new HSVDATA()
                         {
-                            Hue = pc.Arc,
-                            Saturation = (pc.Radius / pixelRadius),
-                            Value = 1
+                            Hue = arc,
+                            Saturation = invert ? 1 - (pc.Radius / pixelRadius) : (pc.Radius / pixelRadius),
+                            Value = value
                         };
 
                         color = ColorMath.HSVToColorRaw(hsv);
                     }
 
                     var el = new ColorWheelElement();
+
                     el.FillPoints = new Point[1] { new Point(i, j) };
                     el.Color = Color.FromArgb(color);
                     el.Polar = pc;
