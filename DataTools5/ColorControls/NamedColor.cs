@@ -46,28 +46,50 @@ namespace DataTools.ColorControls
             return r;
         }
 
-
-        public static NamedColor GetClosestColor(UniColor value)
+        public static NamedColor GetClosestColor(UniColor value, double maxDeviation = 0.013d, bool ignoreValue = true, bool ignoreSaturation = false, bool ignoreHue = false)
         {
             var hsv1 = new HSVDATA();
 
             ColorMath.ColorToHSV(value, ref hsv1);
 
             NamedColor closest = null;
-            
+
             double lhue = 360;
             double lsat = 1;
             double lval = 1;
 
+            double dhue, dsat, dval;
+            bool match;
+
+            var mxd = Math.Abs(maxDeviation);
+
             foreach (var vl in catalog)
             {
                 var hsv2 = new HSVDATA();
+                match = true;
 
                 ColorMath.ColorToHSV(vl.Color, ref hsv2);
 
-                if (Math.Abs(hsv2.Hue - hsv1.Hue) <= lhue &&
-                    Math.Abs(hsv2.Value - hsv1.Value) <= lval &&
-                    Math.Abs(hsv2.Saturation - hsv1.Saturation) <= lsat)
+                dhue = Math.Abs(hsv2.Hue - hsv1.Hue);
+                dsat = Math.Abs(hsv2.Saturation - hsv1.Saturation);
+                dval = Math.Abs(hsv2.Value - hsv1.Value);
+
+                if (!ignoreHue)
+                {
+                    match &= dhue <= lhue && (dhue <= (360 * mxd));
+                }
+
+                if (!ignoreSaturation)
+                {
+                    match &= dsat <= lsat && (dsat <= mxd);
+                }
+
+                if (!ignoreValue)
+                {
+                    match &= dval <= lval && (dval <= mxd);
+                }
+
+                if (match)
                 {
                     lhue = Math.Abs(hsv2.Hue - hsv1.Hue);
                     lsat = Math.Abs(hsv2.Saturation - hsv1.Saturation);
@@ -143,6 +165,12 @@ namespace DataTools.ColorControls
 
         static NamedColor()
         {
+            if (catalog == null) LoadColors();
+        }
+
+        public static void LoadColors()
+        {
+            if (catalog != null) return;
 
             var cl = new List<NamedColor>();
             var craw = AppResources.ColorList.Replace("\r\n", "\n").Split("\n");
@@ -169,10 +197,6 @@ namespace DataTools.ColorControls
 
             catalog = cl.ToArray();
             Sort(ref catalog, (a, b) => a.Color.CompareTo(b.Color));
-
-            //var pantone = SearchByExtra("Pantone");
-            //var crayola = SearchByExtra("Crayola");
-            //var web = SearchByExtra("Web");
         }
 
         public UniColor Color
@@ -220,5 +244,16 @@ namespace DataTools.ColorControls
             Color = color;
             ExtraInfo = extra;
         }
+
+        public static implicit operator System.Windows.Media.Color(NamedColor c)
+        {
+            return (System.Windows.Media.Color)c.Color;
+        }
+
+        public static implicit operator UniColor(NamedColor c)
+        {
+            return c.Color;
+        }
+
     }
 }

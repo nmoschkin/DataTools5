@@ -15,7 +15,8 @@ namespace DataTools.Desktop
     {
         Wheel = 0,
         LinearHorizontal = 1,
-        LinearVertical = 2
+        LinearVertical = 2,
+        HexagonWheel = 3
     }
 
     public enum ColorWheelShapes
@@ -30,7 +31,7 @@ namespace DataTools.Desktop
 
         public ColorPickerMode Mode { get; private set; }
 
-        public Rectangle Bounds { get; private set; }
+        public RectangleF Bounds { get; private set; }
 
         public bool InvertSaturation { get; private set; }
 
@@ -52,7 +53,7 @@ namespace DataTools.Desktop
             if (imageBytes == null) return;
 
             var mm = new MemPtr();
-            var bmp = new Bitmap(Bounds.Width, Bounds.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var bmp = new Bitmap((int)Math.Ceiling(Bounds.Width), (int)Math.Ceiling(Bounds.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             
             mm.Alloc(bmp.Width * bmp.Height * 4);
 
@@ -71,14 +72,47 @@ namespace DataTools.Desktop
             Bitmap = bmp;
         }
 
+        static bool PointInPolygon(PointF[] fillPoints, float x, float y)
+        {
+            // being quite honest here... I didn't even try to walk myself through this
+            // I just copied it from the internet, and it works.
+            // Reference: http://alienryderflex.com/polygon/
+
+            int i, j = fillPoints.Length - 1;
+            bool oddNodes = false;
+
+            for (i = 0; i < fillPoints.Length; i++)
+            {
+                if (fillPoints[i].Y < y && fillPoints[j].Y >= y
+                || fillPoints[j].Y < y && fillPoints[i].Y >= y)
+                {
+                    if (fillPoints[i].X + (y - fillPoints[i].Y) / (fillPoints[j].Y - fillPoints[i].Y) * (fillPoints[j].X - fillPoints[i].X) < x)
+                    {
+                        oddNodes = !oddNodes;
+                    }
+                }
+                j = i;
+            }
+
+            return oddNodes;
+        }
+
         public Color HitTest(int x, int y)
         {
             foreach (ColorWheelElement e in Elements)
             {
-                foreach (Point f in e.FillPoints)
+                if (e.FillPoints.Length == 1)
                 {
+                    var f = e.FillPoints[0];                     
                     if (f.X == x & f.Y == y)
                         return e.Color;
+                }
+                else
+                {
+                    if (PointInPolygon(e.FillPoints, x, y))
+                    {
+                        return e.Color;
+                    }
                 }
             }
 
@@ -158,7 +192,7 @@ namespace DataTools.Desktop
 
                     var el = new ColorWheelElement();
 
-                    el.FillPoints = new Point[1] { new Point(i, j) };
+                    el.FillPoints = new PointF[1] { new PointF(i, j) };
                     el.Color = Color.FromArgb(color);
                     el.Shape = ColorWheelShapes.Point;
                     el.Bounds = new Rectangle(i, j, 1, 1);
@@ -187,7 +221,173 @@ namespace DataTools.Desktop
             ToBitmap();
         }
 
-        public ColorWheel(int pixelRadius, double rotation = 0d, double value = 1d, bool invert = false)
+        public ColorWheel(int pixelRadius, float elementSize, double value = 1d, bool invert = false)
+        {
+            float x1 = elementSize / 2;
+            float y1 = x1;
+
+            float cor = 0f;
+
+            float x2 = pixelRadius * 2;
+            float y2 = x2;
+
+            float stepX = elementSize + (elementSize / 2f);
+            float stepY = (elementSize / 2f);
+
+            PointF[] masterPoly = new PointF[6];
+
+            var pc = new PolarCoordinates();
+            HSVDATA hsv;
+
+            int color;
+            int z;
+
+            Bounds = new RectangleF(0, 0, pixelRadius * 2, pixelRadius * 2);
+            InvertSaturation = invert;
+            Mode = ColorPickerMode.HexagonWheel;
+
+            var bmp = new Bitmap((int)Math.Ceiling(Bounds.Width), (int)Math.Ceiling(Bounds.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var g = Graphics.FromImage(bmp);
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+
+            SolidBrush br;
+
+            br = new SolidBrush(Color.FromArgb(unchecked((int)0xffffffff)));
+            g.FillRectangle(br, Bounds);
+            br.Dispose();
+
+            bool alt = false;
+
+
+            pc.Arc = -30;
+            pc.Radius = pixelRadius;
+
+            masterPoly[0] = pc.ToScreenCoordinates(Bounds);
+
+            cor = masterPoly[0].Y;
+
+            pc.Arc = 60 - 30;
+            masterPoly[1] = pc.ToScreenCoordinates(Bounds);
+
+            pc.Arc = 120 - 30;
+            masterPoly[2] = pc.ToScreenCoordinates(Bounds);
+
+            pc.Arc = 180 - 30;
+            masterPoly[3] = pc.ToScreenCoordinates(Bounds);
+
+            pc.Arc = 240 - 30;
+            masterPoly[4] = pc.ToScreenCoordinates(Bounds);
+
+            pc.Arc = 300 - 30;
+            masterPoly[5] = pc.ToScreenCoordinates(Bounds);
+
+            for (z = 0; z < 6; z++)
+            {
+                masterPoly[z].Y -= cor;
+            }
+
+            cor = 0f;
+
+            for (float j = y1; j < y2; j += stepY)
+            {
+                if (alt)
+                {
+                    x1 = (elementSize) + (elementSize / 4f);
+                }
+                else
+                {
+                    x1 = (elementSize / 2f);
+                }
+
+                alt = !alt;
+
+                for (float i = x1; i < x2; i += stepX)
+                {
+
+                    if (!PointInPolygon(masterPoly, i, j)) continue;
+
+                    pc = PolarCoordinates.ToPolarCoordinates(i - pixelRadius, j - pixelRadius);
+
+                    if (pc.Radius > pixelRadius)
+                    {
+                        pc.Radius = pixelRadius;
+                    }
+                    if (double.IsNaN(pc.Arc))
+                    {
+                        color = -1;
+                    }
+                    else
+                    {
+                        double arc = pc.Arc; // - rotation;
+                        if (arc < 0) arc += 360;
+
+                        hsv = new HSVDATA()
+                        {
+                            Hue = arc,
+                            Saturation = invert ? 1 - (pc.Radius / pixelRadius) : (pc.Radius / pixelRadius),
+                            Value = value
+                        };
+
+                        color = ColorMath.HSVToColorRaw(hsv);
+                    }
+
+                    var el = new ColorWheelElement();
+
+                    el.FillPoints = new PointF[6];
+                    el.Center = new PointF(i, j);
+                    el.Color = Color.FromArgb(color);
+                    el.Polar = pc;
+                    el.Shape = ColorWheelShapes.Hexagon;
+                    el.Bounds = new RectangleF(i - (elementSize / 2f), j - (elementSize / 2f), (float)elementSize, (float)elementSize);
+                    el.Center = el.FillPoints[0];
+
+                    pc.Arc = -30;
+                    pc.Radius = (double)elementSize / 2;
+
+                    el.FillPoints[0] = pc.ToScreenCoordinates(el.Bounds);
+
+                    if (cor == 0f)
+                    {
+                        cor = el.FillPoints[0].Y;
+                        stepY -= cor;
+                    }
+
+                    pc.Arc = 60 - 30;
+                    el.FillPoints[1] = pc.ToScreenCoordinates(el.Bounds);
+
+                    pc.Arc = 120 - 30;
+                    el.FillPoints[2] = pc.ToScreenCoordinates(el.Bounds);
+
+                    pc.Arc = 180 - 30;
+                    el.FillPoints[3] = pc.ToScreenCoordinates(el.Bounds);
+
+                    pc.Arc = 240 - 30;
+                    el.FillPoints[4] = pc.ToScreenCoordinates(el.Bounds);
+
+                    pc.Arc = 300 - 30;
+                    el.FillPoints[5] = pc.ToScreenCoordinates(el.Bounds);
+
+                    for (z = 0; z < 6; z++)
+                    {
+                        el.FillPoints[z].Y -= cor;
+                    }
+
+                    Elements.Add(el);
+
+                    br = new SolidBrush(el.Color);
+                    g.FillPolygon(br, el.FillPoints);
+                    br.Dispose();
+                }
+
+            }
+
+            g.Dispose();
+            Bitmap = bmp;
+
+        }
+
+        public ColorWheel(int pixelRadius, double value = 1d, double rotation = 0d, bool invert = false)
         {
             List<int> rawColors = new List<int>();
 
@@ -196,6 +396,8 @@ namespace DataTools.Desktop
 
             int y1 = 0;
             int y2 = pixelRadius * 2;
+
+            double sx, sy;
 
             PolarCoordinates pc;
             HSVDATA hsv;
@@ -210,13 +412,11 @@ namespace DataTools.Desktop
             {
                 for (int i = x1; i < x2; i++)
                 {
+                    sx = i - pixelRadius;
+                    sy = j - pixelRadius;
 
-                    if (i == pixelRadius && j == pixelRadius)
-                    {
-                        var s = true;
-                    }
+                    pc = PolarCoordinates.ToPolarCoordinates(sx, sy);
 
-                    pc = PolarCoordinates.ToPolarCoordinates(i - pixelRadius, j - pixelRadius);
                     if (pc.Radius > pixelRadius)
                     {
                         rawColors.Add(0);
@@ -228,6 +428,7 @@ namespace DataTools.Desktop
                     }
                     else
                     {
+
                         double arc = pc.Arc - rotation;
                         if (arc < 0) arc += 360;
 
@@ -243,11 +444,11 @@ namespace DataTools.Desktop
 
                     var el = new ColorWheelElement();
 
-                    el.FillPoints = new Point[1] { new Point(i, j) };
+                    el.FillPoints = new PointF[1] { new PointF(i, j) };
                     el.Color = Color.FromArgb(color);
                     el.Polar = pc;
                     el.Shape = ColorWheelShapes.Point;
-                    el.Bounds = new Rectangle(i, j, 1, 1);
+                    el.Bounds = new RectangleF(i, j, 1, 1);
                     el.Center = el.FillPoints[0];
                     
                     Elements.Add(el);
@@ -279,9 +480,9 @@ namespace DataTools.Desktop
     {
         public Color Color;
         public PolarCoordinates Polar;
-        public Point Center;
-        public Rectangle Bounds;
-        public Point[] FillPoints;
+        public PointF Center;
+        public RectangleF Bounds;
+        public PointF[] FillPoints;
         public ColorWheelShapes Shape;
     }
 

@@ -93,6 +93,29 @@ namespace DataTools.ColorControls
 
 
 
+        public float ElementSize
+        {
+            get { return (float)GetValue(HexagonSizeProperty); }
+            set { SetValue(HexagonSizeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for HexagonSize.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty HexagonSizeProperty =
+            DependencyProperty.Register("HexagonSize", typeof(float), typeof(ColorPicker), new PropertyMetadata(1f, HexagonSizePropertyChanged));
+
+        private static void HexagonSizePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ColorPicker p)
+            {
+                if ((float)e.OldValue != (float)e.NewValue)
+                {
+                    //p.RenderPicker();
+                    p.InvalidateVisual();
+                }
+            }
+        }
+
+
         public double ColorValue
         {
             get { return (double)GetValue(ColorValueProperty); }
@@ -216,9 +239,8 @@ namespace DataTools.ColorControls
 
             if (w < 32 || h < 32) return;
 
-            if (Mode == ColorPickerMode.Wheel)
+            if (Mode == ColorPickerMode.Wheel || Mode == ColorPickerMode.HexagonWheel)
             {
-
                 int rad;
 
                 if (h < w)
@@ -230,7 +252,15 @@ namespace DataTools.ColorControls
                     rad = w / 2;
                 }
 
-                cwheel = new ColorWheel(rad, ColorValue, HueOffset, InvertSaturation);
+                if (Mode == ColorPickerMode.Wheel)
+                {
+                    cwheel = new ColorWheel(rad, ColorValue, HueOffset, InvertSaturation);
+                }
+                else
+                {
+                    cwheel = new ColorWheel(rad, ElementSize, ColorValue, InvertSaturation);
+                }
+
             }
             else 
             {

@@ -60,12 +60,12 @@ namespace DataTools.MathTools.PolarMath
         public double Right;
         public double Bottom;
 
-        public LinearRect(double left, double top, double right, double bottom)
+        public LinearRect(double left, double top, double width, double height)
         {
             this.Left = left;
             this.Top = top;
-            this.Right = right;
-            this.Bottom = bottom;
+            this.Right = (left + width);
+            this.Bottom = (top + height);
         }
 
         public LinearRect(LinearCoordinates leftTop, LinearSize size)
@@ -73,26 +73,25 @@ namespace DataTools.MathTools.PolarMath
             Left = leftTop.X;
             Top = leftTop.Y;
 
-            Right = (leftTop.X + size.Width) - 1;
-            Bottom = (leftTop.Y + size.Height) - 1;
+            Right = (leftTop.X + size.Width);
+            Bottom = (leftTop.Y + size.Height);
         }
 
         public double Width
         {
-            get => (Right - Left) + 1;
+            get => (Right - Left);
             set
             {
-                Right = (Left + value) - 1;
+                Right = (Left + value);
             }
         }
 
-
         public double Height
         {
-            get => (Bottom - Top) + 1;
+            get => (Bottom - Top);
             set
             {
-                Bottom = (Top + value) - 1;
+                Bottom = (Top + value);
             }
         }
     }
@@ -195,20 +194,14 @@ namespace DataTools.MathTools.PolarMath
             
             a /= RadianConst;
 
-            y = r * Math.Cos(a);
             x = r * Math.Sin(a);
+            y = r * Math.Cos(a);
 
             return new LinearCoordinates(x, -y);
         }
 
         public static LinearCoordinates ToLinearCoordinates(PolarCoordinates p, LinearRect rect)
         {
-            if (rect.Width < p.Radius * 2d + 1d || rect.Height < p.Radius * 2d + 1d)
-            {
-                // fit to rectangle
-                p = new PolarCoordinates(Math.Min(rect.Width, rect.Height) / 2d - 1d, p.Arc);
-            }
-
             var pt = ToLinearCoordinates(p.Radius, p.Arc);
 
             double x;
@@ -223,7 +216,6 @@ namespace DataTools.MathTools.PolarMath
         public static PolarCoordinates ToPolarCoordinates(LinearCoordinates p)
         {
             return ToPolarCoordinates(p.X, p.Y);
-
         }
 
         public static PolarCoordinates ToPolarCoordinates(double x, double y)
