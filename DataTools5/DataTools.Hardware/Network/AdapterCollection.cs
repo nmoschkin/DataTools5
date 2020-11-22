@@ -409,7 +409,15 @@ namespace DataTools.Hardware.Network
                 if (addr.IPAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                 {
                     Socket socket = new Socket(SocketType.Raw, ProtocolType.Icmp);
-                    socket.Bind(new IPEndPoint(addr.IPAddress, 0));
+
+                    try
+                    {
+                        socket.Bind(new IPEndPoint(addr.IPAddress, 0));
+                    }
+                    catch
+                    {
+                        continue;
+                    }
 
                     socket.ReceiveTimeout = 2000;
                     socket.SendTimeout = 2000;
@@ -684,6 +692,47 @@ namespace DataTools.Hardware.Network
                 return _nativeStruct.AdapterName;
             }
         }
+
+        [Browsable(true)]
+        public IPAddress IPV4Address
+        {
+            get
+            {
+                var addrs = _nativeStruct.FirstUnicastAddress.AddressChain;
+                if (addrs == null || addrs?.Length == 0) return null;
+
+                foreach (var addr in addrs)
+                {
+                    if (addr.IPAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                    {
+                        return addr.IPAddress;
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        [Browsable(true)]
+        public IPAddress IPV6Address
+        {
+            get
+            {
+                var addrs = _nativeStruct.FirstUnicastAddress.AddressChain;
+                if (addrs == null || addrs?.Length == 0) return null;
+
+                foreach (var addr in addrs)
+                {
+                    if (addr.IPAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                    {
+                        return addr.IPAddress;
+                    }
+                }
+
+                return null;
+            }
+        }
+
 
         /// <summary>
         /// The first IP address of this device.  Usually IPv6. The IPv4 address resides at FirstUnicastAddress.Next.

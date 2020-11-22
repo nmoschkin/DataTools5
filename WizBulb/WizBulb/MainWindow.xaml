@@ -108,21 +108,47 @@
             VerticalAlignment="Center"
             Orientation="Vertical">
 
-            <Label Content="IP Address:" />
+            <Label Content="Select Network:" />
 
-            <TextBox
-                x:Name="txtIP"
+            <ComboBox
+                x:Name="cbIP"
                 Margin="0,2,0,8"
-                Padding="4" />
+                Padding="4">
 
-            <Label Content="Name:" />
+                <ComboBox.ItemTemplate>
+
+                    <DataTemplate>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="24" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Image
+                                Grid.Column="0"
+                                Margin="4"
+                                Source="{Binding DeviceIcon}" />
+
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="4,2"
+                                Text="{Binding AdapterName}" />
+
+                        </Grid>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+
+            </ComboBox>
+
+            <!--<Label Content="Name:" />
 
             <TextBox
                 x:Name="txtName"
                 Margin="0,2,0,8"
-                Padding="4" />
+                Padding="4" />-->
 
-            <Button Content="Add Bulb" />
+            <Button Content="Scan For Bulbs" />
         </StackPanel>
 
 
@@ -152,8 +178,8 @@
                         Text="Color:" />
 
                     <TextBlock
-                        Width="120"
                         x:Name="ColorText"
+                        Width="120"
                         Margin="8,2"
                         VerticalAlignment="Center"
                         FontFamily="Consolas"

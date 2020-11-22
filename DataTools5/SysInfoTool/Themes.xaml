@@ -277,7 +277,7 @@
                 Grid.Column="1"
                 VerticalAlignment="Center"
                 FontSize="8"
-                Text="{Binding FirstUnicastAddress.Next}" />
+                Text="{Binding IPV4Address}" />
 
         </Grid>
 

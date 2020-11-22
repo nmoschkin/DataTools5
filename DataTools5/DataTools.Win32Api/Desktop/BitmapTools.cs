@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using DataTools.MathTools;
 using DataTools.Memory;
 using DataTools.Win32Api;
-using DataTools.Win32Api;
 using System.Drawing;
 using System.Runtime.InteropServices;
 

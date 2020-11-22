@@ -20,6 +20,7 @@ using System.Net;
 using DataTools.Desktop.Unified;
 using DataTools.Text;
 using DataTools.ColorControls;
+using DataTools.Hardware.Network;
 
 namespace WizBulb
 {
@@ -33,11 +34,15 @@ namespace WizBulb
         [DllImport("kernel32.dll")]
         static extern int AllocConsole();
         
+        
+        public AdaptersCollection Networks { get; set; }
+
         public ObservableCollection<Bulb> Bulbs { get; set; }
 
         public MainWindow()
         {
             Bulb.HasConsole = AllocConsole() != 0;
+
             InitializeComponent();
 
             var loc = Settings.LastWindowLocation;
@@ -64,9 +69,25 @@ namespace WizBulb
             //Parallel.Invoke(paras.ToArray());
 
             Picker.ColorHit += Picker_ColorHit;
+
             this.Loaded += MainWindow_Loaded;
             this.LocationChanged += MainWindow_LocationChanged;
             this.SizeChanged += MainWindow_SizeChanged;
+
+
+            var disp = Dispatcher;
+
+            _ = Task.Run(() =>
+            {
+                Networks = new AdaptersCollection();
+
+                disp.Invoke(() =>
+                {
+                    cbIP.ItemsSource = Networks.Collection;
+                   
+                });
+            });
+
         }
 
         private void Picker_ColorHit(object sender, ColorHitEventArgs e)

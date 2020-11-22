@@ -128,7 +128,7 @@ namespace WizLib
             else TurnOff();
         }
 
-        public void SetScene(PredefinedScene scene)
+        public void SetScene(LightMode scene)
         {
             var cmd = new PilotCommand();
 
@@ -155,7 +155,7 @@ namespace WizLib
             SendCommand(cmd);
         }
 
-        public void SetScene(PredefinedScene scene, byte brightness)
+        public void SetScene(LightMode scene, byte brightness)
         {
             var cmd = new PilotCommand();
 
@@ -176,7 +176,7 @@ namespace WizLib
 
         }
 
-        public void SetScene(PredefinedScene scene, Color c)
+        public void SetScene(LightMode scene, Color c)
         {
             var cmd = new PilotCommand();
 
