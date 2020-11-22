@@ -152,6 +152,7 @@
                         Text="Color:" />
 
                     <TextBlock
+                        Width="120"
                         x:Name="ColorText"
                         Margin="8,2"
                         VerticalAlignment="Center"

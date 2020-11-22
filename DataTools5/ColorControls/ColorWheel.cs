@@ -126,6 +126,11 @@ namespace DataTools.Desktop
 
         public ColorWheel(int width, int height, double value = 1d, double offset = 0d, bool invert = false, bool vertical = false)
         {
+            if (Bitmap != null)
+            {
+                Bitmap.Dispose();
+                Bitmap = null;
+            }
 
             List<int> rawColors = new List<int>();
 
@@ -223,6 +228,12 @@ namespace DataTools.Desktop
 
         public ColorWheel(int pixelRadius, float elementSize, double value = 1d, bool invert = false)
         {
+            if (Bitmap != null)
+            {
+                Bitmap.Dispose();
+                Bitmap = null;
+            }
+
             float x1 = elementSize / 2;
             float y1 = x1;
 
@@ -389,6 +400,12 @@ namespace DataTools.Desktop
 
         public ColorWheel(int pixelRadius, double value = 1d, double rotation = 0d, bool invert = false)
         {
+            if (Bitmap != null)
+            {
+                Bitmap.Dispose();
+                Bitmap = null;
+            }
+
             List<int> rawColors = new List<int>();
 
             int x1 = 0;
