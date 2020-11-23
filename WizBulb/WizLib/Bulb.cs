@@ -7,26 +7,56 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json;
+
 namespace WizLib
 {
+    public delegate void BulbScanCallback(Bulb b);
 
-    public class Bulb
+    public enum ScanModes
     {
+        Registration,
+        GetPilot,
+        GetSystemConfig
+    }
+
+    public class Bulb : ViewModelBase
+    {
+
         public const int DefaultPort = 38899;
 
-        private int timeout = 60000;
-
-        private int port = DefaultPort;
-
-        private EndPoint ep;
-
-        private IPAddress addr;
-
-        private string name;
-
-        private Pilot settings;
-
         public static bool HasConsole { get; set; }
+
+        private static IPAddress localip = null;
+
+        public static IPAddress LocalAddress
+        {
+            get => localip;
+            set
+            {
+                if (!(value?.Equals(localip) ?? false))
+                {
+                    localip = value;
+
+                }
+
+            }
+        }
+
+        protected int timeout = 60000;
+
+        protected int port = DefaultPort;
+
+        protected IPAddress addr;
+
+        protected string name;
+
+        protected string bulbType;
+
+        protected Pilot settings;
+
+        protected bool renaming;
+
 
         public Pilot Settings
         {
@@ -46,16 +76,43 @@ namespace WizLib
                 {
                     settings.PropertyChanged += SettingsChanged;
                 }
+
+                OnPropertyChanged();
+            }
+        }
+
+        public string BulbType
+        {
+            get => bulbType;
+            set
+            {
+                SetProperty(ref bulbType, value);
             }
         }
 
         public string Name
         {
-            get => name;
+            get
+            {
+                if (name == null)
+                {
+                    name = ToString();
+                }
+
+                return name;
+            }
             set
             {
-                if (name == value) return;
-                name = value;
+                SetProperty(ref name, value);
+            }
+        }
+
+        public bool Renaming
+        {
+            get => renaming;
+            set
+            {
+                SetProperty(ref renaming, value);
             }
         }
 
@@ -64,20 +121,16 @@ namespace WizLib
             get => timeout;
             set
             {
-                if (timeout == value) return;
-                timeout = value;
+                SetProperty(ref timeout, value);
             }
         }
 
-        public IPAddress Address
+        public IPAddress IPAddress
         {
             get => addr;
             set
             {
-                if (addr == value) return;
-                addr = value;
-
-                ep = new IPEndPoint(addr, Port);
+                SetProperty(ref addr, value);
             }
         }
 
@@ -86,23 +139,18 @@ namespace WizLib
             get => port;
             set
             {
-                if (port == value) return;
-                port = value;
-
-                ep = new IPEndPoint(addr, Port);
+                SetProperty(ref port, value);
             }
         }
 
-        public Bulb(IPAddress addr, int port = DefaultPort, int timeout = 60000)
+        public Bulb(IPAddress addr, int port = DefaultPort, int timeout = 10000)
         {
             this.addr = addr;
             this.port = port;
             this.timeout = timeout;
-
-            ep = new IPEndPoint(this.addr, this.port);
         }
 
-        public Bulb(string addr, int port = DefaultPort, int timeout = 60000) : this(IPAddress.Parse(addr), port, timeout)
+        public Bulb(string addr, int port = DefaultPort, int timeout = 10000) : this(IPAddress.Parse(addr), port, timeout)
         {
         }
 
@@ -111,7 +159,7 @@ namespace WizLib
             var cmd = new PilotCommand();
 
             cmd.Params.State = true;
-            SendCommand(cmd);
+            _ = SendCommand(cmd);
         }
 
         public void TurnOff()
@@ -119,7 +167,7 @@ namespace WizLib
             var cmd = new PilotCommand();
 
             cmd.Params.State = false;
-            SendCommand(cmd);
+            _ = SendCommand(cmd);
         }
 
         public void Switch(bool switchOn)
@@ -152,7 +200,7 @@ namespace WizLib
                 }
             }
 
-            SendCommand(cmd);
+            _ = SendCommand(cmd);
         }
 
         public void SetScene(LightMode scene, byte brightness)
@@ -172,7 +220,7 @@ namespace WizLib
                 cmd.Params.Scene = scene.Code;
             }
 
-            SendCommand(cmd);
+            _ = SendCommand(cmd);
 
         }
 
@@ -195,7 +243,7 @@ namespace WizLib
                 cmd.Params.Scene = scene.Code;
             }
 
-            SendCommand(cmd);
+            _ = SendCommand(cmd);
         }
 
         public void SetScene(Color c, byte brightness)
@@ -209,7 +257,59 @@ namespace WizLib
             cmd.Params.Blue = c.B;
             cmd.Params.Scene = 0;
 
-            SendCommand(cmd);
+            _ = SendCommand(cmd);
+        }
+
+        public async Task<bool> GetPilot()
+        {
+            var cmd = new PilotCommand() { Method = "getPilot" };
+            string json;
+            
+            try
+            {
+                json = cmd.AssembleCommand();
+                json = await SendCommand(json);
+            }
+            catch
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(json)) return false;
+
+            if (settings != null)
+            {
+                cmd.Result = Settings;
+                JsonConvert.PopulateObject(json, cmd);
+            }
+            else
+            {
+                cmd = JsonConvert.DeserializeObject<PilotCommand>(json);
+                Settings = cmd.Result;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Wink the bulb
+        /// </summary>
+        public void Pulse(int delta = -70, int pulseTime = 500)
+        {
+            _ = SendCommand($"{{\"method\": \"pulse\", \"id\": 22, \"params\": {{\"delta\": {delta}, \"duration\": {pulseTime}}}}}");
+            // TurnOn();
+        }
+
+        /// <summary>
+        /// Send configuration back to the blub
+        /// </summary>
+        public void SetPilot()
+        {
+            if (settings == null) return;
+            var cmd = new PilotCommand() { Method = "setPilot", Params = Settings.Clone(true) };
+            if (cmd.Params.Color != null) cmd.Params.Scene = null;
+
+            _ = SendCommand(cmd);
         }
 
         public override string ToString()
@@ -230,28 +330,30 @@ namespace WizLib
         }
 
 
-        private void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        protected void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
 
         }
 
-        public void GetPilot()
+        protected async Task<PilotCommand> SendCommand(PilotCommand cmd)
         {
-            var cmd = new PilotCommand() { Method = "getPilot" };
-            cmd = SendCommand(cmd);
-
-            Settings = cmd.Params;
+            var x = await SendCommand(cmd.AssembleCommand());
+            return new PilotCommand(x);
         }
 
-        private PilotCommand SendCommand(PilotCommand cmd)
+        protected async Task<string> SendCommand(string cmd)
         {
-            byte[] bOut = Encoding.UTF8.GetBytes(cmd.AssembleCommand());
-            var buffer = SendUDP(bOut);
+
+            byte[] bOut = Encoding.UTF8.GetBytes(cmd);
+            var buffer = await SendUDP(bOut);
+            string json;
 
             if (buffer?.Length > 0)
             {
-                var s = Encoding.UTF8.GetString(buffer).Trim('\x0');
-                return new PilotCommand(s);
+                json = Encoding.UTF8.GetString(buffer).Trim('\x0');
+                if (HasConsole) Console.WriteLine(json + " Addr: " + IPAddress.ToString());
+
+                return json;
             }
             else
             {
@@ -260,69 +362,150 @@ namespace WizLib
 
         }
 
-        private byte[] SendUDP(byte[] cmd)
+        //protected byte[] SendUDP(byte[] cmd)
+        //{
+        //    int maxdg = 100;
+        //    int time = 100;
+
+        //    byte[] buffer = new byte[256];
+
+        //    var sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        //    sock.Bind(new IPEndPoint(LocalAddress, port));
+
+        //    var ep = new IPEndPoint(addr, port);
+
+        //    sock.Connect(ep);
+
+        //    sock.SendTimeout = sock.ReceiveTimeout = timeout;
+        //    sock.Blocking = true;
+
+        //    int dg = 0;
+        //    int r = 0;
+
+        //    sock.BeginReceive(buffer, 0, 256, SocketFlags.None, (a) =>
+        //    {
+        //        if (a.IsCompleted)
+        //        {
+        //            try
+        //            {
+        //                r = ((Socket)a.AsyncState)?.EndReceive(a) ?? 0;
+        //            }
+        //            catch
+        //            {
+
+        //            }
+        //        }
+        //    }, sock);
+
+        //    while (r == 0 && dg < maxdg)
+        //    {
+        //        dg++;
+
+        //        sock.Send(cmd);
+        //        Task.Delay(time);
+        //    }
+
+        //    sock?.Close();
+        //    sock = null;
+
+        //    return buffer;
+        //}
+
+
+        protected async Task<byte[]> SendUDP(byte[] cmd, string localAddr = null)
         {
-            int maxdg = 100;
-            int time = 500;
 
-            byte[] buffer = new byte[256];
+            if (HasConsole) Console.WriteLine("Send UDP...");
+            List<Bulb> bulbs = new List<Bulb>();
 
-            Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            byte[] buffer = cmd;
+            int port = DefaultPort;
 
-            sock.Connect(ep);
-            sock.SendTimeout = sock.ReceiveTimeout = timeout;
-            sock.Blocking = true;
+            if (localAddr != null)
+                LocalAddress = IPAddress.Parse(localAddr);
 
-            int dg = 0;
-            int r = 0;
-
-            sock.BeginReceive(buffer, 0, 256, SocketFlags.None, (a) =>
+            if (LocalAddress == null)
             {
-                if (a.IsCompleted)
-                {
-                    r = 1;
-                    try
-                    {
-                        ((Socket)a.AsyncState)?.EndReceive(a);
-                    }
-                    catch
-                    {
-
-                    }
-                }
-            }, sock);
-
-            while (r == 0 && dg < maxdg)
-            {
-                dg++;
-
-                sock.Send(cmd);
-                Task.Delay(time);
+                return null;
             }
 
-            sock?.Close();
-            sock = null;
+            var udpClient = new UdpClient();
+            udpClient.Client.Bind(new IPEndPoint(LocalAddress, DefaultPort));
+            udpClient.DontFragment = true;
+
+            var from = new IPEndPoint(0, 0);
+            var timeupVal = DateTime.Now.AddSeconds(timeout);
+
+            var t = Task.Run(async () =>
+            {
+                int tdelc = 0;
+
+                while (timeupVal > DateTime.Now)
+                {
+                    if (udpClient.Available > 0)
+                    {
+                        string json = null;
+                        Bulb bulb = null;
+                        PilotCommand p = null;
+
+                        try
+                        {
+                            var recvBuffer = udpClient.Receive(ref from);
+                            buffer = recvBuffer;
+
+                            return;
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+
+                    }
+
+                    await Task.Delay(100);
+                    tdelc++;
+                    if (tdelc >= 5)
+                    {
+                        //udpClient.Send(buffer, buffer.Length, "255.255.255.255", port);
+                        tdelc = 0;
+                    }
+                }
+
+                if (HasConsole) Console.WriteLine("Finished");
+            });
+
+            udpClient.Send(buffer, buffer.Length, addr.ToString(), port);
+            await t;
+
+            udpClient?.Close();
+            udpClient?.Dispose();
 
             return buffer;
+
         }
 
-
-
-        public static async Task<List<Bulb>> ScanForBulbs(string localAddr, bool scanOnly = false)
+        public static async Task<List<Bulb>> ScanForBulbs(string localAddr, ScanModes mode = ScanModes.Registration, int timeout = 5, BulbScanCallback callback = null)
         {
             if (HasConsole) Console.WriteLine("Scanning For Bulbs...");
             List<Bulb> bulbs = new List<Bulb>();
 
-            int PORT = 38899;
-            UdpClient udpClient = new UdpClient();
-            udpClient.Client.Bind(new IPEndPoint(IPAddress.Parse(localAddr), PORT));
+            byte[] buffer = null;
+            int port = DefaultPort;
+
+            LocalAddress = IPAddress.Parse(localAddr);
+
+            var udpClient = new UdpClient();
+            udpClient.Client.Bind(new IPEndPoint(localip, DefaultPort));
+            udpClient.DontFragment = true;
 
             var from = new IPEndPoint(0, 0);
-            var timeout = (DateTime.Now.AddSeconds(5));
+            var timeupVal = DateTime.Now.AddSeconds(timeout);
 
             var t = Task.Run(async () =>
             {
-                while (timeout > DateTime.Now)
+                int tdelc = 0;
+
+                while (timeupVal > DateTime.Now)
                 {
                     if (udpClient.Available > 0)
                     {
@@ -343,13 +526,31 @@ namespace WizLib
                             {
                                 bulb = new Bulb(from.Address);
                                 bulb.Settings = p.Result;
+                                bool already = false;
+
+                                foreach (var bchk in bulbs)
+                                {
+                                    if (bchk.Settings.MACAddress == bulb.Settings.MACAddress)
+                                    {
+                                        already = true;
+                                        break;
+                                    }
+                                }
+                                
+                                if (already) continue;
+
                                 bulbs.Add(bulb);
 
-                                bulb = null;
                                 json = null;
                                 p = null;
-                            }
 
+                                if (callback != null)
+                                {
+                                    callback(bulb);
+                                }
+
+                                bulb = null;
+                            }
                         }
                         catch
                         {
@@ -359,6 +560,12 @@ namespace WizLib
                     }
 
                     await Task.Delay(100);
+                    tdelc++;
+                    if (tdelc >= 5)
+                    {
+                        udpClient.Send(buffer, buffer.Length, "255.255.255.255", port);
+                        tdelc = 0;
+                    }
                 }
 
                 if (HasConsole) Console.WriteLine("Finished");
@@ -366,7 +573,7 @@ namespace WizLib
 
             var pilot = new PilotCommand();
 
-            if (scanOnly)
+            if (mode == ScanModes.Registration)
             {
                 pilot.Method = "registration";
                 pilot.Params.PhoneMac = "94e6f7a27e66";
@@ -374,16 +581,23 @@ namespace WizLib
                 pilot.Params.PhoneIp = localAddr;
                 pilot.Params.ID = "12";
             }
-            else
+            else if (mode == ScanModes.GetPilot)
             {
                 pilot.Method = "getPilot";
             }
+            else
+            {
+                pilot.Method = "getSystemConfig";
+            }
 
             var data = pilot.AssembleCommand();
-            var buffer = Encoding.UTF8.GetBytes(data);
+            buffer = Encoding.UTF8.GetBytes(data);
 
-            udpClient.Send(buffer, buffer.Length, "255.255.255.255", PORT);
+            udpClient.Send(buffer, buffer.Length, "255.255.255.255", port);
             await t;
+            
+            udpClient?.Close();
+            udpClient?.Dispose();
 
             return bulbs;
         }

@@ -8,20 +8,54 @@ using Newtonsoft.Json;
 
 namespace WizLib
 {
-
-    public class PilotCommand
+    public class PilotCommand : ViewModelBase
     {
+
+        private string method = "setPilot";
+        private Pilot outparam;
+        private Pilot inparam;
+        private string env;
+
+        
         [JsonProperty("method")]
-        public string Method { get; set; } = "setPilot";
+        public string Method
+        {
+            get => method;
+            set
+            {
+                SetProperty(ref method, value);
+            }
+        }
 
         [JsonProperty("params")]
-        public Pilot Params { get; set; }
+        public Pilot Params
+        {
+            get => outparam;
+            set
+            {
+                SetProperty(ref outparam, value);
+            }
+        }
 
         [JsonProperty("result")]
-        public Pilot Result { get; set; }
+        public Pilot Result
+        {
+            get => inparam;
+            set
+            {
+                SetProperty(ref inparam, value);
+            }
+        }
 
         [JsonProperty("env")]
-        public string Environment { get; set; }
+        public string Environment
+        {
+            get => env;
+            set
+            {
+                SetProperty(ref env, value);
+            }
+        }
 
         public string AssembleCommand()
         {
@@ -41,7 +75,15 @@ namespace WizLib
 
         public PilotCommand(string json)
         {
-            JsonConvert.PopulateObject(json, this);
+            try
+            {
+                JsonConvert.PopulateObject(json, this);
+
+            }
+            catch
+            {
+
+            }
         }
 
     }

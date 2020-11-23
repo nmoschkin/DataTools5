@@ -21,6 +21,8 @@ using DataTools.Desktop.Unified;
 using DataTools.Text;
 using DataTools.ColorControls;
 using DataTools.Hardware.Network;
+using WizBulb.Localization.Resources;
+using System.ComponentModel;
 
 namespace WizBulb
 {
@@ -33,7 +35,8 @@ namespace WizBulb
 
         [DllImport("kernel32.dll")]
         static extern int AllocConsole();
-        
+
+        private MainViewModel vm;       
         
         public AdaptersCollection Networks { get; set; }
 
@@ -41,7 +44,7 @@ namespace WizBulb
 
         public MainWindow()
         {
-            Bulb.HasConsole = AllocConsole() != 0;
+            // Bulb.HasConsole = AllocConsole() != 0;
 
             InitializeComponent();
 
@@ -68,26 +71,24 @@ namespace WizBulb
 
             //Parallel.Invoke(paras.ToArray());
 
-            Picker.ColorHit += Picker_ColorHit;
-
+            //Picker.ColorHit += Picker_ColorHit;
+            
             this.Loaded += MainWindow_Loaded;
             this.LocationChanged += MainWindow_LocationChanged;
             this.SizeChanged += MainWindow_SizeChanged;
 
+            var iconv = (WizBulb.Converters.IntDisplayConverter)this.Resources["intConv"];
 
-            var disp = Dispatcher;
+            iconv.ConverterError += Iconv_ConverterError;
 
-            _ = Task.Run(() =>
-            {
-                Networks = new AdaptersCollection();
+            vm = new MainViewModel();
+            DataContext = vm;
+        }
 
-                disp.Invoke(() =>
-                {
-                    cbIP.ItemsSource = Networks.Collection;
-                   
-                });
-            });
-
+        private void Iconv_ConverterError(object sender, Converters.ConverterErrorEventArgs e)
+        {
+            vm.TimeoutStatus = e.Message;
+            vm.ShowTimeoutStatus = Visibility.Visible;
         }
 
         private void Picker_ColorHit(object sender, ColorHitEventArgs e)
@@ -128,28 +129,125 @@ namespace WizBulb
 
             Width = size.Width;
             Height = size.Height;
-
-            var disp = Dispatcher;
-
-            _ = Task.Run(async () =>
-            {
-                var bulbs = await Bulb.ScanForBulbs("192.168.1.10");
-
-                if (bulbs != null && bulbs.Count > 0)
-                {
-                    disp.Invoke(() => {
-                        Bulbs = new ObservableCollection<Bulb>(bulbs);
-                        BulbCounter.Text = Bulbs?.Count.ToString() + " Bulbs";
-                        BulbList.ItemsSource = Bulbs;
-                    });
-                }
-            });
-
         }
 
         private void ValueSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Picker.ColorValue = ValueSlider.Value / 100;
+            //Picker.ColorValue = ValueSlider.Value / 100;
+        }
+
+        private void BtnScan_Click(object sender, RoutedEventArgs e)
+        {
+            vm.ScanForBulbs();
+        }
+
+
+        GridViewColumnHeader _lastHeaderClicked = null;
+        ListSortDirection _lastDirection = ListSortDirection.Ascending;
+
+        private void BulbList_Click(object sender, RoutedEventArgs e)
+        {
+            var headerClicked = e.OriginalSource as GridViewColumnHeader;
+            ListSortDirection direction;
+
+            if (headerClicked != null)
+            {
+                if (headerClicked.Role != GridViewColumnHeaderRole.Padding)
+                {
+                    if (headerClicked != _lastHeaderClicked)
+                    {
+                        direction = ListSortDirection.Ascending;
+                    }
+                    else
+                    {
+                        if (_lastDirection == ListSortDirection.Ascending)
+                        {
+                            direction = ListSortDirection.Descending;
+                        }
+                        else
+                        {
+                            direction = ListSortDirection.Ascending;
+                        }
+                    }
+
+                    var columnBinding = headerClicked.Column.DisplayMemberBinding as Binding;
+                    var sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
+
+                    Sort(sortBy, direction);
+
+                    if (direction == ListSortDirection.Ascending)
+                    {
+                        headerClicked.Column.HeaderTemplate =
+                          Resources["HeaderTemplateArrowUp"] as DataTemplate;
+                    }
+                    else
+                    {
+                        headerClicked.Column.HeaderTemplate =
+                          Resources["HeaderTemplateArrowDown"] as DataTemplate;
+                    }
+
+                    // Remove arrow from previously sorted header
+                    if (_lastHeaderClicked != null && _lastHeaderClicked != headerClicked)
+                    {
+                        _lastHeaderClicked.Column.HeaderTemplate = null;
+                    }
+
+                    _lastHeaderClicked = headerClicked;
+                    _lastDirection = direction;
+                }
+            }
+        }
+
+        private void Sort(string sortBy, ListSortDirection direction)
+        {
+            ICollectionView dataView =
+              CollectionViewSource.GetDefaultView(BulbList.ItemsSource);
+
+            dataView.SortDescriptions.Clear();
+            SortDescription sd = new SortDescription(sortBy, direction);
+            dataView.SortDescriptions.Add(sd);
+            dataView.Refresh();
+        }
+
+        private void mnuPing_Click(object sender, RoutedEventArgs e)
+        {
+            if (BulbList.SelectedValue is Bulb b)
+            {
+                b.Pulse();
+            }
+        }
+
+        private void mnuRename_Click(object sender, RoutedEventArgs e)
+        {
+            if (BulbList.SelectedValue is Bulb b)
+            {
+                b.Renaming = true;
+            }
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                tb.SelectAll();
+            }
+        }
+
+        private void BulbList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.RemovedItems != null && e.RemovedItems.Count > 0)
+            {
+                var b = e.RemovedItems[0] as Bulb;
+                b.Renaming = false;
+            }
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                tb.IsEnabled = false;
+            }
         }
     }
 }

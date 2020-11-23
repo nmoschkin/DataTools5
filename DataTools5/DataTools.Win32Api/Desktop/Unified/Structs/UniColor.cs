@@ -271,8 +271,8 @@ namespace DataTools.Desktop.Unified
         public UniColor(int color)
         {
             _Value = 0;
-            _intvalue = color;
             _A = _R = _G = _B = 0;
+            _intvalue = color;
 
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.SqlTypes;
 using System.Linq;
@@ -10,15 +11,26 @@ using Newtonsoft.Json;
 
 namespace WizLib
 {
-    public class Pilot : INotifyPropertyChanged, ICloneable
+    public class Pilot : ViewModelBase, ICloneable
     {
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public static readonly ReadOnlyDictionary<string, string> BulbTypeCatalog 
+            = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>()
+            {
+                { "ESP01_SHDW_01", "" },
+                { "ESP01_SHRGB1C_31", "Phillips Color & Tunable-White BR30 Recessed" },
+                { "ESP01_SHTW1C_31", "Phillips 555599 recessed" },
+                { "ESP56_SHTW3_01", "" },
+                { "ESP01_SHRGB_03", "" },
+                { "ESP01_SHDW1_31", "" },
+                { "ESP15_SHTW1_01I", "" },
+                { "ESP03_SHRGB1C_01", "Philips Color & Tunable-White A19" },
+                //{ "ESP03_SHRGB1C_01", "WiZ LED EAN 8718699787059" },
+                { "ESP03_SHRGB1W_01", "Philips Color & Tunable-White A21" },
+                { "ESP06_SHDW9_01", "Philips Soft White A19" },
+                { "ESP03_SHRGBP_31", "Trio Leuchten WiZ LED" },
+                { "ESP17_SHTW9_01", "WiZ Filament Bulb EAN 8718699786793" }
+            });
 
         private bool? state;
 
@@ -60,19 +72,53 @@ namespace WizLib
 
         private bool? success;
 
+        private int? homeId;
 
-        private void SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (!Equals(storage, value))
-            {
-                storage = value;
-                OnPropertyChanged(propertyName);
-            }
-        }
+        private int? roomId;
+
+        private string fwVersion;
+
+        private string moduleName;
 
         public object Clone()
         {
             return MemberwiseClone();
+        }
+
+        public Pilot Clone(bool pilotOnly)
+        {
+            var p = (Pilot)MemberwiseClone();
+            if (!pilotOnly) return p;
+
+            // registration params
+
+            p.phoneMac = null;
+
+            p.register = null;
+
+            p.phoneIp = null;
+
+            p.id = null;
+
+            // results
+
+            p.rssi = null;
+
+            p.src = null;
+
+            p.macaddr = null;
+
+            p.success = null;
+
+            p.homeId = null;
+
+            p.roomId = null;
+
+            p.fwVersion = null;
+
+            p.moduleName = null;
+
+            return p;
         }
 
         [JsonProperty("dimming")]
@@ -81,15 +127,15 @@ namespace WizLib
             get => dimming;
             set
             {
-                double pctval;
+                //double pctval;
 
-                if (value != null)
-                {
-                    pctval = ((double)value / 255) * 100;
-                    if (pctval < 10) pctval = 10;
+                //if (value != null)
+                //{
+                //    pctval = ((double)value / 255) * 100;
+                //    if (pctval < 10) pctval = 10;
 
-                    value = (byte?)pctval;
-                }
+                //    value = (byte?)pctval;
+                //}
 
                 SetProperty(ref dimming, value);
             }
@@ -144,6 +190,23 @@ namespace WizLib
             set
             {
                 SetProperty(ref sceneId, value);
+                OnPropertyChanged("LightModeInfo");
+            }
+        }
+
+        [JsonIgnore]
+        public LightMode LightModeInfo
+        {
+            get
+            {
+                if (LightMode.LightModes.ContainsKey(sceneId ?? 0))
+                {
+                    return LightMode.LightModes[sceneId ?? 0];
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 
@@ -153,7 +216,9 @@ namespace WizLib
             get => r;
             set
             {
+                if (r == value) return;
                 SetProperty(ref r, value);
+                OnPropertyChanged("Color");
             }
         }
 
@@ -163,7 +228,9 @@ namespace WizLib
             get => g;
             set
             {
+                if (g == value) return;
                 SetProperty(ref g, value);
+                OnPropertyChanged("Color");
             }
         }
 
@@ -173,7 +240,9 @@ namespace WizLib
             get => b;
             set
             {
+                if (b == value) return;
                 SetProperty(ref b, value);
+                OnPropertyChanged("Color");
             }
         }
 
@@ -195,17 +264,24 @@ namespace WizLib
             {
                 if (value == null)
                 {
-                    Red = Green = Blue = null;
+                    return;
                 }
-                else
+                
+                if (r != null && g != null && b != null)
                 {
-                    var c = (System.Drawing.Color)value;
-
-                    Red = c.R;
-                    Green = c.G;
-                    Blue = c.B;
+                    System.Drawing.Color? cur = System.Drawing.Color.FromArgb((byte)r, (byte)g, (byte)b);
+                    if (value == cur) return;
                 }
 
+                var c = (System.Drawing.Color)value;
+
+                r = c.R;
+                g = c.G;
+                b = c.B;
+
+                OnPropertyChanged("Red");
+                OnPropertyChanged("Green");
+                OnPropertyChanged("Blue");
                 OnPropertyChanged();
             }
         }
@@ -309,6 +385,66 @@ namespace WizLib
                 SetProperty(ref success, value);
             }
         }
+
+        [JsonProperty("homeId")]
+        public int? HomeId
+        {
+            get => homeId;
+            set
+            {
+                SetProperty(ref homeId, value);
+            }
+        }
+
+
+        [JsonProperty("roomId")]
+        public int? RoomId
+        {
+            get => roomId;
+            set
+            {
+                SetProperty(ref roomId, value);
+            }
+        }
+
+
+        [JsonProperty("fwVersion")]
+        public string FirmwareVersion
+        {
+            get => fwVersion;
+            set
+            {
+                SetProperty(ref fwVersion, value);
+            }
+        }
+
+        [JsonProperty("moduleName")] 
+        public string ModuleName
+        {
+            get => moduleName;
+            set
+            {
+                SetProperty(ref moduleName, value);
+                OnPropertyChanged("TypeDescription");
+            }
+        }
+
+        [JsonIgnore] 
+        public string TypeDescription
+        {
+            get
+            {
+                if (BulbTypeCatalog.ContainsKey(moduleName))
+                {
+                    return BulbTypeCatalog[ModuleName];
+                }
+                else
+                {
+                    return moduleName;
+                }
+            }
+        }
+
 
     }
 }
