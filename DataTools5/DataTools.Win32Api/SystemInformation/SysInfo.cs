@@ -1276,7 +1276,7 @@ namespace DataTools.SystemInformation
             {
                 Ping ping = new Ping();
 
-                var reply = await ping.SendPingAsync("8.8.8.8", 2000);
+                var reply = await ping.SendPingAsync("208.67.222.222", 2000);
                 if (reply.Status == IPStatus.Success)
                 {
                     return true;
