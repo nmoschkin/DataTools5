@@ -176,6 +176,25 @@ namespace WizLib
             else TurnOff();
         }
 
+        public LightMode Scene
+        {
+            get
+            {
+                if (settings == null || settings.Scene == null)
+                {
+                    return null;
+                }
+                else if (LightMode.LightModes.ContainsKey(settings.Scene ?? 0))
+                {
+                    return LightMode.LightModes[settings.Scene ?? 0];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         public void SetScene(LightMode scene)
         {
             var cmd = new PilotCommand();
@@ -288,6 +307,7 @@ namespace WizLib
                 Settings = cmd.Result;
             }
 
+            OnPropertyChanged("Scene");
             return true;
         }
 

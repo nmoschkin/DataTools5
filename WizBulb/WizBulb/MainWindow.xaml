@@ -126,6 +126,10 @@
                         Width="120"
                         DisplayMemberBinding="{Binding Settings.TypeDescription}"
                         Header="{i18n:Translate ResourceKey=BulbType}" />
+                    <GridViewColumn
+                        Width="120"
+                        DisplayMemberBinding="{Binding Scene}"
+                        Header="{i18n:Translate ResourceKey=LightMode}" />
 
 
                 </GridView>
