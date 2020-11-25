@@ -15,6 +15,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -27,24 +28,25 @@ namespace DataTools.Win32Api.Network
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public struct LPADAPTER_UNICAST_ADDRESS
     {
-        public MemPtr Handle;
+        private MemPtr Handle;
 
-        public LPADAPTER_UNICAST_ADDRESS[] AddressChain
+        public ADAPTER_UNICAST_ADDRESS[] AddressChain
         {
             get
             {
-                int c = 0;
-                var mx = this;
-                var ac = default(LPADAPTER_UNICAST_ADDRESS[]);
-                do
+                var mx = this;                
+
+                List<ADAPTER_UNICAST_ADDRESS> ac = new List<ADAPTER_UNICAST_ADDRESS>();
+
+                while(true)
                 {
-                    Array.Resize(ref ac, c + 1);
-                    ac[c] = mx;
+                    if (mx.Handle == MemPtr.Empty) break;
+
+                    ac.Add(mx.Struct);
                     mx = mx.Next;
-                    c += 1;
-                }
-                while (mx.Handle.Handle != IntPtr.Zero);
-                return ac;
+                }               
+
+                return ac.ToArray();
             }
         }
 
@@ -75,19 +77,19 @@ namespace DataTools.Win32Api.Network
         {
             get
             {
-                ADAPTER_UNICAST_ADDRESS StructRet = default;
-                StructRet = ToAddress();
-                return StructRet;
-            }
-        }
+                if (Handle == MemPtr.Empty)
+                    return new ADAPTER_UNICAST_ADDRESS();
 
-        public ADAPTER_UNICAST_ADDRESS ToAddress()
-        {
-            ADAPTER_UNICAST_ADDRESS ToAddressRet = default;
-            if (Handle == IntPtr.Zero)
-                return default;
-            ToAddressRet = Handle.ToStruct<ADAPTER_UNICAST_ADDRESS>();
-            return ToAddressRet;
+                try
+                {
+                    var a = Handle.ToStruct<ADAPTER_UNICAST_ADDRESS>();
+                    return a;
+                }
+                catch
+                {
+                    return new ADAPTER_UNICAST_ADDRESS();
+                }
+            }
         }
 
         public void Dispose()
@@ -111,41 +113,43 @@ namespace DataTools.Win32Api.Network
             }
         }
 
-        public static implicit operator LPADAPTER_UNICAST_ADDRESS(IntPtr operand)
-        {
-            var a = new LPADAPTER_UNICAST_ADDRESS();
-            a.Handle = operand;
-            return a;
-        }
+        //public static implicit operator LPADAPTER_UNICAST_ADDRESS(IntPtr operand)
+        //{
+        //    var a = new LPADAPTER_UNICAST_ADDRESS();
+        //    a.Handle = operand;
+        //    return a;
+        //}
 
-        public static implicit operator IntPtr(LPADAPTER_UNICAST_ADDRESS operand)
-        {
-            return operand.Handle;
-        }
+        //public static implicit operator IntPtr(LPADAPTER_UNICAST_ADDRESS operand)
+        //{
+        //    return operand.Handle;
+        //}
 
-        public static implicit operator LPADAPTER_UNICAST_ADDRESS(MemPtr operand)
-        {
-            var a = new LPADAPTER_UNICAST_ADDRESS();
-            a.Handle = operand;
-            return a;
-        }
+        //public static implicit operator LPADAPTER_UNICAST_ADDRESS(MemPtr operand)
+        //{
+        //    var a = new LPADAPTER_UNICAST_ADDRESS();
+        //    a.Handle = operand;
+        //    return a;
+        //}
 
-        public static implicit operator MemPtr(LPADAPTER_UNICAST_ADDRESS operand)
-        {
-            return operand.Handle;
-        }
+        //public static implicit operator MemPtr(LPADAPTER_UNICAST_ADDRESS operand)
+        //{
+        //    return operand.Handle;
+        //}
 
-        public static implicit operator LPADAPTER_UNICAST_ADDRESS(ADAPTER_UNICAST_ADDRESS operand)
-        {
-            var a = new LPADAPTER_UNICAST_ADDRESS();
-            a.Handle.Alloc(Marshal.SizeOf(operand));
-            Marshal.StructureToPtr(operand, a.Handle.Handle, true);
-            return a;
-        }
+        //public static implicit operator LPADAPTER_UNICAST_ADDRESS(ADAPTER_UNICAST_ADDRESS operand)
+        //{
+        //    var a = new LPADAPTER_UNICAST_ADDRESS();
+        //    a.Handle = new MemPtr(Marshal.SizeOf(operand));
 
-        public static implicit operator ADAPTER_UNICAST_ADDRESS(LPADAPTER_UNICAST_ADDRESS operand)
-        {
-            return operand.ToAddress();
-        }
+        //    Marshal.StructureToPtr(operand, a.Handle, true);
+
+        //    return a;
+        //}
+
+        //public static implicit operator ADAPTER_UNICAST_ADDRESS(LPADAPTER_UNICAST_ADDRESS operand)
+        //{
+        //    return operand.ToAddress();
+        //}
     }
 }

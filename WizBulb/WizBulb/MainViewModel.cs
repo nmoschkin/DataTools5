@@ -23,6 +23,8 @@ namespace WizBulb
 
         public event ScanCompleteEvent ScanComplete;
 
+        private AdaptersCollection adapters;
+
 
         private bool btnsEnabled = true;
 
@@ -102,21 +104,9 @@ namespace WizBulb
             }
         }
 
-        private AdaptersCollection networks;
-
-        public AdaptersCollection Networks
-        {
-            get => networks;
-            protected set
-            {
-                SetProperty(ref networks, value);
-                OnPropertyChanged("Adapters");
-            }
-        }
-
         public ObservableCollection<NetworkAdapter> Adapters
         {
-            get => networks?.Collection;
+            get => adapters.Collection;
         }
 
         private NetworkAdapter selAdapter;
@@ -247,15 +237,23 @@ namespace WizBulb
 
         public virtual void RefreshNetworks()
         {
+            var disp = App.Current.Dispatcher;
+
+            disp.Invoke(() =>
+            {
+                adapters = new AdaptersCollection();
+                OnPropertyChanged("Adapters");
+
+                SelectedAdapter = null;
+            });
+
             _ = Task.Run(() =>
             {
-                Networks = new AdaptersCollection();
-
-                foreach (var net in Networks.Collection)
+                foreach (var net in Adapters)
                 {
-                    if (net.HasInternet== InternetStatus.HasInternet)
+                    if (net.HasInternet == InternetStatus.HasInternet)
                     {
-                        SelectedAdapter = net;
+                        disp.Invoke(() => SelectedAdapter = net);
                         return;
                     }
                 }

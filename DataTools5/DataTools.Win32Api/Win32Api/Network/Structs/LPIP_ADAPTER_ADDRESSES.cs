@@ -87,28 +87,28 @@ namespace DataTools.Win32Api.Network
             return a;
         }
 
-        public static implicit operator LPIP_ADAPTER_ADDRESSES(IntPtr operand)
-        {
-            var a = new LPIP_ADAPTER_ADDRESSES();
-            a.Handle = operand;
-            return a;
-        }
+        //public static implicit operator LPIP_ADAPTER_ADDRESSES(IntPtr operand)
+        //{
+        
+    }//    var a = new LPIP_ADAPTER_ADDRESSES();
+        //    a.Handle = operand;
+        //    return a;
+        //}
 
-        public static implicit operator IntPtr(LPIP_ADAPTER_ADDRESSES operand)
-        {
-            return operand.Handle.Handle;
-        }
+        //public static implicit operator IntPtr(LPIP_ADAPTER_ADDRESSES operand)
+        //{
+        //    return operand.Handle.Handle;
+        //}
 
-        public static implicit operator LPIP_ADAPTER_ADDRESSES(MemPtr operand)
-        {
-            var a = new LPIP_ADAPTER_ADDRESSES();
-            a.Handle = operand;
-            return a;
-        }
+        //public static implicit operator LPIP_ADAPTER_ADDRESSES(MemPtr operand)
+        //{
+        //    var a = new LPIP_ADAPTER_ADDRESSES();
+        //    a.Handle = operand;
+        //    return a;
+        //}
 
-        public static implicit operator MemPtr(LPIP_ADAPTER_ADDRESSES operand)
-        {
-            return operand.Handle;
-        }
-    }
+        //public static implicit operator MemPtr(LPIP_ADAPTER_ADDRESSES operand)
+        //{
+        //    return operand.Handle;
+        //}
 }

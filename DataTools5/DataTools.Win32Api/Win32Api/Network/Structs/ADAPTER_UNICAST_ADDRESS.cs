@@ -36,6 +36,20 @@ namespace DataTools.Win32Api.Network
         public uint PreferredLifetime;
         public uint LeaseLifetime;
 
+        public IPAddress IPAddress
+        {
+            get
+            {
+                if (Address.lpSockaddr.Handle == MemPtr.Empty)
+                {
+                    return null;
+                }
+                else
+                {
+                    return Address.lpSockaddr.IPAddress;
+                }
+            }
+        }
         public override string ToString()
         {
             string ToStringRet = default;

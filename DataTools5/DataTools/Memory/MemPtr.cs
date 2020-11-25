@@ -19,6 +19,8 @@ namespace DataTools.Memory
     {
         internal IntPtr handle;
 
+        public static readonly MemPtr Empty = new MemPtr((IntPtr)0);
+
         private static IntPtr procHeap = Native.GetProcessHeap();
 
         public long Size
@@ -78,7 +80,7 @@ namespace DataTools.Memory
         public MemPtr(long size = 1024)
         {
             if (size <= 0) throw new ArgumentOutOfRangeException(nameof(size));
-            handle = IntPtr.Zero;
+            handle = (IntPtr)0;
             Alloc(size);
         }
 
@@ -1464,15 +1466,16 @@ namespace DataTools.Memory
         /// <remarks></remarks>
         public bool Free(bool removePressure = false, IntPtr? hHeap = null)
         {
-            if (hHeap == null) hHeap = procHeap;
-
-            long l = 0;
-
             // While the function doesn't need to call HeapFree, it hasn't necessarily failed, either.
             if (handle == IntPtr.Zero)
                 return true;
             else
             {
+
+                if (hHeap == null) hHeap = procHeap;
+
+                long l = 0;
+
                 // see if we need to tell the garbage collector anything.
                 if (removePressure) l = Size;
 
@@ -1996,6 +1999,16 @@ namespace DataTools.Memory
         {
             val1.handle = (IntPtr)((long)val1.handle - (long)val2);
             return val1;
+        }
+
+        public static bool operator ==(MemPtr val1, MemPtr val2)
+        {
+            return (val1.Handle == val2.handle);
+        }
+
+        public static bool operator !=(MemPtr val1, MemPtr val2)
+        {
+            return (val1.Handle != val2.handle);
         }
 
         public static bool operator ==(IntPtr val1, MemPtr val2)

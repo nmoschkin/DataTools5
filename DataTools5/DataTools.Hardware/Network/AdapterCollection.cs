@@ -406,7 +406,7 @@ namespace DataTools.Hardware.Network
 
             foreach (var addr in addrs)
             {
-                if (addr.IPAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                if (addr.Address.lpSockaddr.IPAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                 {
                     Socket socket = new Socket(SocketType.Raw, ProtocolType.Icmp);
 
@@ -699,13 +699,14 @@ namespace DataTools.Hardware.Network
             get
             {
                 var addrs = _nativeStruct.FirstUnicastAddress.AddressChain;
-                if (addrs == null || addrs?.Length == 0) return null;
+                if (addrs == null || addrs.Length == 0) return null;
 
                 foreach (var addr in addrs)
                 {
-                    if (addr.IPAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                    var ip = addr.IPAddress;
+                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
                     {
-                        return addr.IPAddress;
+                        return ip;
                     }
                 }
 
@@ -719,13 +720,14 @@ namespace DataTools.Hardware.Network
             get
             {
                 var addrs = _nativeStruct.FirstUnicastAddress.AddressChain;
-                if (addrs == null || addrs?.Length == 0) return null;
+                if (addrs == null || addrs.Length == 0) return null;
 
                 foreach (var addr in addrs)
                 {
-                    if (addr.IPAddress.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+                    var ip = addr.IPAddress;
+                    if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
                     {
-                        return addr.IPAddress;
+                        return ip;
                     }
                 }
 

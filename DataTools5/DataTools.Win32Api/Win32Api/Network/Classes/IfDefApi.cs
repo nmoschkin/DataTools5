@@ -50,58 +50,39 @@ namespace DataTools.Win32Api.Network
             var lpadapt = new LPIP_ADAPTER_ADDRESSES();
             IP_ADAPTER_ADDRESSES adapt;
 
-            // and this is barely enough on a typical system.
-            lpadapt.Handle.Alloc(65536L, noRelease);
-            lpadapt.Handle.ZeroMemory();
             int ft = 0;
-            uint cblen = 65536U;
-            int cb = Marshal.SizeOf(lpadapt);
+            uint cblen = 0;
+
             var res = GetAdaptersAddresses(AfENUM.AfUnspecified, GAA_FLAGS.GAA_FLAG_INCLUDE_GATEWAYS | GAA_FLAGS.GAA_FLAG_INCLUDE_WINS_INFO | GAA_FLAGS.GAA_FLAG_INCLUDE_ALL_COMPARTMENTS | GAA_FLAGS.GAA_FLAG_INCLUDE_ALL_INTERFACES, IntPtr.Zero, lpadapt, ref cblen);
-
-
-            // Dim res As ADAPTER_ENUM_RESULT = GetAdaptersAddresses(AfENUM.AfUnspecified,
-            // 0, IntPtr.Zero,
-            // lpadapt, cblen)
-
 
             // we have a buffer overflow?  We need to get more memory.
             if (res == ADAPTER_ENUM_RESULT.ERROR_BUFFER_OVERFLOW)
             {
-                while (res == ADAPTER_ENUM_RESULT.ERROR_BUFFER_OVERFLOW)
-                {
-                    lpadapt.Handle.ReAlloc(cblen, noRelease);
-                    res = GetAdaptersAddresses(AfENUM.AfUnspecified, GAA_FLAGS.GAA_FLAG_INCLUDE_GATEWAYS | GAA_FLAGS.GAA_FLAG_INCLUDE_WINS_INFO, IntPtr.Zero, lpadapt, ref cblen);
-
-                    // to make sure that we don't loop forever, in some weird scenario.
-                    ft += 1;
-                    if (ft > 300)
-                        break;
-                }
+                lpadapt.Handle.Alloc(cblen, noRelease);
+                res = GetAdaptersAddresses(AfENUM.AfUnspecified, GAA_FLAGS.GAA_FLAG_INCLUDE_GATEWAYS | GAA_FLAGS.GAA_FLAG_INCLUDE_WINS_INFO, IntPtr.Zero, lpadapt, ref cblen);
             }
-            else if (res != ADAPTER_ENUM_RESULT.NO_ERROR)
+            
+            if (res != ADAPTER_ENUM_RESULT.NO_ERROR)
             {
                 lpadapt.Dispose();
                 throw new NativeException();
             }
 
-            // trim any excess memory.
-            if (cblen < 65536L)
-            {
-                lpadapt.Handle.ReAlloc(cblen, noRelease);
-            }
-
-            origPtr = lpadapt;
+            origPtr = lpadapt.Handle;
             IP_ADAPTER_ADDRESSES[] adapters = null;
+            
             int c = 0;
             int cc = 0;
+            
             adapt = lpadapt;
+
             do
             {
                 if (string.IsNullOrEmpty(adapt.Description) | adapt.FirstDnsServerAddress.Handle == IntPtr.Zero)
                 {
                     c += 1;
                     adapt = adapt.Next;
-                    if (adapt.Next.Handle.Handle == IntPtr.Zero)
+                    if (adapt.Next.Handle == MemPtr.Empty)
                         break;
                     continue;
                 }
@@ -112,12 +93,13 @@ namespace DataTools.Win32Api.Network
                 cc += 1;
                 c += 1;
             }
-            while (adapt.Next.Handle.Handle != IntPtr.Zero);
+            while (adapt.Next.Handle != MemPtr.Empty);
 
             // there is currently no reason for this function to free this pointer,
             // but we reserve the right to do so, in the future.
             if (!noRelease)
                 origPtr.Free();
+
             return adapters;
         }
 
