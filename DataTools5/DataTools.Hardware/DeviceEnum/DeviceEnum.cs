@@ -113,7 +113,7 @@ namespace DataTools.Hardware
                             if ((nt.InstanceId.ToUpper().Trim() ?? "") == (comp[i].InstanceId.ToUpper().Trim() ?? ""))
                             {
                                 nt.DeviceClassIcon = comp[i].DeviceClassIcon;
-                                foreach (var ad in adpt.Collection)
+                                foreach (var ad in adpt.Adapters)
                                 {
                                     if (ad.DeviceInfo is null)
                                         continue;

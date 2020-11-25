@@ -25,11 +25,39 @@ using DataTools.Win32Api.Network;
 using DataTools.Memory;
 using DataTools.MathTools;
 using DataTools.Text;
+using DataTools.Win32Api;
 
 namespace SysInfoTool
 {
+    public delegate void HardwareChangeEvent(object sender, EventArgs e);
+
+    public class HardwareListener : System.Windows.Forms.NativeWindow
+    {
+
+        public event HardwareChangeEvent HardwareChange;
+
+        public HardwareListener(IntPtr hwnd)
+        {
+            AssignHandle(hwnd);
+        }
+
+        protected override void WndProc(ref System.Windows.Forms.Message m)
+        {
+
+            if (m.Msg == User32.WM_DEVICECHANGE)
+            {
+                HardwareChange?.Invoke(this, new EventArgs());
+            }
+                 
+            base.WndProc(ref m);
+        }
+    }
+
+
     public partial class IPWindow : Window
     {
+        private HardwareListener listener;
+
         private AdaptersCollection _Adapters;
 
         public FSMonTestWindow FSWindow
@@ -163,6 +191,12 @@ namespace SysInfoTool
             AdapterList.SelectionChanged += AdapterList_SelectionChanged;
 
 
+            var helper = new WindowInteropHelper(this);
+            helper.EnsureHandle();
+
+            listener = new HardwareListener(helper.Handle);
+            listener.HardwareChange += Listener_HardwareChange;
+
             //string[] example = new string[] { "Test", "Fox", "Fox", "Feeling", "Table", "Rable", "Goaff", "Rable", "Echo", "Echo", "Echo", "Feeling", "Atomic", "Atomic", "Feeling", "Gable", "Rable", "Forlorn", "Widening", "Mumble", "Joan", "Deco", "Lorentz", "Scat", "Quixotic", "Glenda", "Verdant", "Nexus", "Gable", "Zebulon", "Rubric", "Covert", "Atomic", "Burden" };
 
             //var s = @"D:\Downloads\sample-2mb-text-file.txt";
@@ -174,26 +208,31 @@ namespace SysInfoTool
             //QuickSort.Sort(ref example);
 
             //var i = BinarySearch.Search(example, "glenda");
-            int x = 1;
-            var example = new Hazmonic[] { new Hazmonic("Test", x++), new Hazmonic("Feeling", x++), new Hazmonic("Feeling", x++), new Hazmonic("Fable", x++), new Hazmonic("Fox", x++), new Hazmonic("Goaff", x++), new Hazmonic("Rable", x++), new Hazmonic("Echo", x++), new Hazmonic("Echo", x++), new Hazmonic("Echo", x++), new Hazmonic("Feeling", x++), new Hazmonic("Atomic", x++), new Hazmonic("Atomic", x++), new Hazmonic("Feeling", x++), new Hazmonic("Gable", x++), new Hazmonic("Rable", x++), new Hazmonic("Forlorn", x++), new Hazmonic("Widening", x++), new Hazmonic("Mumble", x++), new Hazmonic("Joan", x++), new Hazmonic("Deco", x++), new Hazmonic("Lorentz", x++), new Hazmonic("Scat", x++), new Hazmonic("Quixotic", x++), new Hazmonic("Glenda", x++), new Hazmonic("Verdant", x++), new Hazmonic("Nexus", x++), new Hazmonic("Gable", x++), new Hazmonic("Zebulon", x++), new Hazmonic("Rubric", x++), new Hazmonic("Covert", x++), new Hazmonic("Atomic", x++), new Hazmonic("Burden", x++) };
+            //int x = 1;
+            //var example = new Hazmonic[] { new Hazmonic("Test", x++), new Hazmonic("Feeling", x++), new Hazmonic("Feeling", x++), new Hazmonic("Fable", x++), new Hazmonic("Fox", x++), new Hazmonic("Goaff", x++), new Hazmonic("Rable", x++), new Hazmonic("Echo", x++), new Hazmonic("Echo", x++), new Hazmonic("Echo", x++), new Hazmonic("Feeling", x++), new Hazmonic("Atomic", x++), new Hazmonic("Atomic", x++), new Hazmonic("Feeling", x++), new Hazmonic("Gable", x++), new Hazmonic("Rable", x++), new Hazmonic("Forlorn", x++), new Hazmonic("Widening", x++), new Hazmonic("Mumble", x++), new Hazmonic("Joan", x++), new Hazmonic("Deco", x++), new Hazmonic("Lorentz", x++), new Hazmonic("Scat", x++), new Hazmonic("Quixotic", x++), new Hazmonic("Glenda", x++), new Hazmonic("Verdant", x++), new Hazmonic("Nexus", x++), new Hazmonic("Gable", x++), new Hazmonic("Zebulon", x++), new Hazmonic("Rubric", x++), new Hazmonic("Covert", x++), new Hazmonic("Atomic", x++), new Hazmonic("Burden", x++) };
 
-            QuickSort.Sort(ref example, (a, b) =>
-            {
-                int z;
+            //QuickSort.Sort(ref example, (a, b) =>
+            //{
+            //    int z;
 
-                if ((z = string.Compare(a.Text, b.Text)) == 0)
-                {
-                    z = a.Value - b.Value;
-                }
+            //    if ((z = string.Compare(a.Text, b.Text)) == 0)
+            //    {
+            //        z = a.Value - b.Value;
+            //    }
 
-                return z;
+            //    return z;
 
-            });
+            //});
 
-            Hazmonic ret;
+            //Hazmonic ret;
 
-            var i = BinarySearch.Search(example, "Feeling", "Text", out ret);
+            //var i = BinarySearch.Search(example, "Feeling", "Text", out ret);
 
+        }
+
+        private void Listener_HardwareChange(object sender, EventArgs e)
+        {
+            RefreshAdapters();
         }
 
         public class Hazmonic
@@ -279,26 +318,46 @@ namespace SysInfoTool
         private void IPWindow_Loaded(object sender, RoutedEventArgs e)
         {
 
-            Task.Run(() =>
+            Task.Run(async () =>
+            {
+                while(true)
+                {
+                    RefreshAdapters();
+                    await Task.Delay(10000);
+                }
+            });
+
+        }
+
+
+        bool refreshing = false;
+
+        private void RefreshAdapters()
+        {
+            if (refreshing) return;
+            refreshing = true;
+
+            Dispatcher.Invoke(() =>
             {
 
-                var ada = new AdaptersCollection();
-
-
-                Dispatcher.Invoke(() =>
+                if (_Adapters != null)
                 {
-                    _Adapters = ada;
-                    this.AdapterList.ItemsSource = _Adapters.Collection;
+                    _Adapters.Refresh();
+                }
+                else
+                {
+                    _Adapters = new AdaptersCollection();
+                    this.AdapterList.ItemsSource = _Adapters.Adapters;
 
                     ViewMenu = new VirtualMenu(this, this.AdapterList);
-
                     this.netMenu.ItemsSource = ViewMenu;
+                }
 
-                });
+                //_props.Refresh();
 
             });
 
-
+            refreshing = false;
         }
     }
 
@@ -386,7 +445,7 @@ namespace SysInfoTool
 
         private void SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            CheckDevice();
+            if (SelectedItem != null) CheckDevice();
         }
 
         private void netStatus(object sender, EventArgs e)

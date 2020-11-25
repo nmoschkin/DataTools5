@@ -245,20 +245,22 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="64" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
-
             </Grid.RowDefinitions>
 
             <Image
                 Grid.Row="0"
                 Grid.RowSpan="2"
                 Grid.Column="0"
-                MinWidth="32"
+                Height="48"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
                 RenderOptions.BitmapScalingMode="HighQuality"
                 SnapsToDevicePixels="True"
                 Source="{Binding DeviceIcon}"
@@ -269,6 +271,7 @@
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="1"
+                Grid.ColumnSpan="2"
                 VerticalAlignment="Center"
                 Text="{Binding Description}" />
 
@@ -276,9 +279,38 @@
                 Grid.Row="1"
                 Grid.Column="1"
                 VerticalAlignment="Center"
-                FontSize="8"
+                FontSize="10"
                 Text="{Binding IPV4Address}" />
 
+            <StackPanel
+                Grid.Row="1"
+                Grid.Column="2"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+
+                <TextBlock
+                    Margin="8,0,0,0"
+                    FontSize="10"
+                    Text="(" />
+                <TextBlock
+                    Margin="0"
+                    FontSize="10"
+                    Text="{Binding ReceiveLinkSpeed}" />
+                <TextBlock
+                    Margin="0"
+                    FontSize="10"
+                    Text=" / " />
+                <TextBlock
+                    Margin="0"
+                    FontSize="10"
+                    Text="{Binding TransmitLinkSpeed}" />
+                <TextBlock
+                    Margin="0,0,8,0"
+                    FontSize="10"
+                    Text=")" />
+
+
+            </StackPanel>
         </Grid>
 
     </DataTemplate>

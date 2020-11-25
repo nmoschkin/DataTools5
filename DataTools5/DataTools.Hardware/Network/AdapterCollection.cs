@@ -31,6 +31,8 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
+using System.Reflection;
+using DataTools.MathTools;
 
 namespace DataTools.Hardware.Network
 {
@@ -341,17 +343,30 @@ namespace DataTools.Hardware.Network
     /// We will use Finalize() to free this (rather large) resource when this class is destroyed.
     /// </remarks>
     [SecurityCritical()]
-    public class AdaptersCollection : IDisposable
+    public class AdaptersCollection : IDisposable, INotifyPropertyChanged
     {
-        private ObservableCollection<NetworkAdapter> _Col = new ObservableCollection<NetworkAdapter>();
-        private IP_ADAPTER_ADDRESSES[] _Adapters;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private ObservableCollection<NetworkAdapter> adapters = new ObservableCollection<NetworkAdapter>();
         private MemPtr _origPtr;
 
-        public ObservableCollection<NetworkAdapter> Collection
+        public ObservableCollection<NetworkAdapter> Adapters
         {
             get
             {
-                return _Col;
+                return adapters;
+            }
+            set
+            {
+                if (adapters == value) return;
+                adapters = value;
+                OnPropertyChanged();
             }
         }
 
@@ -362,19 +377,18 @@ namespace DataTools.Hardware.Network
 
         public void Refresh()
         {
-            Free();
-            _Adapters = null;
-            _Col = new ObservableCollection<NetworkAdapter>();
-            var di = DeviceEnum.EnumerateNetworkDevices();
-
-
-            var iftab = IfTable.GetIfTable();
-
-
+            var nad = new Dictionary<int, NetworkAdapter>();
+            var lOut = new List<NetworkAdapter>();
+            
+            var newmm = new MemPtr();
 
             // Get the array of unmanaged IP_ADAPTER_ADDRESSES structures 
-            _Adapters = IfDefApi.GetAdapters(ref _origPtr, true);
-            foreach (var adap in _Adapters)
+            var newads = IfDefApi.GetAdapters(ref newmm, true);
+
+            var di = DeviceEnum.EnumerateNetworkDevices();
+            var iftab = IfTable.GetIfTable();
+
+            foreach (var adap in newads)
             {
                 var newp = new NetworkAdapter(adap);
                 foreach (var de in di)
@@ -391,13 +405,65 @@ namespace DataTools.Hardware.Network
                             }
                         }
 
-                        _Col.Add(newp);
+                        nad.Add(newp.IfIndex, newp);
                         _ = Task.Run(() => PopulateInternetStatus(newp));
 
                         break;
                     }
                 }
             }
+
+            if (adapters == null)
+            {
+                adapters = new ObservableCollection<NetworkAdapter>();
+            }
+
+            if (adapters.Count == 0)
+            {
+                foreach (var kv in nad)
+                {
+                    adapters.Add(kv.Value);
+                }
+
+            }
+            else
+            {
+                var kseen = new List<int>();
+
+                int c = adapters.Count - 1;
+                int i;
+
+                for (i = c; i >= 0; i--)
+                {
+                    if (nad.ContainsKey(adapters[i].IfIndex))
+                    {
+                        adapters[i].AssignNewNativeObject(nad[adapters[i].IfIndex]);
+                        kseen.Add(adapters[i].IfIndex);
+                    }
+                    else
+                    {
+                        adapters.RemoveAt(i);
+                    }
+                }
+
+                foreach(var kv in nad)
+                {
+                    if (!kseen.Contains(kv.Value.IfIndex))
+                    {
+                        adapters.Add(kv.Value);
+                    }
+                }
+
+            }
+
+            if (_origPtr != MemPtr.Empty)
+            {
+                _origPtr.Free(true);
+            }
+           
+            _origPtr = newmm;
+
+            QuickSort.Sort(adapters, new Comparison<NetworkAdapter>((a, b) => a.IfIndex - b.IfIndex));
         }
 
         private void PopulateInternetStatus(NetworkAdapter adapter)
@@ -460,11 +526,6 @@ namespace DataTools.Hardware.Network
         {
             if (!disposedValue)
             {
-                if (disposing)
-                {
-                    _Adapters = null;
-                }
-
                 // free up the unmanaged memory and release the memory pressure on the garbage collector.
                 _origPtr.Free(true);
             }
@@ -508,39 +569,68 @@ namespace DataTools.Hardware.Network
     /// <remarks></remarks>
     public sealed class NetworkAdapter : IDisposable, INotifyPropertyChanged
     {
-        private IP_ADAPTER_ADDRESSES _nativeStruct;
+        private IP_ADAPTER_ADDRESSES Source;
+
         private DeviceInfo _deviceInfo;
         private bool _canShowNet;
         private System.Windows.Media.Imaging.BitmapSource _Icon;
 
         private List<MIB_IFROW> physifaces = new List<MIB_IFROW>();
+        private static readonly PropertyInfo[] allProps = typeof(NetworkAdapter).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
         // This class should not be created outside of the context of AdaptersCollection.
         internal NetworkAdapter(IP_ADAPTER_ADDRESSES nativeObject)
         {
+            AssignNewNativeObject(nativeObject);
+        }
+
+        internal void AssignNewNativeObject(NetworkAdapter newSource)
+        {
+            bool dnes = Source.OperStatus == newSource.OperStatus;
+            AssignNewNativeObject(newSource.Source, dnes);
+        }
+
+        private void AssignNewNativeObject(IP_ADAPTER_ADDRESSES nativeObject, bool noCreateIcon = false)
+        {
 
             // Store the native object.
-            _nativeStruct = nativeObject;
+            Source = nativeObject;
 
-            // First thing's first... let's get the icon for the object from its parsing name.
-            // Which is magically the parsing name of the network device list and the adapter's GUID name.
-            string s = @"::{7007ACC7-3202-11D1-AAD2-00805FC1270E}\" + AdapterName;
-            var mm = new MemPtr();
-            
-            ShellFileGetAttributesOptions argpsfgaoOut = 0;
-            
-            NativeShell.SHParseDisplayName(s, IntPtr.Zero, out mm.handle, (ShellFileGetAttributesOptions)0, out argpsfgaoOut);
-
-            if (mm.Handle != IntPtr.Zero)
+            if (!noCreateIcon)
             {
-                // Get a WPFImage 
-                _Icon = Resources.MakeWPFImage(Resources.GetItemIcon(mm, (Resources.SystemIconSizes)(int)(User32.SHIL_EXTRALARGE)));
-                mm.Free();
-                _canShowNet = true;
+                // First thing's first... let's get the icon for the object from its parsing name.
+                // Which is magically the parsing name of the network device list and the adapter's GUID name.
+                string s = @"::{7007ACC7-3202-11D1-AAD2-00805FC1270E}\" + AdapterName;
+                var mm = new MemPtr();
+
+                NativeShell.SHParseDisplayName(s, IntPtr.Zero, out mm.handle, 0, out _);
+
+                if (mm.Handle != IntPtr.Zero)
+                {
+                    // Get a WPFImage 
+
+                    if (OperStatus == IF_OPER_STATUS.IfOperStatusUp)
+                    {
+                        _Icon = Resources.MakeWPFImage(Resources.GetItemIcon(mm, Resources.SystemIconSizes.ExtraLarge));
+                    }
+                    else
+                    {
+                        _Icon = Resources.MakeWPFImage((System.Drawing.Bitmap)Resources.GrayIcon(Resources.GetItemIcon(mm, Resources.SystemIconSizes.ExtraLarge)));
+
+                    }
+                    mm.Free();
+
+                    _canShowNet = true;
+                }
+                else
+                {
+                    _canShowNet = false;
+                }
             }
-            else
+
+            foreach (var pr in allProps)
             {
-                _canShowNet = false;
+                OnPropertyChanged(pr.Name);
             }
         }
 
@@ -635,6 +725,7 @@ namespace DataTools.Hardware.Network
         public void ShowNetworkStatusDialog(IntPtr hwnd = default)
         {
             var shex = new SHELLEXECUTEINFO();
+
             shex.cbSize = Marshal.SizeOf(shex);
             shex.hWnd = hwnd;
             shex.nShow = User32.SW_SHOW;
@@ -643,6 +734,7 @@ namespace DataTools.Hardware.Network
             shex.lpDirectory = "::{7007ACC7-3202-11D1-AAD2-00805FC1270E}";
             shex.lpFile = @"::{7007ACC7-3202-11D1-AAD2-00805FC1270E}\" + AdapterName;
             shex.fMask = User32.SEE_MASK_ASYNCOK | User32.SEE_MASK_FLAG_DDEWAIT | User32.SEE_MASK_UNICODE;
+
             User32.ShellExecuteEx(ref shex);
         }
 
@@ -660,7 +752,6 @@ namespace DataTools.Hardware.Network
             {
                 return _deviceInfo;
             }
-
             internal set
             {
                 _deviceInfo = value;
@@ -678,6 +769,20 @@ namespace DataTools.Hardware.Network
             }
         }
 
+        
+        /// <summary>
+        /// The interface adapter index.  This can be used in PowerShell calls.
+        /// </summary>
+        [Browsable(true)]
+        public int IfIndex
+        {
+            get
+            {
+                return (int)Source.Header.IfIndex;
+            }
+        }
+
+
         /// <summary>
         /// The GUID adapter name.
         /// </summary>
@@ -689,7 +794,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.AdapterName;
+                return Source.AdapterName;
             }
         }
 
@@ -698,7 +803,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                var addrs = _nativeStruct.FirstUnicastAddress.AddressChain;
+                var addrs = Source.FirstUnicastAddress.AddressChain;
                 if (addrs == null || addrs.Length == 0) return null;
 
                 foreach (var addr in addrs)
@@ -719,7 +824,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                var addrs = _nativeStruct.FirstUnicastAddress.AddressChain;
+                var addrs = Source.FirstUnicastAddress.AddressChain;
                 if (addrs == null || addrs.Length == 0) return null;
 
                 foreach (var addr in addrs)
@@ -747,7 +852,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.FirstUnicastAddress;
+                return Source.FirstUnicastAddress;
             }
         }
 
@@ -762,7 +867,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.FirstAnycastAddress;
+                return Source.FirstAnycastAddress;
             }
         }
 
@@ -777,7 +882,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.FirstMulticastAddress;
+                return Source.FirstMulticastAddress;
             }
         }
 
@@ -792,7 +897,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.FirstDnsServerAddress;
+                return Source.FirstDnsServerAddress;
             }
         }
 
@@ -807,7 +912,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.DnsSuffix;
+                return Source.DnsSuffix;
             }
         }
 
@@ -822,7 +927,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.Description;
+                return Source.Description;
             }
         }
 
@@ -837,7 +942,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.FriendlyName;
+                return Source.FriendlyName;
             }
         }
 
@@ -852,7 +957,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.PhysicalAddress;
+                return Source.PhysicalAddress;
             }
         }
 
@@ -861,7 +966,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.PhysicalAddressLength;
+                return Source.PhysicalAddressLength;
             }
         }
 
@@ -876,7 +981,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.Flags;
+                return Source.Flags;
             }
         }
 
@@ -891,7 +996,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.Mtu;
+                return Source.Mtu;
             }
         }
 
@@ -907,7 +1012,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.IfType;
+                return Source.IfType;
             }
         }
 
@@ -922,7 +1027,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.OperStatus;
+                return Source.OperStatus;
             }
         }
 
@@ -935,7 +1040,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.Ipv6IfIndex;
+                return Source.Ipv6IfIndex;
             }
         }
 
@@ -949,7 +1054,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.ZoneIndices;
+                return Source.ZoneIndices;
             }
         }
 
@@ -963,7 +1068,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.FirstPrefix;
+                return Source.FirstPrefix;
             }
         }
 
@@ -978,7 +1083,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.TransmitLinkSpeed;
+                return Source.TransmitLinkSpeed;
             }
         }
 
@@ -993,7 +1098,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.ReceiveLinkSpeed;
+                return Source.ReceiveLinkSpeed;
             }
         }
 
@@ -1007,7 +1112,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.FirstWinsServerAddress;
+                return Source.FirstWinsServerAddress;
             }
         }
 
@@ -1020,7 +1125,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.FirstGatewayAddress;
+                return Source.FirstGatewayAddress;
             }
         }
 
@@ -1034,7 +1139,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.Ipv4Metric;
+                return Source.Ipv4Metric;
             }
         }
 
@@ -1047,7 +1152,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.Ipv6Metric;
+                return Source.Ipv6Metric;
             }
         }
 
@@ -1060,7 +1165,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.Luid;
+                return Source.Luid;
             }
         }
 
@@ -1073,7 +1178,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.Dhcp4Server;
+                return Source.Dhcp4Server;
             }
         }
 
@@ -1087,7 +1192,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.CompartmentId;
+                return Source.CompartmentId;
             }
         }
 
@@ -1100,7 +1205,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.NetworkGuid;
+                return Source.NetworkGuid;
             }
         }
 
@@ -1113,7 +1218,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.ConnectionType;
+                return Source.ConnectionType;
             }
         }
 
@@ -1126,7 +1231,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.TunnelType;
+                return Source.TunnelType;
             }
         }
 
@@ -1139,7 +1244,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.Dhcpv6Server;
+                return Source.Dhcpv6Server;
             }
         }
 
@@ -1153,7 +1258,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.Dhcpv6ClientDuid;
+                return Source.Dhcpv6ClientDuid;
             }
         }
 
@@ -1166,7 +1271,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.Dhcpv6ClientDuidLength;
+                return Source.Dhcpv6ClientDuidLength;
             }
         }
 
@@ -1179,7 +1284,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.Dhcpv6Iaid;
+                return Source.Dhcpv6Iaid;
             }
         }
 
@@ -1192,7 +1297,7 @@ namespace DataTools.Hardware.Network
         {
             get
             {
-                return _nativeStruct.FirstDnsSuffix;
+                return Source.FirstDnsSuffix;
             }
         }
 
@@ -1251,7 +1356,7 @@ namespace DataTools.Hardware.Network
             if (disposing)
             {
                 disposedValue = true;
-                _nativeStruct = default;
+                Source = default;
                 _Icon = null;
                 _deviceInfo = null;
             }

@@ -90,7 +90,11 @@
                     ItemsSource="{Binding ViewMenu}" />
 
             </ListView.ContextMenu>
-
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Height" Value="64" />
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.View>
                 <GridView x:Name="netGridView">
                     <GridViewColumn
@@ -121,12 +125,10 @@
                         Width="140"
                         DisplayMemberBinding="{Binding PhysicalAddress}"
                         Header="Physical Address" />
-
                     <GridViewColumn
                         Width="140"
                         DisplayMemberBinding="{Binding DeviceInfo.Description}"
                         Header="Device Name" />
-
                     <GridViewColumn
                         Width="140"
                         DisplayMemberBinding="{Binding DeviceInfo.InstanceId}"

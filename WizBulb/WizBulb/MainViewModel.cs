@@ -106,7 +106,7 @@ namespace WizBulb
 
         public ObservableCollection<NetworkAdapter> Adapters
         {
-            get => adapters.Collection;
+            get => adapters.Adapters;
         }
 
         private NetworkAdapter selAdapter;

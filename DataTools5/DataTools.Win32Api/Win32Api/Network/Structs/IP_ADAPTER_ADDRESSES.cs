@@ -80,7 +80,6 @@ namespace DataTools.Win32Api.Network
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public struct IP_ADAPTER_ADDRESSES
     {
-
         /// <summary>
         /// The header of type <see cref="IP_ADAPTER_HEADER_UNION"/>
         /// </summary>
