@@ -126,6 +126,9 @@
   <data name="AddNewDevice" xml:space="preserve">
     <value>Add New Device</value>
   </data>
+  <data name="AskSaveExit" xml:space="preserve">
+    <value>Would you like to save your changes before exiting?</value>
+  </data>
   <data name="Blue" xml:space="preserve">
     <value>Blue</value>
   </data>
@@ -152,6 +155,9 @@
   </data>
   <data name="Clone" xml:space="preserve">
     <value>Clone</value>
+  </data>
+  <data name="CloseProgramTitle" xml:space="preserve">
+    <value>Close Program</value>
   </data>
   <data name="Color" xml:space="preserve">
     <value>Color</value>
@@ -347,6 +353,9 @@
   </data>
   <data name="SaveAsEllipses" xml:space="preserve">
     <value>Save As...</value>
+  </data>
+  <data name="SaveChangesTitle" xml:space="preserve">
+    <value>Save Changes</value>
   </data>
   <data name="SaveSettings" xml:space="preserve">
     <value>SaveSettings</value>

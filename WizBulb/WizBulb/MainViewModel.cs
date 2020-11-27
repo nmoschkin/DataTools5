@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
 
 using DataTools.Hardware.Network;
@@ -14,17 +16,104 @@ using WizLib;
 
 namespace WizBulb
 {
+    public class LightModeClickEventArgs : EventArgs
+    {
+        public LightMode LightMode { get; private set; }
+
+        public UIElement Element { get; private set; }
+
+        public LightModeClickEventArgs(LightMode lm, UIElement el)
+        {
+            LightMode = lm;
+            Element = el;
+        }
+    }
 
     public delegate void ScanCompleteEvent(object sender, EventArgs e);
 
+    public delegate void LightModeClickEvent(object sender, LightModeClickEventArgs e);
 
     public class MainViewModel : ViewModelBase
     {
 
         public event ScanCompleteEvent ScanComplete;
 
+        public event LightModeClickEvent LightModeClick;
+
         private AdaptersCollection adapters;
 
+
+        private CancellationTokenSource cts;
+
+        private bool autoWatch = false;
+
+        public bool AutoWatch
+        {
+            get => autoWatch;
+            set
+            {
+                if (autoWatch == value) return;
+
+                if (value == false)
+                {
+                    if (cts != null)
+                    {
+                        cts.Cancel();
+                        cts = null;
+
+                    }
+
+                    autoWatch = false;
+                }
+                else
+                {
+                    WatchCurrentBulb();
+                }
+
+            }
+        }
+
+        private void WatchCurrentBulb()
+        {
+            if (autoWatch) return;
+
+            cts = new CancellationTokenSource();
+            autoWatch = true;
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    while (cts != null && !cts.IsCancellationRequested)
+                    {
+                        if (SelectedBulb != null)
+                        {
+                            await SelectedBulb.GetPilot();
+                        }
+
+                        await Task.Delay(2000);
+                    }
+                }
+                catch
+                {
+                    return;
+                }
+
+            }, cts.Token);
+
+
+        }
+
+        private bool changed = false;
+
+        public bool Changed
+        {
+            get => changed;
+            set
+            {
+                SetProperty(ref changed, value);
+            }
+        }
 
         private bool btnsEnabled = true;
 
@@ -120,6 +209,18 @@ namespace WizBulb
         }
 
 
+        private Bulb selBulb;
+
+        public Bulb SelectedBulb
+        {
+            get => selBulb;
+            set
+            {
+                SetProperty(ref selBulb, value);
+            }
+        }
+
+
         private ObservableCollection<Bulb> bulbs = new ObservableCollection<Bulb>();
 
         public ObservableCollection<Bulb> Bulbs
@@ -154,6 +255,19 @@ namespace WizBulb
             }
         }
 
+        private bool autoChangeBulb = true;
+
+        public bool AutoChangeBulb
+        {
+            get => autoChangeBulb;
+            set
+            {
+                SetProperty(ref autoChangeBulb, value);
+            }
+        }
+
+
+        
 
         public virtual bool CheckTimeout()
         {
@@ -164,6 +278,44 @@ namespace WizBulb
             }
 
             return true;
+        }
+
+        public virtual void PopulateLightModesMenu(MenuItem mi)
+        {
+            MenuItem mis;
+            List<MenuItem> miln = new List<MenuItem>();
+
+            var lms = LightMode.LightModes.Values;
+
+            foreach (var lm in lms)
+            {
+                mis = new MenuItem()
+                {
+                    Header = lm.Name,
+                    Tag = lm
+                };
+
+                mis.Click += LightModeItemClicked;
+                miln.Add(mis);
+            }
+
+            mi.ItemsSource = miln;
+        }
+
+        protected virtual async void LightModeItemClicked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (e.Source is MenuItem mi && mi.Tag is LightMode lm) 
+            {
+                if (selBulb != null)
+                {
+                    if (autoChangeBulb)
+                    {
+                        await selBulb.SetLightMode(lm);
+                    }
+
+                    LightModeClick?.Invoke(this, new LightModeClickEventArgs(lm, mi));
+                }
+            }
         }
 
         public virtual bool ScanForBulbs()
@@ -201,6 +353,9 @@ namespace WizBulb
             
             _ = Task.Run(async () =>
             {
+                var aw = AutoWatch;
+                AutoWatch = false;
+
                 await Bulb.ScanForBulbs(selAdapter.IPV4Address.ToString(), selAdapter.PhysicalAddress.ToString(false), ScanModes.GetSystemConfig, Timeout,
                 (b) =>
                 {
@@ -232,6 +387,7 @@ namespace WizBulb
                 ScanComplete?.Invoke(this, new EventArgs());
 
                 ButtonsEnabled = true;
+                AutoWatch = aw;
 
                 _ = Task.Run(async () =>
                 {

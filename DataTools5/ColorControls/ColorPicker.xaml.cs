@@ -43,6 +43,7 @@ namespace DataTools.ColorControls
 
         public delegate void ColorHitEvent(object sender, ColorHitEventArgs e);
         public event ColorHitEvent ColorHit;
+        public event ColorHitEvent ColorOver;
 
         public double HueOffset
         {
@@ -184,6 +185,7 @@ namespace DataTools.ColorControls
 
             // this.SizeChanged += ColorPicker_SizeChanged;
             PickerSite.MouseMove += PickerSite_MouseMove;
+            PickerSite.MouseDown += PickerSite_MouseDown;
         }
 
         protected override void OnRender(DrawingContext drawingContext)
@@ -200,11 +202,12 @@ namespace DataTools.ColorControls
 
         private void PickerSite_MouseMove(object sender, MouseEventArgs e)
         {
-            if (ColorHit != null)
+            if (ColorOver != null)
             {
                 var pt = e.GetPosition(PickerSite);
                 var c = cwheel.HitTest((int)pt.X, (int)pt.Y);
-                ColorHit.Invoke(this, new ColorHitEventArgs(c));
+
+                ColorOver.Invoke(this, new ColorHitEventArgs(c));
             }
         }
 
@@ -214,6 +217,7 @@ namespace DataTools.ColorControls
             {
                 var pt = e.GetPosition(PickerSite);
                 var c = cwheel.HitTest((int)pt.X, (int)pt.Y);
+
                 ColorHit.Invoke(this, new ColorHitEventArgs(c));
             }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using System.ComponentModel;
 using System.Data.SqlTypes;
 using System.Linq;
@@ -11,7 +12,11 @@ using Newtonsoft.Json;
 
 namespace WizLib
 {
-    public class Pilot : ViewModelBase, ICloneable
+
+    /// <summary>
+    /// Bulb configuration parameters.
+    /// </summary>
+    public sealed class BulbParams : ViewModelBase, ICloneable
     {
 
         public static readonly ReadOnlyDictionary<int, string> BulbTypeCatalog
@@ -82,14 +87,16 @@ namespace WizLib
 
         private string moduleName;
 
-        public object Clone()
-        {
-            return MemberwiseClone();
-        }
+        /// <summary>
+        /// Clone this paramater set to a new instance.
+        /// </summary>
+        /// <returns></returns>
+        public object Clone() => MemberwiseClone();
 
-        public Pilot Clone(bool pilotOnly)
+
+        public BulbParams Clone(bool pilotOnly)
         {
-            var p = (Pilot)MemberwiseClone();
+            var p = (BulbParams)Clone();
             if (!pilotOnly) return p;
 
             // registration params
@@ -328,7 +335,7 @@ namespace WizLib
                 SetProperty(ref duration, value);
             }
         }
-
+                
         #region Returned Information
 
 

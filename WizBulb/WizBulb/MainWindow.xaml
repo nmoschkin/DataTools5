@@ -75,13 +75,14 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
 
         <Menu
             Grid.Row="0"
-            Grid.ColumnSpan="3"
+            Grid.ColumnSpan="4"
             Padding="4"
             Background="Transparent"
             FontSize="14">
@@ -186,6 +187,7 @@
                     BorderThickness="0"
                     GridViewColumnHeader.Click="BulbList_Click"
                     ItemsSource="{Binding Bulbs}"
+                    SelectedItem="{Binding SelectedBulb, Mode=TwoWay}"
                     SelectionChanged="BulbList_SelectionChanged">
 
                     <ListView.ContextMenu>
@@ -199,6 +201,10 @@
                                 x:Name="mnuRename"
                                 Click="mnuRename_Click"
                                 Header="{i18n:Translate ResourceKey=Rename}" />
+
+                            <Separator />
+
+                            <MenuItem x:Name="mnuModes" Header="{i18n:Translate ResourceKey=LightModes}" />
 
                         </ContextMenu>
                     </ListView.ContextMenu>
@@ -291,10 +297,44 @@
 
         </Grid>-->
 
-        <StackPanel
-            Grid.Row="0"
-            Grid.RowSpan="2"
+
+        <Border
+            Grid.Row="1"
             Grid.Column="2"
+            Width="100"
+            Margin="8,24,8,8"
+            Padding="0"
+            BorderBrush="{x:Static SystemColors.ActiveBorderBrush}"
+            BorderThickness="1">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <color:ColorPicker
+                    x:Name="ColorPicker"
+                    Grid.Row="0"
+                    ColorHit="ColorPicker_ColorHit"
+                    InvertSaturation="True"
+                    Mode="LinearVertical" />
+
+                <Slider
+                    Grid.Row="1"
+                    Margin="0,4,0,0"
+                    Maximum="100"
+                    Minimum="0"
+                    Value="{Binding SelectedBulb.Brightness, Mode=TwoWay}" />
+
+            </Grid>
+
+        </Border>
+
+
+        <StackPanel
+            Grid.Row="1"
+            Grid.RowSpan="1"
+            Grid.Column="3"
             Margin="16,8"
             VerticalAlignment="Center"
             Orientation="Vertical">
@@ -406,7 +446,7 @@
 
         <StatusBar
             Grid.Row="2"
-            Grid.ColumnSpan="3"
+            Grid.ColumnSpan="4"
             Background="DarkSlateBlue">
 
             <StatusBarItem>

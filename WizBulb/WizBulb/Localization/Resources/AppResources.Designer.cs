@@ -88,6 +88,15 @@ namespace WizBulb.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Would you like to save your changes before exiting?.
+        /// </summary>
+        internal static string AskSaveExit {
+            get {
+                return ResourceManager.GetString("AskSaveExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Blue.
         /// </summary>
         internal static string Blue {
@@ -165,6 +174,15 @@ namespace WizBulb.Localization.Resources {
         internal static string Clone {
             get {
                 return ResourceManager.GetString("Clone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close Program.
+        /// </summary>
+        internal static string CloseProgramTitle {
+            get {
+                return ResourceManager.GetString("CloseProgramTitle", resourceCulture);
             }
         }
         
@@ -750,6 +768,15 @@ namespace WizBulb.Localization.Resources {
         internal static string SaveAsEllipses {
             get {
                 return ResourceManager.GetString("SaveAsEllipses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Changes.
+        /// </summary>
+        internal static string SaveChangesTitle {
+            get {
+                return ResourceManager.GetString("SaveChangesTitle", resourceCulture);
             }
         }
         

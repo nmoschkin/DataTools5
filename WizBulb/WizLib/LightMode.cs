@@ -21,7 +21,7 @@ namespace WizLib
         private int code;
         private string name;
 
-        private Pilot settings;
+        private BulbParams settings;
 
         private bool jsonInit = false;
 
@@ -124,7 +124,7 @@ namespace WizLib
         /// Customing lighting mode settings.
         /// </summary>
         [JsonProperty("settings")]
-        public Pilot Settings
+        public BulbParams Settings
         {
             get => settings;
             set
@@ -134,7 +134,7 @@ namespace WizLib
             }
         }
 
-        protected LightMode(int code, string name, Pilot settings = null)
+        protected LightMode(int code, string name, BulbParams settings = null)
         {
             Code = code;
             Name = name;
@@ -147,7 +147,7 @@ namespace WizLib
         /// <param name="name">The name of the new lighting mode.</param>
         /// <param name="settings">The settings object used to configure the bulb.</param>
         /// <returns></returns>
-        public static LightMode RegisterLightMode(string name, Pilot settings)
+        public static LightMode RegisterLightMode(string name, BulbParams settings)
         {
             int i = UserStartIdx;
             while (modes.ContainsKey(i))
@@ -169,11 +169,11 @@ namespace WizLib
         /// <param name="name">The name of the new lighting mode.</param>
         /// <param name="settings">The settings object used to configure the bulb.</param>
         /// <returns></returns>
-        public static LightMode RegisterLightMode(int code, string name, Pilot settings)
+        public static LightMode RegisterLightMode(int code, string name, BulbParams settings)
             => RegisterLightMode(code, name, false, settings);
         
 
-        protected static LightMode RegisterLightMode(int code, string name, bool builtin, Pilot settings = null)
+        protected static LightMode RegisterLightMode(int code, string name, bool builtin, BulbParams settings = null)
         {
             // if that code already exists, it will be reassigned and returned
             // the alternatives are to throw an exception or return null

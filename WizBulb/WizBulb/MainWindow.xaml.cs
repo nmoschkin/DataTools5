@@ -83,7 +83,17 @@ namespace WizBulb
             iconv.ConverterError += Iconv_ConverterError;
 
             vm = new MainViewModel();
+
+            vm.PopulateLightModesMenu(mnuModes);
+            vm.LightModeClick += Vm_LightModeClick;
+            vm.AutoWatch = true;
+
             DataContext = vm;
+        }
+
+        private void Vm_LightModeClick(object sender, LightModeClickEventArgs e)
+        {
+            // throw new NotImplementedException();
         }
 
         private void Iconv_ConverterError(object sender, Converters.ConverterErrorEventArgs e)
@@ -282,7 +292,32 @@ namespace WizBulb
 
         private void mnuQuit_Click(object sender, RoutedEventArgs e)
         {
+            if (vm.Changed)
+            {
+                var ret = MessageBox.Show(AppResources.AskSaveExit, AppResources.SaveChangesTitle, MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+                if (ret == MessageBoxResult.No)
+                {
+                    Environment.Exit(0);
+                }
+                else if (ret == MessageBoxResult.Yes)
+                {
 
+                    // if (vm.SaveProfile()) Environment.Exit(0);
+                    Environment.Exit(0);
+                }
+                else
+                {
+                    return;
+                }
+            }
+        }
+
+        private async void ColorPicker_ColorHit(object sender, ColorHitEventArgs e)
+        {
+            if (vm.SelectedBulb != null)
+            {
+                await vm.SelectedBulb.SetLightMode((UniColor)e.Color, 100);
+            }
         }
     }
 
