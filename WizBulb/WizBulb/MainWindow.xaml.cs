@@ -86,7 +86,7 @@ namespace WizBulb
 
             vm.PopulateLightModesMenu(mnuModes);
             vm.LightModeClick += Vm_LightModeClick;
-            vm.AutoWatch = true;
+            //vm.AutoWatch = true;
 
             DataContext = vm;
         }
@@ -255,6 +255,15 @@ namespace WizBulb
                 var b = e.RemovedItems[0] as Bulb;
                 b.Renaming = false;
             }
+
+            List<Bulb> lb = new List<Bulb>();
+
+            foreach (Bulb sel in BulbList.SelectedItems)
+            {
+                lb.Add(sel);
+            }
+        
+            vm.SelectedBulbs = lb;
         }
 
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
@@ -314,10 +323,48 @@ namespace WizBulb
 
         private async void ColorPicker_ColorHit(object sender, ColorHitEventArgs e)
         {
-            if (vm.SelectedBulb != null)
+            if ((BulbList.SelectedItems?.Count ?? 0) > 0)
+            {
+
+                foreach (Bulb bulb in BulbList.SelectedItems)
+                {
+                    await bulb.SetLightMode((UniColor)e.Color, 100);
+                }
+            }
+            else if (vm.SelectedBulb != null)
             {
                 await vm.SelectedBulb.SetLightMode((UniColor)e.Color, 100);
             }
+        }
+
+        private async void mnuRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            await vm.RefreshSelected();
+        }
+
+        private async void mnuRefreshAll_Click(object sender, RoutedEventArgs e)
+        {
+            await vm.RefreshAll();
+        }
+
+        private async void BulbList_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F5)
+            {
+                if ((e.KeyboardDevice.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+                {
+                    await vm.RefreshAll();
+                }
+                else
+                {
+                    await vm.RefreshSelected();
+                }
+            }
+        }
+
+        private void Slider_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
+        {
+            _ = vm.RefreshSelected();
         }
     }
 

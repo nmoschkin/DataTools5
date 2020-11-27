@@ -448,6 +448,42 @@ namespace WizBulb.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Is Powered Off.
+        /// </summary>
+        internal static string IsPoweredOff {
+            get {
+                return ResourceManager.GetString("IsPoweredOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is Powered On.
+        /// </summary>
+        internal static string IsPoweredOn {
+            get {
+                return ResourceManager.GetString("IsPoweredOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light is off..
+        /// </summary>
+        internal static string LightIsOff {
+            get {
+                return ResourceManager.GetString("LightIsOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light is on..
+        /// </summary>
+        internal static string LightIsOn {
+            get {
+                return ResourceManager.GetString("LightIsOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Light Mode.
         /// </summary>
         internal static string LightMode {
@@ -462,6 +498,24 @@ namespace WizBulb.Localization.Resources {
         internal static string LightModes {
             get {
                 return ResourceManager.GetString("LightModes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light Off.
+        /// </summary>
+        internal static string LightOff {
+            get {
+                return ResourceManager.GetString("LightOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light On.
+        /// </summary>
+        internal static string LightOn {
+            get {
+                return ResourceManager.GetString("LightOn", resourceCulture);
             }
         }
         
@@ -610,11 +664,29 @@ namespace WizBulb.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        internal static string Off {
+            get {
+                return ResourceManager.GetString("Off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         internal static string OK {
             get {
                 return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On.
+        /// </summary>
+        internal static string On {
+            get {
+                return ResourceManager.GetString("On", resourceCulture);
             }
         }
         
@@ -637,11 +709,65 @@ namespace WizBulb.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Powered Off.
+        /// </summary>
+        internal static string PoweredOff {
+            get {
+                return ResourceManager.GetString("PoweredOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Powered On.
+        /// </summary>
+        internal static string PoweredOn {
+            get {
+                return ResourceManager.GetString("PoweredOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power Off.
+        /// </summary>
+        internal static string PowerOff {
+            get {
+                return ResourceManager.GetString("PowerOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power On.
+        /// </summary>
+        internal static string PowerOn {
+            get {
+                return ResourceManager.GetString("PowerOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power Status.
+        /// </summary>
+        internal static string PowerStatus {
+            get {
+                return ResourceManager.GetString("PowerStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Predefined.
         /// </summary>
         internal static string Predefined {
             get {
                 return ResourceManager.GetString("Predefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proximity.
+        /// </summary>
+        internal static string Proximity {
+            get {
+                return ResourceManager.GetString("Proximity", resourceCulture);
             }
         }
         
@@ -669,6 +795,15 @@ namespace WizBulb.Localization.Resources {
         internal static string Refresh {
             get {
                 return ResourceManager.GetString("Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh All.
+        /// </summary>
+        internal static string RefreshAll {
+            get {
+                return ResourceManager.GetString("RefreshAll", resourceCulture);
             }
         }
         
@@ -826,7 +961,7 @@ namespace WizBulb.Localization.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scanning for bulbs... ({0} bulbs found).
+        ///   Looks up a localized string similar to Scanning for bulbs... ({0} bulbs discovered).
         /// </summary>
         internal static string ScanningBulbsXBulbsFound {
             get {
@@ -952,11 +1087,29 @@ namespace WizBulb.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Signal Strength.
+        /// </summary>
+        internal static string SignalStrength {
+            get {
+                return ResourceManager.GetString("SignalStrength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Standard Modes.
         /// </summary>
         internal static string StandardModes {
             get {
                 return ResourceManager.GetString("StandardModes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        internal static string Status {
+            get {
+                return ResourceManager.GetString("Status", resourceCulture);
             }
         }
         
@@ -1060,11 +1213,20 @@ namespace WizBulb.Localization.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} bulbs found.
+        ///   Looks up a localized string similar to {0} Bulbs Discovered.
         /// </summary>
         internal static string XBulbsFound {
             get {
                 return ResourceManager.GetString("XBulbsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} db.
+        /// </summary>
+        internal static string Xdb {
+            get {
+                return ResourceManager.GetString("Xdb", resourceCulture);
             }
         }
         

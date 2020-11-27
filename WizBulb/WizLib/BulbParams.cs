@@ -429,7 +429,6 @@ namespace WizLib
             }
         }
 
-
         [JsonProperty("roomId")]
         public int? RoomId
         {
@@ -527,6 +526,64 @@ namespace WizLib
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
+
+        public override bool Equals(object obj)
+        {
+            var s1 = JsonConvert.SerializeObject(this);
+            var s2 = JsonConvert.SerializeObject(obj);
+
+            return (s1 == s2);
+        }
+
+        public override int GetHashCode()
+        {
+            var s = JsonConvert.SerializeObject(this);
+            return s.GetHashCode();
+        }
+
+        public static bool operator ==(BulbParams v1, BulbParams v2)
+        {
+            if (!(v1 is object) && !(v2 is object))
+            {
+                return true;
+            }
+            else if (!(v1 is object) && (v2 is object))
+            {
+                return false;
+            }
+            else if ((v1 is object) && !(v2 is object))
+            {
+                return false;
+            }
+
+
+            return v1.Equals(v2);
+        }
+
+        public static bool operator !=(BulbParams v1, BulbParams v2)
+        {
+
+            if (!(v1 is object) && !(v2 is object))
+            {
+                return false;
+            }
+            else if (!(v1 is object) && (v2 is object))
+            {
+                return true;
+            }
+            else if ((v1 is object) && !(v2 is object))
+            {
+                return true;
+            }
+
+            return !v1.Equals(v2);
+        }
+
     }
 
 }

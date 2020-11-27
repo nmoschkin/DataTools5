@@ -246,11 +246,29 @@
   <data name="IPAddress" xml:space="preserve">
     <value>IP Address</value>
   </data>
+  <data name="IsPoweredOff" xml:space="preserve">
+    <value>Is Powered Off</value>
+  </data>
+  <data name="IsPoweredOn" xml:space="preserve">
+    <value>Is Powered On</value>
+  </data>
+  <data name="LightIsOff" xml:space="preserve">
+    <value>Light is off.</value>
+  </data>
+  <data name="LightIsOn" xml:space="preserve">
+    <value>Light is on.</value>
+  </data>
   <data name="LightMode" xml:space="preserve">
     <value>Light Mode</value>
   </data>
   <data name="LightModes" xml:space="preserve">
     <value>Light Modes</value>
+  </data>
+  <data name="LightOff" xml:space="preserve">
+    <value>Light Off</value>
+  </data>
+  <data name="LightOn" xml:space="preserve">
+    <value>Light On</value>
   </data>
   <data name="Link" xml:space="preserve">
     <value>Link</value>
@@ -300,8 +318,14 @@
   <data name="NotDetermined" xml:space="preserve">
     <value>Internet Connection Not Determined</value>
   </data>
+  <data name="Off" xml:space="preserve">
+    <value>Off</value>
+  </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="On" xml:space="preserve">
+    <value>On</value>
   </data>
   <data name="Percentage" xml:space="preserve">
     <value>Percentage</value>
@@ -309,8 +333,26 @@
   <data name="PingBulb" xml:space="preserve">
     <value>Ping Bulb</value>
   </data>
+  <data name="PoweredOff" xml:space="preserve">
+    <value>Powered Off</value>
+  </data>
+  <data name="PoweredOn" xml:space="preserve">
+    <value>Powered On</value>
+  </data>
+  <data name="PowerOff" xml:space="preserve">
+    <value>Power Off</value>
+  </data>
+  <data name="PowerOn" xml:space="preserve">
+    <value>Power On</value>
+  </data>
+  <data name="PowerStatus" xml:space="preserve">
+    <value>Power Status</value>
+  </data>
   <data name="Predefined" xml:space="preserve">
     <value>Predefined</value>
+  </data>
+  <data name="Proximity" xml:space="preserve">
+    <value>Proximity</value>
   </data>
   <data name="Query" xml:space="preserve">
     <value>Query</value>
@@ -320,6 +362,9 @@
   </data>
   <data name="Refresh" xml:space="preserve">
     <value>Refresh</value>
+  </data>
+  <data name="RefreshAll" xml:space="preserve">
+    <value>Refresh All</value>
   </data>
   <data name="Remove" xml:space="preserve">
     <value>Remove</value>
@@ -373,7 +418,7 @@
     <value>Scanning for bulbs...</value>
   </data>
   <data name="ScanningBulbsXBulbsFound" xml:space="preserve">
-    <value>Scanning for bulbs... ({0} bulbs found)</value>
+    <value>Scanning for bulbs... ({0} bulbs discovered)</value>
   </data>
   <data name="ScanNow" xml:space="preserve">
     <value>Scan Now</value>
@@ -414,8 +459,14 @@
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="SignalStrength" xml:space="preserve">
+    <value>Signal Strength</value>
+  </data>
   <data name="StandardModes" xml:space="preserve">
     <value>Standard Modes</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
   </data>
   <data name="StopScanning" xml:space="preserve">
     <value>Stop Scanning</value>
@@ -451,7 +502,10 @@
     <value>{0} Bulbs</value>
   </data>
   <data name="XBulbsFound" xml:space="preserve">
-    <value>{0} bulbs found</value>
+    <value>{0} Bulbs Discovered</value>
+  </data>
+  <data name="Xdb" xml:space="preserve">
+    <value>{0} db</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>

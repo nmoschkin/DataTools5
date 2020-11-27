@@ -187,6 +187,7 @@
                     BorderThickness="0"
                     GridViewColumnHeader.Click="BulbList_Click"
                     ItemsSource="{Binding Bulbs}"
+                    KeyDown="BulbList_KeyDown"
                     SelectedItem="{Binding SelectedBulb, Mode=TwoWay}"
                     SelectionChanged="BulbList_SelectionChanged">
 
@@ -205,6 +206,27 @@
                             <Separator />
 
                             <MenuItem x:Name="mnuModes" Header="{i18n:Translate ResourceKey=LightModes}" />
+
+
+                            <Separator />
+
+                            <MenuItem
+                                x:Name="mnuPower"
+                                Header="{i18n:Translate ResourceKey=IsPoweredOn}"
+                                IsCheckable="True"
+                                IsChecked="{Binding SelectedBulb.IsPoweredOn, Mode=TwoWay}" />
+
+                            <Separator />
+
+                            <MenuItem
+                                x:Name="mnuRefresh"
+                                Click="mnuRefresh_Click"
+                                Header="{i18n:Translate ResourceKey=Refresh}" />
+
+                            <MenuItem
+                                x:Name="mnuRefreshAll"
+                                Click="mnuRefreshAll_Click"
+                                Header="{i18n:Translate ResourceKey=RefreshAll}" />
 
                         </ContextMenu>
                     </ListView.ContextMenu>
@@ -322,12 +344,13 @@
                 <Slider
                     Grid.Row="1"
                     Margin="0,4,0,0"
-                    LargeChange="10"
                     IsSnapToTickEnabled="True"
-                    TickFrequency="5"
+                    LargeChange="10"
+                    ManipulationCompleted="Slider_ManipulationCompleted"
                     Maximum="100"
                     Minimum="0"
                     SmallChange="1"
+                    TickFrequency="1"
                     Value="{Binding SelectedBulb.Brightness, Mode=TwoWay}" />
 
             </Grid>

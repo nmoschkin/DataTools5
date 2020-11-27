@@ -220,6 +220,17 @@ namespace WizBulb
             }
         }
 
+        private IList<Bulb> selBulbs;
+
+        public IList<Bulb> SelectedBulbs
+        {
+            get => selBulbs;
+            set
+            {
+                SetProperty(ref selBulbs, value);
+            }
+        }
+
 
         private ObservableCollection<Bulb> bulbs = new ObservableCollection<Bulb>();
 
@@ -266,9 +277,6 @@ namespace WizBulb
             }
         }
 
-
-        
-
         public virtual bool CheckTimeout()
         {
             if (Timeout < 5 || Timeout > 360)
@@ -306,15 +314,25 @@ namespace WizBulb
         {
             if (e.Source is MenuItem mi && mi.Tag is LightMode lm) 
             {
-                if (selBulb != null)
-                {
-                    if (autoChangeBulb)
-                    {
-                        await selBulb.SetLightMode(lm);
-                    }
 
-                    LightModeClick?.Invoke(this, new LightModeClickEventArgs(lm, mi));
+                if (autoChangeBulb)
+                {
+                    if (SelectedBulb != null && (SelectedBulbs == null || SelectedBulbs.Count == 0))
+                    {
+                        await SelectedBulb.SetLightMode(lm);
+                    }
+                    else if (SelectedBulbs != null && SelectedBulbs.Count > 0)
+                    {
+
+                        foreach(Bulb bulb in SelectedBulbs)
+                        {
+                            await bulb.SetLightMode(lm);
+                        }
+                    }
                 }
+
+                LightModeClick?.Invoke(this, new LightModeClickEventArgs(lm, mi));
+
             }
         }
 
@@ -402,6 +420,74 @@ namespace WizBulb
             });
 
             return true;
+        }
+
+
+        public virtual async Task RefreshSelected()
+        {
+            if (SelectedBulb != null && (SelectedBulbs == null || SelectedBulbs.Count == 0)) 
+            {
+              
+                GC.Collect(0);
+                StatusMessage = string.Format(AppResources.GettingBulbInfoForX, SelectedBulb.ToString());
+
+                for (int re = 0; re < 3; re++)
+                {
+                    if (await SelectedBulb.GetPilot()) break;
+
+                    StatusMessage = string.Format(AppResources.RetryingX, re);
+                    await Task.Delay(1000);
+                }
+            }
+            else if (SelectedBulbs != null && SelectedBulbs.Count > 0)
+            {
+                foreach (var bulb in SelectedBulbs)
+                {
+                    GC.Collect(0);
+                    StatusMessage = string.Format(AppResources.GettingBulbInfoForX, bulb.ToString());
+
+                    await bulb.GetPilot();
+                    //for (int re = 0; re < 3; re++)
+                    //{
+                    //    if (await bulb.GetPilot()) break;
+
+                    //    StatusMessage = string.Format(AppResources.RetryingX, re);
+                    //    await Task.Delay(1000);
+                    //}
+                }
+            }
+
+            StatusMessage = "";
+        }
+
+        public virtual async Task RefreshAll()
+        {
+
+            //foreach (var bulb in Bulbs)
+            //{
+            //    GC.Collect(0);
+            //    StatusMessage = string.Format(AppResources.GettingBulbInfoForX, bulb.ToString());
+
+            //    for (int re = 0; re < 3; re++)
+            //    {
+            //        if (await bulb.GetPilot()) break;
+
+            //        StatusMessage = string.Format(AppResources.RetryingX, re);
+            //        await Task.Delay(1000);
+            //    }
+
+            //}
+
+            foreach (var bulb in Bulbs)
+            {
+                GC.Collect(0);
+                StatusMessage = string.Format(AppResources.GettingBulbInfoForX, bulb.ToString());
+
+                await bulb.GetPilot();
+            }
+
+
+            StatusMessage = "";
         }
 
         public virtual void RefreshNetworks()

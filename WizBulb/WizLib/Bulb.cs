@@ -206,6 +206,8 @@ namespace WizLib
             get => Settings?.Brightness;
             set
             {
+                if (value == null) return;
+
                 if (Settings == null)
                 {
                     Settings = new BulbParams();
@@ -219,6 +221,35 @@ namespace WizLib
                 stg.Params.Brightness = value;
 
                 _ = SendCommand(stg);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets whether or not the bulb is on.
+        /// </summary>
+        /// <remarks>
+        /// This property is live.
+        /// </remarks>
+        public virtual bool? IsPoweredOn
+        {
+            get => Settings?.State;
+            set
+            {
+                if (value == null) return;
+
+                if (Settings == null)
+                {
+                    Settings = new BulbParams();
+                }
+
+                if (Settings.State == value) return;
+
+                Settings.State = value;
+
+                var stg = new BulbCommand(BulbMethod.SetPilot);
+                stg.Params.State = value;
+
+                _ = SendCommand(stg).ContinueWith((a) => _ = GetPilot());
 
             }
         }
@@ -307,7 +338,9 @@ namespace WizLib
             var cmd = new BulbCommand(BulbMethod.SetPilot);
 
             cmd.Params.State = true;
-            return await SendCommand(cmd);
+            var ret = await SendCommand(cmd);
+            await GetPilot();
+            return ret;
         }
 
         /// <summary>
@@ -319,7 +352,9 @@ namespace WizLib
             var cmd = new BulbCommand(BulbMethod.SetPilot);
 
             cmd.Params.State = false;
-            return await SendCommand(cmd);
+            var ret = await SendCommand(cmd);
+            await GetPilot();
+            return ret;
         }
 
         /// <summary>
@@ -328,7 +363,6 @@ namespace WizLib
         /// <returns>Result from the bulb.</returns>
         public virtual async Task<BulbCommand> Switch()
         {
-
             if (Settings == null)
             {
                 Settings = new BulbParams();
@@ -365,7 +399,9 @@ namespace WizLib
                 cmd.Params.Scene = scene.Code;
             }
 
-            return await SendCommand(cmd);
+            var ret = await SendCommand(cmd);
+            await GetPilot();
+            return ret;
         }
 
         /// <summary>
@@ -383,7 +419,9 @@ namespace WizLib
             cmd.Params.Brightness = brightness;
             cmd.Params.Scene = scene.Code;
 
-            return await SendCommand(cmd);
+            var ret = await SendCommand(cmd);
+            await GetPilot();
+            return ret;
 
         }
 
@@ -402,7 +440,9 @@ namespace WizLib
             cmd.Params.Green = c.G;
             cmd.Params.Blue = c.B;
 
-            return await SendCommand(cmd);
+            var ret = await SendCommand(cmd);
+            await GetPilot();
+            return ret;
         }
 
         /// <summary>
@@ -423,7 +463,9 @@ namespace WizLib
             cmd.Params.Green = c.G;
             cmd.Params.Blue = c.B;
 
-            return await SendCommand(cmd);
+            var ret = await SendCommand(cmd);
+            await GetPilot();
+            return ret;
         }
 
         /// <summary>
@@ -503,7 +545,7 @@ namespace WizLib
         /// <summary>
         /// Send configuration back to the blub
         /// </summary>
-        public void SetPilot()
+        internal void SetPilot()
         {
             if (settings == null) return;
             
@@ -545,6 +587,10 @@ namespace WizLib
             {
                 OnPropertyChanged(nameof(Brightness));
             }
+            else if (e.PropertyName == nameof(BulbParams.State))
+            {
+                OnPropertyChanged(nameof(IsPoweredOn));
+            }
         }
 
         protected async Task<BulbCommand> SendCommand(BulbCommand cmd, bool wait = false)
@@ -577,20 +623,20 @@ namespace WizLib
         protected async Task<byte[]> SendUDP(byte[] cmd, string localAddr = null, bool waitForChannel = false)
         {
 
-            if (!waitForChannel)
-            {
-                if (udpActive)
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                while (udpActive)
-                {
-                    await Task.Delay(100);
-                }
-            }
+            //if (!waitForChannel)
+            //{
+            //    if (udpActive)
+            //    {
+            //        return null;
+            //    }
+            //}
+            //else
+            //{
+            //    while (udpActive)
+            //    {
+            //        await Task.Delay(100);
+            //    }
+            //}
 
             udpActive = true;
 
@@ -612,6 +658,7 @@ namespace WizLib
             }
 
             var udpClient = new UdpClient();
+            udpClient.ExclusiveAddressUse = false;
             udpClient.Client.Bind(new IPEndPoint(LocalAddress, DefaultPort));
             udpClient.DontFragment = true;
 
@@ -683,21 +730,20 @@ namespace WizLib
         /// <returns></returns>
         public static async Task<List<Bulb>> ScanForBulbs(string localAddr, string macAddr, ScanModes mode = ScanModes.Registration, int timeout = 5, BulbScanCallback callback = null, bool waitForChannel = false)
         {
-
-            if (!waitForChannel)
-            {
-                if (udpActive)
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                while (udpActive)
-                {
-                    await Task.Delay(100);
-                }
-            }
+            //if (!waitForChannel)
+            //{
+            //    if (udpActive)
+            //    {
+            //        return null;
+            //    }
+            //}
+            //else
+            //{
+            //    while (udpActive)
+            //    {
+            //        await Task.Delay(100);
+            //    }
+            //}
 
             udpActive = true;
 
@@ -714,7 +760,8 @@ namespace WizLib
             LocalAddress = System.Net.IPAddress.Parse(localAddr);
 
             var udpClient = new UdpClient();
-            
+
+            udpClient.ExclusiveAddressUse = false;
             udpClient.Client.Bind(new IPEndPoint(localip, DefaultPort));
             udpClient.DontFragment = true;
 
@@ -781,12 +828,12 @@ namespace WizLib
                     }
 
                     await Task.Delay(100);
-                    //tdelc++;
-                    //if (tdelc >= 5)
-                    //{
-                    //    udpClient.Send(buffer, buffer.Length, "255.255.255.255", port);
-                    //    tdelc = 0;
-                    //}
+                    tdelc++;
+                    if (tdelc >= 5)
+                    {
+                        udpClient.Send(buffer, buffer.Length, "255.255.255.255", port);
+                        tdelc = 0;
+                    }
                 }
 
                 if (HasConsole) Console.WriteLine("Finished");
