@@ -210,12 +210,16 @@ namespace WizLib
                 {
                     Settings = new BulbParams();
                 }
+                
                 if (Settings.Brightness == value) return;
 
                 Settings.Brightness = value;
-                SetPilot();
 
-                OnPropertyChanged();
+                var stg = new BulbCommand(BulbMethod.SetPilot);
+                stg.Params.Brightness = value;
+
+                _ = SendCommand(stg);
+
             }
         }
 
@@ -537,20 +541,23 @@ namespace WizLib
 
         protected void SettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-
+            if (e.PropertyName == nameof(BulbParams.Brightness))
+            {
+                OnPropertyChanged(nameof(Brightness));
+            }
         }
 
-        protected async Task<BulbCommand> SendCommand(BulbCommand cmd)
+        protected async Task<BulbCommand> SendCommand(BulbCommand cmd, bool wait = false)
         {
-            var x = await SendCommand(cmd.AssembleCommand());
+            var x = await SendCommand(cmd.AssembleCommand(), wait);
             return new BulbCommand(x);
         }
 
-        protected async Task<string> SendCommand(string cmd)
+        protected async Task<string> SendCommand(string cmd, bool wait = false)
         {
 
             byte[] bOut = Encoding.UTF8.GetBytes(cmd);
-            var buffer = await SendUDP(bOut);
+            var buffer = await SendUDP(bOut, waitForChannel: wait);
             string json;
 
             if (buffer?.Length > 0)
@@ -694,7 +701,11 @@ namespace WizLib
 
             udpActive = true;
 
-            if (HasConsole) Console.WriteLine("Scanning For Bulbs...");
+            if (HasConsole)
+            {
+                Console.Clear();
+                Console.WriteLine("Scanning For Bulbs...");
+            }
             List<Bulb> bulbs = new List<Bulb>();
 
             byte[] buffer = null;
