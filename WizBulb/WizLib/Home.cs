@@ -14,6 +14,18 @@ namespace WizLib
         private string homeId;
         private string name;
 
+        private List<Room> rooms;
+
+        [JsonProperty("rooms")]
+        public List<Room> Rooms
+        {
+            get => rooms;
+            set
+            {
+                SetProperty(ref rooms, value);
+            }
+        }
+
         [JsonProperty("homeId")]
         public string HomeId
         {

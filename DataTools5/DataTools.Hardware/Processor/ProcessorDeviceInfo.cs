@@ -15,9 +15,9 @@ namespace DataTools.Hardware.Processor
     public class ProcessorDeviceInfo : DeviceInfo
     {
         private IReadOnlyCollection<CacheInfo> cacheInfo;
-        private SYSTEM_LOGICAL_PROCESSOR_INFORMATION source;
+        private SystemLogicalProcessorInformation source;
 
-        internal SYSTEM_LOGICAL_PROCESSOR_INFORMATION Source
+        internal SystemLogicalProcessorInformation Source
         {
             get => source;
             set => source = value;

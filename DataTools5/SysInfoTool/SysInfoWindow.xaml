@@ -28,17 +28,19 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20" />
-            <RowDefinition x:Name="CenterRow" Height="{Binding}" />
-            <RowDefinition Height="20" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Menu
             x:Name="menuBar"
             Grid.Row="0"
-            Grid.ColumnSpan="3"
+            Grid.ColumnSpan="2"
             Height="20"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Top">
@@ -52,6 +54,7 @@
 
         <WindowsFormsHost
             Grid.Row="1"
+            Grid.Column="0"
             Margin="10,10,10,10"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch">
@@ -59,8 +62,41 @@
             <wf:PropertyGrid x:Name="_props" />
         </WindowsFormsHost>
 
-        <Grid Grid.Row="2" Grid.Column="1">
-            <TextBox x:Name="Status" Text="Ready" />
+        <WindowsFormsHost
+            Grid.Row="1"
+            Grid.Column="1"
+            Margin="10,10,10,10"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+
+            <wf:PropertyGrid x:Name="_props2" />
+        </WindowsFormsHost>
+
+        <WindowsFormsHost
+            Grid.Row="2"
+            Grid.Column="0"
+            Margin="10,10,10,10"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+
+            <wf:PropertyGrid x:Name="_props3" />
+        </WindowsFormsHost>
+
+        <WindowsFormsHost
+            Grid.Row="2"
+            Grid.Column="1"
+            Margin="10,10,10,10"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+
+            <wf:PropertyGrid x:Name="_props4" />
+        </WindowsFormsHost>
+
+        <Grid Grid.Row="3" Grid.ColumnSpan="2">
+            <TextBox
+                x:Name="Status"
+                Margin="8,4"
+                Text="Ready" />
         </Grid>
     </Grid>
 </Window>

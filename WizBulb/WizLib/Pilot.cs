@@ -14,22 +14,14 @@ namespace WizLib
     public class Pilot : ViewModelBase, ICloneable
     {
 
-        public static readonly ReadOnlyDictionary<string, string> BulbTypeCatalog 
-            = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>()
+        public static readonly ReadOnlyDictionary<int, string> BulbTypeCatalog
+            = new ReadOnlyDictionary<int, string>(new Dictionary<int, string>()
             {
-                { "ESP01_SHDW_01", "" },
-                { "ESP01_SHRGB1C_31", "Phillips Color & Tunable-White BR30 Recessed" },
-                { "ESP01_SHTW1C_31", "Phillips 555599 recessed" },
-                { "ESP56_SHTW3_01", "" },
-                { "ESP01_SHRGB_03", "" },
-                { "ESP01_SHDW1_31", "" },
-                { "ESP15_SHTW1_01I", "" },
-                { "ESP03_SHRGB1C_01", "Philips Color & Tunable-White A19" },
-                //{ "ESP03_SHRGB1C_01", "WiZ LED EAN 8718699787059" },
-                { "ESP03_SHRGB1W_01", "Philips Color & Tunable-White A21" },
-                { "ESP06_SHDW9_01", "Philips Soft White A19" },
-                { "ESP03_SHRGBP_31", "Trio Leuchten WiZ LED" },
-                { "ESP17_SHTW9_01", "WiZ Filament Bulb EAN 8718699786793" }
+                { 37, "Phillips Color & Tunable-White BR30" },
+                { 50, "Phillips Color & Tunable-White BR30" },
+                { 33, "Philips Color & Tunable-White A19" },
+                { 60, "Philips Color & Tunable-White A19" },
+                { 20, "Philips Color & Tunable-White A21" }
             });
 
         private bool? state;
@@ -51,6 +43,10 @@ namespace WizLib
         private int? temp;
 
         private byte? dimming;
+
+        private int? delta;
+
+        private int? duration;
 
         // registration params
 
@@ -77,6 +73,12 @@ namespace WizLib
         private int? roomId;
 
         private string fwVersion;
+
+        private int[] drvConf;
+
+        private string ewfHex;
+
+        private int[] ewf;
 
         private string moduleName;
 
@@ -127,6 +129,7 @@ namespace WizLib
             get => dimming;
             set
             {
+                if (value > 100) value = 100;
                 //double pctval;
 
                 //if (value != null)
@@ -306,6 +309,29 @@ namespace WizLib
             }
         }
 
+        [JsonProperty("delta")]
+        public int? Delta
+        {
+            get => delta;
+            set
+            {
+                SetProperty(ref delta, value);
+            }
+        }
+
+        [JsonProperty("duration")]
+        public int? Duration
+        {
+            get => duration;
+            set
+            {
+                SetProperty(ref duration, value);
+            }
+        }
+
+        #region Returned Information
+
+
         [JsonProperty("phoneMac")]
         public string PhoneMac
         {
@@ -407,6 +433,54 @@ namespace WizLib
             }
         }
 
+        [JsonProperty("drvConf")]
+        public int[] DrvConf
+        {
+            get => drvConf;
+            set
+            {
+                if (SetProperty(ref drvConf, value))
+                {
+                    OnPropertyChanged(nameof(DriverConfig));
+                }
+            }
+        }
+
+        [JsonIgnore]
+        public string DriverConfig
+        {
+            get
+            {
+                if (drvConf != null && drvConf.Length == 2)
+                {
+                    return $"{drvConf[0]}, {drvConf[1]}";
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        [JsonProperty("ewf")] 
+        public int[] Ewf
+        {
+            get => ewf;
+            set
+            {
+                SetProperty(ref ewf, value);
+            }
+        }
+
+        [JsonProperty("ewfHex")]
+        public string EwfHex
+        {
+            get => ewfHex;
+            set
+            {
+                SetProperty(ref ewfHex, value);
+            }
+        }
 
         [JsonProperty("fwVersion")]
         public string FirmwareVersion
@@ -434,17 +508,18 @@ namespace WizLib
         {
             get
             {
-                if (BulbTypeCatalog.ContainsKey(moduleName))
+                if (drvConf != null && drvConf.Length == 2 && BulbTypeCatalog.ContainsKey(drvConf[0]))
                 {
-                    return BulbTypeCatalog[ModuleName];
+                    return BulbTypeCatalog[drvConf[0]];
                 }
                 else
                 {
-                    return moduleName;
+                    return null;
                 }
             }
         }
 
-
+        #endregion
     }
+
 }

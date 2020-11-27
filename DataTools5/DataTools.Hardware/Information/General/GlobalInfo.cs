@@ -256,7 +256,7 @@ namespace DataTools.Hardware
 
                 var procs = SysInfo.LogicalProcessors;
 
-                Array.Sort(procs, new Comparison<SYSTEM_LOGICAL_PROCESSOR_INFORMATION>((x, y) =>
+                Array.Sort(procs, new Comparison<SystemLogicalProcessorInformation>((x, y) =>
                 {
                     if (x.Relationship == y.Relationship)
                     {
@@ -290,12 +290,12 @@ namespace DataTools.Hardware
                     {
                         if ((proc.ProcessorMask & (1 << i)) == (1 << i))
                         {
-                            if ((proc.Relationship | LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorCore) == LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorCore)
+                            if ((proc.Relationship | LogicalProcessorRelationship.RelationProcessorCore) == LogicalProcessorRelationship.RelationProcessorCore)
                             {
                                     pInfo.Core = ccore;
                                     pInfo.Source = proc;
                             }
-                            else if ((proc.Relationship | LOGICAL_PROCESSOR_RELATIONSHIP.RelationCache) == LOGICAL_PROCESSOR_RELATIONSHIP.RelationCache)
+                            else if ((proc.Relationship | LogicalProcessorRelationship.RelationCache) == LogicalProcessorRelationship.RelationCache)
                             {
                                 var cd = new CacheInfo(proc.CacheDescriptor);
                                 
@@ -326,7 +326,7 @@ namespace DataTools.Hardware
                             }
                         }
 
-                        if ((proc.Relationship | LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorCore) == LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorCore)
+                        if ((proc.Relationship | LogicalProcessorRelationship.RelationProcessorCore) == LogicalProcessorRelationship.RelationProcessorCore)
                         {
                             ccore++;
                         }

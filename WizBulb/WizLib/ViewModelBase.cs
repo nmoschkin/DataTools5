@@ -17,12 +17,18 @@ namespace WizLib
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected virtual void SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = null)
+        protected virtual bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = null)
         {
             if (!Equals(backingStore, value))
             {
                 backingStore = value;
                 OnPropertyChanged(propertyName);
+
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 

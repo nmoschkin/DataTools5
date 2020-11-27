@@ -23,6 +23,7 @@ using DataTools.ColorControls;
 using DataTools.Hardware.Network;
 using WizBulb.Localization.Resources;
 using System.ComponentModel;
+using System.Collections;
 
 namespace WizBulb
 {
@@ -44,7 +45,7 @@ namespace WizBulb
 
         public MainWindow()
         {
-            // Bulb.HasConsole = AllocConsole() != 0;
+            Bulb.HasConsole = AllocConsole() != 0;
 
             InitializeComponent();
 
@@ -200,9 +201,13 @@ namespace WizBulb
 
         private void Sort(string sortBy, ListSortDirection direction)
         {
-            ICollectionView dataView =
-              CollectionViewSource.GetDefaultView(BulbList.ItemsSource);
+            var dataView =
+              CollectionViewSource.GetDefaultView(BulbList.ItemsSource) as ListCollectionView;
 
+            //if (sortBy == "Scene")
+            //{
+            //    dataView.CustomSort = new BulbComparer();
+            //}
             dataView.SortDescriptions.Clear();
             SortDescription sd = new SortDescription(sortBy, direction);
             dataView.SortDescriptions.Add(sd);
@@ -249,6 +254,39 @@ namespace WizBulb
                 tb.IsEnabled = false;
             }
         }
+
+        private void mnuOpenProject_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void mnuNewProject_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void mnuSaveProject_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void mnuSaveAs_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void mnuLoadLast_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void mnuQuit_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
+
+
+
 }
 

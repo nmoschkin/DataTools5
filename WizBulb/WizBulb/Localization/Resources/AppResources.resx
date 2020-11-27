@@ -159,6 +159,9 @@
   <data name="Colors" xml:space="preserve">
     <value>Colors</value>
   </data>
+  <data name="CustomColor" xml:space="preserve">
+    <value>Custom Color</value>
+  </data>
   <data name="Default" xml:space="preserve">
     <value>Default</value>
   </data>
@@ -176,6 +179,9 @@
   </data>
   <data name="DeleteScene" xml:space="preserve">
     <value>Delete Scene</value>
+  </data>
+  <data name="DriverConfig" xml:space="preserve">
+    <value>Driver Config</value>
   </data>
   <data name="Duplicate" xml:space="preserve">
     <value>Duplicate</value>
@@ -195,11 +201,17 @@
   <data name="ErrorValueOutOfRange" xml:space="preserve">
     <value>Value is out of range.</value>
   </data>
+  <data name="EwfHex" xml:space="preserve">
+    <value>EwfHex</value>
+  </data>
   <data name="Failure" xml:space="preserve">
     <value>Failure</value>
   </data>
   <data name="File" xml:space="preserve">
     <value>File</value>
+  </data>
+  <data name="FirmwareVersion" xml:space="preserve">
+    <value>Firmware Version</value>
   </data>
   <data name="GettingBulbInfoForX" xml:space="preserve">
     <value>Getting bulb info for '{0}' ...</value>
@@ -245,6 +257,9 @@
   </data>
   <data name="MACAddress" xml:space="preserve">
     <value>MAC Address</value>
+  </data>
+  <data name="ModuleName" xml:space="preserve">
+    <value>Module Name</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>

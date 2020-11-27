@@ -37,7 +37,7 @@ namespace WizBulb
             }
         }
 
-        private int timeout = 10;
+        private int timeout = 5;
 
         public int Timeout
         {
@@ -143,6 +143,18 @@ namespace WizBulb
             }
         }
 
+        private Profile profile = new Profile();
+
+        public Profile Profile
+        {
+            get => profile;
+            set
+            {
+                SetProperty(ref profile, value);
+            }
+        }
+
+
         public virtual bool CheckTimeout()
         {
             if (Timeout < 5 || Timeout > 360)
@@ -186,10 +198,10 @@ namespace WizBulb
 
             string prevStat = ""; // StatusMessage;
             StatusMessage = AppResources.ScanningBulbs;
-
+            
             _ = Task.Run(async () =>
             {
-                await Bulb.ScanForBulbs(selAdapter.IPV4Address.ToString(), ScanModes.GetSystemConfig, Timeout,
+                await Bulb.ScanForBulbs(selAdapter.IPV4Address.ToString(), selAdapter.PhysicalAddress.ToString(false), ScanModes.GetSystemConfig, Timeout,
                 (b) =>
                 {
                     disp.Invoke(() =>
@@ -203,15 +215,16 @@ namespace WizBulb
                 foreach (var bulb in Bulbs)
                 {
                     GC.Collect(0);
-                    
                     StatusMessage = string.Format(AppResources.GettingBulbInfoForX, bulb.ToString());
 
                     for (int re = 0; re < 3; re++)
                     {
                         if (await bulb.GetPilot()) break;
+
                         StatusMessage = string.Format(AppResources.RetryingX, re);
                         await Task.Delay(1000);
                     }
+
                 }
 
                 StatusMessage = AppResources.ScanComplete;

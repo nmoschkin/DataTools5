@@ -313,11 +313,10 @@ namespace DataTools.Text
     ///     ''' Stores a number whose default ToString() format is pretty size.
     ///     ''' </summary>
     ///     ''' <remarks></remarks>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct FriendlySizeLong : INotifyPropertyChanged
+    [StructLayout(LayoutKind.Sequential, Size = 8)]
+    public struct FriendlySizeLong 
     {
         private ulong _Value;
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public ulong Value
         {
@@ -328,8 +327,6 @@ namespace DataTools.Text
             set
             {
                 _Value = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Double"));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
             }
         }
 
@@ -342,21 +339,17 @@ namespace DataTools.Text
             set
             {
                 this.Value = System.Convert.ToUInt64(value);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Double"));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
             }
         }
 
         public FriendlySizeLong(long v)
         {
             _Value = ((ulong)v & 0x7FFFFFFFFFFFFFFFUL);
-            PropertyChanged = null;
         }
 
         public FriendlySizeLong(ulong v)
         {
             _Value = v;
-            PropertyChanged = null;
         }
 
         public static implicit operator FriendlySizeLong(long operand)
@@ -405,10 +398,9 @@ namespace DataTools.Text
     ///     ''' </summary>
     ///     ''' <remarks></remarks>
     [StructLayout(LayoutKind.Sequential)]
-    public struct FriendlySpeedLong : INotifyPropertyChanged
+    public struct FriendlySpeedLong 
     {
         private ulong _Value;
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public ulong Value
         {
@@ -419,8 +411,6 @@ namespace DataTools.Text
             set
             {
                 _Value = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Double"));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
             }
         }
 
@@ -433,21 +423,17 @@ namespace DataTools.Text
             set
             {
                 this.Value = System.Convert.ToUInt64(value);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Double"));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
             }
         }
 
         public FriendlySpeedLong(long v)
         {
             _Value = ((ulong)v & 0x7FFFFFFFFFFFFFFFL);
-            PropertyChanged = null;
         }
 
         public FriendlySpeedLong(ulong v)
         {
             _Value = v;
-            PropertyChanged = null;
         }
 
         public static implicit operator FriendlySpeedLong(long operand)
@@ -497,11 +483,10 @@ namespace DataTools.Text
     ///     ''' Stores a number whose default ToString() format is pretty size.
     ///     ''' </summary>
     ///     ''' <remarks></remarks>
-    [StructLayout(LayoutKind.Sequential)]
-    public struct FriendlySizeInteger : INotifyPropertyChanged
+    [StructLayout(LayoutKind.Sequential, Size = 4)]
+    public struct FriendlySizeInteger 
     {
         private uint _Value;
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public uint Value
         {
@@ -512,8 +497,6 @@ namespace DataTools.Text
             set
             {
                 _Value = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Single"));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
             }
         }
 
@@ -526,21 +509,17 @@ namespace DataTools.Text
             set
             {
                 this.Value = System.Convert.ToUInt32(value);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Single"));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
             }
         }
 
         public FriendlySizeInteger(int v)
         {
             _Value = (uint)v;
-            PropertyChanged = null;
         }
 
         public FriendlySizeInteger(uint v)
         {
             _Value = v;
-            PropertyChanged = null;
         }
 
         public static implicit operator FriendlySizeInteger(int operand)
@@ -589,11 +568,10 @@ namespace DataTools.Text
     ///     ''' </summary>
     ///     ''' <remarks></remarks>
     [StructLayout(LayoutKind.Sequential)]
-    public struct FriendlySpeedInteger : INotifyPropertyChanged
+    public struct FriendlySpeedInteger 
     {
         private uint _Value;
-        public event PropertyChangedEventHandler PropertyChanged;
-
+    
         public uint Value
         {
             get
@@ -603,8 +581,6 @@ namespace DataTools.Text
             set
             {
                 _Value = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Single"));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
             }
         }
 
@@ -617,21 +593,17 @@ namespace DataTools.Text
             set
             {
                 this.Value = System.Convert.ToUInt32(value);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Single"));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
             }
         }
 
         public FriendlySpeedInteger(int v)
         {
             _Value = (uint)(v & 0x7FFFFFFF);
-            PropertyChanged = null;
         }
 
         public FriendlySpeedInteger(uint v)
         {
             _Value = v;
-            PropertyChanged = null;
         }
 
         public static implicit operator FriendlySpeedInteger(int operand)

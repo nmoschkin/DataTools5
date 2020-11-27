@@ -12,15 +12,15 @@ namespace DataTools.Hardware.Processor
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class CacheInfo
     {
-        private CACHE_DESCRIPTOR source;
+        private ProcessorCacheDescriptor source;
 
-        internal CACHE_DESCRIPTOR Source
+        internal ProcessorCacheDescriptor Source
         {
             get => source;
             set => source = value;
         }
 
-        internal CacheInfo(CACHE_DESCRIPTOR source)
+        internal CacheInfo(ProcessorCacheDescriptor source)
         {
             this.source = source;
             _Level = source.Level;

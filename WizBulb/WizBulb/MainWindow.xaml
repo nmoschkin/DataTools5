@@ -78,64 +78,184 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <Label Margin="8,8,8,2" Content="{i18n:Translate ResourceKey=Bulbs, AddColon=True}" />
 
-        <ListView
-            x:Name="BulbList"
+        <Menu
+            Grid.Row="0"
+            Grid.ColumnSpan="3"
+            Padding="4"
+            Background="Transparent"
+            FontSize="14">
+            <MenuItem x:Name="mnuFile" Header="_File">
+                <MenuItem
+                    x:Name="mnuOpenProject"
+                    Click="mnuOpenProject_Click"
+                    Header="_Open Project"
+                    InputGestureText="Ctrl+O" />
+
+                <MenuItem
+                    x:Name="mnuNewProject"
+                    Click="mnuNewProject_Click"
+                    Header="_New Project"
+                    InputGestureText="Ctrl+N" />
+
+                <Separator />
+
+                <MenuItem
+                    x:Name="mnuRecents"
+                    Header="Recent Projects"
+                    ItemsSource="{Binding RecentMenu}" />
+
+                <Separator />
+
+                <MenuItem
+                    x:Name="mnuSaveProject"
+                    Click="mnuSaveProject_Click"
+                    Header="_Save Project"
+                    InputGestureText="Ctrl+S" />
+
+                <MenuItem
+                    x:Name="mnuSaveAs"
+                    Click="mnuSaveAs_Click"
+                    Header="_Save As..."
+                    InputGestureText="Ctrl+Shift+S" />
+
+                <Separator />
+
+                <MenuItem
+                    x:Name="mnuLoadLast"
+                    Click="mnuLoadLast_Click"
+                    Header="_Load Last Project on Startup"
+                    IsCheckable="True"
+                    IsChecked="{Binding StartupLoad, Mode=TwoWay}" />
+                <Separator />
+
+                <MenuItem
+                    x:Name="mnuQuit"
+                    Click="mnuQuit_Click"
+                    Header="_Quit"
+                    InputGestureText="Ctrl+Q" />
+                <Separator />
+
+            </MenuItem>
+
+
+        </Menu>
+
+
+
+
+        <TabControl
             Grid.Row="1"
             Grid.ColumnSpan="2"
-            Margin="8,2,8,8"
-            GridViewColumnHeader.Click="BulbList_Click"
-            ItemsSource="{Binding Bulbs}"
-            SelectionChanged="BulbList_SelectionChanged">
+            Margin="8,2,8,8">
 
-            <ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem
-                        x:Name="mnuPing"
-                        Click="mnuPing_Click"
-                        Header="{i18n:Translate ResourceKey=PingBulb}" />
+            <TabItem>
+                <TabItem.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="24" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
 
-                    <MenuItem
-                        x:Name="mnuRename"
-                        Click="mnuRename_Click"
-                        Header="{i18n:Translate ResourceKey=Rename}" />
+                        <Image
+                            x:Name="BulbTabHdr"
+                            Grid.Column="0"
+                            Margin="4"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Source="pack://application:,,,/WizBulb;component/Resources/lightbulb.png" />
 
-                </ContextMenu>
-            </ListView.ContextMenu>
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="2,4,4,4"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            FontSize="10"
+                            Text="{i18n:Translate ResourceKey=Bulbs}" />
 
-            <ListView.View>
-                <GridView AllowsColumnReorder="True">
-                    <GridViewColumn
-                        Width="120"
-                        CellTemplate="{StaticResource BulbTemplate}"
-                        Header="{i18n:Translate ResourceKey=Bulbs}" />
-                    <GridViewColumn
-                        Width="100"
-                        DisplayMemberBinding="{Binding IPAddress}"
-                        Header="{i18n:Translate ResourceKey=IPAddress}" />
-                    <GridViewColumn
-                        Width="120"
-                        DisplayMemberBinding="{Binding Settings.HomeId}"
-                        Header="{i18n:Translate ResourceKey=HomeId}" />
-                    <GridViewColumn
-                        Width="120"
-                        DisplayMemberBinding="{Binding Settings.RoomId}"
-                        Header="{i18n:Translate ResourceKey=RoomId}" />
-                    <GridViewColumn
-                        Width="120"
-                        DisplayMemberBinding="{Binding Settings.TypeDescription}"
-                        Header="{i18n:Translate ResourceKey=BulbType}" />
-                    <GridViewColumn
-                        Width="120"
-                        DisplayMemberBinding="{Binding Scene}"
-                        Header="{i18n:Translate ResourceKey=LightMode}" />
+                    </Grid>
 
 
-                </GridView>
-            </ListView.View>
-        </ListView>
+                </TabItem.Header>
 
+                <ListView
+                    x:Name="BulbList"
+                    Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Margin="0"
+                    BorderThickness="0"
+                    GridViewColumnHeader.Click="BulbList_Click"
+                    ItemsSource="{Binding Bulbs}"
+                    SelectionChanged="BulbList_SelectionChanged">
+
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem
+                                x:Name="mnuPing"
+                                Click="mnuPing_Click"
+                                Header="{i18n:Translate ResourceKey=PingBulb}" />
+
+                            <MenuItem
+                                x:Name="mnuRename"
+                                Click="mnuRename_Click"
+                                Header="{i18n:Translate ResourceKey=Rename}" />
+
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="True">
+                            <GridViewColumn
+                                Width="120"
+                                CellTemplate="{StaticResource BulbTemplate}"
+                                Header="{i18n:Translate ResourceKey=Bulbs}" />
+                            <GridViewColumn
+                                Width="100"
+                                DisplayMemberBinding="{Binding IPAddress}"
+                                Header="{i18n:Translate ResourceKey=IPAddress}" />
+                            <GridViewColumn
+                                Width="120"
+                                DisplayMemberBinding="{Binding Scene}"
+                                Header="{i18n:Translate ResourceKey=LightMode}" />
+                            <GridViewColumn
+                                Width="120"
+                                DisplayMemberBinding="{Binding Settings.HomeId}"
+                                Header="{i18n:Translate ResourceKey=HomeId}" />
+                            <GridViewColumn
+                                Width="120"
+                                DisplayMemberBinding="{Binding Settings.RoomId}"
+                                Header="{i18n:Translate ResourceKey=RoomId}" />
+                            <GridViewColumn
+                                Width="120"
+                                DisplayMemberBinding="{Binding Settings.ModuleName}"
+                                Header="{i18n:Translate ResourceKey=ModuleName}" />
+                            <GridViewColumn
+                                Width="120"
+                                DisplayMemberBinding="{Binding Settings.TypeDescription}"
+                                Header="{i18n:Translate ResourceKey=BulbType}" />
+                            <GridViewColumn
+                                Width="120"
+                                DisplayMemberBinding="{Binding Settings.FirmwareVersion}"
+                                Header="{i18n:Translate ResourceKey=FirmwareVersion}" />
+                            <GridViewColumn
+                                Width="120"
+                                DisplayMemberBinding="{Binding Settings.EwfHex}"
+                                Header="{i18n:Translate ResourceKey=EwfHex}" />
+                            <GridViewColumn
+                                Width="120"
+                                DisplayMemberBinding="{Binding Settings.DriverConfig}"
+                                Header="{i18n:Translate ResourceKey=DriverConfig}" />
+
+
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+
+
+            </TabItem>
+
+        </TabControl>
         <!--<Grid Grid.Row="1" Grid.Column="1">
 
             <Grid.ColumnDefinitions>

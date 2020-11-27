@@ -187,6 +187,15 @@ namespace WizBulb.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom Color.
+        /// </summary>
+        internal static string CustomColor {
+            get {
+                return ResourceManager.GetString("CustomColor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default.
         /// </summary>
         internal static string Default {
@@ -237,6 +246,15 @@ namespace WizBulb.Localization.Resources {
         internal static string DeleteScene {
             get {
                 return ResourceManager.GetString("DeleteScene", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Driver Config.
+        /// </summary>
+        internal static string DriverConfig {
+            get {
+                return ResourceManager.GetString("DriverConfig", resourceCulture);
             }
         }
         
@@ -295,6 +313,15 @@ namespace WizBulb.Localization.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to EwfHex.
+        /// </summary>
+        internal static string EwfHex {
+            get {
+                return ResourceManager.GetString("EwfHex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failure.
         /// </summary>
         internal static string Failure {
@@ -309,6 +336,15 @@ namespace WizBulb.Localization.Resources {
         internal static string File {
             get {
                 return ResourceManager.GetString("File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firmware Version.
+        /// </summary>
+        internal static string FirmwareVersion {
+            get {
+                return ResourceManager.GetString("FirmwareVersion", resourceCulture);
             }
         }
         
@@ -444,6 +480,15 @@ namespace WizBulb.Localization.Resources {
         internal static string MACAddress {
             get {
                 return ResourceManager.GetString("MACAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Module Name.
+        /// </summary>
+        internal static string ModuleName {
+            get {
+                return ResourceManager.GetString("ModuleName", resourceCulture);
             }
         }
         

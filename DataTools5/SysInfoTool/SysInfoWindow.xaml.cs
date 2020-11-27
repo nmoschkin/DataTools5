@@ -27,7 +27,12 @@ namespace SysInfoTool
 
             // Add any initialization after the InitializeComponent() call.
 
-            this._props.SelectedObject = DataTools.SystemInformation.SysInfo.OSInfo;
+            this._props3.SelectedObject = DataTools.SystemInformation.SysInfo.OSInfo;
+
+            this._props4.SelectedObject = DataTools.SystemInformation.SysInfo.LogicalProcessors;
+            this._props.SelectedObject = DataTools.SystemInformation.SysInfo.NativeEnvironment;
+            this._props2.SelectedObject = DataTools.SystemInformation.SysInfo.MemoryInfo;
+
         }
 
         private void _Quit_Click(object sender, RoutedEventArgs e)

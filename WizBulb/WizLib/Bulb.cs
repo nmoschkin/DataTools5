@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
+using WizLib.Localization;
 
 namespace WizLib
 {
@@ -20,7 +22,7 @@ namespace WizLib
         GetSystemConfig
     }
 
-    public class Bulb : ViewModelBase
+    public class Bulb : ViewModelBase //, IComparable
     {
 
         public const int DefaultPort = 38899;
@@ -47,7 +49,7 @@ namespace WizLib
 
         protected int port = DefaultPort;
 
-        protected IPAddress addr;
+        protected string addr;
 
         protected string name;
 
@@ -125,7 +127,7 @@ namespace WizLib
             }
         }
 
-        public IPAddress IPAddress
+        public string IPAddress
         {
             get => addr;
             set
@@ -145,12 +147,12 @@ namespace WizLib
 
         public Bulb(IPAddress addr, int port = DefaultPort, int timeout = 10000)
         {
-            this.addr = addr;
+            this.addr = addr.ToString();
             this.port = port;
             this.timeout = timeout;
         }
 
-        public Bulb(string addr, int port = DefaultPort, int timeout = 10000) : this(IPAddress.Parse(addr), port, timeout)
+        public Bulb(string addr, int port = DefaultPort, int timeout = 10000) : this(System.Net.IPAddress.Parse(addr), port, timeout)
         {
         }
 
@@ -176,21 +178,50 @@ namespace WizLib
             else TurnOff();
         }
 
-        public LightMode Scene
+        public string Scene
         {
             get
             {
-                if (settings == null || settings.Scene == null)
+                if (settings == null)
                 {
-                    return null;
+                    return LightMode.LightModes[0].ToString();
+                }
+                else if (settings.Scene == null && settings.State == null)
+                {
+                    return AppResources.UnknownState;
+                }
+                else if (settings.State == false)
+                {
+                    return AppResources.Off;
+                }
+                else if ((settings.Scene ?? 0) == 0)
+                {
+                    if (settings.Color != null)
+                    {
+                        var c = (Color)settings.Color;
+                        var s = LightMode.FindNameForColor(c);
+
+                        if (s != null)
+                        {
+                            return $"{AppResources.CustomColor}: {s}";
+                        }
+                        else
+                        {
+                            return $"{AppResources.CustomColor}: RGB ({c.R}, {c.G}, {c.B})";
+                        }
+                    }
+                    else
+                    {
+                        return LightMode.LightModes[0].ToString();
+                    }
                 }
                 else if (LightMode.LightModes.ContainsKey(settings.Scene ?? 0))
                 {
-                    return LightMode.LightModes[settings.Scene ?? 0];
+                    return LightMode.LightModes[settings.Scene ?? 0].ToString();
                 }
                 else
                 {
-                    return null;
+                    return LightMode.LightModes[0].ToString();
                 }
             }
         }
@@ -281,7 +312,18 @@ namespace WizLib
 
         public async Task<bool> GetPilot()
         {
-            var cmd = new PilotCommand() { Method = "getPilot" };
+            return await GetMethod(PilotMethod.GetPilot);
+        }
+
+        public async Task<bool> GetSystemConfig()
+        {
+            return await GetMethod(PilotMethod.GetSystemConfig);
+        }
+
+
+        internal async Task<bool> GetMethod(PilotMethod m)
+        {
+            var cmd = new PilotCommand() { Method = m };
             string json;
             
             try
@@ -316,7 +358,14 @@ namespace WizLib
         /// </summary>
         public void Pulse(int delta = -70, int pulseTime = 500)
         {
-            _ = SendCommand($"{{\"method\": \"pulse\", \"id\": 22, \"params\": {{\"delta\": {delta}, \"duration\": {pulseTime}}}}}");
+            var cmd = new PilotCommand() { Method = PilotMethod.Pulse };
+            cmd.Params = new Pilot()
+            {
+                Delta = delta,
+                Duration = pulseTime
+            };
+
+            _ = SendCommand(cmd);
             // TurnOn();
         }
 
@@ -326,7 +375,7 @@ namespace WizLib
         public void SetPilot()
         {
             if (settings == null) return;
-            var cmd = new PilotCommand() { Method = "setPilot", Params = Settings.Clone(true) };
+            var cmd = new PilotCommand() { Method = PilotMethod.SetPilot, Params = Settings.Clone(true) };
             if (cmd.Params.Color != null) cmd.Params.Scene = null;
 
             _ = SendCommand(cmd);
@@ -382,56 +431,6 @@ namespace WizLib
 
         }
 
-        //protected byte[] SendUDP(byte[] cmd)
-        //{
-        //    int maxdg = 100;
-        //    int time = 100;
-
-        //    byte[] buffer = new byte[256];
-
-        //    var sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-        //    sock.Bind(new IPEndPoint(LocalAddress, port));
-
-        //    var ep = new IPEndPoint(addr, port);
-
-        //    sock.Connect(ep);
-
-        //    sock.SendTimeout = sock.ReceiveTimeout = timeout;
-        //    sock.Blocking = true;
-
-        //    int dg = 0;
-        //    int r = 0;
-
-        //    sock.BeginReceive(buffer, 0, 256, SocketFlags.None, (a) =>
-        //    {
-        //        if (a.IsCompleted)
-        //        {
-        //            try
-        //            {
-        //                r = ((Socket)a.AsyncState)?.EndReceive(a) ?? 0;
-        //            }
-        //            catch
-        //            {
-
-        //            }
-        //        }
-        //    }, sock);
-
-        //    while (r == 0 && dg < maxdg)
-        //    {
-        //        dg++;
-
-        //        sock.Send(cmd);
-        //        Task.Delay(time);
-        //    }
-
-        //    sock?.Close();
-        //    sock = null;
-
-        //    return buffer;
-        //}
-
-
         protected async Task<byte[]> SendUDP(byte[] cmd, string localAddr = null)
         {
 
@@ -442,7 +441,7 @@ namespace WizLib
             int port = DefaultPort;
 
             if (localAddr != null)
-                LocalAddress = IPAddress.Parse(localAddr);
+                LocalAddress = System.Net.IPAddress.Parse(localAddr);
 
             if (LocalAddress == null)
             {
@@ -471,9 +470,11 @@ namespace WizLib
                         try
                         {
                             var recvBuffer = udpClient.Receive(ref from);
-                            buffer = recvBuffer;
-
-                            return;
+                            if (addr == from.Address.ToString())
+                            {
+                                buffer = recvBuffer;
+                                return;
+                            }
                         }
                         catch
                         {
@@ -483,18 +484,19 @@ namespace WizLib
                     }
 
                     await Task.Delay(100);
-                    tdelc++;
-                    if (tdelc >= 5)
-                    {
-                        //udpClient.Send(buffer, buffer.Length, "255.255.255.255", port);
-                        tdelc = 0;
-                    }
+                    //tdelc++;
+
+                    //if (tdelc >= 5)
+                    //{
+                    //    udpClient.Send(buffer, buffer.Length, "255.255.255.255", port);
+                    //    tdelc = 0;
+                    //}
                 }
 
                 if (HasConsole) Console.WriteLine("Finished");
             });
 
-            udpClient.Send(buffer, buffer.Length, addr.ToString(), port);
+            udpClient.Send(buffer, buffer.Length, addr, port);
             await t;
 
             udpClient?.Close();
@@ -504,7 +506,7 @@ namespace WizLib
 
         }
 
-        public static async Task<List<Bulb>> ScanForBulbs(string localAddr, ScanModes mode = ScanModes.Registration, int timeout = 5, BulbScanCallback callback = null)
+        public static async Task<List<Bulb>> ScanForBulbs(string localAddr, string macAddr, ScanModes mode = ScanModes.Registration, int timeout = 5, BulbScanCallback callback = null)
         {
             if (HasConsole) Console.WriteLine("Scanning For Bulbs...");
             List<Bulb> bulbs = new List<Bulb>();
@@ -512,7 +514,7 @@ namespace WizLib
             byte[] buffer = null;
             int port = DefaultPort;
 
-            LocalAddress = IPAddress.Parse(localAddr);
+            LocalAddress = System.Net.IPAddress.Parse(localAddr);
 
             var udpClient = new UdpClient();
             udpClient.Client.Bind(new IPEndPoint(localip, DefaultPort));
@@ -546,6 +548,7 @@ namespace WizLib
                             {
                                 bulb = new Bulb(from.Address);
                                 bulb.Settings = p.Result;
+
                                 bool already = false;
 
                                 foreach (var bchk in bulbs)
@@ -556,7 +559,7 @@ namespace WizLib
                                         break;
                                     }
                                 }
-                                
+
                                 if (already) continue;
 
                                 bulbs.Add(bulb);
@@ -580,12 +583,12 @@ namespace WizLib
                     }
 
                     await Task.Delay(100);
-                    tdelc++;
-                    if (tdelc >= 5)
-                    {
-                        udpClient.Send(buffer, buffer.Length, "255.255.255.255", port);
-                        tdelc = 0;
-                    }
+                    //tdelc++;
+                    //if (tdelc >= 5)
+                    //{
+                    //    udpClient.Send(buffer, buffer.Length, "255.255.255.255", port);
+                    //    tdelc = 0;
+                    //}
                 }
 
                 if (HasConsole) Console.WriteLine("Finished");
@@ -595,19 +598,19 @@ namespace WizLib
 
             if (mode == ScanModes.Registration)
             {
-                pilot.Method = "registration";
-                pilot.Params.PhoneMac = "94e6f7a27e66";
+                pilot.Method = PilotMethod.Registration;
+                pilot.Params.PhoneMac = macAddr;
                 pilot.Params.Register = false;
                 pilot.Params.PhoneIp = localAddr;
                 pilot.Params.ID = "12";
             }
             else if (mode == ScanModes.GetPilot)
             {
-                pilot.Method = "getPilot";
+                pilot.Method = PilotMethod.GetPilot;
             }
             else
             {
-                pilot.Method = "getSystemConfig";
+                pilot.Method = PilotMethod.GetSystemConfig;
             }
 
             var data = pilot.AssembleCommand();
@@ -622,5 +625,85 @@ namespace WizLib
             return bulbs;
         }
 
+        //public int CompareTo(object obj)
+        //{
+        //    if (obj is Bulb other)
+        //    {
+        //        if (Scene != null && other.Scene != null)
+        //        {
+        //            return Scene.CompareTo(other.Scene);
+        //        }
+        //        else 
+        //        {
+        //            var i = string.Compare(Name, other.Name);
+
+        //            if (i == 0)
+        //            {
+
+        //                i = string.Compare(IPAddress.ToString(), other.IPAddress.ToString());
+        //                if (i == 0)
+        //                {
+        //                    i = string.Compare(Settings?.MACAddress, other.Settings?.MACAddress);
+
+        //                }
+        //            }
+
+        //            return i;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return -1;
+        //    }
+        //}
     }
+
+
+
+    //public class BulbComparer : System.Collections.IComparer
+    //{
+    //    public string PropertyName { get; set; } = "Scene";
+
+    //    public int Compare(object a, object b)
+    //    {
+    //        var la = a as Bulb;
+    //        var lb = b as Bulb;
+
+    //        if (la == null && lb == null)
+    //        {
+    //            return 0;
+    //        }
+    //        else if (la == null && lb != null)
+    //        {
+    //            return -1;
+    //        }
+    //        else if (la != null && lb == null)
+    //        {
+    //            return 1;
+    //        }
+    //        else
+    //        {
+    //            var sa = la.Scene;
+    //            var sb = lb.Scene;
+
+    //            if (sa == null && sb == null)
+    //            {
+    //                return 0;
+    //            }
+    //            else if (sa == null && sb != null)
+    //            {
+    //                return -1;
+    //            }
+    //            else if (sa != null && sb == null)
+    //            {
+    //                return 1;
+    //            }
+    //            else
+    //            {
+    //                return sa.CompareTo(sb);
+    //            }
+
+    //        }
+    //    }
+    //}
 }
