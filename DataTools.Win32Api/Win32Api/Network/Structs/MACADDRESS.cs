@@ -35,7 +35,6 @@ namespace DataTools.Win32Api.Network
     {
         [MarshalAs(UnmanagedType.ByValArray, ArraySubType = UnmanagedType.U1, SizeConst = IfDefApi.MAX_ADAPTER_ADDRESS_LENGTH)]
         public byte[] Data;
-
         
         public static bool operator ==(MACADDRESS val1, MACADDRESS val2)
         {
@@ -140,6 +139,16 @@ namespace DataTools.Win32Api.Network
         public override string ToString()
         {
             return ToString(true);
+        }
+
+        public static implicit operator System.Net.NetworkInformation.PhysicalAddress(MACADDRESS src)
+        {
+            return System.Net.NetworkInformation.PhysicalAddress.Parse(src.ToString(false, true));
+        }
+
+        public static implicit operator MACADDRESS(System.Net.NetworkInformation.PhysicalAddress src)
+        {
+            return new MACADDRESS(src.GetAddressBytes());
         }
 
         public string ToString(bool delineate, bool upperCase = false)
