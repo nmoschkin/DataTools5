@@ -1,2 +1,0 @@
-#define MMHOOKLIB_API __declspec(dllexport)
-#define MMHOOKLIB_API __declspec(dllimport)

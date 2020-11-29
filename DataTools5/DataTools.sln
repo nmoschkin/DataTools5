@@ -9,11 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTools.Hardware", "DataT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SysInfoTool", "SysInfoTool\SysInfoTool.csproj", "{550DD7EE-2829-4B10-9EA3-6FA863FEDA33}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "Utility\Utility.csproj", "{10A06282-C8DE-4611-925F-6752A03F390A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LongSourceUtility", "LongSourceUtility\LongSourceUtility.csproj", "{10A06282-C8DE-4611-925F-6752A03F390A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTools.Win32Api", "DataTools.Win32Api\DataTools.Win32Api.csproj", "{CE90B972-2D92-4010-8AB1-3798B6950F9D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTools.Standard", "DataTools.Standard\DataTools.Standard.csproj", "{383A208D-1CE8-47B4-8973-B436C2111B4F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTools.ColorControls", "DataTools.ColorControls\DataTools.ColorControls.csproj", "{FD87ABAA-1B89-47AD-A068-A9E8E07D36B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +99,18 @@ Global
 		{383A208D-1CE8-47B4-8973-B436C2111B4F}.Release|x64.Build.0 = Release|Any CPU
 		{383A208D-1CE8-47B4-8973-B436C2111B4F}.Release|x86.ActiveCfg = Release|Any CPU
 		{383A208D-1CE8-47B4-8973-B436C2111B4F}.Release|x86.Build.0 = Release|Any CPU
+		{FD87ABAA-1B89-47AD-A068-A9E8E07D36B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD87ABAA-1B89-47AD-A068-A9E8E07D36B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD87ABAA-1B89-47AD-A068-A9E8E07D36B6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FD87ABAA-1B89-47AD-A068-A9E8E07D36B6}.Debug|x64.Build.0 = Debug|Any CPU
+		{FD87ABAA-1B89-47AD-A068-A9E8E07D36B6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FD87ABAA-1B89-47AD-A068-A9E8E07D36B6}.Debug|x86.Build.0 = Debug|Any CPU
+		{FD87ABAA-1B89-47AD-A068-A9E8E07D36B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD87ABAA-1B89-47AD-A068-A9E8E07D36B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD87ABAA-1B89-47AD-A068-A9E8E07D36B6}.Release|x64.ActiveCfg = Release|Any CPU
+		{FD87ABAA-1B89-47AD-A068-A9E8E07D36B6}.Release|x64.Build.0 = Release|Any CPU
+		{FD87ABAA-1B89-47AD-A068-A9E8E07D36B6}.Release|x86.ActiveCfg = Release|Any CPU
+		{FD87ABAA-1B89-47AD-A068-A9E8E07D36B6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
