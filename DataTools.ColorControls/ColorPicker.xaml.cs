@@ -202,12 +202,19 @@ namespace DataTools.ColorControls
 
         private void PickerSite_MouseMove(object sender, MouseEventArgs e)
         {
-            if (ColorOver != null)
+            if (ColorOver != null || ((e.LeftButton == MouseButtonState.Pressed) && (ColorHit != null)))
             {
                 var pt = e.GetPosition(PickerSite);
                 var c = cwheel.HitTest((int)pt.X, (int)pt.Y);
+                var ev = new ColorHitEventArgs(c);
 
-                ColorOver.Invoke(this, new ColorHitEventArgs(c));
+                ColorOver?.Invoke(this, ev);
+
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    ColorHit?.Invoke(this, ev);
+                }
+
             }
         }
 

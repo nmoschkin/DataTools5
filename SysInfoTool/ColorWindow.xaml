@@ -1,5 +1,5 @@
 ﻿<Window
-    x:Class="SysInfoTool.SysInfoWindow"
+    x:Class="SysInfoTool.ColorWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cc="clr-namespace:DataTools.ColorControls;assembly=DataTools.ColorControls"
@@ -11,8 +11,8 @@
     xmlns:pt="http://propertytools.org/wpf"
     xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
     x:Name="SysInfo"
-    Title="System Information"
-    Width="910"
+    Title="Color Picker Demo"
+    Width="510"
     Height="500"
     mc:Ignorable="d">
     <Window.Resources>
@@ -28,7 +28,6 @@
         ShowGridLines="False">
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -53,52 +52,52 @@
             </MenuItem>
         </Menu>
 
-        <WindowsFormsHost
+        <cc:ColorPicker
+            x:Name="WheelPicker"
             Grid.Row="1"
-            Grid.Column="0"
-            Margin="10,10,10,10"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch">
+            Grid.Column="2"
+            Margin="8"
+            ColorHit="WheelPicker_ColorHit"
+            ElementSize="10"
+            Mode="Wheel" />
 
-            <wf:PropertyGrid x:Name="_props" />
-        </WindowsFormsHost>
-
-        <WindowsFormsHost
-            Grid.Row="1"
-            Grid.Column="1"
-            Margin="10,10,10,10"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch">
-
-            <wf:PropertyGrid x:Name="_props2" />
-        </WindowsFormsHost>
-
-        <WindowsFormsHost
+        <cc:ColorPicker
+            x:Name="LinePicker"
             Grid.Row="2"
-            Grid.Column="0"
-            Margin="10,10,10,10"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch">
-
-            <wf:PropertyGrid x:Name="_props3" />
-        </WindowsFormsHost>
-
-        <WindowsFormsHost
-            Grid.Row="2"
-            Grid.Column="1"
-            Margin="10,10,10,10"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch">
-
-            <wf:PropertyGrid x:Name="_props4" />
-        </WindowsFormsHost>
-
+            Grid.Column="2"
+            Margin="8"
+            ColorHit="LinePicker_ColorHit"
+            ElementSize="10"
+            InvertSaturation="True"
+            Mode="LinearHorizontal" />
 
         <StatusBar Grid.Row="3" Grid.ColumnSpan="3">
-            <StatusBarItem HorizontalAlignment="Left">
+            <StatusBarItem HorizontalAlignment="Right">
                 <StackPanel Margin="4,2" Orientation="Horizontal">
 
-                    <Label x:Name="Status" Content="Ready" />
+                    <Label
+                        x:Name="WheelColor"
+                        Width="16"
+                        Height="16"
+                        BorderBrush="Black"
+                        BorderThickness="1" />
+
+                    <Label x:Name="WheelColorName" />
+
+                </StackPanel>
+            </StatusBarItem>
+            <Separator />
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Margin="4,2" Orientation="Horizontal">
+
+                    <Label
+                        x:Name="LineColor"
+                        Width="16"
+                        Height="16"
+                        BorderBrush="Black"
+                        BorderThickness="1" />
+
+                    <Label x:Name="LineColorName" />
 
                 </StackPanel>
             </StatusBarItem>

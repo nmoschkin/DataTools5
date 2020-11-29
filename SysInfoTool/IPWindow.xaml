@@ -58,6 +58,7 @@
                     <MenuItem x:Name="ShowFS" Header="Show File System _Monitor" />
                     <MenuItem x:Name="ShowHID" Header="Show HID Feature _Code Explorer" />
                     <MenuItem x:Name="ShowSysInfo" Header="Show S_ystem Information" />
+                    <MenuItem x:Name="ShowColor" Header="Show Color _Picker Demo" />
                     <MenuItem x:Name="Quit" Header="_Quit" />
                 </MenuItem.Items>
             </MenuItem>

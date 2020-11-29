@@ -19,6 +19,7 @@
   </PropertyGroup>
 		
   <ItemGroup>
+    <ProjectReference Include="..\DataTools.ColorControls\DataTools.ColorControls.csproj" />
     <ProjectReference Include="..\DataTools.Hardware\DataTools.Hardware.csproj" />
     <ProjectReference Include="..\DataTools\DataTools.csproj" />
   </ItemGroup>

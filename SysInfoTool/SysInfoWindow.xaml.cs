@@ -13,6 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using DataTools.ColorControls;
+using DataTools.Desktop.Unified;
+
 namespace SysInfoTool
 {
     public partial class SysInfoWindow : Window
@@ -44,5 +47,6 @@ namespace SysInfoTool
         {
             this.Close();
         }
+
     }
 }

@@ -75,6 +75,21 @@ namespace SysInfoTool
 
         public static readonly DependencyProperty FSWindowProperty = DependencyProperty.Register("FSWindow", typeof(FSMonTestWindow), typeof(IPWindow), new PropertyMetadata(null));
 
+        public ColorWindow ColorWindow
+        {
+            get
+            {
+                return (ColorWindow)this.GetValue(ColorWindowProperty);
+            }
+
+            set
+            {
+                this.SetValue(ColorWindowProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty ColorWindowProperty = DependencyProperty.Register("ColorWindow", typeof(ColorWindow), typeof(IPWindow), new PropertyMetadata(null));
+
         public Programs ProgramsWindow
         {
             get
@@ -188,6 +203,7 @@ namespace SysInfoTool
             ShowFS.Click += ShowFS_Click;
             ShowHID.Click += ShowHID_Click;
             ShowSysInfo.Click += ShowSysInfo_Click;
+            ShowColor.Click += ShowColor_Click;
             AdapterList.SelectionChanged += AdapterList_SelectionChanged;
 
 
@@ -227,6 +243,14 @@ namespace SysInfoTool
             //Hazmonic ret;
 
             //var i = BinarySearch.Search(example, "Feeling", "Text", out ret);
+
+        }
+
+        private void ShowColor_Click(object sender, RoutedEventArgs e)
+        {
+            ColorWindow = new ColorWindow();
+            ColorWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            ColorWindow.Show();
 
         }
 

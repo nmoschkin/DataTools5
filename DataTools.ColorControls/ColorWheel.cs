@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,16 +54,23 @@ namespace DataTools.Desktop
             if (imageBytes == null) return;
 
             var mm = new MemPtr();
-            var bmp = new Bitmap((int)Math.Ceiling(Bounds.Width), (int)Math.Ceiling(Bounds.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var bmp = new Bitmap(
+                (int)Math.Ceiling(Bounds.Width), 
+                (int)Math.Ceiling(Bounds.Height), 
+                PixelFormat.Format32bppArgb);
             
             mm.Alloc(bmp.Width * bmp.Height * 4);
 
-            var bm = new System.Drawing.Imaging.BitmapData();
+            var bm = new BitmapData();
 
             bm.Scan0 = mm.Handle;
             bm.Stride = bmp.Width * 4;
 
-            bm = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite | System.Drawing.Imaging.ImageLockMode.UserInputBuffer, System.Drawing.Imaging.PixelFormat.Format32bppArgb, bm);
+            bm = bmp.LockBits
+                (new Rectangle(0, 0, bmp.Width, bmp.Height), 
+                ImageLockMode.ReadWrite | ImageLockMode.UserInputBuffer, 
+                PixelFormat.Format32bppArgb, 
+                bm);
 
             mm.FromByteArray(ImageBytes);
 
@@ -140,7 +148,6 @@ namespace DataTools.Desktop
             int y1 = 0;
             int y2 = height;
 
-            PolarCoordinates pc;
             HSVDATA hsv;
 
             int color;
@@ -264,7 +271,7 @@ namespace DataTools.Desktop
 
             SolidBrush br;
 
-            br = new SolidBrush(Color.FromArgb(unchecked((int)0xffffffff)));
+            br = new SolidBrush(Color.FromArgb(unchecked((int)0x00ffffff)));
             g.FillRectangle(br, Bounds);
             br.Dispose();
 
