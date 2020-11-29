@@ -12,32 +12,80 @@ using DataTools.Memory;
 
 namespace DataTools.Desktop
 {
+    
+    /// <summary>
+    /// Color picker mode
+    /// </summary>
     public enum ColorPickerMode
     {
+        
+        /// <summary>
+        /// Smooth color wheel
+        /// </summary>
         Wheel = 0,
+
+        /// <summary>
+        /// Smooth horizontal linear gradient
+        /// </summary>
         LinearHorizontal = 1,
+
+        /// <summary>
+        /// Smooth vertical linear gradiant
+        /// </summary>
         LinearVertical = 2,
+
+        /// <summary>
+        /// Hexagonal chunk gradient
+        /// </summary>
         HexagonWheel = 3
     }
 
+    /// <summary>
+    /// Color wheel element shapes
+    /// </summary>
     public enum ColorWheelShapes
     {
+        /// <summary>
+        /// Pixel element
+        /// </summary>
         Point = 1,
+
+        /// <summary>
+        /// Hexagonal element
+        /// </summary>
         Hexagon = 2
     }
 
-    public class ColorWheel
+    /// <summary>
+    /// Class to create a color picker.
+    /// </summary>
+    public sealed class ColorWheel
     {
+        /// <summary>
+        /// All individual color elements in the current instance.
+        /// </summary>
         public List<ColorWheelElement> Elements { get; private set; } = new List<ColorWheelElement>();
 
+        /// <summary>
+        /// The mode of the current instance.
+        /// </summary>
         public ColorPickerMode Mode { get; private set; }
 
+        /// <summary>
+        /// The bounds of the current instance
+        /// </summary>
         public RectangleF Bounds { get; private set; }
 
+        /// <summary>
+        /// True to invert the location of lowest and highest saturation points.
+        /// </summary>
         public bool InvertSaturation { get; private set; }
 
         private byte[] imageBytes;
         
+        /// <summary>
+        /// Gets the raw bytes of the picker image.
+        /// </summary>
         public byte[] ImageBytes
         {
             get => imageBytes;
@@ -47,6 +95,11 @@ namespace DataTools.Desktop
             }
         }
 
+        /// <summary>
+        /// Gets the picker display bitmap.
+        /// </summary>
+        /// <remarks>
+        /// This image should never be resized, stretched or transformed in any way.</remarks>
         public Bitmap Bitmap { get; private set; }
 
         private void ToBitmap()
@@ -92,32 +145,39 @@ namespace DataTools.Desktop
             for (i = 0; i < fillPoints.Length; i++)
             {
                 if (fillPoints[i].Y < y && fillPoints[j].Y >= y
-                || fillPoints[j].Y < y && fillPoints[i].Y >= y)
+                    || fillPoints[j].Y < y && fillPoints[i].Y >= y)
                 {
                     if (fillPoints[i].X + (y - fillPoints[i].Y) / (fillPoints[j].Y - fillPoints[i].Y) * (fillPoints[j].X - fillPoints[i].X) < x)
                     {
                         oddNodes = !oddNodes;
                     }
                 }
+
                 j = i;
             }
 
             return oddNodes;
         }
 
+        /// <summary>
+        /// Gets the color at the specified location.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public Color HitTest(int x, int y)
         {
             foreach (ColorWheelElement e in Elements)
             {
-                if (e.FillPoints.Length == 1)
+                if (e.PolyPoints.Length == 1)
                 {
-                    var f = e.FillPoints[0];                     
+                    var f = e.PolyPoints[0];                     
                     if (f.X == x & f.Y == y)
                         return e.Color;
                 }
                 else
                 {
-                    if (PointInPolygon(e.FillPoints, x, y))
+                    if (PointInPolygon(e.PolyPoints, x, y))
                     {
                         return e.Color;
                     }
@@ -127,11 +187,25 @@ namespace DataTools.Desktop
             return Color.Empty;
         }
 
+        /// <summary>
+        /// Gets the color at the specified location.
+        /// </summary>
+        /// <param name="pt"></param>
+        /// <returns></returns>
         public Color HitTest(Point pt)
         {
             return HitTest(pt.X, pt.Y);
         }
 
+        /// <summary>
+        /// Instantiate a linear color picker.
+        /// </summary>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        /// <param name="value">Brightness value in percentage.</param>
+        /// <param name="offset">Hue offset in degrees.</param>
+        /// <param name="invert">True to invert saturation.</param>
+        /// <param name="vertical">True to draw vertically.</param>
         public ColorWheel(int width, int height, double value = 1d, double offset = 0d, bool invert = false, bool vertical = false)
         {
             if (Bitmap != null)
@@ -204,11 +278,11 @@ namespace DataTools.Desktop
 
                     var el = new ColorWheelElement();
 
-                    el.FillPoints = new PointF[1] { new PointF(i, j) };
+                    el.PolyPoints = new PointF[1] { new PointF(i, j) };
                     el.Color = Color.FromArgb(color);
                     el.Shape = ColorWheelShapes.Point;
                     el.Bounds = new Rectangle(i, j, 1, 1);
-                    el.Center = el.FillPoints[0];
+                    el.Center = el.PolyPoints[0];
 
                     Elements.Add(el);
                     rawColors.Add(color);
@@ -233,6 +307,13 @@ namespace DataTools.Desktop
             ToBitmap();
         }
 
+        /// <summary>
+        /// Instantiate a hexagonal chunk color picker.
+        /// </summary>
+        /// <param name="pixelRadius">Radius of the circle in pixels.</param>
+        /// <param name="elementSize">Size of each element in partial pixels.</param>
+        /// <param name="value">Brightness value in percentage.</param>
+        /// <param name="invert">True to invert saturation.</param>
         public ColorWheel(int pixelRadius, float elementSize, double value = 1d, bool invert = false)
         {
             if (Bitmap != null)
@@ -352,49 +433,49 @@ namespace DataTools.Desktop
 
                     var el = new ColorWheelElement();
 
-                    el.FillPoints = new PointF[6];
+                    el.PolyPoints = new PointF[6];
                     el.Center = new PointF(i, j);
                     el.Color = Color.FromArgb(color);
                     el.Polar = pc;
                     el.Shape = ColorWheelShapes.Hexagon;
                     el.Bounds = new RectangleF(i - (elementSize / 2f), j - (elementSize / 2f), (float)elementSize, (float)elementSize);
-                    el.Center = el.FillPoints[0];
+                    el.Center = el.PolyPoints[0];
 
                     pc.Arc = -30;
                     pc.Radius = (double)elementSize / 2;
 
-                    el.FillPoints[0] = pc.ToScreenCoordinates(el.Bounds);
+                    el.PolyPoints[0] = pc.ToScreenCoordinates(el.Bounds);
 
                     if (cor == 0f)
                     {
-                        cor = el.FillPoints[0].Y;
+                        cor = el.PolyPoints[0].Y;
                         stepY -= cor;
                     }
 
                     pc.Arc = 60 - 30;
-                    el.FillPoints[1] = pc.ToScreenCoordinates(el.Bounds);
+                    el.PolyPoints[1] = pc.ToScreenCoordinates(el.Bounds);
 
                     pc.Arc = 120 - 30;
-                    el.FillPoints[2] = pc.ToScreenCoordinates(el.Bounds);
+                    el.PolyPoints[2] = pc.ToScreenCoordinates(el.Bounds);
 
                     pc.Arc = 180 - 30;
-                    el.FillPoints[3] = pc.ToScreenCoordinates(el.Bounds);
+                    el.PolyPoints[3] = pc.ToScreenCoordinates(el.Bounds);
 
                     pc.Arc = 240 - 30;
-                    el.FillPoints[4] = pc.ToScreenCoordinates(el.Bounds);
+                    el.PolyPoints[4] = pc.ToScreenCoordinates(el.Bounds);
 
                     pc.Arc = 300 - 30;
-                    el.FillPoints[5] = pc.ToScreenCoordinates(el.Bounds);
+                    el.PolyPoints[5] = pc.ToScreenCoordinates(el.Bounds);
 
                     for (z = 0; z < 6; z++)
                     {
-                        el.FillPoints[z].Y -= cor;
+                        el.PolyPoints[z].Y -= cor;
                     }
 
                     Elements.Add(el);
 
                     br = new SolidBrush(el.Color);
-                    g.FillPolygon(br, el.FillPoints);
+                    g.FillPolygon(br, el.PolyPoints);
                     br.Dispose();
                 }
 
@@ -405,6 +486,13 @@ namespace DataTools.Desktop
 
         }
 
+        /// <summary>
+        /// Instantiate a smooth color wheel.
+        /// </summary>
+        /// <param name="pixelRadius">Radius of the circle in pixels.</param>
+        /// <param name="value">Brightness value in percentage.</param>
+        /// <param name="rotation">Hue offset in degrees.</param>
+        /// <param name="invert">True to invert saturation.</param>
         public ColorWheel(int pixelRadius, double value = 1d, double rotation = 0d, bool invert = false)
         {
             if (Bitmap != null)
@@ -468,12 +556,12 @@ namespace DataTools.Desktop
 
                     var el = new ColorWheelElement();
 
-                    el.FillPoints = new PointF[1] { new PointF(i, j) };
+                    el.PolyPoints = new PointF[1] { new PointF(i, j) };
                     el.Color = Color.FromArgb(color);
                     el.Polar = pc;
                     el.Shape = ColorWheelShapes.Point;
                     el.Bounds = new RectangleF(i, j, 1, 1);
-                    el.Center = el.FillPoints[0];
+                    el.Center = el.PolyPoints[0];
                     
                     Elements.Add(el);
                     rawColors.Add(color);
@@ -500,13 +588,39 @@ namespace DataTools.Desktop
         }
     }
 
+    /// <summary>
+    /// Structure that represents an element on the color picker.
+    /// </summary>
     public struct ColorWheelElement
     {
+        /// <summary>
+        /// Element Color
+        /// </summary>
         public Color Color;
+
+        /// <summary>
+        /// Location In Polar Coordinates (If Applicable)
+        /// </summary>
         public PolarCoordinates Polar;
+
+        /// <summary>
+        /// Center Point
+        /// </summary>
         public PointF Center;
+
+        /// <summary>
+        /// Boundary Box
+        /// </summary>
         public RectangleF Bounds;
-        public PointF[] FillPoints;
+
+        /// <summary>
+        /// Polygon Points
+        /// </summary>
+        public PointF[] PolyPoints;
+
+        /// <summary>
+        /// Element Shape
+        /// </summary>
         public ColorWheelShapes Shape;
     }
 
