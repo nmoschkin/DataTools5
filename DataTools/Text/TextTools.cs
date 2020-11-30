@@ -2310,38 +2310,51 @@ namespace DataTools.Text
         /// <param name="format">Optional numeric format for the resulting value.</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static string PrintFriendlySpeed(long speed, string format = null)
+        public static string PrintFriendlySpeed(ulong speed, string format = null)
         {
-            double fs = 0;
-            string nom = null;
+            double fs;
+            double spd = speed;
+            string nom;
 
-            if ((speed >= (1024L * 1024 * 1024 * 1024)))
+            if ((spd >= (1024L * 1024 * 1024 * 1024 * 1024 * 1024)))
             {
-                fs = (speed / (1024L * 1024 * 1024 * 1024));
+                fs = (spd / (1024L * 1024 * 1024 * 1024 * 1024 * 1024));
+                nom = "EB/s";
+                //wow
+            }
+            else if ((spd >= (1024L * 1024 * 1024 * 1024 * 1024)))
+            {
+                fs = (spd / (1024L * 1024 * 1024 * 1024 * 1024));
+                nom = "PB/s";
+                //wow
+            }
+            else if ((spd >= (1024L * 1024 * 1024 * 1024)))
+            {
+                fs = (spd / (1024L * 1024 * 1024 * 1024));
                 nom = "TB/s";
                 //wow
             }
-            else if ((speed >= (1024 * 1024 * 1024)))
+            else if ((spd >= (1024 * 1024 * 1024)))
             {
-                fs = (speed / (1024 * 1024 * 1024));
+                fs = (spd / (1024 * 1024 * 1024));
                 nom = "GB/s";
                 // still wow
             }
-            else if ((speed >= (1024 * 1024)))
+            else if ((spd >= (1024 * 1024)))
             {
-                fs = (speed / (1024 * 1024));
+                fs = (spd / (1024 * 1024));
                 nom = "MB/s";
                 // okay
             }
-            else if ((speed >= (1024)))
+            else if ((spd >= (1024)))
             {
-                fs = (speed / (1024));
+                fs = (spd / (1024));
                 nom = "KB/s";
                 // fine.
             }
             else
             {
-                fs = speed;
+                fs = spd;
                 nom = "B/s";
                 // wow.
             }

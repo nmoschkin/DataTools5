@@ -82,10 +82,12 @@ namespace DataTools.SystemInformation
         }
 
         internal OSVERSIONINFOEX Source { get; private set; }
+        internal string displayVersion;
 
-        internal OSVersionInfo(OSVERSIONINFOEX source)
+        internal OSVersionInfo(OSVERSIONINFOEX source, string displayVersion)
         {
             Source = source;
+            this.displayVersion = displayVersion;
         }
 
         /// <summary>
@@ -171,6 +173,11 @@ namespace DataTools.SystemInformation
         {
             get => Source.wProductType;
         }
+        
+        public string DisplayVersion
+        {
+            get => displayVersion;
+        }
 
         /// <summary>
         /// Returns a verbose description of the operating system, including version and build number.
@@ -182,7 +189,7 @@ namespace DataTools.SystemInformation
         {
             get
             {
-                return string.Format("{0} {4} ({1}.{2} Build {3})", Description, MajorVersion, MinorVersion, BuildNumber, Architecture.ToString());
+                return string.Format("{0} {5} ({4}) ({1}.{2} Build {3})", Description, MajorVersion, MinorVersion, BuildNumber, Architecture.ToString(), DisplayVersion);
             }
         }
 

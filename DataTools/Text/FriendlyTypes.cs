@@ -473,7 +473,7 @@ namespace DataTools.Text
 
         public override string ToString()
         {
-            return TextTools.PrintFriendlySpeed((long)Value);
+            return TextTools.PrintFriendlySpeed(Value);
         }
     }
 

@@ -249,6 +249,7 @@ namespace DataTools.SystemInformation
         {
             var lpOS = new OSVERSIONINFOEX();
             lpOS.dwOSVersionInfoSize = Marshal.SizeOf(lpOS);
+            string dispVer = null;
 
             GetVersionExW(ref lpOS);
 
@@ -261,8 +262,10 @@ namespace DataTools.SystemInformation
                 int cb = int.Parse((string)key.GetValue("CurrentBuildNumber"));
                 int build = cb;
                 
+                dispVer = (string)key.GetValue("DisplayVersion");
+
                 //string name = (string)(key.GetValue("ProductName"));
-                
+
                 lpOS.dwMajorVersion = maj;
                 lpOS.dwMinorVersion = min;
                 lpOS.dwBuildNumber = build;
@@ -270,7 +273,7 @@ namespace DataTools.SystemInformation
                 key.Close();
             }
 
-            return new OSVersionInfo(lpOS);
+            return new OSVersionInfo(lpOS, dispVer);
         }
     }
 }

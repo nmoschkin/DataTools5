@@ -265,6 +265,7 @@ namespace DataTools.Desktop
         {
             if (resId is null)
                 return false;
+
             return LibCache.TryGetValue(resId, out icn);
         }
 
@@ -614,11 +615,6 @@ namespace DataTools.Desktop
 
             if (fileName is null)
                 return null;
-            lk = fileName + "," + -iIcon;
-            if (LookupLibIcon(lk, ref icn))
-            {
-                return icn;
-            }
 
             int cx;
             int cy;
@@ -626,6 +622,14 @@ namespace DataTools.Desktop
             // a shortcut.  Every value in the StandardIcons enum begins with 'Icon' and ends with a number.
             cx = (int)TextTools.FVal(desiredSize.ToString().Substring(4));
             cy = cx;
+
+            lk = fileName + "," + -iIcon + $"{cx},{cy}";
+
+            if (LookupLibIcon(lk, ref icn))
+            {
+                return icn;
+            }
+
             IntPtr hicon;
             int idx = iIcon;
             IntPtr hres;

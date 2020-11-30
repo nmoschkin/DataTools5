@@ -609,9 +609,37 @@ namespace DataTools.Hardware.Network
                 {
                     // Get a WPFImage 
 
+                    // string library = @"%systemroot%\system32\shell32.dll"
+
+
                     if (OperStatus == IF_OPER_STATUS.IfOperStatusUp)
                     {
-                        _Icon = Resources.MakeWPFImage(Resources.GetItemIcon(mm, Resources.SystemIconSizes.ExtraLarge));
+                        //if (HasInternet == InternetStatus.HasInternet)
+                        //{
+                        //    var icn = Resources.LoadLibraryIcon(Environment.ExpandEnvironmentVariables(@"%systemroot%\system32\netcenter.dll") + ",2", StandardIcons.Icon16);
+                        //    var icn2 = Resources.GetItemIcon(mm, Resources.SystemIconSizes.ExtraLarge);
+
+                        //    var bmp = new System.Drawing.Bitmap(icn2.Width, icn2.Height,  System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                        //    var g = System.Drawing.Graphics.FromImage(bmp);
+
+                        //    g.DrawIcon(icn2, 0, 0);
+                        //    g.DrawIcon(icn, 0, icn2.Height - 16);
+
+                        //    g.Dispose();
+
+                        //    _Icon = Resources.MakeWPFImage(bmp);
+                        //    bmp.Dispose();
+                        //    icn.Dispose();
+                        //    icn2.Dispose();
+                        //}
+                        //else
+                        //{
+
+
+                            _Icon = Resources.MakeWPFImage(Resources.GetItemIcon(mm, Resources.SystemIconSizes.ExtraLarge));
+
+                        //}
+
                     }
                     else
                     {
@@ -1316,10 +1344,23 @@ namespace DataTools.Hardware.Network
             }
         }
 
+
+        private InternetStatus hasInet = InternetStatus.NotDetermined;
+
         /// <summary>
         /// Returns a value indicating whether or not this interface is connected to the internet.
         /// </summary>
-        public InternetStatus HasInternet { get; internal set; } = InternetStatus.NotDetermined;
+        public InternetStatus HasInternet
+        {
+            get => hasInet;
+            set
+            {
+                if (hasInet == value) return;
+                hasInet = value;
+
+                AssignNewNativeObject(Source);
+            }
+        }
 
         internal List<MIB_IFROW> PhysIfaceInternal
         {
