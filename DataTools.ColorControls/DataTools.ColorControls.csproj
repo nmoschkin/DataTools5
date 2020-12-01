@@ -28,10 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DataTools.Win32Api\DataTools.Win32Api.csproj" />
     <ProjectReference Include="..\DataTools\DataTools.csproj" />
   </ItemGroup>

@@ -69,6 +69,28 @@ namespace DataTools.ColorControls
 
 
 
+        public System.Windows.Media.Color SelectedColor
+        {
+            get { return (System.Windows.Media.Color)GetValue(SelectedColorProperty); }
+            set { SetValue(SelectedColorProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedColor.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedColorProperty =
+            DependencyProperty.Register("SelectedColor", typeof(System.Windows.Media.Color), typeof(ColorPicker), new PropertyMetadata(Colors.Transparent, SelectedColorPropertyChanged));
+
+        private static void SelectedColorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ColorPicker p)
+            {
+                if ((System.Windows.Media.Color)e.OldValue != (System.Windows.Media.Color)e.NewValue)
+                {
+                    //p.RenderPicker();
+                    p.SetSelectedColor();
+                }
+            }
+        }
+
         public bool InvertSaturation
         {
             get { return (bool)GetValue(InvertSaturationProperty); }
@@ -184,14 +206,15 @@ namespace DataTools.ColorControls
             InitializeComponent();
 
             // this.SizeChanged += ColorPicker_SizeChanged;
-            PickerSite.MouseMove += PickerSite_MouseMove;
-            PickerSite.MouseDown += PickerSite_MouseDown;
+            CursorCanvas.MouseMove += PickerSite_MouseMove;
+            CursorCanvas.MouseDown += PickerSite_MouseDown;
         }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
             RenderPicker();
+            var p = new Pen();
         }
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
@@ -220,13 +243,12 @@ namespace DataTools.ColorControls
 
         private void PickerSite_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (ColorHit != null)
-            {
-                var pt = e.GetPosition(PickerSite);
-                var c = cwheel.HitTest((int)pt.X, (int)pt.Y);
+            var pt = e.GetPosition(PickerSite);
+            var c = cwheel.HitTest((int)pt.X, (int)pt.Y);
 
-                ColorHit.Invoke(this, new ColorHitEventArgs(c));
-            }
+            SelectedColor = Color.FromArgb(c.A, c.R, c.G, c.B);
+
+            ColorHit?.Invoke(this, new ColorHitEventArgs(c));
 
         }
 
@@ -234,6 +256,45 @@ namespace DataTools.ColorControls
         {
             RenderPicker((int)e.NewSize.Width, (int)e.NewSize.Height);
         }
+
+        protected override void OnLostFocus(RoutedEventArgs e)
+        {
+            base.OnLostFocus(e);
+            Point.Visibility = Surround.Visibility = Visibility.Hidden;
+        }
+
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            base.OnGotFocus(e);
+            SetSelectedColor();
+        }
+
+        private void SetSelectedColor()
+        {
+            UniColor selc = SelectedColor;
+
+            foreach (var c in cwheel.Elements)
+            {
+                UniColor uc = c.Color;
+                if (selc == uc)
+                {
+                    Point.Visibility = Surround.Visibility = Visibility.Visible;
+
+                    Point.SetValue(Canvas.LeftProperty, (double)c.Center.X);
+                    Point.SetValue(Canvas.TopProperty, (double)c.Center.Y);
+
+                    Surround.SetValue(Canvas.LeftProperty, (double)c.Center.X - 8);
+                    Surround.SetValue(Canvas.TopProperty, (double)c.Center.Y - 8);
+
+                    Surround.Stroke = Point.Stroke = new SolidColorBrush(SelectedColor);
+
+                    return;
+                }
+            }
+
+            Point.Visibility = Surround.Visibility = Visibility.Hidden;
+        }
+
 
         private void RenderPicker(int w = 0, int h = 0)
         {
@@ -281,6 +342,7 @@ namespace DataTools.ColorControls
             }
 
             PickerSite.Source = BitmapTools.MakeWPFImage(cwheel.Bitmap);
+            SetSelectedColor();
         }
 
 

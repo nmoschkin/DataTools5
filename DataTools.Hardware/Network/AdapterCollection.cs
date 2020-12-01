@@ -32,7 +32,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
 using System.Reflection;
-using DataTools.MathTools;
+using DataTools.SortedLists;
 
 namespace DataTools.Hardware.Network
 {

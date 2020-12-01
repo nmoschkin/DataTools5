@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataTools.MathTools
+namespace DataTools.SortedLists
 {
     /// <summary>
     /// Implementation of binary search.

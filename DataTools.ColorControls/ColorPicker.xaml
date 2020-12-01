@@ -8,14 +8,43 @@
     d:DesignHeight="256"
     d:DesignWidth="256"
     Cursor="Cross"
+    Focusable="True"
     mc:Ignorable="d">
-    <Grid>
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <local:InvertEffect x:Key="invEff" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
         <Image
             x:Name="PickerSite"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Stretch="None" />
+        <Canvas
+            x:Name="CursorCanvas"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Background="Transparent">
 
+            <Ellipse
+                x:Name="Surround"
+                Width="16"
+                Height="16"
+                Effect="{StaticResource invEff}"
+                Stroke="Black"
+                StrokeThickness="1" />
+
+            <Ellipse
+                x:Name="Point"
+                Canvas.Left="8"
+                Canvas.Top="8"
+                Width="1"
+                Height="1"
+                Effect="{StaticResource invEff}"
+                Stroke="Black"
+                StrokeThickness="1" />
+        </Canvas>
     </Grid>
 </UserControl>

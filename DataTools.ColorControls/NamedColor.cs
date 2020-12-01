@@ -10,8 +10,8 @@ using DataTools.Desktop.Unified;
 using DataTools.Text;
 using DataTools.Win32Api;
 
-using static DataTools.MathTools.BinarySearch;
-using static DataTools.MathTools.QuickSort;
+using static DataTools.SortedLists.BinarySearch;
+using static DataTools.SortedLists.QuickSort;
 
 namespace DataTools.ColorControls
 {

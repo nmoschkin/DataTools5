@@ -7,15 +7,13 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataTools.MathTools
+namespace DataTools.SortedLists
 {
     /// <summary>
     /// Implementation of quick sort.
     /// </summary>
     public static class QuickSort
     {
-
-
 
         /// <summary>
         /// Sort an array of class objects by the property specified by propertyName that implements <see cref="IComparable{T}"/>.
@@ -246,10 +244,6 @@ namespace DataTools.MathTools
 
 
         #endregion
-
-
-
-
 
     }
 }
