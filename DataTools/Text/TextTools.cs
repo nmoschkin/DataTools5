@@ -2190,7 +2190,7 @@ namespace DataTools.Text
         /// <param name="format">Optional numeric format for the resulting value.</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static string PrintFriendlySize(double size, string format = null, bool binary = true)
+        public static string PrintFriendlySize(double size, string format = null, bool binary = false)
         {
             double fs;
             string nom;
@@ -2310,53 +2310,103 @@ namespace DataTools.Text
         /// <param name="format">Optional numeric format for the resulting value.</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static string PrintFriendlySpeed(ulong speed, string format = null)
+        public static string PrintFriendlySpeed(ulong speed, string format = null, bool binary = false)
         {
             double fs;
             double spd = speed;
             string nom;
 
-            if ((spd >= (1024L * 1024 * 1024 * 1024 * 1024 * 1024)))
+            if (binary)
             {
-                fs = (spd / (1024L * 1024 * 1024 * 1024 * 1024 * 1024));
-                nom = "EB/s";
-                //wow
-            }
-            else if ((spd >= (1024L * 1024 * 1024 * 1024 * 1024)))
-            {
-                fs = (spd / (1024L * 1024 * 1024 * 1024 * 1024));
-                nom = "PB/s";
-                //wow
-            }
-            else if ((spd >= (1024L * 1024 * 1024 * 1024)))
-            {
-                fs = (spd / (1024L * 1024 * 1024 * 1024));
-                nom = "TB/s";
-                //wow
-            }
-            else if ((spd >= (1024 * 1024 * 1024)))
-            {
-                fs = (spd / (1024 * 1024 * 1024));
-                nom = "GB/s";
-                // still wow
-            }
-            else if ((spd >= (1024 * 1024)))
-            {
-                fs = (spd / (1024 * 1024));
-                nom = "MB/s";
-                // okay
-            }
-            else if ((spd >= (1024)))
-            {
-                fs = (spd / (1024));
-                nom = "KB/s";
-                // fine.
+                if ((spd >= (1024L * 1024 * 1024 * 1024 * 1024 * 1024)))
+                {
+                    fs = (spd / (1024L * 1024 * 1024 * 1024 * 1024 * 1024));
+                    nom = "Eb/s";
+                    //wow
+                }
+                else if ((spd >= (1024L * 1024 * 1024 * 1024 * 1024)))
+                {
+                    fs = (spd / (1024L * 1024 * 1024 * 1024 * 1024));
+                    nom = "Pb/s";
+                    //wow
+                }
+                else if ((spd >= (1024L * 1024 * 1024 * 1024)))
+                {
+                    fs = (spd / (1024L * 1024 * 1024 * 1024));
+                    nom = "Tb/s";
+                    //wow
+                }
+                else if ((spd >= (1024 * 1024 * 1024)))
+                {
+                    fs = (spd / (1024 * 1024 * 1024));
+                    nom = "Gb/s";
+                    // still wow
+                }
+                else if ((spd >= (1024 * 1024)))
+                {
+                    fs = (spd / (1024 * 1024));
+                    nom = "Mb/s";
+                    // okay
+                }
+                else if ((spd >= (1024)))
+                {
+                    fs = (spd / (1024));
+                    nom = "Kb/s";
+                    // fine.
+                }
+                else
+                {
+                    fs = spd;
+                    nom = "b/s";
+                    // wow.
+                }
+
             }
             else
             {
-                fs = spd;
-                nom = "B/s";
-                // wow.
+                if ((spd >= (1000L * 1000 * 1000 * 1000 * 1000 * 1000)))
+                {
+                    fs = (spd / (1000L * 1000 * 1000 * 1000 * 1000 * 1000));
+                    nom = "Eb/s";
+                    //wow
+                }
+                else if ((spd >= (1000L * 1000 * 1000 * 1000 * 1000)))
+                {
+                    fs = (spd / (1000L * 1000 * 1000 * 1000 * 1000));
+                    nom = "Pb/s";
+                    //wow
+                }
+                else if ((spd >= (1000L * 1000 * 1000 * 1000)))
+                {
+                    fs = (spd / (1000L * 1000 * 1000 * 1000));
+                    nom = "Tb/s";
+                    //wow
+                }
+                else if ((spd >= (1000 * 1000 * 1000)))
+                {
+                    fs = (spd / (1000 * 1000 * 1000));
+                    nom = "Gb/s";
+                    // still wow
+                }
+                else if ((spd >= (1000 * 1000)))
+                {
+                    fs = (spd / (1000 * 1000));
+                    nom = "Mb/s";
+                    // okay
+                }
+                else if ((spd >= (1000)))
+                {
+                    fs = (spd / (1000));
+                    nom = "Kb/s";
+                    // fine.
+                }
+                else
+                {
+                    fs = spd;
+                    nom = "b/s";
+                    // wow.
+                }
+
             }
 
             if (format != null)
