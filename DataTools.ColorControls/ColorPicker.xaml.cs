@@ -45,15 +45,15 @@ namespace DataTools.ColorControls
         public event ColorHitEvent ColorHit;
         public event ColorHitEvent ColorOver;
 
+        
         public double HueOffset
         {
             get { return (double)GetValue(HueOffsetProperty); }
             set { SetValue(HueOffsetProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for HueOffset.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HueOffsetProperty =
-            DependencyProperty.Register("HueOffset", typeof(double), typeof(ColorPicker), new PropertyMetadata(0d, HueOffsetPropertyChanged));
+            DependencyProperty.Register(nameof(HueOffset), typeof(double), typeof(ColorPicker), new PropertyMetadata(0d, HueOffsetPropertyChanged));
 
         private static void HueOffsetPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -67,29 +67,78 @@ namespace DataTools.ColorControls
             }
         }
 
-
-
-        public System.Windows.Media.Color SelectedColor
+        public string SelectedColorName
         {
-            get { return (System.Windows.Media.Color)GetValue(SelectedColorProperty); }
+            get { return (string)GetValue(SelectedColorNameProperty); }
+            set { SetValue(SelectedColorNameProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedColorNameProperty =
+            DependencyProperty.Register(nameof(SelectedColorName), typeof(string), typeof(ColorPicker), new PropertyMetadata("", SelectedColorNamePropertyChanged));
+
+        private static void SelectedColorNamePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ColorPicker p)
+            {
+                string nv = (string)e.NewValue;
+                string ov = (string)e.OldValue;
+
+                if (ov != nv)
+                {
+                    if (string.IsNullOrEmpty(nv) || nv.StartsWith("#"))
+                    {
+                        p.SelectedNamedColors = new List<NamedColor>();
+                    }
+                    else
+                    {
+                        p.SelectedNamedColors = NamedColor.SearchByName(nv, true);
+                    }
+                }
+            }
+        }
+
+        public Color SelectedColor
+        {
+            get { return (Color)GetValue(SelectedColorProperty); }
             set { SetValue(SelectedColorProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for SelectedColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedColorProperty =
-            DependencyProperty.Register("SelectedColor", typeof(System.Windows.Media.Color), typeof(ColorPicker), new PropertyMetadata(Colors.Transparent, SelectedColorPropertyChanged));
+            DependencyProperty.Register(nameof(SelectedColor), typeof(Color), typeof(ColorPicker), new PropertyMetadata(Colors.Transparent, SelectedColorPropertyChanged));
 
         private static void SelectedColorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is ColorPicker p)
             {
-                if ((System.Windows.Media.Color)e.OldValue != (System.Windows.Media.Color)e.NewValue)
+                if ((Color)e.OldValue != (Color)e.NewValue)
                 {
-                    //p.RenderPicker();
                     p.SetSelectedColor();
                 }
             }
         }
+
+
+        public IReadOnlyCollection<NamedColor> SelectedNamedColors
+        {
+            get { return (IReadOnlyCollection<NamedColor>)GetValue(SelectedNamedColorsProperty); }
+            set { SetValue(SelectedNamedColorsProperty, value); }
+        }
+
+        public static readonly DependencyProperty SelectedNamedColorsProperty =
+            DependencyProperty.Register(nameof(SelectedNamedColors), typeof(IReadOnlyCollection<NamedColor>), typeof(ColorPicker), new PropertyMetadata(new List<NamedColor>(), SelectedNamedColorsPropertyChanged));
+
+        private static void SelectedNamedColorsPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ColorPicker p)
+            {
+                if ((IReadOnlyCollection<NamedColor>)e.OldValue != (IReadOnlyCollection<NamedColor>)e.NewValue)
+                {
+                    //p.RenderPicker();
+                    
+                }
+            }
+        }
+
 
         public bool InvertSaturation
         {
@@ -99,7 +148,7 @@ namespace DataTools.ColorControls
 
         // Using a DependencyProperty as the backing store for InvertSaturation.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty InvertSaturationProperty =
-            DependencyProperty.Register("InvertSaturation", typeof(bool), typeof(ColorPicker), new PropertyMetadata(false, InvertSaturationPropertyChanged));
+            DependencyProperty.Register(nameof(InvertSaturation), typeof(bool), typeof(ColorPicker), new PropertyMetadata(false, InvertSaturationPropertyChanged));
 
         private static void InvertSaturationPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -118,15 +167,15 @@ namespace DataTools.ColorControls
 
         public float ElementSize
         {
-            get { return (float)GetValue(HexagonSizeProperty); }
-            set { SetValue(HexagonSizeProperty, value); }
+            get { return (float)GetValue(ElementSizeProperty); }
+            set { SetValue(ElementSizeProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for HexagonSize.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty HexagonSizeProperty =
-            DependencyProperty.Register("HexagonSize", typeof(float), typeof(ColorPicker), new PropertyMetadata(1f, HexagonSizePropertyChanged));
+        public static readonly DependencyProperty ElementSizeProperty =
+            DependencyProperty.Register(nameof(ElementSize), typeof(float), typeof(ColorPicker), new PropertyMetadata(1f, ElementSizePropertyChanged));
 
-        private static void HexagonSizePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void ElementSizePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is ColorPicker p)
             {
@@ -147,7 +196,7 @@ namespace DataTools.ColorControls
 
         // Using a DependencyProperty as the backing store for ColorValue.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ColorValueProperty =
-            DependencyProperty.Register("ColorValue", typeof(double), typeof(ColorPicker), new PropertyMetadata(1d, ColorValuePropertyChanged));
+            DependencyProperty.Register(nameof(ColorValue), typeof(double), typeof(ColorPicker), new PropertyMetadata(1d, ColorValuePropertyChanged));
 
         private static void ColorValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -186,7 +235,7 @@ namespace DataTools.ColorControls
 
         // Using a DependencyProperty as the backing store for Mode.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ModeProperty =
-            DependencyProperty.Register("Mode", typeof(ColorPickerMode), typeof(ColorPicker), new PropertyMetadata(ColorPickerMode.Wheel, ModePropertyChanged));
+            DependencyProperty.Register(nameof(Mode), typeof(ColorPickerMode), typeof(ColorPicker), new PropertyMetadata(ColorPickerMode.Wheel, ModePropertyChanged));
 
 
         private static void ModePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -223,55 +272,20 @@ namespace DataTools.ColorControls
             RenderPicker((int)sizeInfo.NewSize.Width, (int)sizeInfo.NewSize.Height);
         }
 
-        private void PickerSite_MouseMove(object sender, MouseEventArgs e)
+        private void SetSelectedColor(UniColor? selc = null)
         {
-            if (ColorOver != null || ((e.LeftButton == MouseButtonState.Pressed) && (ColorHit != null)))
+            if (selc != null) SelectedColor = (Color)selc;
+
+            var nc = NamedColor.FindColor(SelectedColor, true);
+            
+            if (nc != null)
             {
-                var pt = e.GetPosition(PickerSite);
-                var c = cwheel.HitTest((int)pt.X, (int)pt.Y);
-                var ev = new ColorHitEventArgs(c);
-
-                ColorOver?.Invoke(this, ev);
-
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-                    ColorHit?.Invoke(this, ev);
-                }
-
+                SelectedColorName = nc.Name;
             }
-        }
-
-        private void PickerSite_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            var pt = e.GetPosition(PickerSite);
-            var c = cwheel.HitTest((int)pt.X, (int)pt.Y);
-
-            SelectedColor = Color.FromArgb(c.A, c.R, c.G, c.B);
-
-            ColorHit?.Invoke(this, new ColorHitEventArgs(c));
-
-        }
-
-        private void ColorPicker_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            RenderPicker((int)e.NewSize.Width, (int)e.NewSize.Height);
-        }
-
-        protected override void OnLostFocus(RoutedEventArgs e)
-        {
-            base.OnLostFocus(e);
-            Point.Visibility = Surround.Visibility = Visibility.Hidden;
-        }
-
-        protected override void OnGotFocus(RoutedEventArgs e)
-        {
-            base.OnGotFocus(e);
-            SetSelectedColor();
-        }
-
-        private void SetSelectedColor()
-        {
-            UniColor selc = SelectedColor;
+            else
+            {
+                SelectedColorName = ((UniColor)SelectedColor).ToString(UniColorFormatOptions.HexRgbWebFormat);
+            }
 
             foreach (var c in cwheel.Elements)
             {
@@ -295,6 +309,51 @@ namespace DataTools.ColorControls
             Point.Visibility = Surround.Visibility = Visibility.Hidden;
         }
 
+        private void PickerSite_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (ColorOver != null || ((e.LeftButton == MouseButtonState.Pressed) && (ColorHit != null)))
+            {
+                var pt = e.GetPosition(PickerSite);
+                var c = cwheel.HitTest((int)pt.X, (int)pt.Y);
+                var ev = new ColorHitEventArgs(c);
+
+                ColorOver?.Invoke(this, ev);
+
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    SetSelectedColor(c);
+                    ColorHit?.Invoke(this, ev);
+                }
+
+            }
+        }
+
+        private void PickerSite_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var pt = e.GetPosition(PickerSite);
+            var c = cwheel.HitTest((int)pt.X, (int)pt.Y);
+            
+            SetSelectedColor(c);
+            ColorHit?.Invoke(this, new ColorHitEventArgs(c));
+
+        }
+
+        private void ColorPicker_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            RenderPicker((int)e.NewSize.Width, (int)e.NewSize.Height);
+        }
+
+        protected override void OnLostFocus(RoutedEventArgs e)
+        {
+            base.OnLostFocus(e);
+            Point.Visibility = Surround.Visibility = Visibility.Hidden;
+        }
+
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            base.OnGotFocus(e);
+            SetSelectedColor();
+        }
 
         private void RenderPicker(int w = 0, int h = 0)
         {
