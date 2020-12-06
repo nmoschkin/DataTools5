@@ -424,10 +424,10 @@ namespace DataTools.Win32Api
         public static extern int CompareFileTime(FILETIME lpFileTime1, FILETIME lpFileTime2);
         [DllImport("kernel32.dll", EntryPoint = "CreateDirectoryW", CharSet = CharSet.Unicode)]
 
-        public static extern bool CreateDirectory([MarshalAs(UnmanagedType.LPWStr)] string lpPathName, SecurityDescriptor.SECURITY_ATTRIBUTES lpSecurityAttributes);
+        public static extern bool CreateDirectory([MarshalAs(UnmanagedType.LPWStr)] string lpPathName, SECURITY_ATTRIBUTES lpSecurityAttributes);
         [DllImport("kernel32.dll", EntryPoint = "CreateFileW", CharSet = CharSet.Unicode)]
 
-        public static extern IntPtr CreateFile([MarshalAs(UnmanagedType.LPWStr)] string lpFileName, int dwDesiredAccess, int dwShareMode, SecurityDescriptor.SECURITY_ATTRIBUTES lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, IntPtr hTemplateFile);
+        public static extern IntPtr CreateFile([MarshalAs(UnmanagedType.LPWStr)] string lpFileName, int dwDesiredAccess, int dwShareMode, SECURITY_ATTRIBUTES lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, IntPtr hTemplateFile);
         [DllImport("kernel32.dll", EntryPoint = "CreateFileW", CharSet = CharSet.Unicode)]
 
         public static extern IntPtr CreateFile([MarshalAs(UnmanagedType.LPWStr)] string lpFileName, int dwDesiredAccess, int dwShareMode, IntPtr lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, IntPtr hTemplateFile);
@@ -696,7 +696,7 @@ namespace DataTools.Win32Api
             public uint dwFileAttributes;
             public uint dwFileFlags;
             public uint dwSecurityQosFlags;
-            public SecurityDescriptor.SECURITY_ATTRIBUTES lpSecurityAttributes;
+            public SECURITY_ATTRIBUTES lpSecurityAttributes;
             public IntPtr hTemplateFile;
         }
 
@@ -720,7 +720,103 @@ namespace DataTools.Win32Api
                 }
             }
         }
+
+        /// <summary>
+        /// The time-out interval is the default value specified by the server process in the CreateNamedPipe function.
+        /// </summary>
+        public const int NMPWAIT_USE_DEFAULT_WAIT = 0x00000000;
+        /// <summary>
+        /// The function does not return until an instance of the named pipe is available.
+        /// </summary>
+        public const int NMPWAIT_WAIT_FOREVER = unchecked((int)0xffffffff);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        public static extern IntPtr CreateNamedPipe(
+            string lpName,
+            int dwOpenMode,
+            int dwPipeMode,
+            int nMaxInstances,
+            int nOutBufferSize,
+            int nInBufferSize,
+            int nDefaultTimeOut,
+            ref SECURITY_ATTRIBUTES lpSecurityAttributes
+        );
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool ConnectNamedPipe(
+            IntPtr hNamedPipe,
+            ref OVERLAPPED lpOverlapped
+        );
+
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool DisconnectNamedPipe(
+            IntPtr hNamedPipe
+        );
+        
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SetNamedPipeHandleState(
+          IntPtr hNamedPipe,
+          ref int lpMode,
+          ref int lpMaxCollectionCount,
+          ref int lpCollectDataTimeout
+        );
+
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool PeekNamedPipe(
+          IntPtr hNamedPipe,
+          IntPtr lpBuffer,
+          int nBufferSize,
+          ref int lpBytesRead,
+          ref int lpTotalBytesAvail,
+          ref int lpBytesLeftThisMessage
+        );
+
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetNamedPipeInfo(
+          IntPtr hNamedPipe,
+          ref int lpFlags,
+          ref int lpOutBufferSize,
+          ref int lpInBufferSize,
+          ref int lpMaxInstances
+        );
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool WaitNamedPipe(
+          string lpNamedPipeName,
+          int nTimeOut
+        );
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool CallNamedPipe(
+          string lpNamedPipeName,
+          IntPtr lpInBuffer,
+          int nInBufferSize,
+          IntPtr lpOutBuffer,
+          int nOutBufferSize,
+          ref int lpBytesRead,
+          int nTimeOut
+        );
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        public static extern int WaitForSingleObjectEx(
+          IntPtr hHandle,
+          int dwMilliseconds,
+          [MarshalAs(UnmanagedType.Bool)]
+          bool bAlertable
+        );
+
     }
 
-    
+
 }

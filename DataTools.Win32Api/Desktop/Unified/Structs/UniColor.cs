@@ -944,6 +944,12 @@ namespace DataTools.Desktop.Unified
             ColorMath.ColorToHSV(this, ref hsv1);
             ColorMath.ColorToHSV(other, ref hsv2);
 
+            if (double.IsNaN(hsv1.Saturation)) hsv1.Saturation = 0;
+            if (double.IsNaN(hsv1.Value)) hsv1.Value = 0;
+
+            if (double.IsNaN(hsv2.Saturation)) hsv2.Saturation = 0;
+            if (double.IsNaN(hsv2.Value)) hsv2.Value = 0;
+
             if (hsv1.Hue == hsv2.Hue)
             {
                 if (hsv1.Saturation == hsv2.Saturation)
@@ -964,7 +970,7 @@ namespace DataTools.Desktop.Unified
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        public static explicit operator System.Windows.Media.Color(UniColor value)
+        public static implicit operator System.Windows.Media.Color(UniColor value)
         {
             return new System.Windows.Media.Color() { A = value.A, R = value.R, G = value.G, B = value.B };
         }
@@ -979,7 +985,7 @@ namespace DataTools.Desktop.Unified
             return uc;
         }
 
-        public static implicit operator byte[](UniColor value)
+        public static explicit operator byte[](UniColor value)
         {
             return BitConverter.GetBytes(value._intvalue);
         }
@@ -1040,12 +1046,12 @@ namespace DataTools.Desktop.Unified
 
         public static bool operator ==(UniColor val1, UniColor val2)
         {
-            return val1._intvalue == val2.IntValue;
+            return val1._intvalue == val2._intvalue;
         }
 
         public static bool operator !=(UniColor val1, UniColor val2)
         {
-            return val1._intvalue != val2.IntValue;
+            return val1._intvalue != val2._intvalue;
         }
 
         /* TODO ERROR: Skipped EndRegionDirectiveTrivia */

@@ -20,17 +20,18 @@ using DataTools.Memory;
 
 namespace DataTools.Win32Api
 {
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct SECURITY_ATTRIBUTES
+    {
+        public int nLength;
+        public IntPtr lpSecurityDescriptor;
+        // <MarshalAs(UnmanagedType.Bool)>
+        public byte bInheritHandle;
+    }
+
     internal static class SecurityDescriptor
     {
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct SECURITY_ATTRIBUTES
-        {
-            public int nLength;
-            public IntPtr lpSecurityDescriptor;
-            // <MarshalAs(UnmanagedType.Bool)>
-            public byte bInheritHandle;
-        }
-
+        
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         public struct ACL
         {

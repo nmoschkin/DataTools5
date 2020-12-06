@@ -22,7 +22,7 @@ namespace DataTools.Desktop
         public static string Cex(UniColor color)
         {
             string s = "";
-            byte[] b = color;
+            byte[] b = (byte[])color;
             for (int i = 0; i <= 3; i++)
                 s += b[i].ToString("X2");
             return "#" + s.ToLower();
@@ -497,10 +497,10 @@ namespace DataTools.Desktop
 
             public clrstr(System.Windows.Media.Color c)
             {
-                a = c.ScA;
-                r = c.ScR;
-                g = c.ScG;
-                b = c.ScB;
+                a = c.A;
+                r = c.R;
+                g = c.G;
+                b = c.B;
             }
 
             public clrstr(int i)
@@ -512,22 +512,7 @@ namespace DataTools.Desktop
             }
         }
 
-        public static void ColorToHSV(System.Windows.Media.Color color, ref HSVDATA hsv)
-        {
-            ColorToHSV(new clrstr(color), ref hsv);
-        }
-
-        public static void ColorToHSV(UniColor color, ref HSVDATA hsv)
-        {
-            ColorToHSV(new clrstr(color), ref hsv);
-        }
-
-        public static void ColorToHSV(int color, ref HSVDATA hsv)
-        {
-            ColorToHSV(new clrstr(color), ref hsv);
-        }
-
-        private static void ColorToHSV(clrstr Color, ref HSVDATA hsv)
+        public static void ColorToHSV(UniColor Color, ref HSVDATA hsv)
         {
             var hue = default(double);
 
@@ -539,11 +524,12 @@ namespace DataTools.Desktop
             double g;
             double b;
             double chroma;
-            
 
-            r = Color.r;
-            g = Color.g;
-            b = Color.b;
+
+            r = Color.R / 255d;
+            g = Color.G / 255d;
+            b = Color.B / 255d;
+
             Mn = Min(r, g, b);
             Mx = Max(r, g, b);
 
@@ -553,7 +539,7 @@ namespace DataTools.Desktop
             if (chroma == 0)
             {
                 hsv.Hue = -1;
-                val = Mn;
+                
                 switch (val)
                 {
                     case var @case when @case <= 0.5d:
@@ -593,6 +579,7 @@ namespace DataTools.Desktop
                 hue = 360d + hue;
 
             sat = val != 0 ? chroma / val : 0;
+
             hsv.Value = val;
             hsv.Hue = hue;
             hsv.Saturation = sat;
@@ -600,98 +587,7 @@ namespace DataTools.Desktop
 
         public static UniColor HSVToColor(HSVDATA hsv)
         {
-            var c = HSVToMediaColor(hsv);
-            return Color.FromArgb(c.A, c.R, c.G, c.B);
-        }
-
-        // http://en.wikipedia.org/wiki/HSL_and_HSV#Hue_and_chroma
-        // I adapted the equation from the one in Wikipedia.
-        // I wish I could offer a better explanation.  But this isn't wikipedia, and they'd do a better job.
-        //
-        public static UniColor HSVToMediaColor(HSVDATA hsv)
-        {
-
-            double a;
-            double b;
-            double c;
-            double chroma;
-            double Mx;
-            double Mn;
-            
-            System.Windows.Media.Color j = System.Windows.Media.Colors.White;
-
-            double n;
-            if (hsv.Hue >= 360d)
-                hsv.Hue -= 360d;
-            if (hsv.Hue == -1)
-            {
-                if (hsv.Saturation > hsv.Value)
-                {
-                    hsv.Saturation = 1d;
-                    n = hsv.Value * 360d / 510d;
-                }
-                else
-                {
-                    n = 1d - hsv.Saturation * 360d / 720d;
-                }
-
-                return new UniColor(1, (byte)n, (byte)n, (byte)n);
-            }
-
-            chroma = hsv.Value * hsv.Saturation;
-            Mn = Math.Abs(hsv.Value - chroma);
-            Mx = hsv.Value;
-            n = hsv.Hue / 60d;
-            a = Mx;
-            c = Mn;
-            b = chroma * (1d - Math.Abs(n % 2d - 1d));
-            b += c;
-
-            // fit the color space in to byte space.
-
-            // Get the floored value of n
-            n = Math.Floor(n);
-            switch (n)
-            {
-                case 0d:
-                case 6d: // 0, 360 - Red
-                    {
-                        j = System.Windows.Media.Color.FromArgb(1, (byte)a, (byte)b, (byte)c);
-                        break;
-                    }
-
-                case 1d: // 60 - Yellow
-                    {
-                        j = System.Windows.Media.Color.FromArgb(1, (byte)b, (byte)a, (byte)c);
-                        break;
-                    }
-
-                case 2d: // 120 - Green
-                    {
-                        j = System.Windows.Media.Color.FromArgb(1, (byte)c, (byte)a, (byte)b);
-                        break;
-                    }
-
-                case 3d: // 180 - Cyan
-                    {
-                        j = System.Windows.Media.Color.FromArgb(1, (byte)c, (byte)b, (byte)a);
-                        break;
-                    }
-
-                case 4d: // 240 - Blue
-                    {
-                        j = System.Windows.Media.Color.FromArgb(1, (byte)b, (byte)c, (byte)a);
-                        break;
-                    }
-
-                case 5d: // 300 - Magenta
-                    {
-                        j = System.Windows.Media.Color.FromArgb(1, (byte)a, (byte)c, (byte)b);
-                        break;
-                    }
-            }
-
-            return j;
+            return  HSVToColorRaw(hsv);
         }
 
         // http://en.wikipedia.org/wiki/HSL_and_HSV#Hue_and_chroma
