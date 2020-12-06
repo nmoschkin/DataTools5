@@ -479,42 +479,28 @@ namespace DataTools.Desktop
             return d;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        private struct clrstr
+       
+        public static HSVDATA ColorToHSV(UniColor color)
         {
-            public float a;
-            public float r;
-            public float g;
-            public float b;
-
-            public clrstr(UniColor c)
-            {
-                a = c.A;
-                r = c.R;
-                g = c.G;
-                b = c.B;
-            }
-
-            public clrstr(System.Windows.Media.Color c)
-            {
-                a = c.A;
-                r = c.R;
-                g = c.G;
-                b = c.B;
-            }
-
-            public clrstr(int i)
-            {
-                r = i & 0xFF;
-                g = i >> 8 & 0xFF;
-                b = i >> 16 & 0xFF;
-                a = i >> 24 & 0xFF;
-            }
+            HSVDATA hsv = new HSVDATA();
+            ColorToHSV(color, ref hsv);
+            return hsv;
         }
 
-        public static void ColorToHSV(UniColor Color, ref HSVDATA hsv)
+        public static void ColorToHSV(UniColor color, ref HSVDATA hsv)
         {
-            var hue = default(double);
+            double h, s, v;
+
+            ColorToHSV(color, out h, out s, out v);
+
+            hsv.Hue = h;
+            hsv.Saturation = s;
+            hsv.Value = v;
+        }
+
+        public static void ColorToHSV(UniColor color, out double hue, out double saturation, out double value)
+        {
+            hue = default(double);
 
             double sat;
             double val;
@@ -526,9 +512,9 @@ namespace DataTools.Desktop
             double chroma;
 
 
-            r = Color.R / 255d;
-            g = Color.G / 255d;
-            b = Color.B / 255d;
+            r = color.R / 255d;
+            g = color.G / 255d;
+            b = color.B / 255d;
 
             Mn = Min(r, g, b);
             Mx = Max(r, g, b);
@@ -538,24 +524,21 @@ namespace DataTools.Desktop
 
             if (chroma == 0)
             {
-                hsv.Hue = -1;
+                hue = -1;
                 
                 switch (val)
                 {
                     case var @case when @case <= 0.5d:
-                        {
-                            hsv.Saturation = 1d;
-                            hsv.Value = 510d * val / 360d;
-                            break;
-                        }
+                        saturation = 1d;
+                        value = 510d * val / 360d;
+                        break;
 
                     case var case1 when case1 <= 1d:
-                        {
-                            val = 1d - val;
-                            hsv.Value = 1d;
-                            hsv.Saturation = 720d * val / 360d;
-                            break;
-                        }
+                    default:
+                        val = 1d - val;
+                        value = 1d;
+                        saturation = 720d * val / 360d;
+                        break;
                 }
 
                 return;
@@ -580,21 +563,33 @@ namespace DataTools.Desktop
 
             sat = val != 0 ? chroma / val : 0;
 
-            hsv.Value = val;
-            hsv.Hue = hue;
-            hsv.Saturation = sat;
+            value = val;
+            saturation = sat;
         }
 
         public static UniColor HSVToColor(HSVDATA hsv)
         {
-            return  HSVToColorRaw(hsv);
+            int c = 0;
+            HSVToColorRaw(hsv, ref c);
+            return c;
+        }
+
+        public static int HSVToColorRaw(HSVDATA hsv)
+        {
+            int c = 0;
+            HSVToColorRaw(hsv, ref c);
+            return c;
+        }
+        public static void HSVToColorRaw(HSVDATA hsv, ref int retColor)
+        {
+            HSVToColorRaw(hsv.Hue, hsv.Saturation, hsv.Value, ref retColor);
         }
 
         // http://en.wikipedia.org/wiki/HSL_and_HSV#Hue_and_chroma
         // I adapted the equation from the one in Wikipedia.
         // I wish I could offer a better explanation.  But this isn't wikipedia, and they'd do a better job.
         //
-        public static int HSVToColorRaw(HSVDATA hsv)
+        public static void HSVToColorRaw(double hue, double saturation, double value, ref int retColor)
         {
             unchecked
             {
@@ -609,28 +604,31 @@ namespace DataTools.Desktop
                 double Mn;
                 int j = (int)0xFF000000;
                 double n;
-                if (hsv.Hue >= 360d)
-                    hsv.Hue -= 360d;
-                if (hsv.Hue == -1)
+                if (hue >= 360d)
+                    hue -= 360d;
+                if (hue == -1)
                 {
-                    if (hsv.Saturation > hsv.Value)
+                    if (saturation > value)
                     {
-                        hsv.Saturation = 1d;
-                        n = hsv.Value * 360d / 510d;
+                        saturation = 1d;
+                        n = value * 360d / 510d;
                     }
                     else
                     {
-                        n = 1d - hsv.Saturation * 360d / 720d;
+                        n = 1d - saturation * 360d / 720d;
                     }
 
                     ab = (int)(n * 255d);
-                    return 0xFF | ab << 16 | ab << 8 | ab;
+                    
+                    
+                    retColor = 0xFF | ab << 16 | ab << 8 | ab;
+                    return;
                 }
 
-                chroma = hsv.Value * hsv.Saturation;
-                Mn = Math.Abs(hsv.Value - chroma);
-                Mx = hsv.Value;
-                n = hsv.Hue / 60d;
+                chroma = value * saturation;
+                Mn = Math.Abs(value - chroma);
+                Mx = value;
+                n = hue / 60d;
                 a = Mx;
                 c = Mn;
                 b = chroma * (1d - Math.Abs(n % 2d - 1d));
@@ -683,7 +681,8 @@ namespace DataTools.Desktop
                         }
                 }
 
-                return j;
+                retColor = j;
+                return;
             }
         }
 

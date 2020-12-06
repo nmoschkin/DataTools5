@@ -39,7 +39,7 @@ namespace DataTools.ColorControls
     /// </summary>
     public partial class ColorPicker : UserControl
     {
-        ColorWheel cwheel;
+        ColorPickerRenderer cpRender;
 
         public delegate void ColorHitEvent(object sender, ColorHitEventArgs e);
         public event ColorHitEvent ColorHit;
@@ -287,7 +287,7 @@ namespace DataTools.ColorControls
                 SelectedColorName = ((UniColor)SelectedColor).ToString(UniColorFormatOptions.HexRgbWebFormat);
             }
 
-            foreach (var c in cwheel.Elements)
+            foreach (var c in cpRender.Elements)
             {
                 UniColor uc = c.Color;
                 if (selc == uc)
@@ -314,7 +314,7 @@ namespace DataTools.ColorControls
             if (ColorOver != null || ((e.LeftButton == MouseButtonState.Pressed) && (ColorHit != null)))
             {
                 var pt = e.GetPosition(PickerSite);
-                var c = cwheel.HitTest((int)pt.X, (int)pt.Y);
+                var c = cpRender.HitTest((int)pt.X, (int)pt.Y);
                 var ev = new ColorHitEventArgs(c);
 
                 ColorOver?.Invoke(this, ev);
@@ -331,7 +331,7 @@ namespace DataTools.ColorControls
         private void PickerSite_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var pt = e.GetPosition(PickerSite);
-            var c = cwheel.HitTest((int)pt.X, (int)pt.Y);
+            var c = cpRender.HitTest((int)pt.X, (int)pt.Y);
             
             SetSelectedColor(c);
             ColorHit?.Invoke(this, new ColorHitEventArgs(c));
@@ -340,7 +340,7 @@ namespace DataTools.ColorControls
 
         private void ColorPicker_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            RenderPicker((int)e.NewSize.Width, (int)e.NewSize.Height);
+            //RenderPicker((int)e.NewSize.Width, (int)e.NewSize.Height);
         }
 
         protected override void OnLostFocus(RoutedEventArgs e)
@@ -357,51 +357,71 @@ namespace DataTools.ColorControls
 
         private void RenderPicker(int w = 0, int h = 0)
         {
-            if (w <= 0)
-            {
-                if (double.IsNaN(ActualWidth)) return;
-                w = (int)ActualWidth;
-            }
-            if (h <= 0)
-            {
-                if (double.IsNaN(ActualHeight)) return;
-                h = (int)ActualHeight;
-            }
+            var disp = Dispatcher;
 
-            if (w < 32 || h < 32) return;
+            double width = this.ActualWidth;
+            double height = this.ActualHeight;
+            double colorVal = this.ColorValue;
+            double offset = this.HueOffset;
+            bool invert = this.InvertSaturation;
+            float esize = this.ElementSize;
+            ColorPickerMode mode = this.Mode;
 
-            if (Mode == ColorPickerMode.Wheel || Mode == ColorPickerMode.HexagonWheel)
+            _ = Task.Run(() =>
             {
-                int rad;
+                ColorPickerRenderer cw;
 
-                if (h < w)
+                if (w <= 0)
                 {
-                    rad = h / 2;
+                    if (double.IsNaN(width)) return;
+                    w = (int)width;
+                }
+                if (h <= 0)
+                {
+                    if (double.IsNaN(height)) return;
+                    h = (int)height;
+                }
+
+                if (w < 32 || h < 32) return;
+
+                if (mode == ColorPickerMode.Wheel || mode == ColorPickerMode.HexagonWheel)
+                {
+                    int rad;
+
+                    if (h < w)
+                    {
+                        rad = h / 2;
+                    }
+                    else
+                    {
+                        rad = w / 2;
+                    }
+
+                    if (mode == ColorPickerMode.Wheel)
+                    {
+                        cw = new ColorPickerRenderer(rad, colorVal, offset, invert);
+                    }
+                    else
+                    {
+                        cw = new ColorPickerRenderer(rad, esize, colorVal, invert);
+                    }
+
                 }
                 else
                 {
-                    rad = w / 2;
+
+                    cw = new ColorPickerRenderer(w, h, colorVal, offset, invert, mode == ColorPickerMode.LinearVertical);
+
                 }
 
-                if (Mode == ColorPickerMode.Wheel)
+                disp.Invoke(() =>
                 {
-                    cwheel = new ColorWheel(rad, ColorValue, HueOffset, InvertSaturation);
-                }
-                else
-                {
-                    cwheel = new ColorWheel(rad, ElementSize, ColorValue, InvertSaturation);
-                }
+                    cpRender = cw;
+                    PickerSite.Source = BitmapTools.MakeWPFImage(cpRender.Bitmap);
+                    SetSelectedColor();
+                });
 
-            }
-            else 
-            {
-
-                cwheel = new ColorWheel(w, h, ColorValue, HueOffset, InvertSaturation, Mode == ColorPickerMode.LinearVertical);
-
-            }
-
-            PickerSite.Source = BitmapTools.MakeWPFImage(cwheel.Bitmap);
-            SetSelectedColor();
+            });
         }
 
 

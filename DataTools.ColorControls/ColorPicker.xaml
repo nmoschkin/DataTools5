@@ -19,9 +19,8 @@
     <Grid>
         <Image
             x:Name="PickerSite"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Stretch="None" />
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch" />
         <Canvas
             x:Name="CursorCanvas"
             HorizontalAlignment="Stretch"

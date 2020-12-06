@@ -30,7 +30,7 @@ namespace DataTools.Desktop
         LinearHorizontal = 1,
 
         /// <summary>
-        /// Smooth vertical linear gradiant
+        /// Smooth vertical linear gradient
         /// </summary>
         LinearVertical = 2,
 
@@ -59,7 +59,7 @@ namespace DataTools.Desktop
     /// <summary>
     /// Class to create a color picker.
     /// </summary>
-    public sealed class ColorWheel
+    public sealed class ColorPickerRenderer
     {
         /// <summary>
         /// All individual color elements in the current instance.
@@ -70,6 +70,22 @@ namespace DataTools.Desktop
         /// The mode of the current instance.
         /// </summary>
         public ColorPickerMode Mode { get; private set; }
+
+        /// <summary>
+        /// Gets the 'value' component of the HSV color space.
+        /// </summary>
+        public double Value { get; private set; }
+       
+        /// <summary>
+        /// Gets a value indicating that a linear color gradient is painted vertically.
+        /// </summary>
+        public bool Vertical { get; private set; }
+
+        /// <summary>
+        /// Gets the 360-degree hue offset.
+        /// </summary>
+        public double HueOffset { get; private set; }
+
 
         /// <summary>
         /// The bounds of the current instance
@@ -101,6 +117,15 @@ namespace DataTools.Desktop
         /// <remarks>
         /// This image should never be resized, stretched or transformed in any way.</remarks>
         public Bitmap Bitmap { get; private set; }
+
+
+        public async Task Render()
+        {
+            await Task.Run(() =>
+            {
+
+            }); 
+        }
 
         private void ToBitmap()
         {
@@ -206,13 +231,20 @@ namespace DataTools.Desktop
         /// <param name="offset">Hue offset in degrees.</param>
         /// <param name="invert">True to invert saturation.</param>
         /// <param name="vertical">True to draw vertically.</param>
-        public ColorWheel(int width, int height, double value = 1d, double offset = 0d, bool invert = false, bool vertical = false)
+        public ColorPickerRenderer(int width, int height, double value = 1d, double offset = 0d, bool invert = false, bool vertical = false)
         {
             if (Bitmap != null)
             {
                 Bitmap.Dispose();
                 Bitmap = null;
             }
+
+            Bounds = new Rectangle(0, 0, width, height);
+            InvertSaturation = invert;
+
+            Value = value;
+            HueOffset = offset;
+            Vertical = vertical;
 
             List<int> rawColors = new List<int>();
 
@@ -224,12 +256,8 @@ namespace DataTools.Desktop
 
             HSVDATA hsv;
 
-            int color;
-
-            Bounds = new Rectangle(0, 0, x2, y2);
-
-            InvertSaturation = invert;
-
+            int color = 0;
+            
             if (vertical)
             {
                 Mode = ColorPickerMode.LinearVertical;
@@ -274,7 +302,7 @@ namespace DataTools.Desktop
                         };
                     }
 
-                    color = ColorMath.HSVToColorRaw(hsv);
+                    ColorMath.HSVToColorRaw(hsv, ref color);
 
                     var el = new ColorWheelElement();
 
@@ -314,7 +342,7 @@ namespace DataTools.Desktop
         /// <param name="elementSize">Size of each element in partial pixels.</param>
         /// <param name="value">Brightness value in percentage.</param>
         /// <param name="invert">True to invert saturation.</param>
-        public ColorWheel(int pixelRadius, float elementSize, double value = 1d, bool invert = false)
+        public ColorPickerRenderer(int pixelRadius, float elementSize, double value = 1d, bool invert = false, double rotation = 0)
         {
             if (Bitmap != null)
             {
@@ -338,12 +366,17 @@ namespace DataTools.Desktop
             var pc = new PolarCoordinates();
             HSVDATA hsv;
 
-            int color;
+            int color = 0;
             int z;
+
+            Value = value;
+            HueOffset = rotation;
 
             Bounds = new RectangleF(0, 0, pixelRadius * 2, pixelRadius * 2);
             InvertSaturation = invert;
             Mode = ColorPickerMode.HexagonWheel;
+
+            Value = value;
 
             var bmp = new Bitmap((int)Math.Ceiling(Bounds.Width), (int)Math.Ceiling(Bounds.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             var g = Graphics.FromImage(bmp);
@@ -418,7 +451,7 @@ namespace DataTools.Desktop
                     }
                     else
                     {
-                        double arc = pc.Arc; // - rotation;
+                        double arc = pc.Arc - rotation;
                         if (arc < 0) arc += 360;
 
                         hsv = new HSVDATA()
@@ -428,7 +461,7 @@ namespace DataTools.Desktop
                             Value = value
                         };
 
-                        color = ColorMath.HSVToColorRaw(hsv);
+                        ColorMath.HSVToColorRaw(hsv, ref color);
                     }
 
                     var el = new ColorWheelElement();
@@ -493,7 +526,7 @@ namespace DataTools.Desktop
         /// <param name="value">Brightness value in percentage.</param>
         /// <param name="rotation">Hue offset in degrees.</param>
         /// <param name="invert">True to invert saturation.</param>
-        public ColorWheel(int pixelRadius, double value = 1d, double rotation = 0d, bool invert = false)
+        public ColorPickerRenderer(int pixelRadius, double value = 1d, double rotation = 0d, bool invert = false)
         {
             if (Bitmap != null)
             {
@@ -514,8 +547,11 @@ namespace DataTools.Desktop
             PolarCoordinates pc;
             HSVDATA hsv;
 
-            int color;
-            
+            int color = 0;
+
+            Value = value;
+            HueOffset = rotation;
+
             Bounds = new Rectangle(0, 0, x2, y2);
             InvertSaturation = invert;
             Mode = ColorPickerMode.Wheel;
@@ -551,7 +587,7 @@ namespace DataTools.Desktop
                             Value = value
                         };
 
-                        color = ColorMath.HSVToColorRaw(hsv);
+                        ColorMath.HSVToColorRaw(hsv, ref color);
                     }
 
                     var el = new ColorWheelElement();

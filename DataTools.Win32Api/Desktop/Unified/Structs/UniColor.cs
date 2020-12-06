@@ -370,12 +370,7 @@ namespace DataTools.Desktop.Unified
             _B = b;
         }
 
-        public HSVDATA ToHSV()
-        {
-            var hsv = new HSVDATA();
-            ColorMath.ColorToHSV(this, ref hsv);
-            return hsv;
-        }
+        public HSVDATA ToHSV() => ColorMath.ColorToHSV(this);
 
         public CMYDATA ToCMY()
         {
@@ -906,9 +901,8 @@ namespace DataTools.Desktop.Unified
             System.Windows.Media.Color closest = new System.Windows.Media.Color();
 
             PropertyInfo cr = null;
-            var hsv1 = new HSVDATA();
 
-            ColorMath.ColorToHSV(value, ref hsv1);
+            var hsv1 = ColorMath.ColorToHSV(value);
 
             double lhue = 360;
             double lsat = 1;
@@ -917,9 +911,7 @@ namespace DataTools.Desktop.Unified
             {
                 vl = (System.Windows.Media.Color)pe.GetValue(value);
 
-                var hsv2 = new HSVDATA();
-
-                ColorMath.ColorToHSV(vl, ref hsv2);
+                var hsv2 = ColorMath.ColorToHSV(vl);
 
                 
                 if (Math.Abs(hsv2.Hue - hsv1.Hue) <= lhue &&
@@ -938,11 +930,8 @@ namespace DataTools.Desktop.Unified
 
         public int CompareTo(UniColor other)
         {
-            HSVDATA hsv1 = new HSVDATA();
-            HSVDATA hsv2 = new HSVDATA();
-
-            ColorMath.ColorToHSV(this, ref hsv1);
-            ColorMath.ColorToHSV(other, ref hsv2);
+            HSVDATA hsv1 = ColorMath.ColorToHSV(this);
+            HSVDATA hsv2 = ColorMath.ColorToHSV(other);
 
             if (double.IsNaN(hsv1.Saturation)) hsv1.Saturation = 0;
             if (double.IsNaN(hsv1.Value)) hsv1.Value = 0;

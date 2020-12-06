@@ -29,7 +29,7 @@ namespace DataTools.ColorControls
         public static NamedColor FindColor(UniColor value, out int index)
         {
             NamedColor r;
-            index = Search(catalog, value, "Color", out r, true);
+            index = Search(catalog, value, nameof(Color), out r, true);
 
             return r;
         }
@@ -48,9 +48,7 @@ namespace DataTools.ColorControls
 
         public static NamedColor GetClosestColor(UniColor value, double maxDeviation = 0.013d, bool ignoreValue = true, bool ignoreSaturation = false, bool ignoreHue = false)
         {
-            var hsv1 = new HSVDATA();
-
-            ColorMath.ColorToHSV(value, ref hsv1);
+            var hsv1 = ColorMath.ColorToHSV(value);
 
             NamedColor closest = null;
 
@@ -65,10 +63,9 @@ namespace DataTools.ColorControls
 
             foreach (var vl in catalog)
             {
-                var hsv2 = new HSVDATA();
                 match = true;
 
-                ColorMath.ColorToHSV(vl.Color, ref hsv2);
+                var hsv2 = ColorMath.ColorToHSV(vl.Color);
 
                 dhue = Math.Abs(hsv2.Hue - hsv1.Hue);
                 dsat = Math.Abs(hsv2.Saturation - hsv1.Saturation);
