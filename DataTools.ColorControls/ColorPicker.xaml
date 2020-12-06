@@ -19,12 +19,13 @@
     <Grid>
         <Image
             x:Name="PickerSite"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch" />
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Stretch="None" />
         <Canvas
             x:Name="CursorCanvas"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
             Background="Transparent">
 
             <Ellipse

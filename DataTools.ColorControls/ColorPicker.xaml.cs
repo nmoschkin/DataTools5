@@ -391,10 +391,12 @@ namespace DataTools.ColorControls
                     if (h < w)
                     {
                         rad = h / 2;
+                        w = h;
                     }
                     else
                     {
                         rad = w / 2;
+                        h = w;
                     }
 
                     if (mode == ColorPickerMode.Wheel)
@@ -416,6 +418,10 @@ namespace DataTools.ColorControls
 
                 disp.Invoke(() =>
                 {
+                    CursorCanvas.Width = w;
+                    CursorCanvas.Height = h;
+
+                    //CursorCanvas.RenderSize = new Size(w, h);
                     cpRender = cw;
                     PickerSite.Source = BitmapTools.MakeWPFImage(cpRender.Bitmap);
                     SetSelectedColor();

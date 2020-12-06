@@ -251,7 +251,7 @@ namespace SysInfoTool
 
         private void Listener_HardwareChange(object sender, EventArgs e)
         {
-            RefreshAdapters();
+            _ = Task.Run(() => RefreshAdapters());
         }
 
         private void AdapterList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -335,21 +335,22 @@ namespace SysInfoTool
             if (refreshing) return;
             refreshing = true;
 
+            if (_Adapters != null)
+            {
+                _Adapters.Refresh();
+            }
+            else
+            {
+                _Adapters = new AdaptersCollection();
+            }
+
             Dispatcher.Invoke(() =>
             {
 
-                if (_Adapters != null)
-                {
-                    _Adapters.Refresh();
-                }
-                else
-                {
-                    _Adapters = new AdaptersCollection();
-                    this.AdapterList.ItemsSource = _Adapters.Adapters;
+                this.AdapterList.ItemsSource = _Adapters.Adapters;
 
-                    ViewMenu = new VirtualMenu(this, this.AdapterList);
-                    this.netMenu.ItemsSource = ViewMenu;
-                }
+                ViewMenu = new VirtualMenu(this, this.AdapterList);
+                this.netMenu.ItemsSource = ViewMenu;
 
                 //_props.Refresh();
 

@@ -25,6 +25,22 @@ namespace SysInfoTool
         public ColorWindow()
         {
             InitializeComponent();
+
+            NamedColor nc = NamedColor.SearchByName("White")[0];
+            LineColor.Background = WheelColor.Background = new SolidColorBrush(nc.Color);
+            
+            if (nc != null)
+            {
+                WheelColorName.Content = nc.Name;
+                LineColorName.Content = nc.Name;
+            }
+            else
+            {
+                WheelColorName.Content = (nc.Color).ToString();
+                LineColorName.Content = (nc.Color).ToString();
+            }
+
+
         }
 
 
