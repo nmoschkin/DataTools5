@@ -2190,7 +2190,7 @@ namespace DataTools.Text
         /// <param name="format">Optional numeric format for the resulting value.</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static string PrintFriendlySize(double size, string format = null, bool binary = false)
+        public static string PrintFriendlySize(double size, string format = null, bool binary = false, int round = 2)
         {
             double fs;
             string nom;
@@ -2294,11 +2294,11 @@ namespace DataTools.Text
 
             if (format != null)
             {
-                return Math.Round(fs, 2).ToString(format) + " " + nom;
+                return Math.Round(fs, round).ToString(format) + " " + nom;
             }
             else
             {
-                return Math.Round(fs, 2) + " " + nom;
+                return Math.Round(fs, round) + " " + nom;
             }
 
         }
