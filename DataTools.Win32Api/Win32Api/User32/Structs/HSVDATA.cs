@@ -1,6 +1,9 @@
 using System;
 using System.Runtime.InteropServices;
 
+using DataTools.Desktop.Unified;
+using DataTools.Desktop;
+
 namespace DataTools.Win32Api
 {
     public struct HSVDATA
@@ -14,6 +17,16 @@ namespace DataTools.Win32Api
             Hue = h;
             Saturation = s;
             Value = v;
+        }
+
+        public static explicit operator UniColor(HSVDATA h)
+        {
+            return ColorMath.HSVToColor(h);
+        }
+
+        public static explicit operator HSVDATA(UniColor c)
+        {
+            return ColorMath.ColorToHSV(c);
         }
     }
 }

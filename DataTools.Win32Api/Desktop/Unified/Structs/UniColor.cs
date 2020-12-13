@@ -178,8 +178,6 @@ namespace DataTools.Desktop.Unified
             return base.GetHashCode();
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
         /// <summary>
         /// Gets the byte array for the current color.
         /// </summary>
@@ -248,8 +246,6 @@ namespace DataTools.Desktop.Unified
             return true;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
         /// <summary>
         /// Initialize a new UniColor structure with the given UInteger
         /// </summary>

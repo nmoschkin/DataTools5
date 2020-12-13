@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DataTools.Desktop;
 using DataTools.Desktop.Unified;
+using DataTools.Win32Api;
 
 namespace DataTools.ColorControls
 {
@@ -285,7 +286,10 @@ namespace DataTools.ColorControls
             else
             {
                 SelectedColorName = ((UniColor)SelectedColor).ToString(UniColorFormatOptions.HexRgbWebFormat);
+                //Point.Visibility = Surround.Visibility = Visibility.Hidden;
+                //return;
             }
+
 
             foreach (var c in cpRender.Elements)
             {

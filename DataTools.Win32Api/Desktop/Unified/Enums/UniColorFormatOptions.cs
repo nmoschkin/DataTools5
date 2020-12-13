@@ -10,9 +10,6 @@ using DataTools.Win32Api;
 
 namespace DataTools.Desktop.Unified
 {
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
-
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
     /// <summary>
     /// Formatting flags for UniColor.ToString(format)
     /// </summary>

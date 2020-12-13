@@ -90,7 +90,7 @@ namespace DataTools.Streams
                 throw new ArgumentNullException(nameof(fileName), "Must specify filename if property is not set.");
             }
 #if !DEBUG 
-            if (DebubOnly) 
+            if (DebugOnly) 
             {
                 IsOpened = true;
                 return;
@@ -104,7 +104,7 @@ namespace DataTools.Streams
         public virtual void Close()
         {
 #if !DEBUG 
-            if (DebubOnly) 
+            if (DebugOnly) 
             {
                 IsOpened = false;
                 return;
@@ -118,7 +118,7 @@ namespace DataTools.Streams
         public virtual void Log(string message)
         {
 #if !DEBUG 
-            if (DebubOnly) return;
+            if (DebugOnly) return;
 #endif
             try
             {

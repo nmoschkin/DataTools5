@@ -656,9 +656,13 @@ namespace DataTools.Hardware.Network
                 }
             }
 
+            OnPropertyChanged(nameof(ReceiveLinkSpeed));
+            OnPropertyChanged(nameof(TransmitLinkSpeed));
+
             foreach (var pr in allProps)
             {
-                OnPropertyChanged(pr.Name);
+                if (pr.Name.Contains("Address"))
+                    OnPropertyChanged(pr.Name);
             }
         }
 

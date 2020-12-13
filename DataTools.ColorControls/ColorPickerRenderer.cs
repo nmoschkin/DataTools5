@@ -184,6 +184,19 @@ namespace DataTools.Desktop
             return oddNodes;
         }
 
+        public LinearCoordinates GetCoordinates(Color c)
+        {
+            HSVDATA v = ColorMath.ColorToHSV(c);
+            PolarCoordinates p = new PolarCoordinates(InvertSaturation ? 1 - v.Saturation : v.Saturation, v.Hue + HueOffset);
+            var pt = PolarCoordinates.ToLinearCoordinates(p);
+
+            pt.X += (Bounds.Width / 2);
+            pt.Y += (Bounds.Width / 2);
+
+
+            return pt;
+        }
+
         /// <summary>
         /// Gets the color at the specified location.
         /// </summary>
@@ -192,6 +205,22 @@ namespace DataTools.Desktop
         /// <returns></returns>
         public Color HitTest(int x, int y)
         {
+            HSVDATA hsv;
+
+            switch (Mode)
+            {
+                case ColorPickerMode.Wheel:
+
+                    var prad = (Bounds.Width / 2);
+                    var pc = PolarCoordinates.ToPolarCoordinates(x - prad, y - prad);
+                    hsv.Hue = pc.Arc;
+                    hsv.Saturation = InvertSaturation ? 1 - (pc.Radius / prad) : (pc.Radius / prad);
+                    hsv.Value = Value;
+
+                    return ColorMath.HSVToColor(hsv);
+            }
+
+
             foreach (ColorWheelElement e in Elements)
             {
                 if (e.PolyPoints.Length == 1)
@@ -319,6 +348,18 @@ namespace DataTools.Desktop
 
             var arrColors = rawColors.ToArray();
             imageBytes = new byte[arrColors.Length * sizeof(int)];
+
+            Elements.Sort((a, b) =>
+            {
+                if (a.Center.X == b.Center.X)
+                {
+                    return (int)(a.Center.Y - b.Center.Y);
+                }
+                else
+                {
+                    return (int)(a.Center.X - b.Center.X);
+                }
+            });
 
             unsafe
             {

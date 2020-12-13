@@ -621,7 +621,7 @@ namespace DataTools.Desktop
                     ab = (int)(n * 255d);
                     
                     
-                    retColor = 0xFF | ab << 16 | ab << 8 | ab;
+                    retColor = j | (ab << 16) | (ab << 8) | ab;
                     return;
                 }
 
