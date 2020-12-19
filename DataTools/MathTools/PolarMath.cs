@@ -226,26 +226,23 @@ namespace DataTools.MathTools.PolarMath
 
             // screen coordinates are funny, had to reverse this.
             a = Math.Atan(x / y);
-            
             a *= RadianConst;
-            
-            if (x < 0 && y < 0)
-            {
-                a = 360 - a;
-            }
-            else if (x >= 0 && y < 0)
-            {
-                // do nothing
-            }
-            else if (x >= 0 && y >= 0)
-            {
-                a = 180 - a;
-            }
-            else if (x < 0 && y >= 0)
-            {
-                a = 90 + (90 - a);
-            }
 
+            if (!(x >= 0 && y < 0))
+            {
+                if (x < 0 && y < 0)
+                {
+                    a = 360 - a;
+                }
+                else if (x >= 0 && y >= 0)
+                {
+                    a = 180 - a;
+                }
+                else if (x < 0 && y >= 0)
+                {
+                    a = 90 + (90 - a);
+                }
+            }
 
             if (a < 0.0d)
                 a = 360.0d - a;

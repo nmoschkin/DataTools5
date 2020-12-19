@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataTools.Memory
+namespace DataTools.Streams
 {
     /// <summary>
     /// ISO 3309 CRC-32 Calculator.
@@ -16,7 +16,7 @@ namespace DataTools.Memory
         private static readonly uint CRC32Poly = 0xedb88320u;
 
         private static uint[] Crc32Table = new uint[256];
-        
+
         private Crc32()
         {
             // this is not a creatable object.
@@ -39,7 +39,7 @@ namespace DataTools.Memory
                 {
                     if ((j & 1) == 1)
                     {
-                        j = ((j >> 1) ^ CRC32Poly);
+                        j = j >> 1 ^ CRC32Poly;
                     }
                     else
                     {
@@ -112,7 +112,7 @@ namespace DataTools.Memory
 
             for (j = startIndex; j < c; j++)
             {
-                crc = Crc32Table[(crc ^ data[j]) & 0xff] ^ (crc >> 8);
+                crc = Crc32Table[(crc ^ data[j]) & 0xff] ^ crc >> 8;
             }
 
             return crc ^ 0xffffffffu;
@@ -131,7 +131,7 @@ namespace DataTools.Memory
         {
             uint ret;
 
-            unsafe 
+            unsafe
             {
                 ret = Calculate((byte*)data, length.ToInt64(), crc);
             }
@@ -149,7 +149,7 @@ namespace DataTools.Memory
         /// <param name="bufflen">Specify the size, in bytes, of the marshaling buffer to be used (default is 1k).</param>
         /// <returns>A 32-bit unsigned integer representing the calculated CRC.</returns>
         /// <remarks></remarks>
-        public static unsafe uint Calculate(byte *data, long length, uint crc = 0xffffffffu)
+        public static unsafe uint Calculate(byte* data, long length, uint crc = 0xffffffffu)
         {
             if (data == null)
                 throw new ArgumentNullException("data", "data cannot be equal to null.");
@@ -159,7 +159,7 @@ namespace DataTools.Memory
 
             for (long j = 0; j < length; j++)
             {
-                crc = Crc32Table[(crc ^ *data++) & 0xff] ^ (crc >> 8);
+                crc = Crc32Table[(crc ^ *data++) & 0xff] ^ crc >> 8;
             }
 
             return crc ^ 0xffffffffu;
@@ -176,7 +176,7 @@ namespace DataTools.Memory
         /// <remarks></remarks>
         public static uint Calculate(string fileName, int bufflen = 1024)
         {
-            if ((!System.IO.File.Exists(fileName)))
+            if (!System.IO.File.Exists(fileName))
             {
                 throw new System.IO.FileNotFoundException(fileName + " could not be found.");
             }
@@ -201,12 +201,12 @@ namespace DataTools.Memory
                 e = (int)(l - i);
                 if (e > blen) e = blen;
 
-                if ((fi.Position != i)) fi.Seek(i, System.IO.SeekOrigin.Begin);
+                if (fi.Position != i) fi.Seek(i, System.IO.SeekOrigin.Begin);
                 fi.Read(b, 0, e);
-                               
+
                 for (j = 0; j < e; j++)
                 {
-                    crc = Crc32Table[(crc ^ b[j]) & 0xff] ^ (crc >> 8);
+                    crc = Crc32Table[(crc ^ b[j]) & 0xff] ^ crc >> 8;
                 }
             }
 
@@ -227,10 +227,10 @@ namespace DataTools.Memory
             uint crc = 0xffffffffu;
 
             byte[] b;
-            
+
             long i, l = stream.Length;
             int e, j, blen = bufflen;
-            
+
             b = new byte[blen];
 
             for (i = 0; i < l; i += blen)
@@ -238,12 +238,12 @@ namespace DataTools.Memory
                 e = (int)(l - i);
                 if (e > blen) e = blen;
 
-                if ((stream.Position != i)) stream.Seek(i, System.IO.SeekOrigin.Begin);
+                if (stream.Position != i) stream.Seek(i, System.IO.SeekOrigin.Begin);
                 stream.Read(b, 0, e);
 
                 for (j = 0; j < e; j++)
                 {
-                    crc = Crc32Table[(crc ^ b[j]) & 0xff] ^ (crc >> 8);
+                    crc = Crc32Table[(crc ^ b[j]) & 0xff] ^ crc >> 8;
                 }
             }
 

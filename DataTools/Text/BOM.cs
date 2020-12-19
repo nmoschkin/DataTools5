@@ -7,7 +7,7 @@
 // Copyright (C) 2011-2020 Nathan Moschkin
 // All Rights Reserved
 //
-// Licensed Under the Microsoft Public License   
+// Licensed Under the MIT License   
 // ************************************************* ''
 
 
@@ -26,12 +26,12 @@ using Microsoft.VisualBasic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using DataTools.Standard.Memory;
-using DataTools.Memory;
 
 using System.Security.Authentication;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using DataTools.Streams;
 
 namespace DataTools.Text.ByteOrderMark
 {

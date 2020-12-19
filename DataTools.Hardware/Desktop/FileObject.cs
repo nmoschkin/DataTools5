@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Media.Imaging;
-using DataTools.Memory;
+
 using DataTools.Win32;
 using DataTools.Shell.Native;
 using DataTools.Win32.Memory;

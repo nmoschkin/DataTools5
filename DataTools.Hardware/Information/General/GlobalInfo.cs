@@ -23,7 +23,7 @@ using DataTools.Hardware.Display;
 using System.Runtime.InteropServices;
 
 using static DataTools.Hardware.DevEnumApi;
-using DataTools.Memory;
+
 using DataTools.Win32.Memory;
 
 namespace DataTools.Hardware

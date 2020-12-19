@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataTools.MathTools;
-using DataTools.Memory;
 using DataTools.Win32;
 using System.Drawing;
 using System.Runtime.InteropServices;

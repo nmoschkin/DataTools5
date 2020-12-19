@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
-
-using DataTools.Memory;
+using DataTools.Streams;
 
 namespace DataTools.Standard.Memory
 {

@@ -7,14 +7,14 @@
 // Copyright (C) 2011-2020 Nathan Moschkin
 // All Rights Reserved
 //
-// Licensed Under the Microsoft Public License   
+// Licensed Under the MIT License   
 // ************************************************* ''
 
 using System;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using DataTools.Win32;
-using DataTools.Memory;
+
 using static DataTools.Hardware.MultiMon;
 using System.Collections.Generic;
 using DataTools.Win32.Memory;

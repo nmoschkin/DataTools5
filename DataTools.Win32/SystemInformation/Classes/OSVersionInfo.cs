@@ -11,7 +11,6 @@ using System.ComponentModel;
 
 using DataTools.Win32;
 using DataTools.Text;
-using DataTools.Memory;
 
 namespace DataTools.SystemInformation
 {

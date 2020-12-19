@@ -1,4 +1,4 @@
-﻿using DataTools.Memory;
+﻿
 using DataTools.Hardware;
 using DataTools.Hardware.Usb;
 using System;

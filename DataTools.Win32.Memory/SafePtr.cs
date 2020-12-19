@@ -1,4 +1,4 @@
-﻿using DataTools.Memory;
+﻿using DataTools.Streams;
 
 using System;
 using System.Collections.Generic;

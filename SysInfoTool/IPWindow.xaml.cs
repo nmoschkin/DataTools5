@@ -20,7 +20,7 @@ using System.Windows.Interop;
 using DataTools.Hardware.Network;
 using DataTools.Hardware;
 using DataTools.Win32.Network;
-using DataTools.Memory;
+
 using DataTools.MathTools;
 using DataTools.Text;
 using DataTools.Win32;

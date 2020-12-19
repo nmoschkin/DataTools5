@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-using DataTools.Memory;
 using DataTools.Text;
 
 namespace DataTools.MathTools
