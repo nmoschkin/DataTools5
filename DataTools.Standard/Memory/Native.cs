@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("CTNativeLib")]
 [assembly: InternalsVisibleTo("CTShell")]
 
-namespace DataTools.Memory.NativeLib
+namespace DataTools.Standard.Memory.NativeLib
 {
 
     public static class Native

@@ -1,11 +1,13 @@
-﻿using DataTools.Memory.NativeLib;
+﻿using DataTools.Standard.Memory.NativeLib;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace DataTools.Memory
+using DataTools.Memory;
+
+namespace DataTools.Standard.Memory
 {
     public class SafePtr : SafeHandle
     {

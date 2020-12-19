@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
 using System.ComponentModel;
-using DataTools.Memory.NativeLib;
+using DataTools.Standard.Memory.NativeLib;
 
-namespace DataTools.Memory
+namespace DataTools.Standard.Memory
 {
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
