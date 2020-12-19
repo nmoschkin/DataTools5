@@ -6,10 +6,10 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
-using DataTools.Memory;
 using System.Drawing;
-using DataTools.Win32Api;
+using DataTools.Win32;
 using DataTools.Shell.Native;
+using DataTools.Win32.Memory;
 
 namespace DataTools.Desktop
 {
@@ -509,16 +509,14 @@ namespace DataTools.Desktop
             FileObject fobj;
             DirectoryObject dobj;
             IShellItem shitem = null;
-            IShellFolder shfld = null;
-            IEnumIDList enumer = null;
+            IShellFolder shfld;
+            IEnumIDList enumer;
 
-            var mm = new MemPtr();
+            MemPtr mm;
             var mm2 = new MemPtr();
-            var mc = new NativeShell.STRRET();
 
             string fp;
-
-            object objret = null;
+                        
             string pname = ParsingName;
 
             if (pname is object && pname.LastIndexOf(@"\") == pname.Length - 1)

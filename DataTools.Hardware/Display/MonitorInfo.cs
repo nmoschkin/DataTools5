@@ -13,10 +13,11 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
-using DataTools.Win32Api;
+using DataTools.Win32;
 using DataTools.Memory;
 using static DataTools.Hardware.MultiMon;
 using System.Collections.Generic;
+using DataTools.Win32.Memory;
 
 namespace DataTools.Hardware
 {
@@ -270,7 +271,7 @@ namespace DataTools.Hardware.Display
 
         private bool _enum(IntPtr hMonitor, IntPtr hdcMonitor, ref W32RECT lpRect, IntPtr lParamIn)
         {
-            DataTools.Memory.MemPtr lParam = lParamIn;
+            MemPtr lParam = lParamIn;
             Add(new MonitorInfo(hMonitor, lParam.IntAt(0L)));
 
             //string[] ss = GetPhysicalMonitorNames(hMonitor);

@@ -16,7 +16,7 @@ using System.Security;
 using System.Windows.Forms;
 using DataTools.SystemInformation;
 using DataTools.Hardware.Disk;
-using DataTools.Win32Api;
+using DataTools.Win32;
 using DataTools.Hardware.Printers;
 using DataTools.Hardware.Processor;
 using DataTools.Hardware.Display;
@@ -24,6 +24,7 @@ using System.Runtime.InteropServices;
 
 using static DataTools.Hardware.DevEnumApi;
 using DataTools.Memory;
+using DataTools.Win32.Memory;
 
 namespace DataTools.Hardware
 {
@@ -351,7 +352,6 @@ namespace DataTools.Hardware
         {
             var minf = _internalEnumerateDevices<MonitorDeviceInfo>(DevProp.GUID_DEVINTERFACE_MONITOR, ClassDevFlags.DeviceInterface | ClassDevFlags.Present);
             var mon = new Monitors();
-            uint i = 0;
             
             DISPLAY_DEVICE dd;
             

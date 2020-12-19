@@ -28,7 +28,7 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using DataTools.Memory;
-using DataTools.Win32Api;
+using DataTools.Win32;
 using DataTools.Shell.Native;
 
 namespace DataTools.Desktop

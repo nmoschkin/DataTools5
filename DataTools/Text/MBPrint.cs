@@ -71,9 +71,7 @@ namespace DataTools.Text
             s = ValueString;
             b = s.Length;
 
-            var loopTo = b;
-
-            for (j = 0; j < loopTo; j++)
+            for (j = 0; j < b; j++)
             {
                 x = s.Substring(j, 1);
 

@@ -21,18 +21,18 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
-using DataTools.Memory;
 using DataTools.Text;
 using DataTools.Desktop;
-using DataTools.Win32Api;
+using DataTools.Win32;
 using DataTools.Shell.Native;
-using DataTools.Win32Api.Network;
+using DataTools.Win32.Network;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using DataTools.SortedLists;
+using DataTools.Win32.Memory;
 
 namespace DataTools.Hardware.Network
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DataTools.Win32Api;
+using DataTools.Win32;
 using DataTools.Hardware;
 using DataTools.SystemInformation;
 using DataTools.Text;

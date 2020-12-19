@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataTools.Hardware;
-using DataTools.Win32Api;
+using DataTools.Win32;
 
 namespace DataTools.Hardware.Display
 {

@@ -16,8 +16,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using DataTools.Win32Api;
-using DataTools.Win32Api.Menu;
+using DataTools.Win32;
+using DataTools.Win32.Menu;
 using DataTools.Shell.Native;
 using Microsoft.Win32;
 

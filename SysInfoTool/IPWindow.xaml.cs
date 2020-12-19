@@ -1,6 +1,4 @@
 ﻿using System;
-
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,11 +19,11 @@ using System.Runtime.CompilerServices;
 using System.Windows.Interop;
 using DataTools.Hardware.Network;
 using DataTools.Hardware;
-using DataTools.Win32Api.Network;
+using DataTools.Win32.Network;
 using DataTools.Memory;
 using DataTools.MathTools;
 using DataTools.Text;
-using DataTools.Win32Api;
+using DataTools.Win32;
 
 namespace SysInfoTool
 {

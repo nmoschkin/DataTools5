@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+
 using DataTools.Memory;
 using DataTools.Text;
 
@@ -24,7 +25,6 @@ namespace DataTools.MathTools
         public static byte[,] LShiftTab = new byte[256, 8];
         public static byte[,] RShiftTab = new byte[256, 8];
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
         public static double InchesToMillimeters(double value)
         {
             return value * 25.4d;
@@ -38,9 +38,9 @@ namespace DataTools.MathTools
         public static double[] InchesToMillimeters(double[] value)
         {
             int i;
-            int c = value.Count() - 1;
-            var loopTo = c;
-            for (i = 0; i <= loopTo; i++)
+            int c = value.Count();
+
+            for (i = 0; i < c; i++)
                 value[i] *= 25.4d;
             return value;
         }
@@ -48,26 +48,22 @@ namespace DataTools.MathTools
         public static double[] MillimetersToInches(double[] value)
         {
             int i;
-            int c = value.Count() - 1;
-            var loopTo = c;
-            for (i = 0; i <= loopTo; i++)
+            int c = value.Count();
+            for (i = 0; i < c; i++)
                 value[i] /= 25.4d;
             return value;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        // I actually needed no guidance coming up with the PrintFraction equation.  It was a logical deduction.
-
 
         /// <summary>
-    /// Prints a fractional number from a decimal value.
-    /// </summary>
-    /// <param name="value">The value to convert to a fraction.</param>
-    /// <param name="maxSignificantDigits">The maximum number of significant digits the number can be rounded to.</param>
-    /// <param name="maxDenominator">The maximum possible value of the denominator.</param>
-    /// <param name="addQuasiMark">Set to True to output the '~' symbol for fractions that are found below the maximum significant digit.</param>
-    /// <returns>A string representing a whole number with a fraction.</returns>
-    /// <remarks>The number of iterations required by this algorithm is greatly influenced by the size of the maximum denominator.</remarks>
+        /// Prints a fractional number from a decimal value.
+        /// </summary>
+        /// <param name="value">The value to convert to a fraction.</param>
+        /// <param name="maxSignificantDigits">The maximum number of significant digits the number can be rounded to.</param>
+        /// <param name="maxDenominator">The maximum possible value of the denominator.</param>
+        /// <param name="addQuasiMark">Set to True to output the '~' symbol for fractions that are found below the maximum significant digit.</param>
+        /// <returns>A string representing a whole number with a fraction.</returns>
+        /// <remarks>The number of iterations required by this algorithm is greatly influenced by the size of the maximum denominator.</remarks>
         public static string PrintFraction(decimal value, int maxSignificantDigits = 7, int maxDenominator = 25, bool addQuasiMark = true)
         {
             decimal wholePart = 0.0m;
@@ -99,21 +95,19 @@ namespace DataTools.MathTools
             if (maxSignificantDigits > 28)
                 maxSignificantDigits = 28;
             // Go from 1 to the maximum number of significant digits.
-            var loopTo = maxSignificantDigits;
-            for (currSig = 1; currSig <= loopTo; currSig++)
+            
+            for (currSig = 1; currSig <= maxSignificantDigits; currSig++)
             {
 
                 // get the rounded, working value for the test.
                 workVal = Math.Round(value, currSig);
 
                 // iterate the numerator to the maximum denominator value.
-                var loopTo1 = (decimal)maxDenominator;
-                for (numerator = 1m; numerator <= loopTo1; numerator++)
+                for (numerator = 1m; numerator <= maxDenominator; numerator++)
                 {
 
                     // iterate the denomenator to the maximum denominator value.
-                    var loopTo2 = (decimal)maxDenominator;
-                    for (denominator = 1m; denominator <= loopTo2; denominator++)
+                    for (denominator = 1m; denominator <= maxDenominator; denominator++)
                     {
 
                         // create the test value.
@@ -175,21 +169,20 @@ namespace DataTools.MathTools
             return output;
         }
         /// <summary>
-    /// Strips the units from a number, returns both, cleaned.
-    /// </summary>
-    /// <param name="text"></param>
-    /// <param name="unit"></param>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Strips the units from a number, returns both, cleaned.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="unit"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
         public static string StripUnit(string text, ref string unit)
         {
             var ch = text.ToCharArray();
             int i;
             int c = ch.Count() - 1;
-            var l = new List<char>();
-            decimal d = 0m;
-            bool noL = false;
+
             unit = null;
+
             for (i = c; i >= 0; i -= 1)
             {
                 if (TextTools.IsNumber(ch[i]))
@@ -208,14 +201,14 @@ namespace DataTools.MathTools
         }
 
         /// <summary>
-    /// Parse any string into an array of numbers with their optional unit markers.
-    /// </summary>
-    /// <param name="input"></param>
-    /// <param name="returnUnits"></param>
-    /// <param name="validunits"></param>
-    /// <param name="validSeparators"></param>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Parse any string into an array of numbers with their optional unit markers.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="returnUnits"></param>
+        /// <param name="validunits"></param>
+        /// <param name="validSeparators"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
         public static double[] ParseArrayOfNumbersWithUnits(string input, [Optional, DefaultParameterValue(null)] ref string[] returnUnits, string[] validunits = null, string validSeparators = ",x;:")
         {
             if (validunits is null)
@@ -232,20 +225,27 @@ namespace DataTools.MathTools
             string s;
             var exp = new MathExpressionParser();
             input = input.ToLower();
-            c = vc.Count() - 1;
-            var loopTo = c;
-            for (i = 1; i <= loopTo; i++)
+            c = vc.Count();
+
+            for (i = 1; i < c; i++)
                 input = input.Replace(vc[i], vc[0]);
+
             var parse = TextTools.Split(input, vc[0].ToString());
-            c = parse.Count() - 1;
+
+            c = parse.Count();
+
             string su = null;
-            var loopTo1 = c;
-            for (i = 0; i <= loopTo1; i++)
+
+            for (i = 0; i < c; i++)
             {
                 s = parse[i].Trim();
+
                 s = StripUnit(s, ref su);
+
                 ru.Add(su);
+
                 string argErrorText = null;
+
                 retVal.Add(exp.ParseExpression(s, ErrorText: ref argErrorText));
             }
 
@@ -254,13 +254,13 @@ namespace DataTools.MathTools
         }
 
         /// <summary>
-    /// Strips out everything else from a string and returns only the numbers.
-    /// </summary>
-    /// <param name="input"></param>
-    /// <param name="culture"></param>
-    /// <param name="hex"></param>
-    /// <returns></returns>
-    /// <remarks></remarks>
+        /// Strips out everything else from a string and returns only the numbers.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="culture"></param>
+        /// <param name="hex"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
         public static string NumbersOnly(string input, System.Globalization.CultureInfo culture = null, bool hex = false)
         {
             if (culture is null)
@@ -290,11 +290,13 @@ namespace DataTools.MathTools
             sb.Append(culture.NumberFormat.PercentDecimalSeparator);
             sb.Append(culture.NumberFormat.NegativeSign);
             sb.Append(culture.NumberFormat.PositiveSign);
+
             ch = input.ToCharArray();
             scan = sb.ToString();
-            cs = ch.Length - 1;
-            var loopTo = cs;
-            for (i = 0; i <= loopTo; i++)
+
+            cs = ch.Length;
+
+            for (i = 0; i < cs; i++)
             {
                 if (scan.Contains(ch[i]))
                 {
@@ -305,31 +307,21 @@ namespace DataTools.MathTools
             return sb.ToString();
         }
 
-        public static int AverageColorValue(int ARGB)
-        {
-            float r;
-            float g;
-            float b;
-            int i;
-            float o;
-            i = ARGB & 0xFFFFFF;
-            r = i & 0xFF;
-            g = i >> 8 & 0xFF;
-            b = i >> 16 & 0xFF;
-            o = (r + g + b) / 3f;
-            return (int)Math.Round(o);
-        }
-
         /// <summary>
-    /// Swap nibbles
-    /// </summary>
-    /// <param name="ByteVal"></param>
-    /// <returns></returns>
+        /// Swap nibbles
+        /// </summary>
+        /// <param name="ByteVal"></param>
+        /// <returns></returns>
         public static byte Swan(byte ByteVal)
         {
             return (byte)((ByteVal << 4) | (byte)(ByteVal >> 4));
         }
 
+        /// <summary>
+        /// Change the endianness of the given value
+        /// </summary>
+        /// <param name="Value"></param>
+        /// <returns></returns>
         public static uint Endian(uint Value)
         {
             var b = BitConverter.GetBytes(Value);
@@ -337,6 +329,11 @@ namespace DataTools.MathTools
             return BitConverter.ToUInt32(b, 0);
         }
 
+        /// <summary>
+        /// Change the endianness of the given value
+        /// </summary>
+        /// <param name="Value"></param>
+        /// <returns></returns>
         public static int Endian(int Value)
         {
             var b = BitConverter.GetBytes(Value);
@@ -344,9 +341,6 @@ namespace DataTools.MathTools
             return BitConverter.ToInt32(b, 0);
         }
 
-        public static uint CalcCRC32(byte[] bytesIn, int dwLen, bool ShowProgress = false, bool CryptoCRC = false, uint crc = 0xFFFFFFFFU)
-        {
-            return Crc32.Calculate(bytesIn, 0, dwLen, crc);
-        }
     }
+
 }

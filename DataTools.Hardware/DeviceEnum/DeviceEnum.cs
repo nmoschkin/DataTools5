@@ -17,16 +17,16 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
-using DataTools.Memory;
 using DataTools.Desktop;
 using DataTools.Shell.Native;
 using DataTools.Hardware.Disk;
 using DataTools.Hardware.Network;
 using DataTools.Hardware.Usb;
 using DataTools.Text;
-using DataTools.Win32Api.Disk.Partition;
-using DataTools.Win32Api;
-using DataTools.Win32Api.Disk.VirtualDisk;
+using DataTools.Win32.Disk.Partition;
+using DataTools.Win32;
+using DataTools.Win32.Disk.VirtualDisk;
+using DataTools.Win32.Memory;
 
 namespace DataTools.Hardware
 {
@@ -352,7 +352,7 @@ namespace DataTools.Hardware
             DevProp.SetupDiGetDevicePropertyKeys(hDev, ref info._devInfo, mm, c, ref c, 0U);
             DevProp.SetupDiDestroyDeviceInfoList(hDev);
             
-            for (int i = 0, loopTo = (int)c - 1; i <= loopTo; i++)
+            for (int i = 0; i < c; i++)
                 nkey.Add(mm.ToStructAt<DEVPROPKEY>(i * devpsize));
 
             mm.Free();
@@ -697,7 +697,10 @@ namespace DataTools.Hardware
                         {
                             sdi.NumberEntries = mm.UIntAt(1L);
                             inf.BackingStore = new string[((int)sdi.NumberEntries)];
-                            for (long d = 0L, loopTo = sdi.NumberEntries - 1L; d <= loopTo; d++)
+                            
+                            var sne = sdi.NumberEntries;
+
+                            for (long d = 0; d < sne; d++)
                             {
                                 sdi.Version2Entries = mm.ToStruct<STORAGE_DEPENDENCY_INFO_TYPE_2>();
                                 inf.BackingStore[(int)d] = Path.GetFullPath(sdi.Version2Entries.DependentVolumeRelativePath.ToString());

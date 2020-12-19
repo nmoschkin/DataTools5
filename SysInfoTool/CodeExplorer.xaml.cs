@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using DataTools.Win32.Memory;
 
 namespace SysInfoTool
 {
@@ -97,15 +98,21 @@ namespace SysInfoTool
         private void StartWatching(HidDeviceInfo d)
         {
             IntPtr h;
-            int x = 0;
+
             int i = 0;
+
             if (_devThread is object)
                 StopWatching();
+
             var s = new ObservableCollection<string>();
+
             _lastDevice = d;
+
             this.ViewingArea.ItemsSource = s;
+
             for (i = 0; i <= 255; i++)
                 s.Add("");
+
             var th = new Thread(() =>
             {
                 cts = new CancellationTokenSource();
@@ -127,7 +134,6 @@ namespace SysInfoTool
                                 {
                                     s[i] = "HID CODE " + i.ToString("X2") + " = " + mm.IntAtAbsolute(1L);
                                 }
-                                x = 0;
 
                             }
                         });
@@ -142,14 +148,14 @@ namespace SysInfoTool
                     cts = null;
                     return;
                 }
-                catch (ThreadAbortException tx)
+                catch (ThreadAbortException)
                 {
                     mm.Free();
                     HidFeatures.CloseHid(h);
                     cts = null;
                     return;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     mm.Free();
                     HidFeatures.CloseHid(h);

@@ -127,41 +127,16 @@ namespace DataTools.Memory
         /// <param name="bufflen">Specify the size, in bytes, of the marshaling buffer to be used (default is 1k).</param>
         /// <returns>A 32-bit unsigned integer representing the calculated CRC.</returns>
         /// <remarks></remarks>
-        public static uint Calculate(IntPtr data, IntPtr length, uint crc = 0xffffffffu, int bufflen = 1024)
+        public static uint Calculate(IntPtr data, IntPtr length, uint crc = 0xffffffffu)
         {
-            if (length.ToInt64() <= 0)
-                throw new ArgumentOutOfRangeException("length", "length must be a positive number.");
-            if (data == IntPtr.Zero)
-                throw new ArgumentNullException("data", "data cannot be equal to null.");
+            uint ret;
 
-            // our working marshal buffer will be 1k, this is a good compromise between eating up memory and efficiency.
-            int blen = bufflen;
-
-            byte[] b = null;
-            MemPtr mm = new MemPtr(data);
-
-            long i = 0;
-            long l = length.ToInt64();
-
-            int e = 0;
-            int j = 0;
-
-            b = new byte[blen];
-
-            for (i = 0; i < l; i += blen)
+            unsafe 
             {
-                e = (int)(l - i);
-                if (e > blen) e = blen;
-
-                b = mm.ToByteArray(i, e);
-
-                for (j = 0; j < e; j++)
-                {
-                    crc = Crc32Table[(crc ^ b[j]) & 0xff] ^ (crc >> 8);
-                }
+                ret = Calculate((byte*)data, length.ToInt64(), crc);
             }
 
-            return crc ^ 0xffffffffu;
+            return ret;
         }
 
 

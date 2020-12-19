@@ -15,8 +15,9 @@
 // ************************************************* ''
 
 using System;
-using DataTools.Memory;
-using DataTools.Win32Api;
+
+using DataTools.Win32;
+using DataTools.Win32.Memory;
 
 namespace DataTools.Hardware.Usb
 {

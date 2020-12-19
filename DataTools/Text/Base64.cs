@@ -1,152 +1,204 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Security.Cryptography;
+
 
 namespace DataTools.Text
 {
-    public static class Base64
+    internal struct BASE64STRUCT
     {
+        public int Length;
+        public byte[] Data;
+    }
 
-        public static byte[] ToBase64(byte[] input)
+    internal class Base64
+    {
+        const string BASE64TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        const int BASE64PAD = 61;
+        const int BASE64PADRETURN = 254;
+        
+        private byte[] B64CodeOut = new byte[64];
+        private byte[] B64CodeReturn = new byte[256];
+        public bool B64TableCreated { get; private set; }
+                
+        public Base64()
         {
-
-            // Retrieve the input and output file streams.
-            MemoryStream inputStream =
-                new MemoryStream(input);
-            MemoryStream outputStream =
-                new MemoryStream();
-
-            // Create a new ToBase64Transform object to convert to base 64.
-            ToBase64Transform base64Transform = new ToBase64Transform();
-
-            // Create a new byte array with the size of the output block size.
-            byte[] outputBytes = new byte[base64Transform.OutputBlockSize];
-
-            // Retrieve the file contents into a byte array.
-            byte[] inputBytes = new byte[inputStream.Length];
-            inputStream.Read(inputBytes, 0, inputBytes.Length);
-
-            // Verify that multiple blocks can not be transformed.
-            if (!base64Transform.CanTransformMultipleBlocks)
+            int i;
+            int d;
+            for (i = 0; i <= 255; i++)
+                B64CodeReturn[i] = 0x7F;
+            for (i = 0; i <= 63; i++)
             {
-                // Initializie the offset size.
-                int inputOffset = 0;
+                d = BASE64TABLE.Substring(i, 1)[0];
+                B64CodeOut[i] = (byte)(d & 255);
+                B64CodeReturn[d] = (byte)(i & 0x3F);
+            }
 
-                // Iterate through inputBytes transforming by blockSize.
-                int inputBlockSize = base64Transform.InputBlockSize;
+            B64CodeReturn[BASE64PAD] = BASE64PADRETURN;
+            B64TableCreated = true;
+        }
 
-                while (inputBytes.Length - inputOffset > inputBlockSize)
+        public int Decode64(byte[] DataIn, int Length, out byte[] DataOut)
+        {
+            int Decode64Ret = default;
+
+            int l;
+            int j;
+            int v;
+
+            var Quartet = new byte[4];
+
+            l = (int)(Length / 4d * 3d);
+            
+            DataOut = new byte[l + 1];
+            
+            v = 0;
+            
+            for (l = 0; l < Length; l += 0)
+            {
+                j = 0;
+                while (j < 4)
                 {
-                    base64Transform.TransformBlock(
-                        inputBytes,
-                        inputOffset,
-                        inputBytes.Length - inputOffset,
-                        outputBytes,
-                        0);
+                    if (B64CodeReturn[DataIn[l]] != 0x7F)
+                    {
+                        Quartet[j] = B64CodeReturn[DataIn[l]];
+                        j = j + 1;
+                    }
 
-                    inputOffset += base64Transform.InputBlockSize;
-                    outputStream.Write(
-                        outputBytes,
-                        0,
-                        base64Transform.OutputBlockSize);
+                    l = l + 1;
+                    if (l >= Length)
+                    {
+                        while (j < 4)
+                        {
+                            Quartet[j] = BASE64PADRETURN;
+                            j = j + 1;
+                        }
+
+                        break;
+                    }
                 }
 
-                // Transform the final block of data.
-                outputBytes = base64Transform.TransformFinalBlock(
-                    inputBytes,
-                    inputOffset,
-                    inputBytes.Length - inputOffset);
+                if (Quartet[0] == BASE64PADRETURN | Quartet[1] == BASE64PADRETURN)
+                {
+                    l = (int)-1L;
+                    break;
+                }
 
-                outputStream.Write(outputBytes, 0, outputBytes.Length);
+                DataOut[v] = (byte)((Quartet[0] << 2) | (Quartet[1] >> 4));
+                v = v + 1;
+                if (Quartet[2] == BASE64PADRETURN)
+                {
+                    l = (int)-1L;
+                    break;
+                }
+
+                DataOut[v] = (byte)((Quartet[1] << 4) | (Quartet[2] >> 2));
+                v = v + 1;
+                if (Quartet[3] == BASE64PADRETURN)
+                {
+                    l = (int)-1L;
+                    break;
+                }
+
+                DataOut[v] = (byte)((Quartet[2] << 6) | Quartet[3]);
+                v = v + 1;
             }
 
-            // Determine if the current transform can be reused.
-            if (!base64Transform.CanReuseTransform)
-            {
-                // Free up any used resources.
-                base64Transform.Clear();
-            }
+            Array.Resize(ref DataOut, v - 1 + 1);
 
-            inputStream.Close();
-
-            var ret = outputStream.ToArray();
-            outputStream.Close();
-
-            return ret;
-
+            Decode64Ret = v;
+            return Decode64Ret;
         }
 
-        public static byte[] FromBase64(byte[] input)
+        public bool Encode64(byte[] DataIn, int Length, out BASE64STRUCT b64Out)
         {
+            int l;
+            int x;
+            int v;
+            var lC = default(int);
+            int lProcess;
+            int lReturn;
+            int lActual;
 
-            // Retrieve the input and output file streams.
-            MemoryStream inputStream =
-                new MemoryStream(input);
-            MemoryStream outputStream =
-                new MemoryStream();
+            lActual = Length;
+            lProcess = Length;
 
-            // Create a new ToBase64Transform object to convert to base 64.
-            FromBase64Transform base64Transform = new FromBase64Transform();
+            b64Out = new BASE64STRUCT();
 
-            // Create a new byte array with the size of the output block size.
-            byte[] outputBytes = new byte[base64Transform.OutputBlockSize];
-
-            // Retrieve the file contents into a byte array.
-            byte[] inputBytes = new byte[inputStream.Length];
-            inputStream.Read(inputBytes, 0, inputBytes.Length);
-
-            // Initializie the offset size.
-            int inputOffset = 0;
-
-            // Iterate through inputBytes transforming by blockSize.
-            int inputBlockSize = base64Transform.InputBlockSize;
-
-            while (inputBytes.Length - inputOffset > inputBlockSize)
+            if (0 != (lProcess % 3))
             {
-                base64Transform.TransformBlock(
-                    inputBytes,
-                    inputOffset,
-                    4,
-                    outputBytes,
-                    0);
-
-                inputOffset += base64Transform.InputBlockSize;
-                outputStream.Write(
-                    outputBytes,
-                    0,
-                    base64Transform.OutputBlockSize);
+                lProcess = lProcess + (3 - lProcess % 3);
             }
 
-            // Transform the final block of data.
-            outputBytes = base64Transform.TransformFinalBlock(
-                inputBytes,
-                inputOffset,
-                inputBytes.Length - inputOffset);
+            lReturn = (int)(lProcess / 3d * 4d);
 
-            outputStream.Write(outputBytes, 0, outputBytes.Length);
+            Array.Resize(ref DataIn, lProcess - 1 + 1);
 
-            // Determine if the current transform can be reused.
-            if (!base64Transform.CanReuseTransform)
+            if (Math.Round(lReturn / 76d) != lReturn / 76d)
             {
-                // Free up any used resources.
-                base64Transform.Clear();
+                v = (int)(Math.Round(lReturn / 76d) + 1d);
+            }
+            else
+            {
+                v = (int)(lReturn / 76d);
             }
 
-            inputStream.Close();
+            v = v * 2;
+            l = lReturn - 1 + v;
 
-            var ret = outputStream.ToArray();
-            outputStream.Close();
+            b64Out.Data = new byte[l + 1];
+            b64Out.Length = l + 1;
 
-            return ret;
+            l = lProcess;
+            v = 0;
 
+            for (x = 0; x < l; x += 3)
+            {
+                b64Out.Data[v] = B64CodeOut[(DataIn[x] >> 2)];
+                b64Out.Data[v + 1] = B64CodeOut[(DataIn[x] << 4) & 0x30 | (DataIn[x + 1] >> 4)];
+                b64Out.Data[v + 2] = B64CodeOut[(DataIn[x + 1] << 2) & 0x3C | (DataIn[x + 2] >> 6)];
+                b64Out.Data[v + 3] = B64CodeOut[DataIn[x + 2] & 0x3F];
+                v = v + 4;
+                lC = lC + 4;
+                if (lC >= 76)
+                {
+                    lC = 0;
+                    if (l - x > 3)
+                    {
+                        b64Out.Data[v] = 13;
+                        b64Out.Data[v + 1] = 10;
+                        v = v + 2;
+                    }
+                }
+
+            }
+
+            switch (lProcess - lActual)
+            {
+                case 1:
+                    {
+                        b64Out.Data[v - 1] = BASE64PAD;
+                        break;
+                    }
+
+                case 2:
+                    {
+                        b64Out.Data[v - 1] = BASE64PAD;
+                        b64Out.Data[v - 2] = BASE64PAD;
+                        break;
+                    }
+            }
+
+            if (lC != 0)
+            {
+                b64Out.Data[v] = 13;
+                b64Out.Data[v + 1] = 10;
+                Array.Resize(ref b64Out.Data, v + 1 + 1);
+            }
+            else
+            {
+                Array.Resize(ref b64Out.Data, v);
+            }
+
+            return 0 != (b64Out.Length);
         }
-
-
-
-
     }
 }

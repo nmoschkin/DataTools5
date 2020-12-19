@@ -14,7 +14,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using DataTools.Win32Api;
+using DataTools.Win32;
 using static DataTools.Hardware.DevEnumApi;
 
 namespace DataTools.Hardware.Printers

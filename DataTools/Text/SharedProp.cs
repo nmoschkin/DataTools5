@@ -82,11 +82,11 @@ namespace DataTools.Text
                 p = instance.GetType().GetProperties(BindingFlags.Public | BindingFlags.Static);
             }
 
-            if (instance is null)
+            if (instance == null)
             {
                 // let's just try to create it, it may work.
                 instance = (T)(instance is object ? instance : System.ComponentModel.TypeDescriptor.CreateInstance(null, typeof(T), null, null));
-                if (instance is null)
+                if (instance == null)
                     return default;
             }
 

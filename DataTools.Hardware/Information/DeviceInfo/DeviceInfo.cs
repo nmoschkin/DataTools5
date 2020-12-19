@@ -15,7 +15,7 @@ using System.Linq;
 using System.Reflection;
 using DataTools.Text;
 using DataTools.Desktop;
-using DataTools.Win32Api;
+using DataTools.Win32;
 
 namespace DataTools.Hardware
 {

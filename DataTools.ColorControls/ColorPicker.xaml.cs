@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DataTools.Desktop;
 using DataTools.Desktop.Unified;
-using DataTools.Win32Api;
+using DataTools.Win32;
 
 namespace DataTools.ColorControls
 {

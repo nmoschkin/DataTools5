@@ -27,9 +27,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
-using DataTools.Memory;
-using DataTools.Win32Api;
+using DataTools.Win32;
 using DataTools.Shell.Native;
+using DataTools.Win32.Memory;
 
 namespace DataTools.Desktop
 {
@@ -126,32 +126,42 @@ namespace DataTools.Desktop
         /// <remarks></remarks>
         public Icon ToIcon()
         {
-            Icon ToIconRet = default;
+            Icon iconOut;
+
             if (IsPngFormat)
             {
                 Bitmap bmp = (Bitmap)ToImage();
+
                 var bmi = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format1bppIndexed);
                 var lpicon = default(ICONINFO);
+
                 int i;
+
                 var bm = bmi.LockBits(new Rectangle(0, 0, bmi.Width, bmi.Height), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format1bppIndexed);
+
                 MemPtr mm = bm.Scan0;
+
                 int z = (int)(Math.Max(bmp.Width, 32) * bmp.Height / 8d);
-                var loopTo = z - 1;
-                for (i = 0; i <= loopTo; i++)
+
+                for (i = 0; i < z; i++)
                     mm.ByteAt(i) = 255;
+
                 bmi.UnlockBits(bm);
+
                 lpicon.hbmColor = bmp.GetHbitmap();
                 lpicon.hbmMask = bmi.GetHbitmap();
                 lpicon.fIcon = 1;
+
                 var hIcon = User32.CreateIconIndirect(ref lpicon);
+
                 if (hIcon != IntPtr.Zero)
                 {
-                    ToIconRet = (Icon)Icon.FromHandle(hIcon).Clone();
+                    iconOut = (Icon)Icon.FromHandle(hIcon).Clone();
                     User32.DestroyIcon(hIcon);
                 }
                 else
                 {
-                    ToIconRet = null;
+                    iconOut = null;
                 }
 
                 NativeShell.DeleteObject(lpicon.hbmMask);
@@ -159,10 +169,10 @@ namespace DataTools.Desktop
             }
             else
             {
-                ToIconRet = _constructIcon();
+                iconOut = _constructIcon();
             }
 
-            return ToIconRet;
+            return iconOut;
         }
 
         /// <summary>
@@ -279,7 +289,7 @@ namespace DataTools.Desktop
             var ptr1 = mm.DangerousGetHandle() + 40;
             var ptr2 = mm.DangerousGetHandle() + 40 + bm.biSizeImage;
             Marshal.StructureToPtr(bm, mm.DangerousGetHandle(), false);
-            DataTools.Memory.NativeLib.Native.MemCpy(bmp, ptr1, bm.biSizeImage);
+            Native.MemCpy(bmp, ptr1, bm.biSizeImage);
             bm = mm.ToStruct<BITMAPINFOHEADER>();
             _setMask(ptr1, ptr2, w, h);
             _entry.dwImageSize = (int)mm.Length;
@@ -343,8 +353,8 @@ namespace DataTools.Desktop
                 return null;
             
             hBmp = User32.CreateDIBSection(IntPtr.Zero, mm.Handle, 0U, ref ppBits, IntPtr.Zero, 0);
-            
-            DataTools.Memory.NativeLib.Native.MemCpy(ptr, ppBits, bmp.biSizeImage);
+
+            Native.MemCpy(ptr, ppBits, bmp.biSizeImage);
             
             if (hasMask)
             {
@@ -353,7 +363,7 @@ namespace DataTools.Desktop
                 bmp.biSizeImage = 0;
                 Marshal.StructureToPtr(bmp, mm.Handle, false);
                 hBmpMask = User32.CreateDIBSection(IntPtr.Zero, mm.Handle, 0U, ref ppBits, IntPtr.Zero, 0);
-                DataTools.Memory.NativeLib.Native.MemCpy(ptr, ppBits, (long)(Math.Max(bmp.biWidth, 32) * bmp.biHeight / 8d));
+                Native.MemCpy(ptr, ppBits, (long)(Math.Max(bmp.biWidth, 32) * bmp.biHeight / 8d));
             }
 
             lpicon.fIcon = 1;
@@ -395,11 +405,10 @@ namespace DataTools.Desktop
             int boundary = Math.Max(32, Width);
 
             // walk every pixel of the image.
-            var loopTo = Height - 1;
-            for (y = 0; y <= loopTo; y++)
+            
+            for (y = 0; y < Height; y++)
             {
-                var loopTo1 = Width - 1;
-                for (x = 0; x <= loopTo1; x++)
+                for (x = 0; x < Width; x++)
                 {
 
                     // the first shift is our position in the bitmap output.
@@ -437,32 +446,42 @@ namespace DataTools.Desktop
         {
             // this never changes
             int numBits = 32;
+
             int x;
             int y;
-            byte bit = 0;
-            byte mask = 0;
+
+            byte bit;
+
             int d;
             int e;
             int f;
+
             double move = numBits / 8d;
+
             int stride = (int)(Width * (numBits / 8d));
             int msize = (int)(Math.Max(32, Width) * Height / 8d);
             int isize = (int)(Width * Height * (numBits / 8d));
+
             byte[] bb;
             byte[] imgb;
+
             imgb = new byte[isize];
             bb = new byte[msize];
+
             Marshal.Copy(hBits.Handle, imgb, 0, isize);
-            var loopTo = Height - 1;
-            for (y = 0; y <= loopTo; y++)
+
+            for (y = 0; y < Height; y++)
             {
                 d = y * stride;
-                var loopTo1 = Width - 1;
-                for (x = 0; x <= loopTo1; x++)
+
+                for (x = 0; x < Width; x++)
                 {
+
                     f = (int)(d + x * move);
                     e = (int)Math.Floor(x / 8d);
+
                     bit = (byte)(7 - x % 8);
+
                     if (imgb[f + 3] == 0)
                     {
                         bb[e] = (byte)(bb[e] | 1 << bit);
@@ -473,8 +492,6 @@ namespace DataTools.Desktop
             // MemCpy(hMask.Handle, bb, msize)
 
             hMask.FromByteArray(bb, 0L);
-            hBits = IntPtr.Zero;
-            hMask = IntPtr.Zero;
         }
 
         /// <summary>
@@ -488,37 +505,47 @@ namespace DataTools.Desktop
         {
             int sz = (int)size != 0 ? (int)(size) & 0xFF : 256;
             Bitmap im = (Bitmap)Image;
+
             if (Image.Width != sz | Image.Height != sz)
             {
                 im = new Bitmap(sz, sz, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
                 var g = Graphics.FromImage(im);
+
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                 g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+
                 g.DrawImage(Image, new Rectangle(0, 0, sz, sz));
+
                 g.Dispose();
             }
 
             var s = new MemoryStream();
+
             im.Save(s, System.Drawing.Imaging.ImageFormat.Png);
+
             _entry.wIconType = size;
             _entry.wBitsPixel = 32;
             _entry.wColorPlanes = 1;
+
             _image = new byte[(int)(s.Length - 1L) + 1];
             _image = s.ToArray();
+
             if (asBmp)
             {
                 _image = _makeBitmap();
             }
 
             _entry.dwImageSize = _image.Length;
+
             s.Close();
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        private bool disposedValue; // To detect redundant calls
 
         // IDisposable
+        private bool disposedValue; // To detect redundant calls
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -537,13 +564,11 @@ namespace DataTools.Desktop
             Dispose(false);
         }
 
-        // This code added by Visual Basic to correctly implement the disposable pattern.
         public void Dispose()
         {
             // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
     }
 }

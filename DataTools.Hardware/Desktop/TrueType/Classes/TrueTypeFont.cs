@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using DataTools.Memory;
-using DataTools.Win32Api;
+using DataTools.Win32;
 
 namespace DataTools.Desktop
 {
@@ -103,8 +103,10 @@ namespace DataTools.Desktop
             // Not a TrueType v1.0 font!
             if (oft.uMajorVersion != 1 || oft.uMinorVersion != 0)
                 return null;
-            var loopTo = oft.uNumOfTables - 1;
-            for (i = 0; i <= loopTo; i++)
+
+            var nt = oft.uNumOfTables;
+
+            for (i = 0; i < nt; i++)
             {
                 FileTools.ReadStruct<TT_TABLE_DIRECTORY>(fs, ref tdir);
                 if (tdir.Tag.ToLower() == "name")
@@ -118,25 +120,37 @@ namespace DataTools.Desktop
             // Exhausted all records, no name record found!
             if (i >= oft.uNumOfTables)
                 return null;
+
             fs.Seek(tdir.uOffset, SeekOrigin.Begin);
+
             FileTools.ReadStruct<TT_NAME_TABLE_HEADER>(fs, ref nth);
+
             nth.uStorageOffset = Swap(nth.uStorageOffset);
             nth.uNRCount = Swap(nth.uNRCount);
-            var loopTo1 = nth.uNRCount - 1;
-            for (i = 0; i <= loopTo1; i++)
+
+            var nthc = nth.uNRCount;
+
+            for (i = 0; i < nthc; i++)
             {
                 FileTools.ReadStruct<TT_NAME_RECORD>(fs, ref nr);
                 nr.uNameID = Swap(nr.uNameID);
+
                 if (nr.uNameID == 1)
                 {
                     p = (int)fs.Position;
+
                     nr.uStringLength = Swap(nr.uStringLength);
                     nr.uStringOffset = Swap(nr.uStringOffset);
+
                     fs.Seek(tdir.uOffset + nr.uStringOffset + nth.uStorageOffset, SeekOrigin.Begin);
+
                     nr.uEncodingID = Swap(nr.uEncodingID);
                     nr.uPlatformID = Swap(nr.uPlatformID);
+
                     byte[] b;
+
                     b = new byte[nr.uStringLength];
+
                     fs.Read(b, 0, nr.uStringLength);
 
                     // Platform IDs: 0 = Unicode, 1 = Macintosh, 3 = Windows
@@ -150,6 +164,7 @@ namespace DataTools.Desktop
                     }
 
                     sRet = sRet.Trim('\0');
+                    
                     if (!string.IsNullOrEmpty(sRet))
                     {
                         break;
@@ -163,6 +178,5 @@ namespace DataTools.Desktop
             return sRet;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
     }
 }

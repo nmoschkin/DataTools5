@@ -6,9 +6,9 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DataTools.Win32Api;
+using DataTools.Win32;
 using System.Runtime.InteropServices;
-using DataTools.Memory;
+using DataTools.Win32.Memory;
 
 namespace DataTools.Desktop
 {

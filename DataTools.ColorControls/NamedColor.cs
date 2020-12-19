@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using DataTools.Desktop;
 using DataTools.Desktop.Unified;
 using DataTools.Text;
-using DataTools.Win32Api;
+using DataTools.Win32;
 
 using static DataTools.SortedLists.BinarySearch;
 using static DataTools.SortedLists.QuickSort;

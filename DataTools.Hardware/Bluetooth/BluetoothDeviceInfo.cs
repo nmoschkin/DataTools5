@@ -12,7 +12,7 @@
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using DataTools.Win32Api;
+using DataTools.Win32;
 
 namespace DataTools.Hardware
 {

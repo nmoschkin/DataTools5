@@ -24,11 +24,11 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
-using DataTools.Memory;
 using DataTools.Text;
 using DataTools.MathTools;
-using DataTools.Win32Api;
+using DataTools.Win32;
 using DataTools.Desktop.Unified;
+using DataTools.Win32.Memory;
 
 namespace DataTools.Hardware.Printers
 {
@@ -814,14 +814,16 @@ namespace DataTools.Hardware.Printers
             IntPtr cpx;
 
             EnumPrinters(6U, "", 2U, IntPtr.Zero, 0U, ref cb, ref r);
+
             if (cb != 0L)
             {
                 mm.Alloc(cb);
 
                 EnumPrinters(6U, "", 2U, mm, cb, ref cb, ref r);
+
                 cpx = mm;
 
-                for (int i = 1, loopTo = (int)r; i <= loopTo; i++)
+                for (int i = 1; i <= r; i++)
                 {
                     pn = new PrinterObject(cpx, i == 1);
                    
@@ -2507,7 +2509,7 @@ namespace DataTools.Hardware.Printers
                 ap = mm;
                 PrinterModule.EnumPrinters(PrinterModule.PRINTER_ENUM_NAME, "", 4U, mm, cb, ref cb, ref rc);
                 cb = 0U;
-                for (int u = 1, loopTo = (int)rc; u <= loopTo; u++)
+                for (int u = 1; u <= rc; u++)
                 {
                     ts = ap.GetStringIndirect(cb);
                     sp.Add(ts);
@@ -2857,7 +2859,9 @@ namespace DataTools.Hardware.Printers
 
                             // MsgBox("Res count should be divisible by two, is it? Count: " & res.Count)
 
-                            for (int i = 0, loopTo = res.Length - 1; i <= loopTo; i += 2)
+                            var resLen = res.Length;
+
+                            for (int i = 0; i < resLen; i += 2)
                             {
                                 if (res.Length % 2 != 0 && i == res.Length - 1)
                                 {
@@ -2892,7 +2896,9 @@ namespace DataTools.Hardware.Printers
                     var supRes = new List<System.Windows.Size>();
                     if (res is object)
                     {
-                        for (int i = 0, loopTo1 = res.Length - 1; i <= loopTo1; i += 2)
+                        var resLen = res.Length;
+
+                        for (int i = 0; i < resLen; i += 2)
                         {
                             if (res.Length % 2 != 0 && i == res.Length - 1)
                             {
@@ -2938,11 +2944,14 @@ namespace DataTools.Hardware.Printers
                 {
                     mm = new MemPtr(l * 24L * 2L);
                     mm.ZeroMemory();
+
                     PrinterModule.DeviceCapabilities(printer.PrinterName, printer.PortName, PrinterModule.DC_BINNAMES, mm, IntPtr.Zero);
                     printer._Bins.Clear();
+
                     string srs;
                     int p;
-                    for (long i = 0L, loopTo2 = l - 1L; i <= loopTo2; i++)
+
+                    for (long i = 0L; i < l; i++)
                     {
 
                         // some p.o.s. printers make it hard.

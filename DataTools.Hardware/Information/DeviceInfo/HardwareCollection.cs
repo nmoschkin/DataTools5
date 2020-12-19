@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Media.Imaging;
 using DataTools.Desktop;
-using DataTools.Win32Api;
+using DataTools.Win32;
 
 namespace DataTools.Hardware
 {

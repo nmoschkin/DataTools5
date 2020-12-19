@@ -17,8 +17,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using DataTools.Memory;
-using DataTools.Win32Api;
+
+using DataTools.Win32;
+using DataTools.Win32.Memory;
 
 namespace DataTools.Desktop
 {
@@ -110,18 +111,18 @@ namespace DataTools.Desktop
         public static FontCollection GetFonts(FontFamilies families = FontFamilies.DontCare, FontPitch pitch = FontPitch.Default, FontCharSet charset = FontCharSet.Default, FontWeight weight = FontWeight.DontCare, object Script = null, object Style = null)
         {
             IntPtr hdc;
-            
+
             var fonts = new List<ENUMLOGFONTEX>();
-            
+
             var lf = new LOGFONT();
-            
+
             string s;
-            
+
             MemPtr mm = new MemPtr();
 
             string[] wscript;
             string[] wstyle;
-            
+
             if (Script is null)
             {
                 wscript = new[] { "Western" };
@@ -507,20 +508,24 @@ namespace DataTools.Desktop
                 return true;
             }
 
-            /* TODO ERROR: Skipped RegionDirectiveTrivia */
-            private bool disposedValue; // To detect redundant calls
+            protected bool disposedValue; // To detect redundant calls
 
-            // IDisposable
             protected virtual void Dispose(bool disposing)
             {
                 disposedValue = true;
+
+                if (disposing)
+                {
+                    _pos = -1;
+                    _obj = null;
+                }
             }
 
             public void Dispose()
             {
+                if (disposedValue) return;
                 Dispose(true);
             }
-            /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
         }
     }
 }

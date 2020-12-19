@@ -27,9 +27,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
-using DataTools.Memory;
-using DataTools.Win32Api;
+using DataTools.Win32;
 using DataTools.Shell.Native;
+using DataTools.Win32.Memory;
 
 namespace DataTools.Desktop
 {
@@ -42,8 +42,7 @@ namespace DataTools.Desktop
         private ICONDIR _dir;
         private List<IconImageEntry> _entries = new List<IconImageEntry>();
         private string _FileName;
-        private bool _ShowSaveDialog = false;
-
+        
         /// <summary>
         /// Gets or sets the filename of the icon file.
         /// </summary>
@@ -88,18 +87,15 @@ namespace DataTools.Desktop
         /// <remarks></remarks>
         public IconImageEntry FindIcon(StandardIcons StandardIconType)
         {
-            IconImageEntry FindIconRet = default;
             foreach (var e in _entries)
             {
                 if (e.StandardIconType == StandardIconType)
                 {
-                    FindIconRet = e;
-                    return FindIconRet;
+                    return e;
                 }
             }
 
-            FindIconRet = null;
-            return FindIconRet;
+            return null;
         }
 
         /// <summary>
@@ -294,8 +290,8 @@ namespace DataTools.Desktop
 
             _entries = new List<IconImageEntry>();
             mm = mm + e;
-            var loopTo = c;
-            for (i = 0; i <= loopTo; i++)
+ 
+            for (i = 0; i < c; i++)
             {
                 // load all images in sequence.
                 _entries.Add(new IconImageEntry(mm.ToStruct<ICONDIRENTRY>(), optr));

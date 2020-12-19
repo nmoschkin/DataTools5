@@ -64,10 +64,11 @@ namespace DataTools.MathTools
             int i;
             int c;
             int n = 0;
-            int b = 0;
-            string sLeft = "";
-            string sFar = "";
-            MathExpressionParser objOp = null;
+
+            string sFar;
+
+            MathExpressionParser objOp;
+
             if (value == null)
             {
                 value = m_Expression;
@@ -117,11 +118,10 @@ namespace DataTools.MathTools
                 i = value.IndexOf("(", c);
             }
 
-            n -= 1;
             sFar = "";
             m_Col.Clear();
-            var loopTo = n;
-            for (i = 0; i <= loopTo; i++)
+
+            for (i = 0; i < n; i++)
             {
                 ErrorText = "";
                 if (st[i].Substring(0, 1) == "@")
@@ -159,18 +159,23 @@ namespace DataTools.MathTools
         public double ParseExpression(string value, [Optional, DefaultParameterValue(null)] ref string ErrorText)
         {
             string[] s;
-            double dOut = 0.0d;
+
             int i = 0;
             int j = 0;
+
             int c;
             int cc = 0;
             int n = 0;
             int m = 0;
+
             double? valUnit;
+
             long a;
             long b;
+
             double d;
             double e;
+
             object[] ops = null;
             object[] ops2;
 
@@ -179,9 +184,10 @@ namespace DataTools.MathTools
             s = TextTools.Words(TextTools.OneSpace(TextTools.SpaceOperators(value).Trim()));
             ops2 = new object[s.Length * 2 + 1];
             ops = new object[s.Length * 2 + 1];
-            c = s.Length - 1;
-            var loopTo = c;
-            for (i = 0; i <= loopTo; i++)
+
+            c = s.Length;
+
+            for (i = 0; i < c; i++)
             {
                 valUnit = TextTools.FVal(s[i]);
                 if (valUnit is null)
@@ -265,14 +271,13 @@ namespace DataTools.MathTools
             // Now, perform the operations!
 
             c = orderOps.Length - 1;
-            n -= 1;
+
             try
             {
                 m = 0;
-                var loopTo1 = n;
-                for (j = 0; j <= loopTo1; j++)
+                for (j = 0; j < n; j++)
                 {
-                    if (j + 3 <= n)
+                    if (j + 3 < n)
                     {
                         if (TextTools.IsNumber(ops[j]) & TextTools.IsNumber(ops[j + 1]))
                         {
@@ -295,11 +300,10 @@ namespace DataTools.MathTools
                 ops = ops2;
                 ops2 = null;
                 n = m - 1;
-                var loopTo2 = c;
-                for (i = 0; i <= loopTo2; i++)
+
+                for (i = 0; i <= c; i++)
                 {
-                    var loopTo3 = n;
-                    for (j = 0; j <= loopTo3; j++)
+                    for (j = 0; j <= n; j++)
                     {
                         if (!(ops[j] is string))
                         {
@@ -704,10 +708,10 @@ namespace DataTools.MathTools
 
                 // numbers that occur together add
 
-                n = ops.Length - 1;
+                n = ops.Length;
                 e = 0.0d;
-                var loopTo4 = n;
-                for (j = 0; j <= loopTo4; j++)
+
+                for (j = 0; j < n; j++)
                 {
                     if (TextTools.IsNumber(ops[j]))
                         e += (double)(ops[j]);

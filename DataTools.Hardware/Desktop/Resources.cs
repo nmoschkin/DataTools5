@@ -15,12 +15,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
-using DataTools.Memory;
 using DataTools.Text;
-using DataTools.MathTools;
-using DataTools.Win32Api;
-using DataTools.Win32Api;
+using DataTools.Win32;
 using DataTools.Shell.Native;
+using DataTools.Win32.Memory;
 
 namespace DataTools.Desktop
 {
@@ -504,11 +502,14 @@ namespace DataTools.Desktop
             }
 
             var enumres = EnumResources(hmod, (IntPtr)RT_GROUP_ICON);
-            int i;
-            int c = enumres.Count - 1;
+
             string s;
-            var loopTo = c;
-            for (i = 0; i <= loopTo; i++)
+            int i;
+
+            int c = enumres.Count;
+
+            
+            for (i = 0; i < c; i++)
             {
                 s = "#" + (i + 1);
                 l.Add(new LibraryIcon(s, MakeWPFImage(_internalLoadLibraryIcon(fileName, i, null, desiredSize, uFlags, enumres, false, hmod))));
@@ -1177,8 +1178,7 @@ namespace DataTools.Desktop
             // If b(i) > &H7F Then b(i) = &H7F
             // Next
 
-            var loopTo = c;
-            for (i = 3; stp >= 0 ? i <= loopTo : i >= loopTo; i += stp)
+            for (i = 3; stp >= 0 ? i <= c : i >= c ; i += stp)
             {
                 if (mm.ByteAt(i) > 0x7F)
                     mm.ByteAt(i) = 0x7F;
@@ -1360,9 +1360,9 @@ namespace DataTools.Desktop
             var pCurrDest = pPixels + (img.Width - 1) * BytesPerRow;
             // ... and work our way up
             int DestinationStride = -BytesPerRow;
-            for (int curY = 0, loopTo = img.Height - 1; curY <= loopTo; curY++)
+            for (int curY = 0, h = img.Height - 1; curY <= h; curY++)
             {
-                DataTools.Memory.NativeLib.Native.MemCpy(pCurrSource, pCurrDest, BytesPerRow);
+                Native.MemCpy(pCurrSource, pCurrDest, BytesPerRow);
                 pCurrSource = pCurrSource + bm.Stride;
                 pCurrDest = pCurrDest + DestinationStride;
             }
@@ -1399,22 +1399,25 @@ namespace DataTools.Desktop
             Marshal.Copy(bm.Scan0, b, 0, bm.Stride * bm.Height);
             // NativeLib.Native.MemCpy(bm.Scan0, b, bm.Stride * bm.Height)
 
-            c = b.Length - 1;
+            c = b.Length;
             int stp = (int)(bm.Stride / (double)bm.Width);
             var hsv = new HSVDATA();
             var hsv2 = new HSVDATA();
 
             // convert the color to HSV.
             ColorMath.ColorToHSV(liteColor, ref hsv);
-            var loopTo = c;
-            for (i = 0; i <= loopTo; i++)
+
+            for (i = 0; i < c; i++)
             {
                 if (b[i] == 0)
                     continue;
+
                 ColorMath.ColorToHSV(Color.FromArgb(b[i]), ref hsv2);
+
                 hsv2.Hue = hsv.Hue;
                 hsv2.Saturation = hsv.Saturation;
                 hsv2.Value *= 1.1d;
+
                 b[i] = ColorMath.HSVToColor(hsv2);
             }
 

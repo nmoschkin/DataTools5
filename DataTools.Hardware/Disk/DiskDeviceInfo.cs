@@ -14,9 +14,9 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using DataTools.Text;
-using DataTools.Win32Api;
-using DataTools.Win32Api.Disk.Partition;
-using DataTools.Win32Api.Disk.Partition.Gpt;
+using DataTools.Win32;
+using DataTools.Win32.Disk.Partition;
+using DataTools.Win32.Disk.Partition.Gpt;
 
 namespace DataTools.Hardware.Disk
 {
