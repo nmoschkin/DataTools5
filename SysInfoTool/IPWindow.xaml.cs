@@ -201,7 +201,6 @@ namespace SysInfoTool
 
         public IPWindow()
         {
-
             this.InitializeComponent();
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             this.Title = "DataTools Interop Library Test Project";
@@ -330,27 +329,31 @@ namespace SysInfoTool
 
         private void RefreshAdapters()
         {
+
             if (refreshing) return;
             refreshing = true;
 
             if (_Adapters != null)
             {
-                _Adapters.Refresh();
+                Dispatcher.Invoke(() =>
+                {
+                    _Adapters.Refresh();
+                });
             }
             else
             {
-                _Adapters = new AdaptersCollection();
+                Dispatcher.Invoke(() =>
+                {
+                    _Adapters = new AdaptersCollection();
+                });
             }
 
             Dispatcher.Invoke(() =>
             {
-
                 this.AdapterList.ItemsSource = _Adapters.Adapters;
 
                 ViewMenu = new VirtualMenu(this, this.AdapterList);
                 this.netMenu.ItemsSource = ViewMenu;
-
-                //_props.Refresh();
 
             });
 
