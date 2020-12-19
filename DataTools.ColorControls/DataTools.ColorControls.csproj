@@ -14,24 +14,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Update="AppResources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>AppResources.resx</DependentUpon>
-    </Compile>
     <Compile Update="ColorPicker.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="AppResources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\DataTools.Graphics\DataTools.Graphics.csproj" />
     <ProjectReference Include="..\DataTools.Win32.Memory\DataTools.Win32.Memory.csproj" />
     <ProjectReference Include="..\DataTools.Win32\DataTools.Win32.csproj" />
     <ProjectReference Include="..\DataTools\DataTools.csproj" />

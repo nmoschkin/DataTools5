@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 using DataTools.ColorControls;
-using DataTools.Desktop.Unified;
+using DataTools.Graphics;
 
 namespace SysInfoTool
 {
@@ -27,7 +27,7 @@ namespace SysInfoTool
             InitializeComponent();
 
             NamedColor nc = NamedColor.SearchByName("White")[0];
-            LineColor.Background = WheelColor.Background = new SolidColorBrush(nc.Color);
+            LineColor.Background = WheelColor.Background = new SolidColorBrush(nc.Color.GetWPFColor());
             
             if (nc != null)
             {
@@ -56,7 +56,7 @@ namespace SysInfoTool
 
         private void WheelPicker_ColorHit(object sender, DataTools.ColorControls.ColorHitEventArgs e)
         {
-            NamedColor nc = NamedColor.FindColor(e.Color, true);
+            NamedColor nc = NamedColor.FindColor(e.Color.GetUniColor(), true);
             WheelColor.Background = new SolidColorBrush(e.Color);
 
             if (nc != null)
@@ -65,13 +65,13 @@ namespace SysInfoTool
             }
             else
             {
-                WheelColorName.Content = ((UniColor)e.Color).ToString();
+                WheelColorName.Content = (e.Color.GetUniColor()).ToString();
             }
         }
 
         private void LinePicker_ColorHit(object sender, DataTools.ColorControls.ColorHitEventArgs e)
         {
-            NamedColor nc = NamedColor.FindColor(e.Color, true);
+            NamedColor nc = NamedColor.FindColor(e.Color.GetUniColor(), true);
             LineColor.Background = new SolidColorBrush(e.Color);
 
             if (nc != null)
@@ -80,7 +80,7 @@ namespace SysInfoTool
             }
             else
             {
-                LineColorName.Content = ((UniColor)e.Color).ToString();
+                LineColorName.Content = (e.Color.GetUniColor()).ToString();
             }
         }
 

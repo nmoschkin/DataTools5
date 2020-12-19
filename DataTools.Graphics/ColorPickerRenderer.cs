@@ -6,11 +6,11 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DataTools.Win32;
+using DataTools.Graphics;
 using System.Runtime.InteropServices;
-using DataTools.Win32.Memory;
+using DataTools.Standard.Memory;
 
-namespace DataTools.Desktop
+namespace DataTools.Graphics
 {
     
     /// <summary>
@@ -420,7 +420,7 @@ namespace DataTools.Desktop
             Value = value;
 
             var bmp = new Bitmap((int)Math.Ceiling(Bounds.Width), (int)Math.Ceiling(Bounds.Height), System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            var g = Graphics.FromImage(bmp);
+            var g = System.Drawing.Graphics.FromImage(bmp);
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
 

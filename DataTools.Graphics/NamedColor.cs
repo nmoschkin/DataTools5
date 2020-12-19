@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 using DataTools.Desktop;
 using DataTools.Desktop.Unified;
 using DataTools.Text;
-using DataTools.Win32;
 
 using static DataTools.SortedLists.BinarySearch;
 using static DataTools.SortedLists.QuickSort;
 
-namespace DataTools.ColorControls
+namespace DataTools.Graphics
 {
 
     public class NamedColor
@@ -25,6 +24,10 @@ namespace DataTools.ColorControls
         private string name;
 
         private string extraInfo;
+
+        private string idxstr;
+        private string nidxstr;
+        private string eidxstr;
 
         public static NamedColor FindColor(UniColor value, out int index)
         {
@@ -98,23 +101,41 @@ namespace DataTools.ColorControls
 
             return closest;
         }
+        public static List<NamedColor> SearchAll(string search)
+        {
+            List<NamedColor> output = new List<NamedColor>();
+            search = TextTools.NoSpace(search.ToLower());
+
+            foreach (var nc in catalog)
+            {
+                var idx = nc.nidxstr + nc.eidxstr;
+                if (idx.Contains(search))
+                {
+                    output.Add(nc);
+                }
+            }
+
+            return output;
+        }
 
         public static List<NamedColor> SearchByName(string search, bool anywhere = false)
         {
             List<NamedColor> output = new List<NamedColor>();
+            search = TextTools.NoSpace(search.ToLower());
 
             foreach (var nc in catalog)
             {
+
                 if (anywhere)
-                {
-                    if (nc.Name.Contains(search, StringComparison.InvariantCultureIgnoreCase))
+                { 
+                    if (nc.nidxstr.Contains(search))
                     {
                         output.Add(nc);
                     }
                 }
                 else
                 {
-                    if (nc.Name.StartsWith(search, StringComparison.InvariantCultureIgnoreCase))
+                    if (nc.nidxstr.StartsWith(search))
                     {
                         output.Add(nc);
                     }
@@ -127,6 +148,7 @@ namespace DataTools.ColorControls
         public static List<NamedColor> SearchByExtra(string search, bool anywhere = false)
         {
             List<NamedColor> output = new List<NamedColor>();
+            search = search.ToLower();
 
             foreach (var nc in catalog)
             {
@@ -134,14 +156,14 @@ namespace DataTools.ColorControls
 
                 if (anywhere)
                 {
-                    if (nc.ExtraInfo.Contains(search, StringComparison.InvariantCultureIgnoreCase))
+                    if (nc.eidxstr.Contains(search))
                     {
                         output.Add(nc);
                     }
                 }
                 else
                 {
-                    if (nc.ExtraInfo.StartsWith(search, StringComparison.InvariantCultureIgnoreCase))
+                    if (nc.eidxstr.StartsWith(search))
                     {
                         output.Add(nc);
                     }
@@ -156,7 +178,6 @@ namespace DataTools.ColorControls
             get
             {
                 return catalog;
-                //return new ReadOnlyCollection<NamedColor>(catalog);
             }
         }
 
@@ -188,8 +209,14 @@ namespace DataTools.ColorControls
                     text = et[0].Trim();
                     extra = et[1].Trim().Trim(')');
                 }
+                var cc = new NamedColor(text, cr, extra);
 
-                cl.Add(new NamedColor(text, cr, extra));
+                cc.nidxstr = TextTools.NoSpace(text?.ToLower() ?? "");
+                cc.eidxstr = TextTools.NoSpace(extra?.ToLower() ?? "");
+
+                cc.idxstr = cc.nidxstr + cc.eidxstr;
+
+                cl.Add(cc);
             }
 
             catalog = cl.ToArray();
@@ -242,9 +269,9 @@ namespace DataTools.ColorControls
             ExtraInfo = extra;
         }
 
-        public static implicit operator System.Windows.Media.Color(NamedColor c)
+        public static implicit operator System.Drawing.Color(NamedColor c)
         {
-            return (System.Windows.Media.Color)c.Color;
+            return c.Color;
         }
 
         public static implicit operator UniColor(NamedColor c)

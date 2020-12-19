@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DataTools.ColorControls {
+namespace DataTools.Graphics {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace DataTools.ColorControls {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DataTools.ColorControls.AppResources", typeof(AppResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DataTools.Graphics.AppResources", typeof(AppResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,11 +61,32 @@ namespace DataTools.ColorControls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {{Colort/Color|hex=0048BA|r=0 |g=72 |b=186|h=217|s=100|v=73 |name=[[List of Crayola crayon colors#Extreme Twistables colors|Absolute Zero]]|link target=A}}
-        ///{{Colort/Color|hex=B0BF1A|r=176|g=191|b=26|h=65 |s=76 |v=43 |name=[[Acid green]]}}
-        ///{{Colort/Color|hex=7CB9E8|r=124|g=185|b=232|h=206|s=47 |v=91 |name=[[Air Force blue#Aero|Aero]]}}
-        ///{{Colort/Color|hex=C0E8D5|r=192|g=232|b=213|h=151.5|s=17.2|v=91 |name=[[Aero blue]]}}
-        ///{{Colort/Color|hex=B284BE|r=178|g=132|b=190|h=288|s=31 |v=75 |name=[[African violet ( [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to 0048BA|Absolute Zero
+        ///B0BF1A|Acid green
+        ///7CB9E8|Aero
+        ///C0E8D5|Aero blue
+        ///B284BE|African violet
+        ///72A0C1|Air superiority blue
+        ///EDEAE0|Alabaster
+        ///F0F8FF|Alice blue
+        ///C46210|Alloy orange
+        ///EFDECD|Almond
+        ///E52B50|Amaranth
+        ///9F2B68|Amaranth (M&amp;P)
+        ///F19CBB|Amaranth pink
+        ///AB274F|Amaranth purple
+        ///D3212D|Amaranth red
+        ///3B7A57|Amazon
+        ///FFBF00|Amber
+        ///FF7E00|Amber (SAE/ECE)
+        ///9966CC|Amethyst
+        ///A4C639|Android green
+        ///CD9575|Antique brass
+        ///665D1E|Antique bronze
+        ///915C83|Antique fuchsia
+        ///841B2D|Antique ruby
+        ///FAEBD7|Antique white
+        ///0080 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ColorList {
             get {

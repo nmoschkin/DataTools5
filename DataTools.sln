@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTools.Win32.Memory", "D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTools.Win32", "DataTools.Win32\DataTools.Win32.csproj", "{F2FD1470-7F0A-4009-99FE-5556386A255A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTools.Graphics", "DataTools.Graphics\DataTools.Graphics.csproj", "{EE36CD78-3393-4CFA-9E17-1C081AD31481}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTools.Xamarin.ColorControls", "..\DataTools.Xamarin.ColorControls\DataTools.Xamarin.ColorControls.csproj", "{C45CD8BB-E810-4A7B-9476-4959E9938ECE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +101,30 @@ Global
 		{F2FD1470-7F0A-4009-99FE-5556386A255A}.Release|x64.Build.0 = Release|x64
 		{F2FD1470-7F0A-4009-99FE-5556386A255A}.Release|x86.ActiveCfg = Release|x86
 		{F2FD1470-7F0A-4009-99FE-5556386A255A}.Release|x86.Build.0 = Release|x86
+		{EE36CD78-3393-4CFA-9E17-1C081AD31481}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE36CD78-3393-4CFA-9E17-1C081AD31481}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE36CD78-3393-4CFA-9E17-1C081AD31481}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EE36CD78-3393-4CFA-9E17-1C081AD31481}.Debug|x64.Build.0 = Debug|Any CPU
+		{EE36CD78-3393-4CFA-9E17-1C081AD31481}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EE36CD78-3393-4CFA-9E17-1C081AD31481}.Debug|x86.Build.0 = Debug|Any CPU
+		{EE36CD78-3393-4CFA-9E17-1C081AD31481}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE36CD78-3393-4CFA-9E17-1C081AD31481}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE36CD78-3393-4CFA-9E17-1C081AD31481}.Release|x64.ActiveCfg = Release|Any CPU
+		{EE36CD78-3393-4CFA-9E17-1C081AD31481}.Release|x64.Build.0 = Release|Any CPU
+		{EE36CD78-3393-4CFA-9E17-1C081AD31481}.Release|x86.ActiveCfg = Release|Any CPU
+		{EE36CD78-3393-4CFA-9E17-1C081AD31481}.Release|x86.Build.0 = Release|Any CPU
+		{C45CD8BB-E810-4A7B-9476-4959E9938ECE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C45CD8BB-E810-4A7B-9476-4959E9938ECE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C45CD8BB-E810-4A7B-9476-4959E9938ECE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C45CD8BB-E810-4A7B-9476-4959E9938ECE}.Debug|x64.Build.0 = Debug|Any CPU
+		{C45CD8BB-E810-4A7B-9476-4959E9938ECE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C45CD8BB-E810-4A7B-9476-4959E9938ECE}.Debug|x86.Build.0 = Debug|Any CPU
+		{C45CD8BB-E810-4A7B-9476-4959E9938ECE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C45CD8BB-E810-4A7B-9476-4959E9938ECE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C45CD8BB-E810-4A7B-9476-4959E9938ECE}.Release|x64.ActiveCfg = Release|Any CPU
+		{C45CD8BB-E810-4A7B-9476-4959E9938ECE}.Release|x64.Build.0 = Release|Any CPU
+		{C45CD8BB-E810-4A7B-9476-4959E9938ECE}.Release|x86.ActiveCfg = Release|Any CPU
+		{C45CD8BB-E810-4A7B-9476-4959E9938ECE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

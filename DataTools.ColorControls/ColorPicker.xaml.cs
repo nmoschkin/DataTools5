@@ -13,8 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DataTools.Desktop;
-using DataTools.Desktop.Unified;
-using DataTools.Win32;
+using DataTools.Graphics;
 
 namespace DataTools.ColorControls
 {
@@ -275,25 +274,26 @@ namespace DataTools.ColorControls
 
         private void SetSelectedColor(UniColor? selc = null)
         {
-            if (selc != null) SelectedColor = (Color)selc;
+            if (selc is UniColor clr) {
+                SelectedColor = Color.FromArgb(clr.A, clr.R, clr.G, clr.B);
 
-            var nc = NamedColor.FindColor(SelectedColor, true);
-            
-            if (nc != null)
-            {
-                SelectedColorName = nc.Name;
-            }
-            else
-            {
-                SelectedColorName = ((UniColor)SelectedColor).ToString(UniColorFormatOptions.HexRgbWebFormat);
-                //Point.Visibility = Surround.Visibility = Visibility.Hidden;
-                //return;
-            }
+                var nc = NamedColor.FindColor(clr, true);
 
+                if (nc != null)
+                {
+                    SelectedColorName = nc.Name;
+                }
+                else
+                {
+                    SelectedColorName = clr.ToString(UniColorFormatOptions.HexRgbWebFormat);
+                }
+
+            }
 
             foreach (var c in cpRender.Elements)
             {
                 UniColor uc = c.Color;
+
                 if (selc == uc)
                 {
                     Point.Visibility = Surround.Visibility = Visibility.Visible;
@@ -427,7 +427,7 @@ namespace DataTools.ColorControls
 
                     //CursorCanvas.RenderSize = new Size(w, h);
                     cpRender = cw;
-                    PickerSite.Source = BitmapTools.MakeWPFImage(cpRender.Bitmap);
+                    PickerSite.Source = DataTools.Desktop.BitmapTools.MakeWPFImage(cpRender.Bitmap);
                     SetSelectedColor();
                 });
 
