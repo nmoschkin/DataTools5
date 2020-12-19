@@ -9,22 +9,24 @@ namespace DataTools.Text
         public byte[] Data;
     }
 
-    internal class Base64
+    public class Base64
     {
         const string BASE64TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
         const int BASE64PAD = 61;
         const int BASE64PADRETURN = 254;
         
-        private byte[] B64CodeOut = new byte[64];
-        private byte[] B64CodeReturn = new byte[256];
-        public bool B64TableCreated { get; private set; }
+        private static byte[] B64CodeOut = new byte[64];
+        private static byte[] B64CodeReturn = new byte[256];
+        internal static bool B64TableCreated { get; private set; }
                 
-        public Base64()
+        static Base64()
         {
             int i;
             int d;
+
             for (i = 0; i <= 255; i++)
                 B64CodeReturn[i] = 0x7F;
+
             for (i = 0; i <= 63; i++)
             {
                 d = BASE64TABLE.Substring(i, 1)[0];
@@ -36,7 +38,28 @@ namespace DataTools.Text
             B64TableCreated = true;
         }
 
-        public int Decode64(byte[] DataIn, int Length, out byte[] DataOut)
+        internal Base64()
+        {
+
+        }
+
+        public static byte[] FromBase64(byte[] data)
+        {
+            byte[] bOut;
+
+            Decode64(data, data.Length, out bOut);
+            return bOut;
+        }
+
+        public static byte[] ToBase64(byte[] data)
+        {
+            BASE64STRUCT bOut;
+
+            Encode64(data, data.Length, out bOut);
+            return bOut.Data;
+        }
+
+        internal static int Decode64(byte[] DataIn, int Length, out byte[] DataOut)
         {
             int Decode64Ret = default;
 
@@ -108,7 +131,7 @@ namespace DataTools.Text
             return Decode64Ret;
         }
 
-        public bool Encode64(byte[] DataIn, int Length, out BASE64STRUCT b64Out)
+        internal static bool Encode64(byte[] DataIn, int Length, out BASE64STRUCT b64Out)
         {
             int l;
             int x;
