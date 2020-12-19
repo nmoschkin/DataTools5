@@ -4,6 +4,7 @@
 // This is the fourth rewriting of this module since 1999.
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
@@ -25,49 +26,6 @@ namespace DataTools.MathTools.PolarMath
         Radians = 0x4 | 0x8 | 0x40,
         StandardScientific = 0x2,
         RadiansScientific = 0x2 | 0x4 | 0x8 | 0x40
-    }
-
-
-    public enum ColorWheelShapes
-    {
-        Point = 1,
-        Hexagon = 2
-    }
-
-    public struct ColorWheel
-    {
-        public ColorWheelElement[] Elements;
-        public Rectangle Bounds;
-        public byte[] Bitmap;
-
-        public Color HitTest(int x, int y)
-        {
-            foreach (ColorWheelElement e in Elements)
-            {
-                foreach (Point f in e.FillPoints)
-                {
-                    if (f.X == x & f.Y == y)
-                        return e.Color;
-                }
-            }
-
-            return Color.Empty;
-        }
-
-        public Color HitTest(Point pt)
-        {
-            return HitTest(pt.X, pt.Y);
-        }
-    }
-
-    public struct ColorWheelElement
-    {
-        public Color Color;
-        public PolarCoordinates Polar;
-        public Point Center;
-        public Rectangle Bounds;
-        public Point[] FillPoints;
-        public ColorWheelShapes Shape;
     }
 
     public struct LinearCoordinates
@@ -101,12 +59,12 @@ namespace DataTools.MathTools.PolarMath
         public double Right;
         public double Bottom;
 
-        public LinearRect(double left, double top, double right, double bottom)
+        public LinearRect(double left, double top, double width, double height)
         {
             this.Left = left;
             this.Top = top;
-            this.Right = right;
-            this.Bottom = bottom;
+            this.Right = (left + width);
+            this.Bottom = (top + height);
         }
 
         public LinearRect(LinearCoordinates leftTop, LinearSize size)
@@ -114,26 +72,25 @@ namespace DataTools.MathTools.PolarMath
             Left = leftTop.X;
             Top = leftTop.Y;
 
-            Right = (leftTop.X + size.Width) - 1;
-            Bottom = (leftTop.Y + size.Height) - 1;
+            Right = (leftTop.X + size.Width);
+            Bottom = (leftTop.Y + size.Height);
         }
 
         public double Width
         {
-            get => (Right - Left) + 1;
+            get => (Right - Left);
             set
             {
-                Right = (Left + value) - 1;
+                Right = (Left + value);
             }
         }
 
-
         public double Height
         {
-            get => (Bottom - Top) + 1;
+            get => (Bottom - Top);
             set
             {
-                Bottom = (Top + value) - 1;
+                Bottom = (Top + value);
             }
         }
     }
@@ -236,20 +193,14 @@ namespace DataTools.MathTools.PolarMath
             
             a /= RadianConst;
 
-            y = r * Math.Cos(a);
             x = r * Math.Sin(a);
+            y = r * Math.Cos(a);
 
             return new LinearCoordinates(x, -y);
         }
 
         public static LinearCoordinates ToLinearCoordinates(PolarCoordinates p, LinearRect rect)
         {
-            if (rect.Width < p.Radius * 2d + 1d || rect.Height < p.Radius * 2d + 1d)
-            {
-                // fit to rectangle
-                p = new PolarCoordinates(Math.Min(rect.Width, rect.Height) / 2d - 1d, p.Arc);
-            }
-
             var pt = ToLinearCoordinates(p.Radius, p.Arc);
 
             double x;
@@ -264,7 +215,6 @@ namespace DataTools.MathTools.PolarMath
         public static PolarCoordinates ToPolarCoordinates(LinearCoordinates p)
         {
             return ToPolarCoordinates(p.X, p.Y);
-
         }
 
         public static PolarCoordinates ToPolarCoordinates(double x, double y)
@@ -272,13 +222,30 @@ namespace DataTools.MathTools.PolarMath
             double r;
             double a;
 
-            r = Math.Sqrt(x * x + y * y);
+            r = Math.Sqrt((x * x) + (y * y));
 
             // screen coordinates are funny, had to reverse this.
             a = Math.Atan(x / y);
+            
             a *= RadianConst;
+            
+            if (x < 0 && y < 0)
+            {
+                a = 360 - a;
+            }
+            else if (x >= 0 && y < 0)
+            {
+                // do nothing
+            }
+            else if (x >= 0 && y >= 0)
+            {
+                a = 180 - a;
+            }
+            else if (x < 0 && y >= 0)
+            {
+                a = 90 + (90 - a);
+            }
 
-            a = a - 180.0d;
 
             if (a < 0.0d)
                 a = 360.0d - a;

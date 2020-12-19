@@ -11,9 +11,9 @@ namespace DataTools.Memory
     {
         public override bool IsInvalid => handle == (IntPtr)0;
 
-        public long Size { get; private set; }
+        public virtual long Size { get; protected set; }
 
-        public long Length
+        public virtual long Length
         {
             get => Size;
             set
@@ -32,13 +32,13 @@ namespace DataTools.Memory
             }
         }
 
-        public MemoryType MemoryType { get; private set; }
+        public virtual MemoryType MemoryType { get; protected set; }
 
-        public bool IsOwner { get; private set; }
+        public virtual bool IsOwner { get; protected set; }
 
-        public bool HasGCPressure { get; private set; }
+        public virtual bool HasGCPressure { get; protected set; }
 
-        internal new IntPtr handle
+        internal virtual new IntPtr handle
         {
             get => base.handle;
             set
@@ -702,7 +702,7 @@ namespace DataTools.Memory
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe string internalGetUTF8String(byte* ptr)
+        protected unsafe string internalGetUTF8String(byte* ptr)
         {
             byte* b2 = ptr;
 
@@ -731,7 +731,7 @@ namespace DataTools.Memory
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe void internalSetUTF8String(byte* ptr, string value, bool addNull)
+        protected unsafe void internalSetUTF8String(byte* ptr, string value, bool addNull)
         {
             byte[] data = Encoding.UTF8.GetBytes(value);
             int slen = data.Length;
@@ -751,7 +751,7 @@ namespace DataTools.Memory
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe void internalSetString(char* ptr, string value, bool addNull)
+        protected unsafe void internalSetString(char* ptr, string value, bool addNull)
         {
             int slen = value.Length;
             GCHandle gch = GCHandle.Alloc(Encoding.Unicode.GetBytes(value), GCHandleType.Pinned);
@@ -1199,7 +1199,7 @@ namespace DataTools.Memory
         /// <param name="zeroMem">Whether or not to zero the contents of the memory on allocation.</param>
         /// <returns>True if successful. If False, call GetLastError or FormatLastError to find out more information.</returns>
         /// <remarks></remarks>
-        public bool Alloc(long size, bool addPressure = false, bool zeroMem = true)
+        public virtual bool Alloc(long size, bool addPressure = false, bool zeroMem = true)
         {
             bool al;
 
@@ -1226,7 +1226,7 @@ namespace DataTools.Memory
         /// <param name="addPressure">Whether or not to call GC.AddMemoryPressure</param>
         /// <returns>True if successful. If False, call GetLastError or FormatLastError to find out more information.</returns>
         /// <remarks></remarks>
-        public bool Alloc(long size, bool addPressure)
+        public virtual bool Alloc(long size, bool addPressure)
         {
             return Alloc(size, addPressure, true);
         }
@@ -1238,7 +1238,7 @@ namespace DataTools.Memory
         /// <param name="size">The size to attempt to allocate</param>
         /// <returns>True if successful. If False, call GetLastError or FormatLastError to find out more information.</returns>
         /// <remarks></remarks>
-        public bool Alloc(long size)
+        public virtual bool Alloc(long size)
         {
             return Alloc(size, false, true);
         }
@@ -1254,7 +1254,7 @@ namespace DataTools.Memory
         /// </param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public bool AllocZero(long size, bool addPressure = false)
+        public virtual bool AllocZero(long size, bool addPressure = false)
         {
             return Alloc(size, addPressure, true);
         }
@@ -1270,7 +1270,7 @@ namespace DataTools.Memory
         /// </param>
         /// <returns>True if successful. If False, call GetLastError or FormatLastError to find out more information.</returns>
         /// <remarks></remarks>
-        public bool ReAlloc(long size, bool modifyPressure = false)
+        public virtual bool ReAlloc(long size, bool modifyPressure = false)
         {
             if (handle == IntPtr.Zero) return Alloc(size, modifyPressure);
             long oldsize = Size;
@@ -1306,7 +1306,7 @@ namespace DataTools.Memory
         /// The handle pointed to by the internal pointer must have been previously allocated with the same heap handle.
         /// </param>
         /// <remarks></remarks>
-        public bool Free(bool removePressure = false)
+        public virtual bool Free(bool removePressure = false)
         {
             long oldsize = Size;
             // While the function doesn't need to call HeapFree, it hasn't necessarily failed, either.
@@ -1327,7 +1327,7 @@ namespace DataTools.Memory
         }
 
 
-        private void TAlloc(long size)
+        protected virtual void TAlloc(long size)
         {
             switch (MemoryType)
             {
@@ -1341,7 +1341,7 @@ namespace DataTools.Memory
             }
         }
 
-        private void TFree()
+        protected virtual void TFree()
         {
             switch (MemoryType)
             {
@@ -1355,7 +1355,7 @@ namespace DataTools.Memory
             }
         }
 
-        public void ZeroMemory()
+        public virtual void ZeroMemory()
         {
             unsafe
             {

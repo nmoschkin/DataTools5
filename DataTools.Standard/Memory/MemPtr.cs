@@ -16,6 +16,7 @@ namespace DataTools.Memory
     public struct MemPtr
     {
         internal IntPtr handle;
+        public static readonly MemPtr Empty = new MemPtr(IntPtr.Zero);
 
         public IntPtr Handle
         {
@@ -1151,6 +1152,18 @@ namespace DataTools.Memory
         {
             return (val1 != val2.handle);
         }
+
+
+        public static bool operator ==(MemPtr val2, MemPtr val1)
+        {
+            return (val1.handle == val2.handle);
+        }
+
+        public static bool operator !=(MemPtr val2, MemPtr val1)
+        {
+            return (val1.handle != val2.handle);
+        }
+
 
         public static implicit operator IntPtr(MemPtr val)
         {

@@ -1947,8 +1947,8 @@ namespace DataTools.Text
             int a = 0;
             int b = 0;
 
-            string varOut = "";
-            bool isP = false;
+            StringBuilder varOut = new StringBuilder();
+            bool nextCap = false;
             bool iQ = false;
 
             if (input == null)
@@ -1960,35 +1960,34 @@ namespace DataTools.Text
             {
                 if ((iQ == true))
                 {
-                    varOut += input[a];
-                    if ((input[a] == '\"'))
+                    varOut.Append(input[a]);
+                    if (input[a] == '\"')
                     {
                         iQ = false;
                     }
                 }
                 else
                 {
-                    if ((input[a] == (char)(32)) && (isP == false))
+                    if (!char.IsLetter(input[a]))
                     {
-                        isP = true;
-                        varOut += " ";
-
+                        nextCap = true;
+                        varOut.Append(input[a]);
                     }
-                    else if ((input[a] != (char)(32)))
+                    else if (char.IsLetter(input[a]))
                     {
-                        if ((a == 0) | (isP == true))
+                        if (a == 0 || nextCap)
                         {
-                            varOut += input[a].ToString().ToUpper();
-
+                            varOut.Append(input[a].ToString().ToUpper());
                         }
-                        else if ((isP == false))
+                        else 
                         {
-                            varOut += input[a].ToString().ToLower();
+                            varOut.Append(input[a].ToString().ToLower());
                         }
 
-                        if ((isP == true))
-                            isP = false;
-                        if ((input[a] == '\"'))
+                        if (nextCap)
+                            nextCap = false;
+
+                        if (input[a] == '\"')
                         {
                             iQ = true;
                         }
@@ -1998,9 +1997,9 @@ namespace DataTools.Text
             }
 
             if (stripSpaces)
-                return SearchReplace(varOut, " ", "");
+                return varOut.ToString().Replace(" ", "");
             else
-                return varOut;
+                return varOut.ToString();
         }
 
         /// <summary>
@@ -2190,7 +2189,7 @@ namespace DataTools.Text
         /// <param name="format">Optional numeric format for the resulting value.</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static string PrintFriendlySize(double size, string format = null, bool binary = true)
+        public static string PrintFriendlySize(double size, string format = null, bool binary = false, int round = 2)
         {
             double fs;
             string nom;
@@ -2294,11 +2293,11 @@ namespace DataTools.Text
 
             if (format != null)
             {
-                return Math.Round(fs, 2).ToString(format) + " " + nom;
+                return Math.Round(fs, round).ToString(format) + " " + nom;
             }
             else
             {
-                return Math.Round(fs, 2) + " " + nom;
+                return Math.Round(fs, round) + " " + nom;
             }
 
         }
@@ -2310,40 +2309,103 @@ namespace DataTools.Text
         /// <param name="format">Optional numeric format for the resulting value.</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static string PrintFriendlySpeed(long speed, string format = null)
+        public static string PrintFriendlySpeed(ulong speed, string format = null, bool binary = false)
         {
-            double fs = 0;
-            string nom = null;
+            double fs;
+            double spd = speed;
+            string nom;
 
-            if ((speed >= (1024L * 1024 * 1024 * 1024)))
+            if (binary)
             {
-                fs = (speed / (1024L * 1024 * 1024 * 1024));
-                nom = "TB/s";
-                //wow
-            }
-            else if ((speed >= (1024 * 1024 * 1024)))
-            {
-                fs = (speed / (1024 * 1024 * 1024));
-                nom = "GB/s";
-                // still wow
-            }
-            else if ((speed >= (1024 * 1024)))
-            {
-                fs = (speed / (1024 * 1024));
-                nom = "MB/s";
-                // okay
-            }
-            else if ((speed >= (1024)))
-            {
-                fs = (speed / (1024));
-                nom = "KB/s";
-                // fine.
+                if ((spd >= (1024L * 1024 * 1024 * 1024 * 1024 * 1024)))
+                {
+                    fs = (spd / (1024L * 1024 * 1024 * 1024 * 1024 * 1024));
+                    nom = "Eb/s";
+                    //wow
+                }
+                else if ((spd >= (1024L * 1024 * 1024 * 1024 * 1024)))
+                {
+                    fs = (spd / (1024L * 1024 * 1024 * 1024 * 1024));
+                    nom = "Pb/s";
+                    //wow
+                }
+                else if ((spd >= (1024L * 1024 * 1024 * 1024)))
+                {
+                    fs = (spd / (1024L * 1024 * 1024 * 1024));
+                    nom = "Tb/s";
+                    //wow
+                }
+                else if ((spd >= (1024 * 1024 * 1024)))
+                {
+                    fs = (spd / (1024 * 1024 * 1024));
+                    nom = "Gb/s";
+                    // still wow
+                }
+                else if ((spd >= (1024 * 1024)))
+                {
+                    fs = (spd / (1024 * 1024));
+                    nom = "Mb/s";
+                    // okay
+                }
+                else if ((spd >= (1024)))
+                {
+                    fs = (spd / (1024));
+                    nom = "Kb/s";
+                    // fine.
+                }
+                else
+                {
+                    fs = spd;
+                    nom = "b/s";
+                    // wow.
+                }
+
             }
             else
             {
-                fs = speed;
-                nom = "B/s";
-                // wow.
+                if ((spd >= (1000L * 1000 * 1000 * 1000 * 1000 * 1000)))
+                {
+                    fs = (spd / (1000L * 1000 * 1000 * 1000 * 1000 * 1000));
+                    nom = "Eb/s";
+                    //wow
+                }
+                else if ((spd >= (1000L * 1000 * 1000 * 1000 * 1000)))
+                {
+                    fs = (spd / (1000L * 1000 * 1000 * 1000 * 1000));
+                    nom = "Pb/s";
+                    //wow
+                }
+                else if ((spd >= (1000L * 1000 * 1000 * 1000)))
+                {
+                    fs = (spd / (1000L * 1000 * 1000 * 1000));
+                    nom = "Tb/s";
+                    //wow
+                }
+                else if ((spd >= (1000 * 1000 * 1000)))
+                {
+                    fs = (spd / (1000 * 1000 * 1000));
+                    nom = "Gb/s";
+                    // still wow
+                }
+                else if ((spd >= (1000 * 1000)))
+                {
+                    fs = (spd / (1000 * 1000));
+                    nom = "Mb/s";
+                    // okay
+                }
+                else if ((spd >= (1000)))
+                {
+                    fs = (spd / (1000));
+                    nom = "Kb/s";
+                    // fine.
+                }
+                else
+                {
+                    fs = spd;
+                    nom = "b/s";
+                    // wow.
+                }
+
             }
 
             if (format != null)
