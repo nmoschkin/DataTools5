@@ -348,7 +348,7 @@ namespace DataTools.Win32.Disk.Partition
             _AllOSes = vl.ToArray();
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         private static PartitionBootability _internalParseBootFlags(string s)
         {
             if (string.IsNullOrEmpty(s))
@@ -705,7 +705,7 @@ namespace DataTools.Win32.Disk.Partition
             return v.ToArray();
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 
 }

@@ -40,8 +40,8 @@ using DataTools.Win32.Memory;
 
 namespace DataTools.Win32.Menu
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
     public static class NativeMenuConversion
     {
         public const int MenuTypeMask = 0x4764;

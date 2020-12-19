@@ -124,7 +124,7 @@ namespace DataTools.Shell.TextMapping
 
         public delegate void CalculatedEventHandler(object sender, CalculatedEventArgs e);
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         /// <summary>
         /// Returns all of the regions that were discovered during the last run.
         /// </summary>
@@ -195,8 +195,8 @@ namespace DataTools.Shell.TextMapping
             }
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Specifies whether to purge overlapping rectangles from the final collection.
         /// </summary>
@@ -323,8 +323,8 @@ namespace DataTools.Shell.TextMapping
             }
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Recalculate and redraw all.
         /// </summary>
@@ -355,8 +355,8 @@ namespace DataTools.Shell.TextMapping
                 Refresh();
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Calculate the dimensions for rendering.
         /// </summary>

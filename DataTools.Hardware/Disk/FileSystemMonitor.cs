@@ -544,7 +544,7 @@ namespace DataTools.Hardware.Disk
             _Storage = stor;
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         private bool disposedValue; // To detect redundant calls
 
         // IDisposable
@@ -570,7 +570,7 @@ namespace DataTools.Hardware.Disk
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 
     /// <summary>
@@ -711,7 +711,7 @@ namespace DataTools.Hardware.Disk
         protected int _lastIndex = 0;
         protected IntPtr _owner;
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         /// <summary>
         /// The event that get fired when a change is detected in the monitored path.
         /// </summary>
@@ -742,8 +742,8 @@ namespace DataTools.Hardware.Disk
 
         public delegate void MonitorClosedEventHandler(object sender, MonitorClosedEventArgs e);
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Gets or sets the NotifyFilter criteria for this monitor object.
         /// </summary>
@@ -826,8 +826,8 @@ namespace DataTools.Hardware.Disk
             }
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Create and activate the file system monitor thread.
         /// </summary>
@@ -856,8 +856,8 @@ namespace DataTools.Hardware.Disk
             return _hFile == IntPtr.Zero;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Initialize a new instance of the FSMonitor class with the specified String object.
         /// </summary>
@@ -908,8 +908,8 @@ namespace DataTools.Hardware.Disk
             internalCreate(buffLen);
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Creates the window.
         /// </summary>
@@ -1044,8 +1044,8 @@ namespace DataTools.Hardware.Disk
             return true;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Internal message pump handler and event dispatcher.
         /// </summary>
@@ -1162,8 +1162,8 @@ namespace DataTools.Hardware.Disk
             }
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Returns true if the monitor has been disposed.
         /// If it has been disposed, it may not be reused.
@@ -1227,6 +1227,6 @@ namespace DataTools.Hardware.Disk
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 }

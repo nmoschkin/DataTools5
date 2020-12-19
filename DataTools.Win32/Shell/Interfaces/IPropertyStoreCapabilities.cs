@@ -29,7 +29,7 @@ using System.Text;
 
 namespace DataTools.Shell.Native
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    
     [ComImport]
     [Guid(ShellIIDGuid.IPropertyStoreCapabilities)]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]

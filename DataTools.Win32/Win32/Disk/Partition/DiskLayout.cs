@@ -150,7 +150,7 @@ namespace DataTools.Win32.Disk.Partition
             return ToStringRet;
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         IEnumerator<IDiskPartition> IEnumerable<IDiskPartition>.GetEnumerator()
         {
             IEnumerator<IDiskPartition> GetEnumeratorRet = default;
@@ -209,7 +209,7 @@ namespace DataTools.Win32.Disk.Partition
                 pos = -1;
             }
 
-            /* TODO ERROR: Skipped RegionDirectiveTrivia */
+            
             private bool disposedValue; // To detect redundant calls
 
             protected virtual void Dispose(bool disposing)
@@ -231,7 +231,7 @@ namespace DataTools.Win32.Disk.Partition
                 Dispose(true);
                 GC.SuppressFinalize(this);
             }
-            /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+            
 
 
         }

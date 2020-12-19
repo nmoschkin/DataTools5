@@ -25,7 +25,7 @@ using DataTools.Text;
 
 namespace DataTools.SystemInformation
 {
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     /// <summary>
     /// Computer firmware types
     /// </summary>

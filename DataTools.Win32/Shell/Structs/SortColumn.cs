@@ -29,8 +29,8 @@ using System.Text;
 
 namespace DataTools.Shell.Native
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
     /// <summary>
     /// Stores information about how to sort a column that is displayed in the folder view.
     /// </summary>

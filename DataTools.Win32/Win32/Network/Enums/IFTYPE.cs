@@ -23,8 +23,8 @@ using DataTools.Win32;
 
 namespace DataTools.Win32.Network
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */    // From Microsoft:
+    
+        // From Microsoft:
 
     //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     //                                                                          ''

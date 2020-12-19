@@ -31,8 +31,8 @@ using DataTools.Win32;
 
 namespace DataTools.Win32
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public struct COLORSCHEME
     {

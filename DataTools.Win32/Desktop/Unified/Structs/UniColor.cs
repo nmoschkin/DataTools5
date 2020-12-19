@@ -91,7 +91,7 @@ namespace DataTools.Desktop.Unified
             }
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         /// <summary>
         /// Alpha channel
         /// </summary>
@@ -375,8 +375,8 @@ namespace DataTools.Desktop.Unified
             return cmy;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Converts this color structure into its string representation.
         /// DetailedDefaultToString affects the behavior of this function.
@@ -762,8 +762,8 @@ namespace DataTools.Desktop.Unified
             }
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Determine if something is hex, and optionally return its value.
         /// </summary>
@@ -950,8 +950,8 @@ namespace DataTools.Desktop.Unified
 
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public static implicit operator System.Windows.Media.Color(UniColor value)
         {
             return new System.Windows.Media.Color() { A = value.A, R = value.R, G = value.G, B = value.B };
@@ -1036,6 +1036,6 @@ namespace DataTools.Desktop.Unified
             return val1._intvalue != val2._intvalue;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 }

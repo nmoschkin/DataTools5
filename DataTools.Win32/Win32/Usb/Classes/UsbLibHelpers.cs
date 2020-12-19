@@ -18,8 +18,8 @@ using System.Runtime.InteropServices;
 
 namespace DataTools.Win32
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
     internal static class UsbLibHelpers
     {
         public static LibUsb.usb_bus[] busses;

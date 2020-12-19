@@ -1421,7 +1421,7 @@ namespace DataTools.Text.ByteOrderMark
                 case BOMTYPE.UTF7e:
                     {
 
-                        /* TODO ERROR: Skipped WarningDirectiveTrivia */
+                        
 #pragma warning disable SYSLIB0001 // Type or member is obsolete
                         s = Encoding.UTF7.GetString(bOut);
 #pragma warning restore SYSLIB0001 // Type or member is obsolete

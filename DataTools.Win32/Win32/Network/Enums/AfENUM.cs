@@ -23,8 +23,8 @@ using DataTools.Win32;
 
 namespace DataTools.Win32.Network
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
     /// <summary>
     /// Network adapter enumerator-allowed address families.
     /// </summary>

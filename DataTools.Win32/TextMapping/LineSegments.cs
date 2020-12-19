@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 namespace DataTools.Shell.TextMapping
 {
 
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     /// <summary>
     /// Line-segment sorting options.
     /// </summary>
@@ -160,8 +160,8 @@ namespace DataTools.Shell.TextMapping
         }
     }
 
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
     /// <summary>
     /// Describes a region of the page in terms of a collection of line segments.
     /// </summary>
@@ -913,5 +913,5 @@ namespace DataTools.Shell.TextMapping
         }
     }
 
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    
 }

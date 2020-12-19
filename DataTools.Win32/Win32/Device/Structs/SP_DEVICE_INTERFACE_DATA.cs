@@ -20,7 +20,7 @@ using DataTools.Text;
 
 namespace DataTools.Win32
 {
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct SP_DEVICE_INTERFACE_DATA
     {

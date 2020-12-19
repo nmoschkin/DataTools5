@@ -125,8 +125,8 @@ namespace DataTools.Win32
         // DeviceInfoData As IntPtr) As <MarshalAs(UnmanagedType.Bool)> Boolean
 
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public readonly static Guid GUID_DEVCLASS_1394 = new Guid(0x6BDD1FC1, 0x810F, 0x11D0, 0xBE, 0xC7, 0x8, 0x0, 0x2B, 0xE2, 0x9, 0x2F);
         public readonly static Guid GUID_DEVCLASS_1394DEBUG = new Guid(0x66F250D6, 0x7801, 0x4A64, 0xB1, 0x39, 0xEE, 0xA8, 0xA, 0x45, 0xB, 0x24);
         public readonly static Guid GUID_DEVCLASS_61883 = new Guid(0x7EBEFBC0, 0x3200, 0x11D2, 0xB4, 0xC2, 0x0, 0xA0, 0xC9, 0x69, 0x7D, 0x7);
@@ -332,8 +332,8 @@ namespace DataTools.Win32
         public readonly static Guid GUID_DEVINTERFACE_SIDESHOW = new Guid("152E5811-FEB9-4B00-90F4-D32947AE1681");
         public readonly static Guid GUID_DEVINTERFACE_USBPRINT = new Guid(0x28D78FAD, 0x5A12, 0x11D1, 0xAE, 0x5B, 0x0, 0x0, 0xF8, 0x3, 0xA8, 0xC2);
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public readonly static Guid GUID_BUS_TYPE_INTERNAL = new Guid(0x1530EA73, 0x86B, 0x11D1, 0xA0, 0x9F, 0x0, 0xC0, 0x4F, 0xC3, 0x40, 0xB1);
         public readonly static Guid GUID_BUS_TYPE_PCMCIA = new Guid(0x9343630, 0xAF9F, 0x11D0, 0x92, 0xE9, 0x0, 0x0, 0xF8, 0x1E, 0x1B, 0x30);
         public readonly static Guid GUID_BUS_TYPE_PCI = new Guid(0xC8EBDFB0, 0xB510, 0x11D0, 0x80, 0xE5, 0x0, 0xA0, 0xC9, 0x25, 0x42, 0xE3);
@@ -353,7 +353,7 @@ namespace DataTools.Win32
         public readonly static Guid GUID_BUS_TYPE_ACPI = new Guid(0xD7B46895, 0x1A, 0x4942, 0x89, 0x1F, 0xA7, 0xD4, 0x66, 0x10, 0xA8, 0x43);
         public readonly static Guid GUID_BUS_TYPE_SW_DEVICE = new Guid(0x6D10322, 0x7DE0, 0x4CEF, 0x8E, 0x25, 0x19, 0x7D, 0xE, 0x74, 0x42, 0xE2);
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
         //
         // Property type modifiers.  Used to modify base DEVPROP_TYPE_ values, as
         // appropriate.  Not valid as standalone DEVPROPTYPE values.

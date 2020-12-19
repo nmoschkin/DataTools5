@@ -31,7 +31,7 @@ namespace DataTools.Win32
     {
 
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         /// <summary>
         /// Convert an array of bytes to a structure
         /// </summary>
@@ -106,8 +106,8 @@ namespace DataTools.Win32
             }
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Read a structure from a stream
         /// </summary>
@@ -157,9 +157,9 @@ namespace DataTools.Win32
             }
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         /// <summary>
         /// Gets a <see cref="DescriptionAttribute" /> value
         /// </summary>
@@ -210,8 +210,8 @@ namespace DataTools.Win32
             return attr.Description;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public static bool MoveFile(string oldPath, string newPath)
         {
             return IO.MoveFile(oldPath, newPath) == 0 ? false : true;

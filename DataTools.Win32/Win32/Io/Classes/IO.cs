@@ -20,8 +20,8 @@ namespace DataTools.Win32
     internal static class IO
     {
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public const int WAIT_FAILED = unchecked((int)0xFFFFFFFF);
         public const int WAIT_OBJECT_0 = Async.STATUS_WAIT_0 + 0;
         public const int WAIT_ABANDONED = Async.STATUS_ABANDONED_WAIT_0 + 0;
@@ -146,8 +146,8 @@ namespace DataTools.Win32
         // Define the NamedPipe definitions
         //
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         //
         // Define the dwOpenMode values for CreateNamedPipe
         //
@@ -187,7 +187,7 @@ namespace DataTools.Win32
         // into CreateFile
         //
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
         public const int FILE_BEGIN = 0;
         public const int FILE_CURRENT = 1;
         public const int FILE_END = 2;
@@ -372,7 +372,7 @@ namespace DataTools.Win32
         public const int FILE_SUPPORTS_INTEGRITY_STREAMS = 0x4000000;
         public const long FILE_INVALID_FILE_ID = -1L;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
         // begin_1_0
         // begin_2_0
         // begin_2_1

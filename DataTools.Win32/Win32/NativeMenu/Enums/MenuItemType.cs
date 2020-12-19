@@ -39,7 +39,7 @@ using Microsoft.VisualBasic;
 
 namespace DataTools.Win32.Menu
 {
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     [Flags()]
     public enum MenuItemType
     {

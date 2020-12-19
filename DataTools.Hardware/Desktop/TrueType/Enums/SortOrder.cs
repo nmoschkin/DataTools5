@@ -22,7 +22,7 @@ using DataTools.Win32;
 
 namespace DataTools.Desktop
 {
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     public enum SortOrder
     {
         Ascending,

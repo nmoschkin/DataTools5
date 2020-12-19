@@ -76,7 +76,7 @@ namespace DataTools.Win32.Menu
             pos = -1;
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         private bool disposedValue; // To detect redundant calls
 
         // IDisposable
@@ -101,6 +101,6 @@ namespace DataTools.Win32.Menu
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 }

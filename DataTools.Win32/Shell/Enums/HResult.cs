@@ -29,10 +29,10 @@ using System.Text;
 
 namespace DataTools.Shell.Native
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    
+    
 
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     public enum HResult : uint
     {
         /// <summary>

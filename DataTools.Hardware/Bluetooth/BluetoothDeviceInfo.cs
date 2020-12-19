@@ -19,7 +19,7 @@ namespace DataTools.Hardware
 
 
     // TO DO!  
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     public class BluetoothDeviceInfo : DeviceInfo
     {
         protected BLUETOOTH_ADDRESS _bthaddr;
@@ -157,4 +157,4 @@ namespace DataTools.Hardware
     }
 }
 
-/* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+

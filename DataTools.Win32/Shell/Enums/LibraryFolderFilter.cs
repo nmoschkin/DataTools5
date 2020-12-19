@@ -29,7 +29,7 @@ using System.Text;
 
 namespace DataTools.Shell.Native
 {
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     public enum LibraryFolderFilter
     {
         ForceFileSystem = 1,

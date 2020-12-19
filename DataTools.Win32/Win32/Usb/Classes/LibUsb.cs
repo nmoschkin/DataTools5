@@ -19,7 +19,7 @@ using DataTools.Win32.Memory;
 
 namespace DataTools.Win32
 {
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     internal static class LibUsb
     {
 
@@ -29,7 +29,7 @@ namespace DataTools.Win32
         /// <remarks></remarks>
         public const int gPack = 1;
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         public enum USBRESULT : int
         {
             /// <summary>
@@ -315,7 +315,7 @@ namespace DataTools.Win32
             return null;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
         public const int LIBUSB_PATH_MAX = 512;
 
         //

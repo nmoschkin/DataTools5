@@ -29,10 +29,10 @@ using System.Text;
 
 namespace DataTools.Shell.Native
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    
 
     // This code was written, from the ground, up, by me (Nathan Moschkin)
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     [ComImport]
     [Guid("92218CAB-ECAA-4335-8133-807FD234C2EE")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]

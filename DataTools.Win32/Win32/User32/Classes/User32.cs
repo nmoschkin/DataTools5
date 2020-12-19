@@ -2,15 +2,8 @@
 // DataTools C# Native Utility Library For Windows - Interop
 //
 // Module: Native
-//         Myriad Windows API Declares
+//         User Space
 //
-// Started in 2000 on Windows 98/ME (and then later 2000).
-//
-// Still kicking in 2014 on Windows 8.1!
-// A whole bunch of pInvoke/Const/Declare/Struct and associated utility functions that have been collected over the years.
-
-// Some enum documentation copied from the MSDN (and in some cases, updated).
-// 
 // Copyright (C) 2011-2020 Nathan Moschkin
 // All Rights Reserved
 //
@@ -42,7 +35,7 @@ namespace DataTools.Win32
     public static class User32
     {
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         public const int WM_NULL = 0x0;
         public const int WM_CREATE = 0x1;
         public const int WM_DESTROY = 0x2;
@@ -361,12 +354,12 @@ namespace DataTools.Win32
         public const int MK_SHIFT = 0x4;
         public const int MK_CONTROL = 0x8;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public const int WM_DEVICECHANGE = 0x219;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public const int SC_SIZE = 0xF000;
         public const int SC_MOVE = 0xF010;
         public const int SC_MINIMIZE = 0xF020;
@@ -441,8 +434,8 @@ namespace DataTools.Win32
         /// </summary>
         public const int GCLP_WNDPROC = -24;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public const int GWL_WNDPROC = -4;
 
         /// <summary>
@@ -573,8 +566,8 @@ namespace DataTools.Win32
         public const int CCM_SETUNICODEFORMAT = CCM_FIRST + 5;
         public const int CCM_GETUNICODEFORMAT = CCM_FIRST + 6;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public const int LVS_ICON = 0x0;
         public const int LVS_REPORT = 0x1;
         public const int LVS_SMALLICON = 0x2;
@@ -656,13 +649,13 @@ namespace DataTools.Win32
         public const int LVIF_STATE = 0x8;
         public const int LVIF_INDENT = 0x10;
         public const int LVIF_NORECOMPUTE = 0x800;
-        /* TODO ERROR: Skipped IfDirectiveTrivia */
+        
         public const int LVIF_GROUPID = 0x100;
         public const int LVIF_COLUMNS = 0x200;
-        /* TODO ERROR: Skipped EndIfDirectiveTrivia */
-        /* TODO ERROR: Skipped IfDirectiveTrivia */
+        
+        
         public const int LVIF_COLFMT = 0x10000; // The piColFmt member is valid in addition to puColumns
-        /* TODO ERROR: Skipped EndIfDirectiveTrivia */
+        
         public const int LVIS_FOCUSED = 0x1;
         public const int LVIS_SELECTED = 0x2;
         public const int LVIS_CUT = 0x4;
@@ -672,8 +665,8 @@ namespace DataTools.Win32
         public const int LVIS_OVERLAYMASK = 0xF00;
         public const int LVIS_STATEIMAGEMASK = 0xF000;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */        // System Parameters info constants
+        
+                // System Parameters info constants
 
         public const int SPI_GETACCESSTIMEOUT = 60;
         public const int SPI_GETANIMATION = 72;
@@ -766,8 +759,8 @@ namespace DataTools.Win32
         public const int SPI_SETTOGGLEKEYS = 53;
         public const int SPI_SETWORKAREA = 47;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */        // Frame Control
+        
+                // Frame Control
 
         public const int DFC_BUTTON = 4;
         public const int DFC_CAPTION = 1;
@@ -808,8 +801,8 @@ namespace DataTools.Win32
         public const int DC_INBUTTON = 0x10;
         public const int DC_GRADIENT = 0x20;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         // System Colors
 
         public const int COLOR_ACTIVEBORDER = 10;
@@ -846,8 +839,8 @@ namespace DataTools.Win32
 
         public const int COLOR_HOTLIGHT = 26;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         // Scroll Bar Types
 
         public const int SB_BOTH = 3;
@@ -908,8 +901,8 @@ namespace DataTools.Win32
         public const int SIF_TRACKPOS = 0x10;
         public const int SIF_ALL = SIF_RANGE + SIF_PAGE + SIF_POS + SIF_TRACKPOS;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public const long TPM_LEFTBUTTON = 0x0L;
         public const long TPM_RIGHTBUTTON = 0x2L;
         public const long TPM_LEFTALIGN = 0x0L;
@@ -1013,8 +1006,8 @@ namespace DataTools.Win32
         public const int MIM_STYLE = 0x10;
         public const int MIM_APPLYTOSUBMENUS = unchecked((int)0x80000000);
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public const int PARMNUM_BASE_INFOLEVEL = 1000;
         public const int SHARE_NETNAME_PARMNUM = 1;
         public const int SHARE_TYPE_PARMNUM = 3;
@@ -1063,8 +1056,8 @@ namespace DataTools.Win32
         public const int ACCESS_PERM = 0x40;
         public const int ACCESS_GROUP = 0x8000;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         // IContextMenu and shell
 
         //
@@ -1095,7 +1088,7 @@ namespace DataTools.Win32
         // Note SEE_MASK_INVOKEIDLIST(=&HC) implies SEE_MASK_IDLIST(=&H04)
         public const int SEE_MASK_IDLIST = 0x4;   // SHELLEXECUTEINFO.lpIDList is valid
         public const int SEE_MASK_INVOKEIDLIST = 0xC;   // enable IContextMenu based verbs
-        /* TODO ERROR: Skipped IfDirectiveTrivia *//* TODO ERROR: Skipped DisabledTextTrivia *//* TODO ERROR: Skipped EndIfDirectiveTrivia */
+        
         public const int SEE_MASK_HOTKEY = 0x20;   // SHELLEXECUTEINFO.dwHotKey is valid
         public const int SEE_MASK_NOCLOSEPROCESS = 0x40;   // SHELLEXECUTEINFO.hProcess
         public const int SEE_MASK_CONNECTNETDRV = 0x80;   // enables re-connecting disconnected network drives
@@ -1106,22 +1099,22 @@ namespace DataTools.Win32
         public const int SEE_MASK_UNICODE = 0x4000;
         public const int SEE_MASK_NO_CONSOLE = 0x8000;
         public const int SEE_MASK_ASYNCOK = 0x100000;
-        /* TODO ERROR: Skipped IfDirectiveTrivia */
+        
         public const int SEE_MASK_HMONITOR = 0x200000;   // SHELLEXECUTEINFO.hMonitor
-        /* TODO ERROR: Skipped EndIfDirectiveTrivia *//* TODO ERROR: Skipped IfDirectiveTrivia */
+        
         public const int SEE_MASK_NOZONECHECKS = 0x800000;
-        /* TODO ERROR: Skipped EndIfDirectiveTrivia *//* TODO ERROR: Skipped IfDirectiveTrivia */
+        
         public const int SEE_MASK_NOQUERYCLASSSTORE = 0x1000000;
         public const int SEE_MASK_WAITFORINPUTIDLE = 0x2000000;
-        /* TODO ERROR: Skipped EndIfDirectiveTrivia *//* TODO ERROR: Skipped IfDirectiveTrivia */
+        
         public const int SEE_MASK_FLAG_LOG_USAGE = 0x4000000;
-        /* TODO ERROR: Skipped EndIfDirectiveTrivia */
-        /* TODO ERROR: Skipped IfDirectiveTrivia */        // When SEE_MASK_FLAG_HINST_IS_SITE is specified SHELLEXECUTEINFO.hInstApp is used as an
+        
+                // When SEE_MASK_FLAG_HINST_IS_SITE is specified SHELLEXECUTEINFO.hInstApp is used as an
                                                            // _In_ parameter and specifies a IUnknown* to be used as a site pointer. The site pointer
                                                            // is used to provide services to shell execute, the handler binding process and the verb handlers
                                                            // once they are invoked.
         public const int SEE_MASK_FLAG_HINST_IS_SITE = 0x8000000;
-        /* TODO ERROR: Skipped EndIfDirectiveTrivia */
+        
         public const int CMF_NORMAL = 0x0;
         public const int CMF_DEFAULTONLY = 0x1;
         public const int CMF_VERBSONLY = 0x2;
@@ -1131,13 +1124,13 @@ namespace DataTools.Win32
         public const int CMF_NODEFAULT = 0x20;
         public const int CMF_INCLUDESTATIC = 0x40;
 
-        /* TODO ERROR: Skipped IfDirectiveTrivia *//* TODO ERROR: Skipped DisabledTextTrivia *//* TODO ERROR: Skipped EndIfDirectiveTrivia *//* TODO ERROR: Skipped IfDirectiveTrivia */
+        
         public const int CMF_ITEMMENU = 0x80;
-        /* TODO ERROR: Skipped EndIfDirectiveTrivia */
+        
         public const int CMF_EXTENDEDVERBS = 0x100;
-        /* TODO ERROR: Skipped IfDirectiveTrivia */
+        
         public const int CMF_DISABLEDVERBS = 0x200;
-        /* TODO ERROR: Skipped EndIfDirectiveTrivia */
+        
         public const int CMF_ASYNCVERBSTATE = 0x400;
         public const int CMF_OPTIMIZEFORINVOKE = 0x800;
         public const int CMF_SYNCCASCADEMENU = 0x1000;
@@ -1170,11 +1163,11 @@ namespace DataTools.Win32
         public const int CMIC_MASK_FLAG_NO_UI = SEE_MASK_FLAG_NO_UI;
         public const int CMIC_MASK_UNICODE = SEE_MASK_UNICODE;
         public const int CMIC_MASK_NO_CONSOLE = SEE_MASK_NO_CONSOLE;
-        /* TODO ERROR: Skipped IfDirectiveTrivia *//* TODO ERROR: Skipped DisabledTextTrivia *//* TODO ERROR: Skipped EndIfDirectiveTrivia */
+        
         public const int CMIC_MASK_ASYNCOK = SEE_MASK_ASYNCOK;
-        /* TODO ERROR: Skipped IfDirectiveTrivia */
+        
         public const int CMIC_MASK_NOASYNC = SEE_MASK_NOASYNC;
-        /* TODO ERROR: Skipped EndIfDirectiveTrivia */
+        
         public const int CMIC_MASK_SHIFT_DOWN = 0x10000000;
         public const int CMIC_MASK_CONTROL_DOWN = 0x40000000;
         public const int CMIC_MASK_FLAG_LOG_USAGE = SEE_MASK_FLAG_LOG_USAGE;
@@ -1228,9 +1221,9 @@ namespace DataTools.Win32
         public const int SHGFI_SYSICONINDEX = 0x4000;     // get system icon index
         public const int SHGFI_LINKOVERLAY = 0x8000;     // put a link overlay on icon
         public const int SHGFI_SELECTED = 0x10000;     // show icon in selected state
-        /* TODO ERROR: Skipped IfDirectiveTrivia */
+        
         public const int SHGFI_ATTR_SPECIFIED = 0x20000;     // get only specified attributes
-        /* TODO ERROR: Skipped EndIfDirectiveTrivia */
+        
         public const int SHGFI_LARGEICON = 0x0;     // get large icon
         public const int SHGFI_SMALLICON = 0x1;     // get small icon
         public const int SHGFI_OPENICON = 0x2;     // get open icon
@@ -1349,17 +1342,17 @@ namespace DataTools.Win32
         public const int CSIDL_COOKIES = 0x21;
         public const int CSIDL_HISTORY = 0x22;
 
-        /* TODO ERROR: Skipped IfDirectiveTrivia */
+        
         public const int SHIL_LARGE = 0;   // normally 32x32
         public const int SHIL_SMALL = 1;   // normally 16x16
         public const int SHIL_EXTRALARGE = 2;
         public const int SHIL_SYSSMALL = 3;   // like SHIL_SMALL, but tracks system small icon metric correctly
-        /* TODO ERROR: Skipped IfDirectiveTrivia */
+        
         public const int SHIL_JUMBO = 4;   // normally 256x256
         public const int SHIL_LAST = SHIL_JUMBO;
-        /* TODO ERROR: Skipped ElseDirectiveTrivia *//* TODO ERROR: Skipped DisabledTextTrivia *//* TODO ERROR: Skipped EndIfDirectiveTrivia *//* TODO ERROR: Skipped EndIfDirectiveTrivia */
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
+        
         public const int IMAGE_BITMAP = 0;
         public const int IMAGE_ICON = 1;
         public const int IMAGE_CURSOR = 2;
@@ -1378,9 +1371,9 @@ namespace DataTools.Win32
         public const int LR_COPYFROMRESOURCE = 0x4000;
         public const int LR_SHARED = 0x8000;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
+        
         // Public Const Device = Parameters for GetDeviceCaps() ''
         public const int DRIVERVERSION = 0;     // Device driver version                    ''
         public const int TECHNOLOGY = 2;     // Device classification                    ''
@@ -1544,8 +1537,8 @@ namespace DataTools.Win32
         // WINVER >= &H0500 ''
 
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         // Brush Styles
 
         public const int BS_DIBPATTERN = 5;
@@ -1578,8 +1571,8 @@ namespace DataTools.Win32
         public const int HS_SOLIDTEXTCLR = 21;
         public const int HS_VERTICAL = 1;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */        // Pen Styles
+        
+                // Pen Styles
 
         public const int PS_ALTERNATE = 8;
         public const int PS_COSMETIC = 0x0;
@@ -1602,7 +1595,7 @@ namespace DataTools.Win32
         public const int PS_STYLE_MASK = 0xF;
         public const int PS_PTCMASK = 0xF0000;
         public const int PS_USERSTYLE = 7;
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
         // GetObject object constants
         public const long BI_RGB = 0L;
         public const long BI_RLE8 = 1L;
@@ -1626,8 +1619,8 @@ namespace DataTools.Win32
 
 
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */        // BitBlt flags
+        
+                // BitBlt flags
 
         public const int MERGEPAINT = 0xBB0226;
         public const int SRCERASE = 0x440328;
@@ -1638,8 +1631,8 @@ namespace DataTools.Win32
         public const int NOTSRCCOPY = 0x330008;
         public const int NOTSRCERASE = 0x1100A6;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */        // Draw Modes
+        
+                // Draw Modes
 
         public const int OPAQUE = 2;
         public const int TRANSPARENT = 1;
@@ -1665,8 +1658,8 @@ namespace DataTools.Win32
         public const int ETO_IGNORELANGUAGE = 0x1000;
         public const int ETO_PDY = 0x2000;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         // Check states.
 
         public const int DRWCHK_NORMAL = 0;
@@ -1688,9 +1681,9 @@ namespace DataTools.Win32
         public const int DSS_DISABLED = 0x20;
         public const int DSS_MONO = 0x80;
         public const int DSS_RIGHT = 0x8000;
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
+        
         [DllImport("user32", CharSet = CharSet.Unicode)]
         public static extern IntPtr GetDC(IntPtr hWnd);
         [DllImport("user32", CharSet = CharSet.Unicode)]
@@ -1726,8 +1719,8 @@ namespace DataTools.Win32
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         public static extern bool CloseHandle(IntPtr hObject);
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPWStr)] string lpFileName);
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -1745,8 +1738,8 @@ namespace DataTools.Win32
         [DllImport("coredll.dll")]
         public static extern IntPtr LoadIcon(IntPtr hinst, [MarshalAs(UnmanagedType.LPWStr)] string iconName);
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         [DllImport("shell32.dll", EntryPoint = "ExtractIconExW", CharSet = CharSet.Unicode)]
         public static extern int ExtractIconEx([MarshalAs(UnmanagedType.LPTStr)] string lpszFile, int nIconIndex, ref IntPtr phiconLarge, ref IntPtr phiconSmall, uint nIcons);
         [DllImport("shell32.dll", EntryPoint = "ExtractIconExW", CharSet = CharSet.Unicode)]
@@ -1795,8 +1788,8 @@ namespace DataTools.Win32
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern int DestroyIcon(IntPtr hIcon);
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public delegate IntPtr WndProcDelegate(IntPtr hwnd, uint uMsg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode, EntryPoint = "SetWindowLongPtrW")]
@@ -2023,8 +2016,8 @@ namespace DataTools.Win32
 
 
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         [DllImport("user32", EntryPoint = "GetMessageW", CharSet = CharSet.Unicode)]
         public static extern int GetMessage([MarshalAs(UnmanagedType.LPStruct)] ref MSG lpMsg, IntPtr hWnd, int wMsgFilterMin, int wMsgFilterMax);
         [DllImport("user32", EntryPoint = "PeekMessageW", CharSet = CharSet.Unicode)]
@@ -2104,8 +2097,8 @@ namespace DataTools.Win32
         [DllImport("user32", EntryPoint = "SetMenuItemInfoW", CharSet = CharSet.Unicode)]
         public static extern int SetMenuItemInfo(IntPtr Handle, int un, [MarshalAs(UnmanagedType.Bool)] bool fByItem, ref MENUITEMINFO lpcMenuItemInfo);
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         [DllImport("user32", CharSet = CharSet.Unicode)]
         public static extern int SetScrollInfo(IntPtr hWnd, int n, [MarshalAs(UnmanagedType.LPStruct)] ref SCROLLINFO lpcScrollInfo, bool @bool);
         [DllImport("user32", CharSet = CharSet.Unicode)]
@@ -2122,8 +2115,8 @@ namespace DataTools.Win32
         public static extern int EnableScrollBar(IntPtr hWnd, int wSBflags, int wArrows);
         [DllImport("user32", CharSet = CharSet.Unicode)]
         public static extern int ShowScrollBar(IntPtr hWnd, int wBar, int bShow);
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
         public static extern int SelectObject(IntPtr hDC, IntPtr hObject);
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
@@ -2165,8 +2158,8 @@ namespace DataTools.Win32
         [DllImport("gdi32")]
         public static extern int GetDeviceCaps(IntPtr hDc, int index);
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
         public static extern int MoveToEx(IntPtr hDC, int nXOrg, int nYOrg, [MarshalAs(UnmanagedType.Struct)] ref W32POINT lppt);
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
@@ -2219,8 +2212,8 @@ namespace DataTools.Win32
         [DllImport("gdi32", CharSet = CharSet.Unicode)]
         public static extern IntPtr CreateDIBSection(IntPtr hdc, IntPtr pbmi, uint usage, ref IntPtr ppvBits, IntPtr hSection, int offset);
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         // int CALLBACK EnumFontFamExProc(
         // Const LOGFONT    *lpelfe,
         // Const TEXTMETRIC *lpntme,
@@ -2231,13 +2224,13 @@ namespace DataTools.Win32
 
 
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         [DllImport("kernel32", EntryPoint = "RtlZeroMemory")]
         static extern void RtlZeroMemory(IntPtr pDst, long ByteLen);
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
+        
 
 
 

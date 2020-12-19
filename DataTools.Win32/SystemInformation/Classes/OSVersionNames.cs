@@ -24,8 +24,8 @@ using DataTools.Text;
 
 namespace DataTools.SystemInformation
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
     /// <summary>
     /// Contains a static list of Windows versions and their characteristics.
     /// </summary>

@@ -25,11 +25,11 @@ using System.Text;
 namespace DataTools.Shell.Native
 {
     //#endregion
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    
 
     internal static class NativeShell
     {
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
 
         #region Public Fields
 
@@ -227,18 +227,18 @@ namespace DataTools.Shell.Native
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern HResult SHParseDisplayName(IntPtr pszName, IntPtr pbc, out IntPtr ppidl, ShellFileGetAttributesOptions sfgaoIn, ref ShellFileGetAttributesOptions psfgaoOut);
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
 
         [DllImport("Shell32", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
         internal static extern int SHShowManageLibraryUI([In][MarshalAs(UnmanagedType.Interface)] IShellItem library, [In] IntPtr hwndOwner, [In] string title, [In] string instruction, [In] LibraryManageDialogOptions lmdOptions);
 
         #endregion Internal Methods
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
+        
+        
 
         #region Public Structs
 
@@ -276,6 +276,6 @@ namespace DataTools.Shell.Native
 
         #endregion Public Structs
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 }

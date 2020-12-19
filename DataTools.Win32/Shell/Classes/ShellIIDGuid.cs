@@ -32,10 +32,10 @@ namespace DataTools.Shell.Native
     //<HideModuleName>
     //Public Module NativeShell
 
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     // This code is mostly translated from the Windows API Code Pack. I added some IIDs for Windows 8.1
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
     public sealed class ShellIIDGuid
     {
         public const string IModalWindow = "B4DB1657-70D7-485E-8E3E-6FCB5A5C1802";

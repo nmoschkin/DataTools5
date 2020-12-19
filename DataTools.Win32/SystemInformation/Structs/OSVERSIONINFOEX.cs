@@ -26,8 +26,8 @@ using DataTools.Win32.Memory;
 
 namespace DataTools.SystemInformation
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
     /// <summary>
     /// OSVERSIONINFOEX structure with additional utility and functionality.
     /// </summary>

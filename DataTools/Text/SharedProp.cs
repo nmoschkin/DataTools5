@@ -6,7 +6,7 @@ namespace DataTools.Text
     public static class SharedProp
     {
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         // These functions are useful for objects whose valid values come from shared members of specific classes, such as Color and FontWeight.
 
         /// <summary>
@@ -118,6 +118,6 @@ namespace DataTools.Text
             return false;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 }

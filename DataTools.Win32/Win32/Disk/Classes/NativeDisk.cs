@@ -27,7 +27,7 @@ namespace DataTools.Win32
     internal static class NativeDisk
     {
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         public const int METHOD_BUFFERED = 0;
         public const int METHOD_IN_DIRECT = 1;
         public const int METHOD_OUT_DIRECT = 2;
@@ -81,7 +81,7 @@ namespace DataTools.Win32
             }
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         public const int IOCTL_STORAGE_BASE = 0x2D;
 
         public readonly static CTL_CODE IOCTL_STORAGE_CHECK_VERIFY = new CTL_CODE(IOCTL_STORAGE_BASE, 0x200U, METHOD_BUFFERED, FILE_READ_ACCESS);
@@ -298,7 +298,7 @@ namespace DataTools.Win32
 
 
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
         /// <summary>
         /// Storage device number information.
         /// </summary>
@@ -316,8 +316,8 @@ namespace DataTools.Win32
         [DllImport("kernel32.dll")]
         public static extern bool DeviceIoControl(IntPtr hDevice, uint dwIoControlCode, IntPtr lpInBuffer, uint nInBufferSize, ref STORAGE_DEVICE_NUMBER lpOutBuffer, uint nOutBufferSize, ref uint lpBytesReturned, IntPtr lpOverlapped);
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public const int ERROR_MORE_DATA = 234;
         public const int ERROR_INSUFFICIENT_BUFFER = 0x7A;
 
@@ -471,6 +471,6 @@ namespace DataTools.Win32
             return GetVolumePathsRet;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 }

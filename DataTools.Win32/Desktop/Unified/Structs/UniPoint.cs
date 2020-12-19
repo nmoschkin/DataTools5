@@ -10,7 +10,7 @@ using DataTools.Win32;
 
 namespace DataTools.Desktop.Unified
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    
     /// <summary>
     /// Unified point structure for WinForms, WPF and the Win32 API.
     /// </summary>

@@ -24,8 +24,8 @@ using Microsoft.Win32;
 namespace DataTools.Desktop
 {
 
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
     /// <summary>
     /// Represents a registered file-type handler program.
     /// </summary>
@@ -347,7 +347,7 @@ namespace DataTools.Desktop
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
         public override string ToString()
         {
             return UIName;
@@ -359,7 +359,7 @@ namespace DataTools.Desktop
         }
     }
 
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    
     /// <summary>
     /// Class that describes information for an event fired by the <see cref="AllSystemFileTypes"/> class for a general enumeration of system file types.
     /// </summary>
@@ -731,7 +731,7 @@ namespace DataTools.Desktop
         }
 
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         private bool disposedValue; // To detect redundant calls
 
         // IDisposable
@@ -758,7 +758,7 @@ namespace DataTools.Desktop
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
 
         private void OnPropertyChanged([CallerMemberName] string e = null)
         {
@@ -766,7 +766,7 @@ namespace DataTools.Desktop
         }
     }
 
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     /// <summary>
     /// Compares type SystemFileType objects by extension
     /// </summary>
@@ -789,7 +789,7 @@ namespace DataTools.Desktop
         }
     }
 
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    
     /// <summary>
     /// Reprents a list of all registered file types on the system, and their handlers.
     /// </summary>
@@ -933,7 +933,7 @@ namespace DataTools.Desktop
             return x;
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         private bool disposedValue; // To detect redundant calls
 
         private void Dispose(bool disposing)

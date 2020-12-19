@@ -22,7 +22,7 @@ using DataTools.Win32;
 
 namespace DataTools.Desktop
 {
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     // This is TTF file header
     [StructLayout(LayoutKind.Sequential)]
     public struct TT_OFFSET_TABLE

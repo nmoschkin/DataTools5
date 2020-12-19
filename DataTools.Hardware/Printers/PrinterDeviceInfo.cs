@@ -20,7 +20,7 @@ using static DataTools.Hardware.DevEnumApi;
 namespace DataTools.Hardware.Printers
 {
 
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     /// <summary>
     /// Describes a printer.
     /// </summary>
@@ -29,7 +29,7 @@ namespace DataTools.Hardware.Printers
     {
         private PrinterObject _printInfo;
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         private static IEnumerable<PrinterDeviceInfo> _allPrinters = null;
 
         /// <summary>

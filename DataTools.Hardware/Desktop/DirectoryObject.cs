@@ -655,7 +655,7 @@ namespace DataTools.Desktop
             }
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         /// <summary>
         /// Returns the number of files in the directory.
         /// </summary>
@@ -794,8 +794,8 @@ namespace DataTools.Desktop
             {
                 _pos = -1;
             }
-            /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-            /* TODO ERROR: Skipped RegionDirectiveTrivia */
+            
+            
             private bool disposedValue; // To detect redundant calls
 
             // This code added by Visual Basic to correctly implement the disposable pattern.
@@ -818,7 +818,7 @@ namespace DataTools.Desktop
 
                 disposedValue = true;
             }
-            /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+            
         }
     }
 }

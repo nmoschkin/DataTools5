@@ -53,7 +53,7 @@ namespace DataTools.Hardware.Network
     //'' </remarks>
     // Public Module NetworkWrappers
 
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     /// <summary>
     /// Managed wrapper collection for all adapters.
     /// </summary>
@@ -158,7 +158,7 @@ namespace DataTools.Hardware.Network
             return new IP_ADAPTER_ADDRESSES_Enumerator(this);
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         private bool disposedValue; // To detect redundant calls
 
         // IDisposable
@@ -199,7 +199,7 @@ namespace DataTools.Hardware.Network
             GC.SuppressFinalize(this);
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
         public void Add(IP_ADAPTER_ADDRESSES item)
         {
             throw new AccessViolationException("Cannot add items to a system managed list");
@@ -298,7 +298,7 @@ namespace DataTools.Hardware.Network
             pos = -1;
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         private bool disposedValue; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
@@ -320,11 +320,11 @@ namespace DataTools.Hardware.Network
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
 
     /// <summary>
     /// A managed observable collection wrapper of NetworkAdapter wrapper objects.  This collection wraps the
@@ -518,7 +518,7 @@ namespace DataTools.Hardware.Network
         }
 
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         private bool disposedValue; // To detect redundant calls
 
         // IDisposable
@@ -550,7 +550,7 @@ namespace DataTools.Hardware.Network
             GC.SuppressFinalize(this);
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 
 
@@ -561,8 +561,8 @@ namespace DataTools.Hardware.Network
         NoInternet
     }
 
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
     /// <summary>
     /// Managed wrapper class for the native network adapter information API.
     /// </summary>

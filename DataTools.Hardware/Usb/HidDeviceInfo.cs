@@ -19,7 +19,7 @@ using DataTools.Win32.Memory;
 namespace DataTools.Hardware.Usb
 {
 
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     /// <summary>
     /// An object that represents a Human Interface Device USB device on the system.
     /// </summary>
@@ -32,7 +32,7 @@ namespace DataTools.Hardware.Usb
         protected string _PhysicalDescriptor;
         protected string _HidManufacturer;
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         /// <summary>
         /// Returns the raw byte data for a Hid feature code.
         /// </summary>
@@ -282,7 +282,7 @@ namespace DataTools.Hardware.Usb
             return HidSetFeatureRet;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
         /// <summary>
         /// Returns the HID device manufacturer.
         /// </summary>
@@ -532,5 +532,5 @@ namespace DataTools.Hardware.Usb
         }
     }
 
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    
 }

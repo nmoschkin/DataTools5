@@ -26,8 +26,8 @@ namespace DataTools.Desktop
     {
 
         
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Change the Endianness of a 16-bit unsigned integer
         /// </summary>
@@ -73,8 +73,8 @@ namespace DataTools.Desktop
             return (ulong)Swap(v1) << 32 | Swap(v2);
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public static string GetTTFName(string fileName)
         {
             FileStream fs;

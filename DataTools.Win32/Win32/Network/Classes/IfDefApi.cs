@@ -24,7 +24,7 @@ using DataTools.Win32.Memory;
 
 namespace DataTools.Win32.Network
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    
     public static class IfDefApi
     {
 
@@ -33,7 +33,7 @@ namespace DataTools.Win32.Network
         public const int MAX_ADAPTER_ADDRESS_LENGTH = 8;
         public const int MAX_DHCPV6_DUID_LENGTH = 130;
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         [DllImport("Iphlpapi.dll")]
         static extern ADAPTER_ENUM_RESULT GetAdaptersAddresses(AfENUM Family, GAA_FLAGS Flags, IntPtr Reserved, LPIP_ADAPTER_ADDRESSES Addresses, ref uint SizePointer);
 
@@ -103,6 +103,6 @@ namespace DataTools.Win32.Network
             return adapters;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 }

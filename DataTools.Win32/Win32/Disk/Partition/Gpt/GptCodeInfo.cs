@@ -80,7 +80,7 @@ namespace DataTools.Win32.Disk.Partition.Gpt
             return null;
         }
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
 
         static GptCodeInfo()
         {
@@ -152,7 +152,7 @@ namespace DataTools.Win32.Disk.Partition.Gpt
             _Col.Add(new GptCodeInfo("ZFS partition", "85D5E45D-237C-11E1-B4B3-E89A8F7FC3A7"));
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 
 

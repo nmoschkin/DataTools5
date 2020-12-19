@@ -23,9 +23,9 @@ using DataTools.Win32;
 
 namespace DataTools.Win32.Network
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
+    
     // typedef struct _IP_ADAPTER_ADDRESSES {
     // union {
     // ULONGLONG Alignment;
@@ -71,7 +71,7 @@ namespace DataTools.Win32.Network
     // PIP_ADAPTER_DNS_SUFFIX             FirstDnsSuffix;
     // } IP_ADAPTER_ADDRESSES, *PIP_ADAPTER_ADDRESSES;
 
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    
     /// <summary>
     /// The almighty IP_ADAPTER_ADDRESSES structure.
     /// </summary>

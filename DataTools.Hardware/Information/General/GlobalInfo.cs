@@ -38,7 +38,7 @@ namespace DataTools.Hardware
     {
 
 
-        /* TODO ERROR: Skipped IfDirectiveTrivia */
+        
         internal readonly static bool DevLog = false;
         // Friend xfLog = My.Computer.FileSystem.OpenTextFileWriter("hardware.log", True)
 
@@ -52,7 +52,7 @@ namespace DataTools.Hardware
 
         }
 
-        /* TODO ERROR: Skipped ElseDirectiveTrivia *//* TODO ERROR: Skipped DisabledTextTrivia *//* TODO ERROR: Skipped EndIfDirectiveTrivia */
+        
 
         static DeviceEnum()
         {

@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace DataTools.MathTools
 {
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
 
     public class MathExpressionParser
     {
@@ -730,4 +730,4 @@ namespace DataTools.MathTools
     }
 }
 
-/* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+

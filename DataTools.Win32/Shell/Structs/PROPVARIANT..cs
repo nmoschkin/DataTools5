@@ -29,8 +29,8 @@ using DataTools.Win32.MessageResources;
 
 namespace DataTools.Shell.Native
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
     // Borrowed from the WindowsAPICodePack (v1.1), Translated.
 
 
@@ -46,7 +46,7 @@ namespace DataTools.Shell.Native
     [StructLayout(LayoutKind.Explicit)]
     public sealed class PropVariant : IDisposable
     {
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         // A static dictionary of delegates to get data from array's contained within PropVariants
         private static Dictionary<Type, Action<PropVariant, Array, uint>> _vectorActions = null;
 
@@ -132,8 +132,8 @@ namespace DataTools.Shell.Native
             });
             return cache;
         }
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Attempts to create a PropVariant by finding an appropriate constructor.
         /// </summary>
@@ -193,8 +193,8 @@ namespace DataTools.Shell.Native
             }
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         [FieldOffset(0)]
         private decimal _decimal;
 
@@ -246,8 +246,8 @@ namespace DataTools.Shell.Native
         [FieldOffset(8)]
         private float _float;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Default constrcutor
         /// </summary>
@@ -564,8 +564,8 @@ namespace DataTools.Shell.Native
             _double = value;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Set an IUnknown value
         /// </summary>
@@ -610,8 +610,8 @@ namespace DataTools.Shell.Native
             _ptr = psa;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Gets or sets the variant type.
         /// </summary>
@@ -835,8 +835,8 @@ namespace DataTools.Shell.Native
             }
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         private static long GetFileTimeAsLong(ref System.Runtime.InteropServices.ComTypes.FILETIME val)
         {
             return ((long)val.dwHighDateTime << 32) + val.dwLowDateTime;
@@ -905,8 +905,8 @@ namespace DataTools.Shell.Native
             return array;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         /// <summary>
         /// Disposes the object, calls the clear function.
         /// </summary>
@@ -930,7 +930,7 @@ namespace DataTools.Shell.Native
             }
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
         /// <summary>
         /// Provides an simple string representation of the contained data and type.
         /// </summary>

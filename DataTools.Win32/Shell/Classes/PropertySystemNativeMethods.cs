@@ -29,16 +29,16 @@ using System.Text;
 
 namespace DataTools.Shell.Native
 {
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    
 
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
+    
     internal sealed class PropertySystemNativeMethods
     {
         private PropertySystemNativeMethods()
         {
         }
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         public enum RelativeDescriptionType
         {
             General,
@@ -54,8 +54,8 @@ namespace DataTools.Shell.Native
             Priority
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         [DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern int PSGetNameFromPropertyKey(ref PropertyKey propkey, [MarshalAs(UnmanagedType.LPWStr)] out string ppszCanonicalName);
         [DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true)]
@@ -67,6 +67,6 @@ namespace DataTools.Shell.Native
 
 
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 }

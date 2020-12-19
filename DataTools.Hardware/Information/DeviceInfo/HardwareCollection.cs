@@ -20,7 +20,7 @@ using DataTools.Win32;
 namespace DataTools.Hardware
 {
 
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     /// <summary>
 /// Encapsulates a hierarchical representation of all visible devices on the system.
 /// </summary>
@@ -182,4 +182,4 @@ namespace DataTools.Hardware
     }
 }
 
-/* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+

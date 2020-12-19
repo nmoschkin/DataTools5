@@ -23,7 +23,7 @@ using DataTools.Win32.Memory;
 namespace DataTools.Desktop
 {
 
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     /// <summary>
     /// Flags to be used with LoadLibraryEx
     /// </summary>
@@ -94,7 +94,7 @@ namespace DataTools.Desktop
     public static class Resources
     {
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         public const int RT_CURSOR = 1;
         public const int RT_BITMAP = 2;
         public const int RT_ICON = 3;
@@ -116,7 +116,7 @@ namespace DataTools.Desktop
         public const int RT_ANICURSOR = 21;
         public const int RT_ANIICON = 22;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
         [DllImport("shell32.dll", EntryPoint = "ExtractAssociatedIconExW")]
         static extern IntPtr ExtractAssociatedIconEx(IntPtr hInst, [MarshalAs(UnmanagedType.LPTStr)] string lpIconPath, ref int lpiIconIndex, ref int lpiIconId);
         [DllImport("user32", EntryPoint = "LoadStringW", CharSet = CharSet.Unicode)]
@@ -1446,6 +1446,6 @@ namespace DataTools.Desktop
             return n;
         }
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 }

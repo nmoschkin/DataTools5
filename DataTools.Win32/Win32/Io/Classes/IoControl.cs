@@ -13,7 +13,7 @@ namespace DataTools.Win32
     internal static class IoControl
     {
 
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
         public const int FILE_DEVICE_BEEP = 0x1;
         public const int FILE_DEVICE_CD_ROM = 0x2;
         public const int FILE_DEVICE_CD_ROM_FILE_SYSTEM = 0x3;
@@ -92,8 +92,8 @@ namespace DataTools.Win32
         public const int FILE_DEVICE_POINT_OF_SERVICE = 0x54;
         public const int FILE_DEVICE_AVIO = 0x99;
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         //
         // The following is a list of the native file system fsctls followed by
         // additional network file system fsctls.  Some values have been
@@ -362,8 +362,8 @@ namespace DataTools.Win32
         public readonly static CTL_CODE IOCTL_AVIO_FREE_STREAM = new CTL_CODE(FILE_DEVICE_AVIO, 2U, IO.METHOD_BUFFERED, IO.FILE_SPECIAL_ACCESS);
         public readonly static CTL_CODE IOCTL_AVIO_MODIFY_STREAM = new CTL_CODE(FILE_DEVICE_AVIO, 3U, IO.METHOD_BUFFERED, IO.FILE_SPECIAL_ACCESS);
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
-        /* TODO ERROR: Skipped RegionDirectiveTrivia */
+        
+        
         public enum MOVE_FILE_FLAGS : uint
         {
 
@@ -472,6 +472,6 @@ namespace DataTools.Win32
 
 
 
-        /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+        
     }
 }

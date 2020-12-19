@@ -21,7 +21,7 @@ using DataTools.Win32.Disk.Partition.Gpt;
 namespace DataTools.Hardware.Disk
 {
 
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     /// <summary>
     /// An object that represents a disk or volume device on the system.
     /// </summary>
@@ -549,5 +549,5 @@ namespace DataTools.Hardware.Disk
         }
     }
 
-    /* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+    
 }

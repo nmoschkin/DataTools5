@@ -20,7 +20,7 @@ using DataTools.Win32;
 namespace DataTools.Hardware
 {
 
-    /* TODO ERROR: Skipped RegionDirectiveTrivia */
+    
     /// <summary>
 /// An object that represents a hardware device on the system.
 /// </summary>
@@ -922,4 +922,4 @@ namespace DataTools.Hardware
     }
 }
 
-/* TODO ERROR: Skipped EndRegionDirectiveTrivia */
+
