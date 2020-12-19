@@ -7,22 +7,43 @@ using System.Threading.Tasks;
 
 namespace DataTools.Streams
 {
-    public class SimpleLog
+    public class SimpleLog : IDisposable
     {
 
-        public bool IsOpened { get; private set; }
+        public virtual bool IsOpened { get; protected set; }
 
-        public FileStream Stream { get; private set; }
+        public virtual FileStream Stream { get; protected set; }
 
-        public string Filename { get; set; }
+        public virtual string Filename { get; set; }
 
         public SimpleLog()
         {
            
         }
+        public SimpleLog(string fileName, bool open = true)
+        {
+            Filename = fileName;
+            if (open) OpenLog();
+        }
+
+
+        bool disposed = false;
 
         ~SimpleLog()
         {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            if (disposed) throw new ObjectDisposedException(nameof(SimpleLog));
+            Dispose(true);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (disposed) throw new ObjectDisposedException(nameof(SimpleLog));
+
             try
             {
                 Stream?.Close();
@@ -31,16 +52,15 @@ namespace DataTools.Streams
             {
 
             }
+
+            disposed = true;
+            if (disposing) GC.SuppressFinalize(this);
         }
 
-        public SimpleLog(string fileName, bool open = true)
+        public virtual void OpenLog(string fileName = null)
         {
-            Filename = fileName;
-            if (open) OpenLog();
-        }
+            if (disposed) throw new ObjectDisposedException(nameof(SimpleLog));
 
-        public void OpenLog(string fileName = null)
-        {
             if (fileName != null)
             {
                 Filename = fileName;
@@ -54,15 +74,19 @@ namespace DataTools.Streams
             IsOpened = true;
         }
 
-        public void Close()
+        public virtual void Close()
         {
+            if (disposed) throw new ObjectDisposedException(nameof(SimpleLog));
+
             Stream?.Close();
             Stream = null;
             IsOpened = false;
         }
 
-        public void Log(string message)
+        public virtual void Log(string message)
         {
+            if (disposed) throw new ObjectDisposedException(nameof(SimpleLog));
+
             try
             {
                 if (!IsOpened) return;
