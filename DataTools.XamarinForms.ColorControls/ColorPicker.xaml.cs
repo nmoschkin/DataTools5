@@ -29,6 +29,29 @@ namespace DataTools.XamarinForms.ColorControls
 
         UniPoint? selCoord;
 
+
+        public bool SnapToNamedColor
+        {
+            get { return (bool)GetValue(SnapToNamedColorProperty); }
+            set { SetValue(SnapToNamedColorProperty, value); }
+        }
+
+        public static readonly BindableProperty SnapToNamedColorProperty =
+            BindableProperty.Create(nameof(SnapToNamedColor), typeof(bool), typeof(ColorPicker), defaultValue: false, propertyChanged: SnapToNamedColorPropertyChanged);
+
+        private static void SnapToNamedColorPropertyChanged(BindableObject d, object oldValue, object newValue)
+        {
+            if (d is ColorPicker p)
+            {
+                if ((bool)oldValue != (bool)newValue)
+                {
+                    p.SetSelectedColor();
+                }
+            }
+        }
+
+
+
         public double HueOffset
         {
             get { return (double)GetValue(HueOffsetProperty); }
@@ -301,22 +324,50 @@ namespace DataTools.XamarinForms.ColorControls
 
         private void SetSelectedColor(UniColor? selc = null)
         {
-            if (selc is UniColor clr)
-           {
-                SelectedColor = clr.GetXamarinColor();
 
-                var nc = NamedColor.FindColor(clr, true);
+            UniColor clr;
+            string cname;
 
-                if (nc != null)
-                {
-                    SelectedColorName = nc.Name;
-                }
-                else
-                {
-                    SelectedColorName = clr.GetXamarinColor().ToHex();
-                }
-
+            if (selc != null)
+            {
+                clr = (UniColor)selc;
             }
+            else
+            {
+                clr = SelectedColor.GetUniColor();
+            }
+
+            NamedColor nc;
+            
+            if (SnapToNamedColor)
+            {
+                nc = NamedColor.GetClosestColor(clr, 0.05, false);
+            }
+            else
+            {
+                nc = NamedColor.FindColor(clr);
+            }
+
+            if (nc != null)
+            {
+                cname = nc.Name;
+                clr = nc.Color;
+            }
+            else
+            {
+                cname = clr.GetXamarinColor().ToHex();
+            }
+
+            if (SelectedColor != clr.GetXamarinColor())
+            {
+                SelectedColor = clr.GetXamarinColor();
+            }
+
+            if (SelectedColorName != cname)
+            {
+                SelectedColorName = cname;
+            }
+
         }
 
         void OnTouch(object sender, TouchActionEventArgs args)
@@ -333,10 +384,18 @@ namespace DataTools.XamarinForms.ColorControls
                 if (!cpRender.Bounds.Contains((System.Drawing.PointF)pt))
                 {
                     selCoord = null;
+                    Canvas.InvalidateSurface();
+
                     return;
                 }
 
                 var c = cpRender.HitTest((int)pt.X, (int)pt.Y);
+                if (c == System.Drawing.Color.Empty)
+                {
+                    selCoord = null;
+                    Canvas.InvalidateSurface();
+                    return;
+                }
 
                 Canvas.InvalidateSurface();
                 SetSelectedColor(c);
@@ -356,6 +415,8 @@ namespace DataTools.XamarinForms.ColorControls
                 }
 
                 var c = cpRender.HitTest((int)pt.X, (int)pt.Y);
+                if (c == System.Drawing.Color.Empty) return;
+
                 ColorOver?.Invoke(this, new ColorHitEventArgs(c));
             }
 

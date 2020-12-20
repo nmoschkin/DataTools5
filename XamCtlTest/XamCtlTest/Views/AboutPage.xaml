@@ -63,6 +63,7 @@
                 Margin="8"
                 HeightRequest="300"
                 HorizontalOptions="Fill"
+                SnapToNamedColor="True"
                 VerticalOptions="Center"
                 WidthRequest="300" />
 

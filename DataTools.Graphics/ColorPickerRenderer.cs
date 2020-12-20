@@ -213,11 +213,15 @@ namespace DataTools.Graphics
 
                     var prad = (Bounds.Width / 2);
                     var pc = PolarCoordinates.ToPolarCoordinates(x - prad, y - prad);
-                    hsv.Hue = pc.Arc;
+                    if (pc.Radius > prad) return Color.Empty;
+
+                    hsv.Hue = pc.Arc + HueOffset;
                     hsv.Saturation = InvertSaturation ? 1 - (pc.Radius / prad) : (pc.Radius / prad);
                     hsv.Value = Value;
 
                     return ColorMath.HSVToColor(hsv);
+
+               
             }
 
 
