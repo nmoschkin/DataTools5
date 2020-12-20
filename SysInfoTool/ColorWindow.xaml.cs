@@ -54,10 +54,10 @@ namespace SysInfoTool
             this.Close();
         }
 
-        private void WheelPicker_ColorHit(object sender, DataTools.ColorControls.ColorHitEventArgs e)
+        private void WheelPicker_ColorHit(object sender, DataTools.Graphics.ColorHitEventArgs e)
         {
-            NamedColor nc = NamedColor.FindColor(e.Color.GetUniColor(), true);
-            WheelColor.Background = new SolidColorBrush(e.Color);
+            NamedColor nc = NamedColor.FindColor(e.Color, true);
+            WheelColor.Background = new SolidColorBrush(e.Color.GetWPFColor());
 
             if (nc != null)
             {
@@ -65,14 +65,14 @@ namespace SysInfoTool
             }
             else
             {
-                WheelColorName.Content = (e.Color.GetUniColor()).ToString();
+                WheelColorName.Content = (e.Color).ToString();
             }
         }
 
-        private void LinePicker_ColorHit(object sender, DataTools.ColorControls.ColorHitEventArgs e)
+        private void LinePicker_ColorHit(object sender, DataTools.Graphics.ColorHitEventArgs e)
         {
-            NamedColor nc = NamedColor.FindColor(e.Color.GetUniColor(), true);
-            LineColor.Background = new SolidColorBrush(e.Color);
+            NamedColor nc = NamedColor.FindColor(e.Color, true);
+            LineColor.Background = new SolidColorBrush(e.Color.GetWPFColor());
 
             if (nc != null)
             {
@@ -80,7 +80,7 @@ namespace SysInfoTool
             }
             else
             {
-                LineColorName.Content = (e.Color.GetUniColor()).ToString();
+                LineColorName.Content = (e.Color).ToString();
             }
         }
 

@@ -18,22 +18,6 @@ using DataTools.Graphics;
 namespace DataTools.ColorControls
 {
  
-    public class ColorHitEventArgs : EventArgs
-    {
-        public Color Color { get; private set; }
-
-        public ColorHitEventArgs(int rawColor)
-        {
-            byte[] c = BitConverter.GetBytes(rawColor);
-            Color = Color.FromArgb(c[0], c[1], c[2], c[3]);
-        }
-
-        public ColorHitEventArgs(System.Drawing.Color color)
-        {
-            Color = Color.FromArgb(color.A, color.R, color.G, color.B);
-        }
-    }
-
     /// <summary>
     /// Interaction logic for ColorPicker.xaml
     /// </summary>
