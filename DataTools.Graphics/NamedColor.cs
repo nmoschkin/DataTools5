@@ -130,14 +130,14 @@ namespace DataTools.Graphics
                 { 
                     if (nc.nidxstr.Contains(search))
                     {
-                        output.Add(nc);
+                        if (!output.Contains(nc)) output.Add(nc);
                     }
                 }
                 else
                 {
                     if (nc.nidxstr.StartsWith(search))
                     {
-                        output.Add(nc);
+                        if (!output.Contains(nc)) output.Add(nc);
                     }
                 }
             }
@@ -158,14 +158,14 @@ namespace DataTools.Graphics
                 {
                     if (nc.eidxstr.Contains(search))
                     {
-                        output.Add(nc);
+                        if (!output.Contains(nc)) output.Add(nc);
                     }
                 }
                 else
                 {
                     if (nc.eidxstr.StartsWith(search))
                     {
-                        output.Add(nc);
+                        if (!output.Contains(nc)) output.Add(nc);
                     }
                 }
             }

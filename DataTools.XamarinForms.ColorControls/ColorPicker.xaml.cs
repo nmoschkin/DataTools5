@@ -11,6 +11,8 @@ using DataTools.Standard.Memory;
 
 using SkiaSharp;
 
+using TouchTracking;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -25,6 +27,7 @@ namespace DataTools.XamarinForms.ColorControls
         public event ColorHitEvent ColorHit;
         public event ColorHitEvent ColorOver;
 
+        UniPoint? selCoord;
 
         public double HueOffset
         {
@@ -112,7 +115,7 @@ namespace DataTools.XamarinForms.ColorControls
             {
                 if ((IReadOnlyCollection<NamedColor>)oldValue != (IReadOnlyCollection<NamedColor>)newValue)
                 {
-                    p.RenderPicker();
+                    //p.RenderPicker();
 
                 }
             }
@@ -235,20 +238,41 @@ namespace DataTools.XamarinForms.ColorControls
         public ColorPicker()
         {
             InitializeComponent();
+            Canvas.PaintSurface += Canvas_PaintSurface;
         }
 
+        private void Canvas_PaintSurface(object sender, SkiaSharp.Views.Forms.SKPaintSurfaceEventArgs e)
+        {
+            var aint = new SKPaint()
+            {
+                Color = new SKColor(255, 255, 255, 0),
+                IsStroke = false
+            };
+
+            e.Surface.Canvas.Clear();
+            if (selCoord == null) return;
+
+            var pt = (UniPoint)selCoord;
+            var uc = SelectedColor.GetUniColor();
+
+            uc = ((uint)uc) ^ 0x00ffffff;
+
+            pt.X *= ((e.Info.Width / Width));
+            pt.Y *= ((e.Info.Height / Height));
+
+            aint.Color = new SKColor(uc);
+
+            aint.IsStroke = true;
+            aint.StrokeWidth = 6;
+
+            e.Surface.Canvas.DrawCircle(new SKPoint((float)pt.X, (float)pt.Y), 32, aint);
+        }
 
         protected override void OnParentSet()
         {
             base.OnParentSet();
         }
 
-        //protected override void OnRender(DrawingContext drawingContext)
-        //{
-        //    base.OnRender(drawingContext);
-        //    RenderPicker();
-        //    var p = new Pen();
-        //}
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
@@ -278,7 +302,7 @@ namespace DataTools.XamarinForms.ColorControls
         private void SetSelectedColor(UniColor? selc = null)
         {
             if (selc is UniColor clr)
-            {
+           {
                 SelectedColor = clr.GetXamarinColor();
 
                 var nc = NamedColor.FindColor(clr, true);
@@ -289,64 +313,53 @@ namespace DataTools.XamarinForms.ColorControls
                 }
                 else
                 {
-                    SelectedColorName = clr.ToString(UniColorFormatOptions.HexRgbWebFormat);
+                    SelectedColorName = clr.GetXamarinColor().ToHex();
                 }
 
             }
-
-            //foreach (var c in cpRender.Elements)
-            //{
-            //    UniColor uc = c.Color;
-
-            //    if (selc == uc)
-            //    {
-            //        Point.IsVisible = Surround.IsVisible = true;
-
-            //        Rectangle pb = new Rectangle(c.Center.X, c.Center.Y, 1, 1);
-
-            //        Point.SetValue(AbsoluteLayout.LayoutBoundsProperty, pb);
-
-            //        pb = new Rectangle(c.Center.X - 8, c.Center.Y - 8, 16, 16);
-
-            //        Surround.SetValue(AbsoluteLayout.LayoutBoundsProperty, pb);
-
-            //        Surround.Stroke = Point.Stroke = new SolidColorBrush(SelectedColor);
-
-            //        return;
-            //    }
-            //}
-
-            //Point.IsVisible = Surround.IsVisible = false;
         }
 
-        //private void PickerSite_MouseMove(object sender, MouseEventArgs e)
-        //{
-        //    if (ColorOver != null || ((e.LeftButton == MouseButtonState.Pressed) && (ColorHit != null)))
-        //    {
-        //        var pt = e.GetPosition(PickerSite);
-        //        var c = cpRender.HitTest((int)pt.X, (int)pt.Y);
-        //        var ev = new ColorHitEventArgs(c);
+        void OnTouch(object sender, TouchActionEventArgs args)
+        {
 
-        //        ColorOver?.Invoke(this, ev);
+            if (args.Type == TouchActionType.Pressed)
+            {
+                var pt = new UniPoint(args.Location.X, args.Location.Y);
+                selCoord = pt;
 
-        //        if (e.LeftButton == MouseButtonState.Pressed)
-        //        {
-        //            SetSelectedColor(c);
-        //            ColorHit?.Invoke(this, ev);
-        //        }
+                pt.X -= (Width - cpRender.Bounds.Width) / 2;
+                pt.Y -= (Height - cpRender.Bounds.Height) / 2;
 
-        //    }
-        //}
+                if (!cpRender.Bounds.Contains((System.Drawing.PointF)pt))
+                {
+                    selCoord = null;
+                    return;
+                }
 
-        //private void PickerSite_MouseDown(object sender, MouseButtonEventArgs e)
-        //{
-        //    var pt = e.GetPosition(PickerSite);
-        //    var c = cpRender.HitTest((int)pt.X, (int)pt.Y);
+                var c = cpRender.HitTest((int)pt.X, (int)pt.Y);
 
-        //    SetSelectedColor(c);
-        //    ColorHit?.Invoke(this, new ColorHitEventArgs(c));
+                Canvas.InvalidateSurface();
+                SetSelectedColor(c);
 
-        //}
+                ColorHit?.Invoke(this, new ColorHitEventArgs(c));
+            }
+            else if (args.Type == TouchActionType.Moved)
+            {
+                var pt = new UniPoint(args.Location.X, args.Location.Y);
+
+                pt.X -= (Width - cpRender.Bounds.Width) / 2;
+                pt.Y -= (Height - cpRender.Bounds.Height) / 2;
+                
+                if (!cpRender.Bounds.Contains((System.Drawing.PointF)pt))
+                {
+                    return;
+                }
+
+                var c = cpRender.HitTest((int)pt.X, (int)pt.Y);
+                ColorOver?.Invoke(this, new ColorHitEventArgs(c));
+            }
+
+        }
 
         private void RenderPicker(int w = 0, int h = 0)
         {
@@ -438,9 +451,5 @@ namespace DataTools.XamarinForms.ColorControls
             });
         }
 
-        private void Tapped_Tapped(object sender, EventArgs e)
-        {
-
-        }
     }
 }

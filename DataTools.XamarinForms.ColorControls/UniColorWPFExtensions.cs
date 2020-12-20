@@ -15,7 +15,7 @@ namespace DataTools.XamarinForms.ColorControls
         {
             UniColor clr;
             
-            var hx = MathLib.NumbersOnly(c.ToHex(), hex: true);
+            var hx = c.ToHex().Replace("#", "");
             clr = uint.Parse(hx, System.Globalization.NumberStyles.HexNumber);
             return clr;
         }
@@ -23,7 +23,7 @@ namespace DataTools.XamarinForms.ColorControls
         public static Xamarin.Forms.Color GetXamarinColor(this UniColor c)
         {
 
-            return Xamarin.Forms.Color.FromHex(c.ToString(UniColorFormatOptions.Hex));
+            return Xamarin.Forms.Color.FromHex(c.ToString(UniColorFormatOptions.HexArgbWebFormat));
         }
 
     }
