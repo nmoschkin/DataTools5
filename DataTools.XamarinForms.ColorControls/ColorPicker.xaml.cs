@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 using DataTools.Graphics;
+using DataTools.Standard.Memory;
+
+using SkiaSharp;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -36,8 +41,7 @@ namespace DataTools.XamarinForms.ColorControls
             {
                 if ((double)oldValue != (double)newValue)
                 {
-                    //p.RenderPicker();
-                    p.InvalidateLayout();
+                    p.RenderPicker();
                 }
             }
         }
@@ -108,7 +112,7 @@ namespace DataTools.XamarinForms.ColorControls
             {
                 if ((IReadOnlyCollection<NamedColor>)oldValue != (IReadOnlyCollection<NamedColor>)newValue)
                 {
-                    //p.RenderPicker();
+                    p.RenderPicker();
 
                 }
             }
@@ -131,8 +135,7 @@ namespace DataTools.XamarinForms.ColorControls
             {
                 if ((bool)oldValue != (bool)newValue)
                 {
-                    //p.RenderPicker();
-                    p.InvalidateLayout();
+                    p.RenderPicker();
                 }
             }
         }
@@ -156,8 +159,7 @@ namespace DataTools.XamarinForms.ColorControls
             {
                 if ((float)oldValue != (float)newValue)
                 {
-                    //p.RenderPicker();
-                    p.InvalidateLayout();
+                    p.RenderPicker();
                 }
             }
         }
@@ -177,9 +179,16 @@ namespace DataTools.XamarinForms.ColorControls
         {
             if (d is ColorPicker p)
             {
-                if ((double)oldValue != (double)newValue)
+                bool dee;
+
+                if (oldValue == null && newValue != null || oldValue != null && newValue != null)
+                    dee = true;
+                else
+                    dee = false;
+
+                if (dee || (oldValue == null && newValue == null) || ((double)oldValue != (double)newValue))
                 {
-                    double nv = (double)newValue;
+                    var nv = (double)newValue;
 
                     if (nv < 0d)
                     {
@@ -192,8 +201,7 @@ namespace DataTools.XamarinForms.ColorControls
                         return;
                     }
 
-                    //p.RenderPicker();
-                    p.InvalidateLayout();
+                    p.RenderPicker();
                 }
             }
         }
@@ -219,8 +227,7 @@ namespace DataTools.XamarinForms.ColorControls
             {
                 if ((ColorPickerMode)oldValue != (ColorPickerMode)newValue)
                 {
-                    //p.RenderPicker();
-                    p.InvalidateLayout();
+                    p.RenderPicker();
                 }
             }
         }
@@ -234,8 +241,6 @@ namespace DataTools.XamarinForms.ColorControls
         protected override void OnParentSet()
         {
             base.OnParentSet();
-            RenderPicker();
-
         }
 
         //protected override void OnRender(DrawingContext drawingContext)
@@ -247,6 +252,26 @@ namespace DataTools.XamarinForms.ColorControls
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
+
+            if (cpRender != null)
+            {
+                if (cpRender.Mode == ColorPickerMode.HexagonWheel || cpRender.Mode == ColorPickerMode.Wheel)
+                {
+                    float mn1 = width < height ? (float)width : (float)height;
+                    float mn2 = cpRender.Bounds.Width;
+
+                    if (mn1 == mn2) return;
+                }
+                else if (cpRender.Bounds.Width == width && cpRender.Bounds.Height == height) 
+                {
+                    return;
+                }
+                else
+                {
+                    cpRender = null;
+                }
+            }
+
             RenderPicker((int)width, (int)height);
         }
 
@@ -269,29 +294,29 @@ namespace DataTools.XamarinForms.ColorControls
 
             }
 
-            foreach (var c in cpRender.Elements)
-            {
-                UniColor uc = c.Color;
+            //foreach (var c in cpRender.Elements)
+            //{
+            //    UniColor uc = c.Color;
 
-                if (selc == uc)
-                {
-                    Point.IsVisible = Surround.IsVisible = true;
+            //    if (selc == uc)
+            //    {
+            //        Point.IsVisible = Surround.IsVisible = true;
 
-                    Rectangle pb = new Rectangle(c.Center.X, c.Center.Y, 1, 1);
+            //        Rectangle pb = new Rectangle(c.Center.X, c.Center.Y, 1, 1);
 
-                    Point.SetValue(AbsoluteLayout.LayoutBoundsProperty, pb);
+            //        Point.SetValue(AbsoluteLayout.LayoutBoundsProperty, pb);
 
-                    pb = new Rectangle(c.Center.X - 8, c.Center.Y - 8, 16, 16);
+            //        pb = new Rectangle(c.Center.X - 8, c.Center.Y - 8, 16, 16);
 
-                    Surround.SetValue(AbsoluteLayout.LayoutBoundsProperty, pb);
+            //        Surround.SetValue(AbsoluteLayout.LayoutBoundsProperty, pb);
 
-                    Surround.Stroke = Point.Stroke = new SolidColorBrush(SelectedColor);
+            //        Surround.Stroke = Point.Stroke = new SolidColorBrush(SelectedColor);
 
-                    return;
-                }
-            }
+            //        return;
+            //    }
+            //}
 
-            Point.IsVisible = Surround.IsVisible = false;
+            //Point.IsVisible = Surround.IsVisible = false;
         }
 
         //private void PickerSite_MouseMove(object sender, MouseEventArgs e)
@@ -327,19 +352,23 @@ namespace DataTools.XamarinForms.ColorControls
         {
             var disp = Dispatcher;
 
-            double width = this.Width;
-            double height = this.Height;
+            double width = w > 0 ? w : this.Width;
+            double height = h > 0 ? h : this.Height;
+
+            if (width == -1 || height == -1) return;
+
             double colorVal = this.ColorValue;
             double offset = this.HueOffset;
             bool invert = this.InvertSaturation;
             float esize = this.ElementSize;
+
             ColorPickerMode mode = this.Mode;
 
             _ = Task.Run(() =>
             {
                 ColorPickerRenderer cw;
 
-                if (w <= 0)
+                    if (w <= 0)
                 {
                     if (double.IsNaN(width)) return;
                     w = (int)width;
@@ -367,32 +396,43 @@ namespace DataTools.XamarinForms.ColorControls
                         h = w;
                     }
 
-                    if (mode == ColorPickerMode.Wheel)
-                    {
-                        cw = new ColorPickerRenderer(rad, colorVal, offset, invert);
-                    }
-                    else
-                    {
-                        cw = new ColorPickerRenderer(rad, esize, colorVal, invert);
-                    }
+                    cw = new ColorPickerRenderer(rad, colorVal, offset, invert, true);
 
                 }
                 else
                 {
 
-                    cw = new ColorPickerRenderer(w, h, colorVal, offset, invert, mode == ColorPickerMode.LinearVertical);
+                    cw = new ColorPickerRenderer(w, h, colorVal, offset, invert, mode == ColorPickerMode.LinearVertical, true);
 
                 }
 
                 Device.BeginInvokeOnMainThread(() =>
                 {
-                    //CursorCanvas.Width = w;
-                    //CursorCanvas.Height = h;
 
-                    ////CursorCanvas.RenderSize = new Size(w, h);
-                    //cpRender = cw;
-                    //PickerSite.Source = DataTools.Desktop.BitmapTools.MakeWPFImage(cpRender.Bitmap);
-                    //SetSelectedColor();
+                    SKImage img;
+                    SKBitmap bmp = new SKBitmap((int)cw.Bounds.Width, (int)cw.Bounds.Height, SKColorType.Bgra8888, SKAlphaType.Premul);
+
+                    var ptr = bmp.GetPixels();
+
+                    unsafe
+                    {
+                        var gch = GCHandle.Alloc(cw.ImageBytes, GCHandleType.Pinned);
+
+                        Buffer.MemoryCopy((void*)gch.AddrOfPinnedObject(), (void*)ptr, cw.ImageBytes.Length, cw.ImageBytes.Length);
+                        gch.Free();
+                    }
+                    
+                    bmp.SetImmutable();
+                    img = SKImage.FromBitmap(bmp);
+
+                    SKData encoded = img.Encode();
+                    Stream stream = encoded.AsStream();
+
+                    var ret = ImageSource.FromStream(() => stream);
+
+                    cpRender = cw;
+                    PickerSite.Source = ret;
+
                 });
 
             });

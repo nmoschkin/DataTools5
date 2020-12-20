@@ -260,7 +260,7 @@ namespace DataTools.Graphics
         /// <param name="offset">Hue offset in degrees.</param>
         /// <param name="invert">True to invert saturation.</param>
         /// <param name="vertical">True to draw vertically.</param>
-        public ColorPickerRenderer(int width, int height, double value = 1d, double offset = 0d, bool invert = false, bool vertical = false)
+        public ColorPickerRenderer(int width, int height, double value = 1d, double offset = 0d, bool invert = false, bool vertical = false, bool suppressCreateBitmap = false)
         {
             if (Bitmap != null)
             {
@@ -373,7 +373,7 @@ namespace DataTools.Graphics
 
             }
 
-            ToBitmap();
+            if (!suppressCreateBitmap) ToBitmap();
         }
 
         /// <summary>
@@ -383,7 +383,7 @@ namespace DataTools.Graphics
         /// <param name="elementSize">Size of each element in partial pixels.</param>
         /// <param name="value">Brightness value in percentage.</param>
         /// <param name="invert">True to invert saturation.</param>
-        public ColorPickerRenderer(int pixelRadius, float elementSize, double value = 1d, bool invert = false, double rotation = 0)
+        public ColorPickerRenderer(int pixelRadius, float elementSize, double value = 1d, bool invert = false, double rotation = 0, bool suppressCreateBitmap = false)
         {
             if (Bitmap != null)
             {
@@ -567,7 +567,7 @@ namespace DataTools.Graphics
         /// <param name="value">Brightness value in percentage.</param>
         /// <param name="rotation">Hue offset in degrees.</param>
         /// <param name="invert">True to invert saturation.</param>
-        public ColorPickerRenderer(int pixelRadius, double value = 1d, double rotation = 0d, bool invert = false)
+        public ColorPickerRenderer(int pixelRadius, double value = 1d, double rotation = 0d, bool invert = false, bool suppressCreateBitmap = false)
         {
             if (Bitmap != null)
             {
@@ -661,7 +661,7 @@ namespace DataTools.Graphics
 
             }
 
-            ToBitmap();
+            if (!suppressCreateBitmap) ToBitmap();
         }
     }
 
