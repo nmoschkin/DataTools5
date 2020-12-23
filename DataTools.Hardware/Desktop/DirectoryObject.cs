@@ -151,7 +151,7 @@ namespace DataTools.Desktop
                     else
                     {
                         _Folders.Add(new DirectoryObject());
-                        OnPropertyChanged("Folders");
+                        OnPropertyChanged(nameof(Folders));
                     }
 
                     return;
@@ -188,7 +188,7 @@ namespace DataTools.Desktop
                     else
                     {
                         _Folders.Add(new DirectoryObject());
-                        OnPropertyChanged("Folders");
+                        OnPropertyChanged(nameof(Folders));
                     }
 
                     return;
@@ -224,7 +224,7 @@ namespace DataTools.Desktop
             else
             {
                 _Folders.Add(new DirectoryObject());
-                OnPropertyChanged("Folders");
+                OnPropertyChanged(nameof(Folders));
             }
         }
 
@@ -637,14 +637,13 @@ namespace DataTools.Desktop
                     mm2.Free();
                 }
             }
-
-            OnPropertyChanged("Children");
-            OnPropertyChanged("Folders");
-            OnPropertyChanged("Icon");
-            OnPropertyChanged("IconImage");
-            OnPropertyChanged("IconSize");
-            OnPropertyChanged("ParsingName");
-            OnPropertyChanged("DisplayName");
+            
+            OnPropertyChanged(nameof(Folders));
+            OnPropertyChanged(nameof(Icon));
+            OnPropertyChanged(nameof(IconImage));
+            OnPropertyChanged(nameof(IconSize));
+            OnPropertyChanged(nameof(ParsingName));
+            OnPropertyChanged(nameof(DisplayName));
         }
 
         internal IShellFolder SysInterface

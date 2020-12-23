@@ -47,14 +47,18 @@ namespace DataTools.Desktop
             _Filename = parsingName;
             try
             {
+
+                var mm = new MemPtr();
+                var riid = Guid.Parse(ShellIIDGuid.IShellItem);
+                HResult res;
+
                 if (_IsSpecial)
                 {
                     // let's see if we can parse it.
                     IShellItem shitem = null;
-                    var mm = new MemPtr();
-                    var argriid = Guid.Parse(ShellIIDGuid.IShellItem);
-                    var res = NativeShell.SHCreateItemFromParsingName(parsingName, IntPtr.Zero, ref argriid, ref shitem);
+                    res = NativeShell.SHCreateItemFromParsingName(parsingName, IntPtr.Zero, ref riid, ref shitem);
                     string fp = null;
+
                     if (res == HResult.Ok)
                     {
 
@@ -82,9 +86,10 @@ namespace DataTools.Desktop
                         return;
                     }
 
-                    HResult localSHCreateItemFromParsingName() { var argriid = Guid.Parse(ShellIIDGuid.IShellItem); var ret = NativeShell.SHCreateItemFromParsingName("shell:" + (fp ?? parsingName), IntPtr.Zero, ref argriid, ref shitem); return ret; }
+                    HResult localSHCreateItemFromParsingName() { riid = Guid.Parse(ShellIIDGuid.IShellItem); var ret = NativeShell.SHCreateItemFromParsingName("shell:" + (fp ?? parsingName), IntPtr.Zero, ref riid, ref shitem); return ret; }
 
                     res = localSHCreateItemFromParsingName();
+                    
                     if (res == HResult.Ok)
                     {
 
@@ -107,6 +112,7 @@ namespace DataTools.Desktop
 
                     _SysInterface = shitem;
                     shitem = null;
+                    
                     if (!string.IsNullOrEmpty(DisplayName) && !string.IsNullOrEmpty(ParsingName))
                     {
                         _IsSpecial = true;
@@ -580,15 +586,30 @@ namespace DataTools.Desktop
                 }
             }
 
-            OnPropertyChanged("Icon");
-            OnPropertyChanged("IconImage");
-            OnPropertyChanged("IconSize");
-            OnPropertyChanged("ParsingName");
-            OnPropertyChanged("DisplayName");
-            OnPropertyChanged("Size");
-            OnPropertyChanged("LastWriteTime");
-            OnPropertyChanged("LastAccessTime");
-            OnPropertyChanged("CreationTime");
+            // get the shell interface for the specified non-special file item.
+            // we can use this to get more interfaces from the system.
+
+            if (_SysInterface == null && !_IsSpecial)
+            {
+                IShellItem shitem = null;
+                var riid = Guid.Parse(ShellIIDGuid.IShellItem);
+
+                HResult res = NativeShell.SHCreateItemFromParsingName(_Filename, IntPtr.Zero, ref riid, ref shitem);
+                if (res == HResult.Ok)
+                {
+                    _SysInterface = shitem;
+                }
+            }
+
+            OnPropertyChanged(nameof(Icon));
+            OnPropertyChanged(nameof(IconImage));
+            OnPropertyChanged(nameof(IconSize));
+            OnPropertyChanged(nameof(ParsingName));
+            OnPropertyChanged(nameof(DisplayName));
+            OnPropertyChanged(nameof(Size));
+            OnPropertyChanged(nameof(LastWriteTime));
+            OnPropertyChanged(nameof(LastAccessTime));
+            OnPropertyChanged(nameof(CreationTime));
         }
 
         /// <summary>
