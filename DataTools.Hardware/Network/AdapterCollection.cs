@@ -658,6 +658,7 @@ namespace DataTools.Hardware.Network
 
             OnPropertyChanged(nameof(ReceiveLinkSpeed));
             OnPropertyChanged(nameof(TransmitLinkSpeed));
+            OnPropertyChanged(nameof(OperStatus));
 
             foreach (var pr in allProps)
             {
