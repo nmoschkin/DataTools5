@@ -16,7 +16,7 @@ namespace DataTools.Graphics
 
         public ColorHitEventArgs(Color color)
         {
-            Color = new UniColor(Color.ToArgb());
+            Color = new UniColor(color.ToArgb());
         }
     }
 
