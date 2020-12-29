@@ -12,8 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using DataTools.Desktop;
 using DataTools.Graphics;
+
+using static DataTools.Graphics.ColorMath;
 
 namespace DataTools.ColorControls
 {
@@ -81,20 +82,20 @@ namespace DataTools.ColorControls
             }
         }
 
-        public Color SelectedColor
+        public Color? SelectedColor
         {
-            get { return (Color)GetValue(SelectedColorProperty); }
+            get { return (Color?)GetValue(SelectedColorProperty); }
             set { SetValue(SelectedColorProperty, value); }
         }
 
         public static readonly DependencyProperty SelectedColorProperty =
-            DependencyProperty.Register(nameof(SelectedColor), typeof(Color), typeof(ColorPicker), new PropertyMetadata(Colors.Transparent, SelectedColorPropertyChanged));
+            DependencyProperty.Register(nameof(SelectedColor), typeof(Color?), typeof(ColorPicker), new PropertyMetadata(null, SelectedColorPropertyChanged));
 
         private static void SelectedColorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is ColorPicker p)
             {
-                if ((Color)e.OldValue != (Color)e.NewValue)
+                if ((Color?)e.OldValue != (Color?)e.NewValue)
                 {
                     p.SetSelectedColor();
                 }
@@ -258,43 +259,78 @@ namespace DataTools.ColorControls
 
         private void SetSelectedColor(UniColor? selc = null)
         {
-            if (selc is UniColor clr) {
+            UniColor clr;
+
+            if (selc != null) 
+            {
+                clr = (UniColor)selc;
                 SelectedColor = Color.FromArgb(clr.A, clr.R, clr.G, clr.B);
 
-                var nc = NamedColor.FindColor(clr, true);
-
-                if (nc != null)
-                {
-                    SelectedColorName = nc.Name;
-                }
-                else
-                {
-                    SelectedColorName = clr.ToString(UniColorFormatOptions.HexRgbWebFormat);
-                }
-
+                return;
             }
+            else if (SelectedColor == null)
+            {
+                SelectedColorName = null;
+                Point.Visibility = Surround.Visibility = Visibility.Hidden;
+                return;
+            }
+
+            clr = ((Color)SelectedColor).GetUniColor();
+
+            var nc = NamedColor.FindColor(clr, true);
+
+            if (nc != null)
+            {
+                SelectedColorName = nc.Name;
+            }
+            else
+            {
+                SelectedColorName = clr.ToString(UniColorFormatOptions.HexRgbWebFormat);
+            }
+
+
+            HSVDATA hsv1 = ColorToHSV(clr);
+            HSVDATA hsv2;
+            HSVDATA hsv3;
+            HSVDATA? hsv4 = null;
+            UniColor uc;
+
+            ColorWheelElement cel = new ColorWheelElement();
 
             foreach (var c in cpRender.Elements)
             {
-                UniColor uc = c.Color;
+                uc = c.Color;
+
+                hsv2 = ColorToHSV(uc);
+                hsv3 = (hsv1 - hsv2).Abs();
+
+                if (hsv4 == null)
+                {
+                    hsv4 = hsv3;
+                }
+                else if (hsv3 < hsv4)
+                {
+                    hsv4 = hsv3;
+                    cel = c;
+                }
 
                 if (selc == uc)
                 {
-                    Point.Visibility = Surround.Visibility = Visibility.Visible;
-
-                    Point.SetValue(Canvas.LeftProperty, (double)c.Center.X);
-                    Point.SetValue(Canvas.TopProperty, (double)c.Center.Y);
-
-                    Surround.SetValue(Canvas.LeftProperty, (double)c.Center.X - 8);
-                    Surround.SetValue(Canvas.TopProperty, (double)c.Center.Y - 8);
-
-                    Surround.Stroke = Point.Stroke = new SolidColorBrush(SelectedColor);
-
-                    return;
+                    cel = c;
+                    break;
                 }
             }
 
-            Point.Visibility = Surround.Visibility = Visibility.Hidden;
+            Point.Visibility = Surround.Visibility = Visibility.Visible;
+
+            Point.SetValue(Canvas.LeftProperty, (double)cel.Center.X);
+            Point.SetValue(Canvas.TopProperty, (double)cel.Center.Y);
+
+            Surround.SetValue(Canvas.LeftProperty, (double)cel.Center.X - 8);
+            Surround.SetValue(Canvas.TopProperty, (double)cel.Center.Y - 8);
+
+            Surround.Stroke = Point.Stroke = new SolidColorBrush((Color)SelectedColor);
+
         }
 
         private void PickerSite_MouseMove(object sender, MouseEventArgs e)
