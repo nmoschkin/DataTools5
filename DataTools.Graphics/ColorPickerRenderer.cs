@@ -37,7 +37,11 @@ namespace DataTools.Graphics
         /// <summary>
         /// Hexagonal chunk gradient
         /// </summary>
-        HexagonWheel = 3
+        HexagonWheel = 3,
+
+        HueWheel = 4,
+
+        HueBar = 5
     }
 
     /// <summary>
@@ -206,13 +210,15 @@ namespace DataTools.Graphics
         public Color HitTest(int x, int y)
         {
             HSVDATA hsv;
+            float prad;
+            PolarCoordinates pc;
 
             switch (Mode)
             {
                 case ColorPickerMode.Wheel:
 
-                    var prad = (Bounds.Width / 2);
-                    var pc = PolarCoordinates.ToPolarCoordinates(x - prad, y - prad);
+                    prad = (Bounds.Width / 2);
+                    pc = PolarCoordinates.ToPolarCoordinates(x - prad, y - prad);
                     if (pc.Radius > prad) return Color.Empty;
 
                     hsv.Hue = pc.Arc + HueOffset;
@@ -221,7 +227,18 @@ namespace DataTools.Graphics
 
                     return ColorMath.HSVToColor(hsv);
 
-               
+                case ColorPickerMode.HueWheel:
+
+                    prad = (Bounds.Width / 2);
+                    pc = PolarCoordinates.ToPolarCoordinates(x - prad, y - prad);
+
+                    if (pc.Radius > prad) return Color.Empty;
+
+                    hsv.Hue = pc.Arc + HueOffset;
+                    hsv.Saturation = 1;
+                    hsv.Value = Value;
+
+                    return ColorMath.HSVToColor(hsv);
             }
 
 
@@ -571,7 +588,7 @@ namespace DataTools.Graphics
         /// <param name="value">Brightness value in percentage.</param>
         /// <param name="rotation">Hue offset in degrees.</param>
         /// <param name="invert">True to invert saturation.</param>
-        public ColorPickerRenderer(int pixelRadius, double value = 1d, double rotation = 0d, bool invert = false, bool suppressCreateBitmap = false)
+        public ColorPickerRenderer(int pixelRadius, double value = 1d, double rotation = 0d, bool invert = false, bool suppressCreateBitmap = false, int huewheelThickness = 0)
         {
             if (Bitmap != null)
             {
@@ -586,6 +603,7 @@ namespace DataTools.Graphics
 
             int y1 = 0;
             int y2 = pixelRadius * 2;
+            int hwt = 0;
 
             double sx, sy;
 
@@ -599,7 +617,16 @@ namespace DataTools.Graphics
 
             Bounds = new Rectangle(0, 0, x2, y2);
             InvertSaturation = invert;
-            Mode = ColorPickerMode.Wheel;
+
+            if (huewheelThickness > 0)
+            {
+                hwt = huewheelThickness;
+                Mode = ColorPickerMode.HueWheel;
+            }
+            else
+            {
+                Mode = ColorPickerMode.Wheel;
+            }
 
             for (int j = y1; j < y2; j++)
             {
@@ -611,6 +638,11 @@ namespace DataTools.Graphics
                     pc = PolarCoordinates.ToPolarCoordinates(sx, sy);
 
                     if (pc.Radius > pixelRadius)
+                    {
+                        rawColors.Add(0);
+                        continue;
+                    }
+                    else if (hwt != 0 && pc.Radius < (pixelRadius - hwt))
                     {
                         rawColors.Add(0);
                         continue;
@@ -628,7 +660,7 @@ namespace DataTools.Graphics
                         hsv = new HSVDATA()
                         {
                             Hue = arc,
-                            Saturation = invert ? 1 - (pc.Radius / pixelRadius) : (pc.Radius / pixelRadius),
+                            Saturation = hwt > 0 ? 1 : invert ? 1 - (pc.Radius / pixelRadius) : (pc.Radius / pixelRadius),
                             Value = value
                         };
 

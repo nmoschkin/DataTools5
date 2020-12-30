@@ -84,5 +84,9 @@ namespace SysInfoTool
             }
         }
 
+        private void HuePicker_ColorHit(object sender, ColorHitEventArgs e)
+        {
+
+        }
     }
 }

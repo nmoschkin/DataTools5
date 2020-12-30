@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DataTools.Graphics;
+using DataTools.MathTools.PolarMath;
 
 using static DataTools.Graphics.ColorMath;
 
@@ -30,7 +31,55 @@ namespace DataTools.ColorControls
         public event ColorHitEvent ColorHit;
         public event ColorHitEvent ColorOver;
 
-        
+
+
+
+        public int HuePointerSize
+        {
+            get { return (int)GetValue(HuePointerSizeProperty); }
+            set { SetValue(HuePointerSizeProperty, value); }
+        }
+
+        public static readonly DependencyProperty HuePointerSizeProperty =
+            DependencyProperty.Register(nameof(HuePointerSize), typeof(int), typeof(ColorPicker), new PropertyMetadata(5, HuePointerSizePropertyChanged));
+
+        private static void HuePointerSizePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ColorPicker p)
+            {
+                if ((int)e.OldValue != (int)e.NewValue)
+                {
+                    //p.RenderPicker();
+                    p.InvalidateVisual();
+                }
+            }
+        }
+
+
+
+
+        public int HueWheelThickness
+        {
+            get { return (int)GetValue(HueWheelThicknessProperty); }
+            set { SetValue(HueWheelThicknessProperty, value); }
+        }
+
+        public static readonly DependencyProperty HueWheelThicknessProperty =
+            DependencyProperty.Register(nameof(HueWheelThickness), typeof(int), typeof(ColorPicker), new PropertyMetadata(8, HueWheelThicknessPropertyChanged));
+
+        private static void HueWheelThicknessPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ColorPicker p)
+            {
+                if ((int)e.OldValue != (int)e.NewValue)
+                {
+                    //p.RenderPicker();
+                    p.InvalidateVisual();
+                }
+            }
+        }
+
+
         public double HueOffset
         {
             get { return (double)GetValue(HueOffsetProperty); }
@@ -272,6 +321,7 @@ namespace DataTools.ColorControls
             {
                 SelectedColorName = null;
                 Point.Visibility = Surround.Visibility = Visibility.Hidden;
+                HuePicker.Visibility = Visibility.Hidden;
                 return;
             }
 
@@ -293,6 +343,7 @@ namespace DataTools.ColorControls
             HSVDATA hsv2;
             HSVDATA hsv3;
             HSVDATA? hsv4 = null;
+            HSVDATA? hsv5 = null;
             UniColor uc;
 
             ColorWheelElement cel = new ColorWheelElement();
@@ -310,6 +361,7 @@ namespace DataTools.ColorControls
                 }
                 else if (hsv3 < hsv4)
                 {
+                    hsv5 = hsv2;
                     hsv4 = hsv3;
                     cel = c;
                 }
@@ -321,24 +373,88 @@ namespace DataTools.ColorControls
                 }
             }
 
-            Point.Visibility = Surround.Visibility = Visibility.Visible;
+            if (Mode == ColorPickerMode.HueWheel && !double.IsNaN(ActualWidth) && !double.IsNaN(ActualHeight) && ActualWidth != -1 && ActualHeight != -1)
+            {
+                if (hsv5 is HSVDATA hsv)
+                {
+                    Point.Visibility = Surround.Visibility = Visibility.Hidden;
+                    HuePicker.Visibility = Visibility.Visible;
+                    int hp = HuePointerSize;
 
-            Point.SetValue(Canvas.LeftProperty, (double)cel.Center.X);
-            Point.SetValue(Canvas.TopProperty, (double)cel.Center.Y);
+                    PolarCoordinates pc = new PolarCoordinates();
 
-            Surround.SetValue(Canvas.LeftProperty, (double)cel.Center.X - 8);
-            Surround.SetValue(Canvas.TopProperty, (double)cel.Center.Y - 8);
+                    double arc = hsv.Hue - HueOffset;
+                    if (arc < 0) arc += 360;
 
-            Surround.Stroke = Point.Stroke = new SolidColorBrush((Color)SelectedColor);
+                    int rad;
+                    int h = (int)ActualHeight, w = (int)ActualWidth;
+                     
+                    if (h < w)
+                    {
+                        rad = h / 2;
+                        w = h;
+                    }
+                    else
+                    {
+                        rad = w / 2;
+                        h = w;
+                    }
+
+                    pc.Arc = arc;
+                    pc.Radius = rad;
+
+                    var lc = pc.ToScreenCoordinates(new Rect(0, 0, w, h));
+
+                    if (lc.X < (w / 2))
+                        lc.X -= hp;
+
+                    if (lc.Y < (h / 2))
+                        lc.Y -= hp;
+
+                    HuePicker.SetValue(Canvas.LeftProperty, lc.X);
+                    HuePicker.SetValue(Canvas.TopProperty, lc.Y);
+
+                    HueSize.ScaleX = (HuePointerSize / 5);
+                    HueSize.ScaleY = (HuePointerSize / 5);
+
+                    HueAngle.Angle = pc.Arc;
+                }
+
+            }
+            else
+            {
+                Point.Visibility = Surround.Visibility = Visibility.Visible;
+                HuePicker.Visibility = Visibility.Hidden;
+
+                Point.SetValue(Canvas.LeftProperty, (double)cel.Center.X);
+                Point.SetValue(Canvas.TopProperty, (double)cel.Center.Y);
+
+                Surround.SetValue(Canvas.LeftProperty, (double)cel.Center.X - 8);
+                Surround.SetValue(Canvas.TopProperty, (double)cel.Center.Y - 8);
+
+                Surround.Stroke = Point.Stroke = new SolidColorBrush((Color)SelectedColor);
+
+            }
+
 
         }
 
         private void PickerSite_MouseMove(object sender, MouseEventArgs e)
         {
+            var pt = e.GetPosition(PickerSite);
+            var c = cpRender.HitTest((int)pt.X, (int)pt.Y);
+
+            if (c == System.Drawing.Color.Empty && e.LeftButton != MouseButtonState.Pressed)
+            {
+                Cursor = Cursors.Arrow;
+            }
+            else
+            {
+                Cursor = Cursors.Cross;
+            }
+
             if (ColorOver != null || ((e.LeftButton == MouseButtonState.Pressed) && (ColorHit != null)))
             {
-                var pt = e.GetPosition(PickerSite);
-                var c = cpRender.HitTest((int)pt.X, (int)pt.Y);
                 var ev = new ColorHitEventArgs(c);
 
                 ColorOver?.Invoke(this, ev);
@@ -389,6 +505,9 @@ namespace DataTools.ColorControls
             double offset = this.HueOffset;
             bool invert = this.InvertSaturation;
             float esize = this.ElementSize;
+            int hwt = this.HueWheelThickness;
+            int ps = this.HuePointerSize;
+
             ColorPickerMode mode = this.Mode;
 
             _ = Task.Run(() =>
@@ -408,7 +527,7 @@ namespace DataTools.ColorControls
 
                 if (w < 32 || h < 32) return;
 
-                if (mode == ColorPickerMode.Wheel || mode == ColorPickerMode.HexagonWheel)
+                if (mode == ColorPickerMode.Wheel || mode == ColorPickerMode.HexagonWheel || mode == ColorPickerMode.HueWheel)
                 {
                     int rad;
 
@@ -426,6 +545,11 @@ namespace DataTools.ColorControls
                     if (mode == ColorPickerMode.Wheel)
                     {
                         cw = new ColorPickerRenderer(rad, colorVal, offset, invert);
+                    }
+                    else if (mode == ColorPickerMode.HueWheel)
+                    {
+                        rad -= ((ps / 2) + (ps / 5));
+                        cw = new ColorPickerRenderer(rad, colorVal, offset, invert, false, hwt);
                     }
                     else
                     {

@@ -29,6 +29,7 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -55,16 +56,28 @@
         <cc:ColorPicker
             x:Name="WheelPicker"
             Grid.Row="1"
-            Grid.Column="2"
+            Grid.Column="0"
             Margin="8"
             ColorHit="WheelPicker_ColorHit"
             ElementSize="10"
             Mode="Wheel" />
 
         <cc:ColorPicker
+            x:Name="HuePicker"
+            Grid.Row="1"
+            Grid.Column="1"
+            HuePointerSize="7"
+            HueWheelThickness="12"
+            Margin="8"
+            ColorHit="HuePicker_ColorHit"
+            ElementSize="10"
+            Mode="HueWheel" />
+
+        <cc:ColorPicker
             x:Name="LinePicker"
             Grid.Row="2"
-            Grid.Column="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
             Margin="8"
             ColorHit="LinePicker_ColorHit"
             ElementSize="10"

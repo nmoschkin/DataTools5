@@ -28,6 +28,22 @@
             VerticalAlignment="Center"
             Background="Transparent">
 
+            <Polygon
+                x:Name="HuePicker"
+                Canvas.Left="0"
+                Canvas.Top="0"
+                Fill="Black"
+                Points="0,0 2.5,5, 5,0"
+                Stroke="Black">
+
+                <Polygon.LayoutTransform>
+                    <TransformGroup>
+                        <RotateTransform x:Name="HueAngle" Angle="0" />
+                        <ScaleTransform x:Name="HueSize" ScaleX="1" ScaleY="1" />
+                    </TransformGroup>
+                </Polygon.LayoutTransform>
+            </Polygon>
+
             <Ellipse
                 x:Name="Surround"
                 Width="16"
