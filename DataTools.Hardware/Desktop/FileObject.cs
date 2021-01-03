@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using DataTools.Win32;
 using DataTools.Shell.Native;
 using DataTools.Win32.Memory;
+using System.Runtime.InteropServices;
 
 namespace DataTools.Desktop
 {
@@ -17,15 +18,17 @@ namespace DataTools.Desktop
     /// </summary>
     public class FileObject : ISimpleShellItem
     {
-        private IShellItem _SysInterface;
-        private string _DisplayName;
-        private string _Filename;
-        private System.Drawing.Icon _Icon;
-        private BitmapSource _IconImage;
-        private StandardIcons _IconSize = StandardIcons.Icon48;
-        private bool _IsSpecial;
-        private ISimpleShellItem _Parent;
-        private SystemFileType _Type;
+        private IShellItem shellObj;
+        private IShellItemPS psshellObj;
+
+        private string displayName;
+        private string filename;
+        private System.Drawing.Icon icon;
+        private BitmapSource iconImage;
+        private StandardIcons iconSize = StandardIcons.Icon48;
+        private bool isSpecial;
+        private ISimpleShellItem parent;
+        private SystemFileType type;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -43,8 +46,8 @@ namespace DataTools.Desktop
         /// <param name="iconSize">Default icon size.  This can be changed with the <see cref="IconSize"/> property.</param>
         public FileObject(string parsingName, bool isSpecial, bool initialize, StandardIcons iconSize = StandardIcons.Icon48)
         {
-            _IsSpecial = isSpecial;
-            _Filename = parsingName;
+            this.isSpecial = isSpecial;
+            filename = parsingName;
             try
             {
 
@@ -52,15 +55,19 @@ namespace DataTools.Desktop
                 var riid = Guid.Parse(ShellIIDGuid.IShellItem);
                 HResult res;
 
-                if (_IsSpecial)
+                if (this.isSpecial)
                 {
                     // let's see if we can parse it.
                     IShellItem shitem = null;
+                    IShellItemPS pssh = null;
+
                     res = NativeShell.SHCreateItemFromParsingName(parsingName, IntPtr.Zero, ref riid, ref shitem);
                     string fp = null;
 
                     if (res == HResult.Ok)
                     {
+                        NativeShell.SHCreateItemFromParsingName(parsingName, IntPtr.Zero, ref riid, ref pssh);
+                        psshellObj = pssh;
 
                         shitem.GetDisplayName(ShellItemDesignNameOptions.DesktopAbsoluteParsing, out mm.handle);
                         fp = (string)mm;
@@ -76,12 +83,12 @@ namespace DataTools.Desktop
 
                         mm.CoTaskMemFree();
 
-                        _IsSpecial = true;
+                        this.isSpecial = true;
 
                         if (initialize)
                             Refresh();
 
-                        _SysInterface = shitem;
+                        shellObj = shitem;
 
                         return;
                     }
@@ -99,7 +106,7 @@ namespace DataTools.Desktop
                         if (ParsingName is null)
                             ParsingName = (string)mm;
 
-                        _Filename = ParsingName;
+                        filename = ParsingName;
                         mm.CoTaskMemFree();
 
                         
@@ -110,25 +117,25 @@ namespace DataTools.Desktop
                         mm.CoTaskMemFree();
                     }
 
-                    _SysInterface = shitem;
+                    shellObj = shitem;
                     shitem = null;
                     
                     if (!string.IsNullOrEmpty(DisplayName) && !string.IsNullOrEmpty(ParsingName))
                     {
-                        _IsSpecial = true;
+                        this.isSpecial = true;
                         if (initialize)
-                            Refresh(_IconSize);
+                            Refresh(this.iconSize);
                         return;
                     }
                 }
 
                 if (File.Exists(parsingName) == false)
                 {
-                    if (!_IsSpecial)
+                    if (!this.isSpecial)
                         throw new FileNotFoundException("File Not Found: " + parsingName);
                 }
                 else if (initialize)
-                    Refresh(_IconSize);
+                    Refresh(this.iconSize);
             }
             catch
             {
@@ -159,12 +166,12 @@ namespace DataTools.Desktop
         {
             get
             {
-                return FileTools.GetFileAttributes(_Filename);
+                return FileTools.GetFileAttributes(filename);
             }
 
             set
             {
-                FileTools.SetFileAttributes(_Filename, value);
+                FileTools.SetFileAttributes(filename, value);
             }
         }
 
@@ -185,7 +192,7 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                FileTools.GetFileTime(_Filename, ref c, ref a, ref m);
+                FileTools.GetFileTime(filename, ref c, ref a, ref m);
                 return c;
             }
 
@@ -194,8 +201,8 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                FileTools.GetFileTime(_Filename, ref c, ref a, ref m);
-                FileTools.SetFileTime(_Filename, value, a, m);
+                FileTools.GetFileTime(filename, ref c, ref a, ref m);
+                FileTools.SetFileTime(filename, value, a, m);
             }
         }
 
@@ -207,7 +214,7 @@ namespace DataTools.Desktop
         {
             get
             {
-                return Path.GetDirectoryName(_Filename);
+                return Path.GetDirectoryName(filename);
             }
 
             set
@@ -227,12 +234,12 @@ namespace DataTools.Desktop
         {
             get
             {
-                return _DisplayName;
+                return displayName;
             }
 
             set
             {
-                _DisplayName = value;
+                displayName = value;
             }
         }
 
@@ -244,14 +251,14 @@ namespace DataTools.Desktop
         {
             get
             {
-                return _Filename;
+                return filename;
             }
 
             internal set
             {
-                if (_Filename is object)
+                if (filename is object)
                 {
-                    if (!FileTools.MoveFile(_Filename, value))
+                    if (!FileTools.MoveFile(filename, value))
                     {
                         throw new AccessViolationException("Unable to rename/move file.");
                     }
@@ -261,7 +268,7 @@ namespace DataTools.Desktop
                     throw new FileNotFoundException("File Not Found: " + Filename);
                 }
 
-                _Filename = value;
+                filename = value;
                 Refresh();
             }
         }
@@ -274,9 +281,9 @@ namespace DataTools.Desktop
         {
             get
             {
-                if (_Type is null)
+                if (type is null)
                     return "Unknown";
-                return _Type.Description;
+                return type.Description;
             }
         }
 
@@ -288,9 +295,9 @@ namespace DataTools.Desktop
         {
             get
             {
-                if (_Type is null)
+                if (type is null)
                     return null;
-                return _Type.DefaultIcon;
+                return type.DefaultIcon;
             }
         }
 
@@ -302,9 +309,9 @@ namespace DataTools.Desktop
         {
             get
             {
-                if (_Type is null)
+                if (type is null)
                     return null;
-                return _Type.DefaultImage;
+                return type.DefaultImage;
             }
         }
 
@@ -316,17 +323,17 @@ namespace DataTools.Desktop
         {
             get
             {
-                if (_IsSpecial | (_Parent is object && _Parent.IsSpecial))
+                if (isSpecial | (parent is object && parent.IsSpecial))
                 {
-                    if (_Icon is null)
+                    if (icon is null)
                     {
                         int? argiIndex = null;
-                        _Icon = Resources.GetFileIcon(ParsingName, StandardToSystem(_IconSize), iIndex: ref argiIndex);
+                        icon = Resources.GetFileIcon(ParsingName, StandardToSystem(iconSize), iIndex: ref argiIndex);
                     }
                 }
 
-                if (_Icon is object)
-                    return _Icon;
+                if (icon is object)
+                    return icon;
                 else
                     return FileTypeIcon;
             }
@@ -340,16 +347,16 @@ namespace DataTools.Desktop
         {
             get
             {
-                if (_IsSpecial | (_Parent is object && _Parent.IsSpecial))
+                if (isSpecial | (parent is object && parent.IsSpecial))
                 {
-                    if (_IconImage is null)
+                    if (iconImage is null)
                     {
-                        _IconImage = Resources.GetFileIconWPF(ParsingName, StandardToSystem(_IconSize));
+                        iconImage = Resources.GetFileIconWPF(ParsingName, StandardToSystem(iconSize));
                     }
                 }
 
-                if (_IconImage is object)
-                    return _IconImage;
+                if (iconImage is object)
+                    return iconImage;
                 else
                     return FileTypeIconImage;
             }
@@ -364,15 +371,15 @@ namespace DataTools.Desktop
         {
             get
             {
-                return _IconSize;
+                return iconSize;
             }
 
             set
             {
-                if (_IconSize == value)
+                if (iconSize == value)
                     return;
-                _IconSize = value;
-                Refresh(_IconSize);
+                iconSize = value;
+                Refresh(iconSize);
             }
         }
 
@@ -386,7 +393,7 @@ namespace DataTools.Desktop
         {
             get
             {
-                return _IsSpecial;
+                return isSpecial;
             }
         }
 
@@ -401,7 +408,7 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                FileTools.GetFileTime(_Filename, ref c, ref a, ref m);
+                FileTools.GetFileTime(filename, ref c, ref a, ref m);
                 return a;
             }
 
@@ -410,8 +417,8 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                FileTools.GetFileTime(_Filename, ref c, ref a, ref m);
-                FileTools.SetFileTime(_Filename, c, value, m);
+                FileTools.GetFileTime(filename, ref c, ref a, ref m);
+                FileTools.SetFileTime(filename, c, value, m);
             }
         }
 
@@ -426,7 +433,7 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                FileTools.GetFileTime(_Filename, ref c, ref a, ref m);
+                FileTools.GetFileTime(filename, ref c, ref a, ref m);
                 return m;
             }
 
@@ -435,8 +442,8 @@ namespace DataTools.Desktop
                 var c = default(DateTime);
                 var a = default(DateTime);
                 var m = default(DateTime);
-                FileTools.GetFileTime(_Filename, ref c, ref a, ref m);
-                FileTools.SetFileTime(_Filename, c, a, value);
+                FileTools.GetFileTime(filename, ref c, ref a, ref m);
+                FileTools.SetFileTime(filename, c, a, value);
             }
         }
 
@@ -448,7 +455,7 @@ namespace DataTools.Desktop
         {
             get
             {
-                return Path.GetFileName(_Filename);
+                return Path.GetFileName(filename);
             }
 
             internal set
@@ -468,12 +475,12 @@ namespace DataTools.Desktop
         {
             get
             {
-                return _Parent;
+                return parent;
             }
 
             internal set
             {
-                _Parent = value;
+                parent = value;
             }
         }
 
@@ -491,9 +498,115 @@ namespace DataTools.Desktop
         {
             get
             {
-                return FileTools.GetFileSize(_Filename);
+                return FileTools.GetFileSize(filename);
             }
         }
+
+        public Dictionary<string, PropertyKey> GetPropertiesWithNames()
+        {
+            return PropertyKeys.PropListToDict(GetPropertyStore());
+        }
+
+        public List<PropertyKey> GetPropertyStore()
+        {
+            if (psshellObj == null) return null;
+
+            var g1 = Guid.Parse(ShellBHIDGuid.PropertyStore);
+            var g2 = Guid.Parse(ShellIIDGuid.IPropertyStore);
+
+            IPropertyStore p;
+
+            var h = psshellObj.BindToHandler(IntPtr.Zero, ref g1, ref g2, out p);
+
+            if (h != HResult.Ok) return null;
+
+            PropertyKey pk = new PropertyKey();
+            uint count;
+            int i;
+
+            h = p.GetCount(out count);
+            if (h != HResult.Ok) return null;
+
+            List<PropertyKey> pks = new List<PropertyKey>();
+            
+            for (i = 0; i < count; i++)
+            {
+                h = p.GetAt((uint)i, ref pk);
+                if (h != HResult.Ok) return null;
+
+                pks.Add(pk);
+           
+            }
+
+            return pks;
+        }
+
+        public object GetPropertyValue(string key)
+        {
+            var pk = PropertyKeys.FindByName(key);
+            if (!pk.HasValue) return null;
+
+            return GetPropertyValue(pk.Value);
+        }
+
+        public object GetPropertyValue(PropertyKey key)
+        {
+            if (psshellObj == null) return null;
+
+            var g1 = Guid.Parse(ShellBHIDGuid.PropertyStore);
+            var g2 = Guid.Parse(ShellIIDGuid.IPropertyStore);
+
+            IPropertyStore p;
+
+            var h = psshellObj.BindToHandler(IntPtr.Zero, ref g1, ref g2, out p);
+
+            if (h != HResult.Ok) return null;
+
+            try
+            {
+                PropVariant pv = new PropVariant();
+
+                h = p.GetValue(ref key, pv);
+
+                if (h == HResult.Ok) return pv.Value;
+                else return null;
+
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        public bool SetPropertyValue(PropertyKey key, object value)
+        {
+            if (psshellObj == null) return false;
+
+            var g1 = Guid.Parse(ShellBHIDGuid.PropertyStore);
+            var g2 = Guid.Parse(ShellIIDGuid.IPropertyStore);
+
+            IPropertyStore p;
+
+            var h = psshellObj.BindToHandler(IntPtr.Zero, ref g1, ref g2, out p);
+
+            if (h != HResult.Ok) return false;
+
+            try
+            {
+                PropVariant pv = PropVariant.FromObject(value);
+                h = p.SetValue(ref key, pv);
+
+                if (h != HResult.Ok) return false;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+        }
+
 
         /// <summary>
         /// Return the file type object.
@@ -503,7 +616,7 @@ namespace DataTools.Desktop
         {
             get
             {
-                return _Type;
+                return type;
             }
         }
 
@@ -530,17 +643,17 @@ namespace DataTools.Desktop
         /// <returns>True if successful.</returns>
         public bool Move(string newDirectory)
         {
-            if (_IsSpecial)
+            if (isSpecial)
                 return false;
             if (newDirectory.Substring(newDirectory.Length - 1, 1) == @"\")
                 newDirectory = newDirectory.Substring(0, newDirectory.Length - 1);
             if (!System.IO.Directory.Exists(newDirectory))
                 return false;
-            string p = Path.GetFileName(_Filename);
+            string p = Path.GetFileName(filename);
             string f = newDirectory + @"\" + p;
-            if (FileTools.MoveFile(_Filename, f))
+            if (FileTools.MoveFile(filename, f))
             {
-                _Filename = f;
+                filename = f;
                 Refresh();
                 return true;
             }
@@ -558,46 +671,52 @@ namespace DataTools.Desktop
         public void Refresh(StandardIcons? iconSize = default)
         {
             if (iconSize is null)
-                iconSize = _IconSize;
+                iconSize = this.iconSize;
             else
-                _IconSize = (StandardIcons)iconSize;
+                this.iconSize = (StandardIcons)iconSize;
             
-            if (!File.Exists(_Filename))
+            if (!File.Exists(filename))
                 return;
-            
-            _Type = SystemFileType.FromExtension(Path.GetExtension(_Filename), size: _IconSize);
 
-            if (_IsSpecial | (_Parent is object && _Parent.IsSpecial))
+            type = SystemFileType.FromExtension(Path.GetExtension(filename), size: this.iconSize);
+
+            if (isSpecial | (parent is object && parent.IsSpecial))
             {
-                var st = StandardToSystem(_IconSize);
-                _IconImage = Resources.GetFileIconWPF(ParsingName, st);
+                var st = StandardToSystem(this.iconSize);
+                iconImage = Resources.GetFileIconWPF(ParsingName, st);
                 int? argiIndex = null;
-                _Icon = Resources.GetFileIcon(ParsingName, st, iIndex: ref argiIndex);
+                icon = Resources.GetFileIcon(ParsingName, st, iIndex: ref argiIndex);
             }
 
             // if we are no longer in the directory of the original parent, set to null
-            if (!_IsSpecial && _Parent is object)
+            if (!isSpecial && parent is object)
             {
-                DirectoryObject v = (DirectoryObject)_Parent;
+                DirectoryObject v = (DirectoryObject)parent;
                 if ((v.Directory.ToLower() ?? "") != (Directory.ToLower() ?? ""))
                 {
                     v.Remove(this);
-                    _Parent = null;
+                    parent = null;
                 }
             }
 
             // get the shell interface for the specified non-special file item.
             // we can use this to get more interfaces from the system.
 
-            if (_SysInterface == null && !_IsSpecial)
+            if (shellObj == null && !isSpecial)
             {
                 IShellItem shitem = null;
+                IShellItemPS pssh = null;
+
                 var riid = Guid.Parse(ShellIIDGuid.IShellItem);
 
-                HResult res = NativeShell.SHCreateItemFromParsingName(_Filename, IntPtr.Zero, ref riid, ref shitem);
+                HResult res = NativeShell.SHCreateItemFromParsingName(filename, IntPtr.Zero, ref riid, ref shitem);
+
                 if (res == HResult.Ok)
                 {
-                    _SysInterface = shitem;
+                    shellObj = shitem;
+
+                    NativeShell.SHCreateItemFromParsingName(filename, IntPtr.Zero, ref riid, ref pssh);
+                    psshellObj = pssh;
                 }
             }
 
@@ -619,16 +738,16 @@ namespace DataTools.Desktop
         /// <returns>True if successful</returns>
         public bool Rename(string newName)
         {
-            if (_IsSpecial)
+            if (isSpecial)
                 return false;
-            string p = Path.GetDirectoryName(_Filename);
+            string p = Path.GetDirectoryName(filename);
             string f = p + @"\" + newName;
-            if (!FileTools.MoveFile(_Filename, f))
+            if (!FileTools.MoveFile(filename, f))
             {
                 return false;
             }
 
-            _Filename = f;
+            filename = f;
             Refresh();
             return true;
         }
@@ -642,7 +761,7 @@ namespace DataTools.Desktop
         {
             get
             {
-                return _SysInterface;
+                return shellObj;
             }
         }
 

@@ -199,6 +199,10 @@ namespace DataTools.Shell.Native
 
         // The following parameter is not used - binding context.
         [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        internal static extern HResult SHCreateItemFromParsingName([MarshalAs(UnmanagedType.LPWStr)] string path, IntPtr pbc, ref Guid riid, [MarshalAs(UnmanagedType.Interface)] ref IShellItemPS shellItem);
+
+        // The following parameter is not used - binding context.
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern HResult SHCreateItemFromParsingName([MarshalAs(UnmanagedType.LPWStr)] string path, IntPtr pbc, ref Guid riid, [MarshalAs(UnmanagedType.Interface)] ref IShellItem2 shellItem);
 
         // The following parameter is not used - binding context.

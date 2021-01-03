@@ -23,6 +23,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 
+using DataTools.Win32.Memory;
 using DataTools.Win32.MessageResources;
 //using DataTools.Hardware;
 //using DataTools.Hardware.Native;
@@ -127,7 +128,7 @@ namespace DataTools.Shell.Native
             cache.Add(typeof(string), (pv, array, i) =>
             {
                 string val = string.Empty;
-                PropVariantNativeMethods.PropVariantGetStringElem(pv, i, ref val);
+                PropVariantNativeMethods.PropVariantGetStringElem(pv, i, out val);
                 array.SetValue(val, i);
             });
             return cache;
@@ -193,10 +194,12 @@ namespace DataTools.Shell.Native
             }
         }
 
-        
-        
+
         [FieldOffset(0)]
         private decimal _decimal;
+
+        [FieldOffset(16)]
+        private decimal _decimal2;
 
         // This is actually a VarEnum value, but the VarEnum type
         // requires 4 bytes instead of the expected 2.
@@ -937,7 +940,8 @@ namespace DataTools.Shell.Native
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}: {1}", Value, VarType.ToString());
+            return null;
+            //return string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}: {1}", Value, VarType.ToString());
         }
     }
 }

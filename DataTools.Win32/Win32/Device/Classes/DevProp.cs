@@ -713,7 +713,7 @@ namespace DataTools.Win32
                 {
                     // we found it!
                     var strs = TextTools.Split(fe.Name, "_");
-                    string s = TextTools.SeparateCamel(strs[1]) + " Property: " + "\r\n" + TextTools.SeparateCamel(strs[2]);
+                    string s = TextTools.Separate(strs[1]) + " Property: " + "\r\n" + TextTools.Separate(strs[2]);
                     return s;
                 }
             }

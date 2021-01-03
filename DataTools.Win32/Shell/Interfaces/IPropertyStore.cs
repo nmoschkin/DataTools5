@@ -61,7 +61,7 @@ namespace DataTools.Shell.Native
         /// <param name="pv"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        HResult GetValue([In] ref PropertyKey key, out PropVariant pv);
+        HResult GetValue([In] ref PropertyKey key, [Out] PropVariant pv);
 
         /// <summary>
         /// Sets the value of a property in the store

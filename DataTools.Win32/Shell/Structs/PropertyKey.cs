@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -122,6 +123,30 @@ namespace DataTools.Shell.Native
             }
         }
 
+        public string Name
+        {
+            get => PropertyKeys.GetPropertyName(this);
+        }
+
+
+        public string LocalizedDescription
+        {
+            get
+            {
+                PropertyInfo pi = typeof(DataTools.Win32.Shell.Resources.LocalizedProperties).GetProperty(Name);
+                
+                if (pi != null)
+                {
+                    return (string)pi.GetValue(null);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+
         // Summary:
         // Returns whether this object is equal to another. This is vital for performance
         // of value types.
@@ -134,7 +159,8 @@ namespace DataTools.Shell.Native
         // Equality result.
         public override bool Equals(object obj)
         {
-            return Equals((PropertyKey)obj);
+            if (!(obj is PropertyKey pk)) return false;
+            else return Equals(pk);
         }
         // 
         // Summary:
@@ -176,7 +202,7 @@ namespace DataTools.Shell.Native
         // String representing the property key
         public override string ToString()
         {
-            return _FormatId.ToString("B").ToUpper() + "[" + _PropertyId + "]";
+            return Name ?? _FormatId.ToString("B").ToUpper() + "[" + _PropertyId + "]";
         }
     }
 }

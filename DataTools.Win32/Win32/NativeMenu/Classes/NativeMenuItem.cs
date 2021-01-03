@@ -287,7 +287,7 @@ namespace DataTools.Win32.Menu
                 User32.GetMenuItemInfo(hMenu, itemId, false, ref mii);
                 if (mii.hbmpItem != IntPtr.Zero)
                 {
-                    Shell.Native.NativeShell.DeleteObject(mii.hbmpItem);
+                    DataTools.Shell.Native.NativeShell.DeleteObject(mii.hbmpItem);
                     mii.hbmpItem = IntPtr.Zero;
                 }
 

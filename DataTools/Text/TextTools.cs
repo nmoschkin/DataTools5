@@ -1894,32 +1894,112 @@ namespace DataTools.Text
         }
 
         /// <summary>
-        /// Space out a camel-cased string.
+        /// Separate and clean up a string.
         /// </summary>
         /// <param name="value">String to separate.</param>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static string SeparateCamel(string value)
+        public static string Separate(string value) =>
+            Separate(value, ' ', true, true, true);
+
+        /// <summary>
+        /// Separate and clean up a string.
+        /// </summary>
+        /// <param name="value">String to separate.</param>
+        /// <param name="sepChar">The new separator character.</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string Separate(string value, char sepChar) =>
+            Separate(value, sepChar, true, true, true);
+
+        /// <summary>
+        /// Separate and clean up a string.
+        /// </summary>
+        /// <param name="value">String to separate.</param>
+        /// <param name="sepChar">The new separator character.</param>
+        /// <param name="sepCamel">Separate by camelCase or PascalCase.</param>
+        /// <param name="capitalize">Capitalize all separated words.</param>
+        /// <param name="sepBy">Separate by the characters specified to detect separate words..</param>
+        /// <param name="sepByChars">Use these characters to detect separate words.</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string Separate(string value, char sepChar, bool sepCamel, bool capitalize, bool sepBy, string sepByChars = " _-") =>
+            Separate(value, sepChar, sepCamel, capitalize, sepBy, sepByChars.ToCharArray());
+
+        /// <summary>
+        /// Separate and clean up a string.
+        /// </summary>
+        /// <param name="value">String to separate.</param>
+        /// <param name="sepChar">The new separator character.</param>
+        /// <param name="sepCamel">Separate by camelCase or PascalCase.</param>
+        /// <param name="capitalize">Capitalize all separated words.</param>
+        /// <param name="sepBy">Separate by the characters specified to detect separate words..</param>
+        /// <param name="sepByChars">Use these characters to detect separate words.</param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static string Separate(string value, char sepChar, bool sepCamel, bool capitalize, bool sepBy, char[] sepByChars)
         {
+            if (value == null || (sepBy && sepByChars == null)) throw new ArgumentNullException();
+
             char[] ch = value.ToCharArray();
+            List<char> seps = new List<char>(sepByChars);
 
-            int i = 0;
-            int c = 0;
+            int i;
+            int c = ch.Length;
 
-            StringBuilder sb = new StringBuilder();
+            bool lsep = false;
+            bool lcap = false;
+            bool lchar = false;
 
-            c = ch.Length - 1;
-
-            for (i = 0; i <= c; i++)
+            StringBuilder sb = new StringBuilder(c * 2);
+            
+            for (i = 0; i < c; i++)
             {
-
-                if (ch[i].ToString().ToUpper() == ch[i].ToString() && i > 0)
+                if (sepBy && seps.Contains(ch[i]))
                 {
-                    sb.Append(" ");
+                    if (!lsep && lchar)
+                    {
+                        lsep = true;
+                        sb.Append(sepChar);
+                    }
+                    
+                    continue;
                 }
-                sb.Append(ch[i]);
+                else if (ch[i] == sepChar)
+                {
+                    if (!lsep && lchar)
+                    {
+                        lsep = true;
+                        sb.Append(sepChar);
+                    }
+                    
+                    continue;
+                }
 
+                if ((lsep || i == 0) && capitalize)
+                {
+                    sb.Append(char.ToUpper(ch[i]));
+                    lcap = true;
+                }
+                else
+                {
+                    if (sepCamel && char.IsUpper(ch[i]) && !lsep)
+                    {
+                        if (!lcap) sb.Append(sepChar);
+                        lcap = true;
+                    }
+                    else
+                    {
+                        lcap = false;
+                    }
+
+                    sb.Append(ch[i]);
+                }
+
+                lsep = false;
+                lchar = true;
             }
+
             return sb.ToString();
         }
 

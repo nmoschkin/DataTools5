@@ -50,6 +50,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+		<PackageReference Include="stdole" Version="16.7.30508.193" />
 		<PackageReference Include="System.Drawing.Common" Version="5.0.0" />
 		<PackageReference Include="System.Windows.Extensions" Version="5.0.0" />
 	</ItemGroup>
@@ -67,6 +68,11 @@
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
 	  </Compile>
+	  <Compile Update="Shell\Resources\LocalizedProperties.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>LocalizedProperties.resx</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 
@@ -75,6 +81,16 @@
 	    <LastGenOutput>LocalizedMessages.Designer.cs</LastGenOutput>
 	    <Generator>ResXFileCodeGenerator</Generator>
 	  </EmbeddedResource>
+	  <EmbeddedResource Update="Shell\Resources\LocalizedProperties.resx">
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	    <LastGenOutput>LocalizedProperties.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <Folder Include="Win32\Media\Classes\" />
+	  <Folder Include="Win32\Media\Interfaces\" />
 	</ItemGroup>
 
 </Project>

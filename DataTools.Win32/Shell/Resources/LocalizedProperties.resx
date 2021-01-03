@@ -1,0 +1,3222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="PKEY_AcquisitionID" xml:space="preserve">
+    <value>Acquisition ID</value>
+  </data>
+  <data name="PKEY_Address_Country" xml:space="preserve">
+    <value>Address Country</value>
+  </data>
+  <data name="PKEY_Address_CountryCode" xml:space="preserve">
+    <value>Address Country Code</value>
+  </data>
+  <data name="PKEY_Address_Region" xml:space="preserve">
+    <value>Address Region</value>
+  </data>
+  <data name="PKEY_Address_RegionCode" xml:space="preserve">
+    <value>Address Region Code</value>
+  </data>
+  <data name="PKEY_Address_Town" xml:space="preserve">
+    <value>Address Town</value>
+  </data>
+  <data name="PKEY_ApplicationDefinedProperties" xml:space="preserve">
+    <value>Application Defined Properties</value>
+  </data>
+  <data name="PKEY_ApplicationName" xml:space="preserve">
+    <value>Application Name</value>
+  </data>
+  <data name="PKEY_AppUserModel_ExcludeFromShowInNewInstall" xml:space="preserve">
+    <value>App User Model Exclude From Show In New Install</value>
+  </data>
+  <data name="PKEY_AppUserModel_ID" xml:space="preserve">
+    <value>App User Model ID</value>
+  </data>
+  <data name="PKEY_AppUserModel_IsDestListSeparator" xml:space="preserve">
+    <value>App User Model Is Dest List Separator</value>
+  </data>
+  <data name="PKEY_AppUserModel_IsDualMode" xml:space="preserve">
+    <value>App User Model Is Dual Mode</value>
+  </data>
+  <data name="PKEY_AppUserModel_PreventPinning" xml:space="preserve">
+    <value>App User Model Prevent Pinning</value>
+  </data>
+  <data name="PKEY_AppUserModel_RelaunchCommand" xml:space="preserve">
+    <value>App User Model Relaunch Command</value>
+  </data>
+  <data name="PKEY_AppUserModel_RelaunchDisplayNameResource" xml:space="preserve">
+    <value>App User Model Relaunch Display Name Resource</value>
+  </data>
+  <data name="PKEY_AppUserModel_RelaunchIconResource" xml:space="preserve">
+    <value>App User Model Relaunch Icon Resource</value>
+  </data>
+  <data name="PKEY_AppUserModel_StartPinOption" xml:space="preserve">
+    <value>App User Model Start Pin Option</value>
+  </data>
+  <data name="PKEY_AppUserModel_ToastActivatorCLSID" xml:space="preserve">
+    <value>App User Model Toast Activator CLSID</value>
+  </data>
+  <data name="PKEY_AppUserModel_VisualElementsManifestHintPath" xml:space="preserve">
+    <value>App User Model Visual Elements Manifest Hint Path</value>
+  </data>
+  <data name="PKEY_AppZoneIdentifier" xml:space="preserve">
+    <value>App Zone Identifier</value>
+  </data>
+  <data name="PKEY_Audio_ChannelCount" xml:space="preserve">
+    <value>Audio Channel Count</value>
+  </data>
+  <data name="PKEY_Audio_Compression" xml:space="preserve">
+    <value>Audio Compression</value>
+  </data>
+  <data name="PKEY_Audio_EncodingBitrate" xml:space="preserve">
+    <value>Audio Encoding Bitrate</value>
+  </data>
+  <data name="PKEY_Audio_Format" xml:space="preserve">
+    <value>Audio Format</value>
+  </data>
+  <data name="PKEY_Audio_IsVariableBitRate" xml:space="preserve">
+    <value>Audio Is Variable Bit Rate</value>
+  </data>
+  <data name="PKEY_Audio_PeakValue" xml:space="preserve">
+    <value>Audio Peak Value</value>
+  </data>
+  <data name="PKEY_Audio_SampleRate" xml:space="preserve">
+    <value>Audio Sample Rate</value>
+  </data>
+  <data name="PKEY_Audio_SampleSize" xml:space="preserve">
+    <value>Audio Sample Size</value>
+  </data>
+  <data name="PKEY_Audio_StreamName" xml:space="preserve">
+    <value>Audio Stream Name</value>
+  </data>
+  <data name="PKEY_Audio_StreamNumber" xml:space="preserve">
+    <value>Audio Stream Number</value>
+  </data>
+  <data name="PKEY_Author" xml:space="preserve">
+    <value>Author</value>
+  </data>
+  <data name="PKEY_CachedFileUpdaterContentIdForConflictResolution" xml:space="preserve">
+    <value>Cached File Updater Content Id For Conflict Resolution</value>
+  </data>
+  <data name="PKEY_CachedFileUpdaterContentIdForStream" xml:space="preserve">
+    <value>Cached File Updater Content Id For Stream</value>
+  </data>
+  <data name="PKEY_Calendar_Duration" xml:space="preserve">
+    <value>Calendar Duration</value>
+  </data>
+  <data name="PKEY_Calendar_IsOnline" xml:space="preserve">
+    <value>Calendar Is Online</value>
+  </data>
+  <data name="PKEY_Calendar_IsRecurring" xml:space="preserve">
+    <value>Calendar Is Recurring</value>
+  </data>
+  <data name="PKEY_Calendar_Location" xml:space="preserve">
+    <value>Calendar Location</value>
+  </data>
+  <data name="PKEY_Calendar_OptionalAttendeeAddresses" xml:space="preserve">
+    <value>Calendar Optional Attendee Addresses</value>
+  </data>
+  <data name="PKEY_Calendar_OptionalAttendeeNames" xml:space="preserve">
+    <value>Calendar Optional Attendee Names</value>
+  </data>
+  <data name="PKEY_Calendar_OrganizerAddress" xml:space="preserve">
+    <value>Calendar Organizer Address</value>
+  </data>
+  <data name="PKEY_Calendar_OrganizerName" xml:space="preserve">
+    <value>Calendar Organizer Name</value>
+  </data>
+  <data name="PKEY_Calendar_ReminderTime" xml:space="preserve">
+    <value>Calendar Reminder Time</value>
+  </data>
+  <data name="PKEY_Calendar_RequiredAttendeeAddresses" xml:space="preserve">
+    <value>Calendar Required Attendee Addresses</value>
+  </data>
+  <data name="PKEY_Calendar_RequiredAttendeeNames" xml:space="preserve">
+    <value>Calendar Required Attendee Names</value>
+  </data>
+  <data name="PKEY_Calendar_Resources" xml:space="preserve">
+    <value>Calendar Resources</value>
+  </data>
+  <data name="PKEY_Calendar_ResponseStatus" xml:space="preserve">
+    <value>Calendar Response Status</value>
+  </data>
+  <data name="PKEY_Calendar_ShowTimeAs" xml:space="preserve">
+    <value>Calendar Show Time As</value>
+  </data>
+  <data name="PKEY_Calendar_ShowTimeAsText" xml:space="preserve">
+    <value>Calendar Show Time As Text</value>
+  </data>
+  <data name="PKEY_Capacity" xml:space="preserve">
+    <value>Capacity</value>
+  </data>
+  <data name="PKEY_Category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="PKEY_Comment" xml:space="preserve">
+    <value>Comment</value>
+  </data>
+  <data name="PKEY_Communication_AccountName" xml:space="preserve">
+    <value>Communication Account Name</value>
+  </data>
+  <data name="PKEY_Communication_DateItemExpires" xml:space="preserve">
+    <value>Communication Date Item Expires</value>
+  </data>
+  <data name="PKEY_Communication_Direction" xml:space="preserve">
+    <value>Communication Direction</value>
+  </data>
+  <data name="PKEY_Communication_FollowupIconIndex" xml:space="preserve">
+    <value>Communication Followup Icon Index</value>
+  </data>
+  <data name="PKEY_Communication_HeaderItem" xml:space="preserve">
+    <value>Communication Header Item</value>
+  </data>
+  <data name="PKEY_Communication_PolicyTag" xml:space="preserve">
+    <value>Communication Policy Tag</value>
+  </data>
+  <data name="PKEY_Communication_SecurityFlags" xml:space="preserve">
+    <value>Communication Security Flags</value>
+  </data>
+  <data name="PKEY_Communication_Suffix" xml:space="preserve">
+    <value>Communication Suffix</value>
+  </data>
+  <data name="PKEY_Communication_TaskStatus" xml:space="preserve">
+    <value>Communication Task Status</value>
+  </data>
+  <data name="PKEY_Communication_TaskStatusText" xml:space="preserve">
+    <value>Communication Task Status Text</value>
+  </data>
+  <data name="PKEY_Company" xml:space="preserve">
+    <value>Company</value>
+  </data>
+  <data name="PKEY_ComputerName" xml:space="preserve">
+    <value>Computer Name</value>
+  </data>
+  <data name="PKEY_Computer_DecoratedFreeSpace" xml:space="preserve">
+    <value>Computer Decorated Free Space</value>
+  </data>
+  <data name="PKEY_Contact_AccountPictureDynamicVideo" xml:space="preserve">
+    <value>Contact Account Picture Dynamic Video</value>
+  </data>
+  <data name="PKEY_Contact_AccountPictureLarge" xml:space="preserve">
+    <value>Contact Account Picture Large</value>
+  </data>
+  <data name="PKEY_Contact_AccountPictureSmall" xml:space="preserve">
+    <value>Contact Account Picture Small</value>
+  </data>
+  <data name="PKEY_Contact_Anniversary" xml:space="preserve">
+    <value>Contact Anniversary</value>
+  </data>
+  <data name="PKEY_Contact_AssistantName" xml:space="preserve">
+    <value>Contact Assistant Name</value>
+  </data>
+  <data name="PKEY_Contact_AssistantTelephone" xml:space="preserve">
+    <value>Contact Assistant Telephone</value>
+  </data>
+  <data name="PKEY_Contact_Birthday" xml:space="preserve">
+    <value>Contact Birthday</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress" xml:space="preserve">
+    <value>Contact Business Address</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress1Country" xml:space="preserve">
+    <value>Contact Business Address1 Country</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress1Locality" xml:space="preserve">
+    <value>Contact Business Address1 Locality</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress1PostalCode" xml:space="preserve">
+    <value>Contact Business Address1 Postal Code</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress1Region" xml:space="preserve">
+    <value>Contact Business Address1 Region</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress1Street" xml:space="preserve">
+    <value>Contact Business Address1 Street</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress2Country" xml:space="preserve">
+    <value>Contact Business Address2 Country</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress2Locality" xml:space="preserve">
+    <value>Contact Business Address2 Locality</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress2PostalCode" xml:space="preserve">
+    <value>Contact Business Address2 Postal Code</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress2Region" xml:space="preserve">
+    <value>Contact Business Address2 Region</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress2Street" xml:space="preserve">
+    <value>Contact Business Address2 Street</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress3Country" xml:space="preserve">
+    <value>Contact Business Address3 Country</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress3Locality" xml:space="preserve">
+    <value>Contact Business Address3 Locality</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress3PostalCode" xml:space="preserve">
+    <value>Contact Business Address3 Postal Code</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress3Region" xml:space="preserve">
+    <value>Contact Business Address3 Region</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddress3Street" xml:space="preserve">
+    <value>Contact Business Address3 Street</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddressCity" xml:space="preserve">
+    <value>Contact Business Address City</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddressCountry" xml:space="preserve">
+    <value>Contact Business Address Country</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddressPostalCode" xml:space="preserve">
+    <value>Contact Business Address Postal Code</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddressPostOfficeBox" xml:space="preserve">
+    <value>Contact Business Address Post Office Box</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddressState" xml:space="preserve">
+    <value>Contact Business Address State</value>
+  </data>
+  <data name="PKEY_Contact_BusinessAddressStreet" xml:space="preserve">
+    <value>Contact Business Address Street</value>
+  </data>
+  <data name="PKEY_Contact_BusinessEmailAddresses" xml:space="preserve">
+    <value>Contact Business Email Addresses</value>
+  </data>
+  <data name="PKEY_Contact_BusinessFaxNumber" xml:space="preserve">
+    <value>Contact Business Fax Number</value>
+  </data>
+  <data name="PKEY_Contact_BusinessHomePage" xml:space="preserve">
+    <value>Contact Business Home Page</value>
+  </data>
+  <data name="PKEY_Contact_BusinessTelephone" xml:space="preserve">
+    <value>Contact Business Telephone</value>
+  </data>
+  <data name="PKEY_Contact_CallbackTelephone" xml:space="preserve">
+    <value>Contact Callback Telephone</value>
+  </data>
+  <data name="PKEY_Contact_CarTelephone" xml:space="preserve">
+    <value>Contact Car Telephone</value>
+  </data>
+  <data name="PKEY_Contact_Children" xml:space="preserve">
+    <value>Contact Children</value>
+  </data>
+  <data name="PKEY_Contact_CompanyMainTelephone" xml:space="preserve">
+    <value>Contact Company Main Telephone</value>
+  </data>
+  <data name="PKEY_Contact_ConnectedServiceDisplayName" xml:space="preserve">
+    <value>Contact Connected Service Display Name</value>
+  </data>
+  <data name="PKEY_Contact_ConnectedServiceIdentities" xml:space="preserve">
+    <value>Contact Connected Service Identities</value>
+  </data>
+  <data name="PKEY_Contact_ConnectedServiceName" xml:space="preserve">
+    <value>Contact Connected Service Name</value>
+  </data>
+  <data name="PKEY_Contact_ConnectedServiceSupportedActions" xml:space="preserve">
+    <value>Contact Connected Service Supported Actions</value>
+  </data>
+  <data name="PKEY_Contact_DataSuppliers" xml:space="preserve">
+    <value>Contact Data Suppliers</value>
+  </data>
+  <data name="PKEY_Contact_Department" xml:space="preserve">
+    <value>Contact Department</value>
+  </data>
+  <data name="PKEY_Contact_DisplayBusinessPhoneNumbers" xml:space="preserve">
+    <value>Contact Display Business Phone Numbers</value>
+  </data>
+  <data name="PKEY_Contact_DisplayHomePhoneNumbers" xml:space="preserve">
+    <value>Contact Display Home Phone Numbers</value>
+  </data>
+  <data name="PKEY_Contact_DisplayMobilePhoneNumbers" xml:space="preserve">
+    <value>Contact Display Mobile Phone Numbers</value>
+  </data>
+  <data name="PKEY_Contact_DisplayOtherPhoneNumbers" xml:space="preserve">
+    <value>Contact Display Other Phone Numbers</value>
+  </data>
+  <data name="PKEY_Contact_EmailAddress" xml:space="preserve">
+    <value>Contact Email Address</value>
+  </data>
+  <data name="PKEY_Contact_EmailAddress2" xml:space="preserve">
+    <value>Contact Email Address2</value>
+  </data>
+  <data name="PKEY_Contact_EmailAddress3" xml:space="preserve">
+    <value>Contact Email Address3</value>
+  </data>
+  <data name="PKEY_Contact_EmailAddresses" xml:space="preserve">
+    <value>Contact Email Addresses</value>
+  </data>
+  <data name="PKEY_Contact_EmailName" xml:space="preserve">
+    <value>Contact Email Name</value>
+  </data>
+  <data name="PKEY_Contact_FileAsName" xml:space="preserve">
+    <value>Contact File As Name</value>
+  </data>
+  <data name="PKEY_Contact_FirstName" xml:space="preserve">
+    <value>Contact First Name</value>
+  </data>
+  <data name="PKEY_Contact_FullName" xml:space="preserve">
+    <value>Contact Full Name</value>
+  </data>
+  <data name="PKEY_Contact_Gender" xml:space="preserve">
+    <value>Contact Gender</value>
+  </data>
+  <data name="PKEY_Contact_GenderValue" xml:space="preserve">
+    <value>Contact Gender Value</value>
+  </data>
+  <data name="PKEY_Contact_Hobbies" xml:space="preserve">
+    <value>Contact Hobbies</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress" xml:space="preserve">
+    <value>Contact Home Address</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress1Country" xml:space="preserve">
+    <value>Contact Home Address1 Country</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress1Locality" xml:space="preserve">
+    <value>Contact Home Address1 Locality</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress1PostalCode" xml:space="preserve">
+    <value>Contact Home Address1 Postal Code</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress1Region" xml:space="preserve">
+    <value>Contact Home Address1 Region</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress1Street" xml:space="preserve">
+    <value>Contact Home Address1 Street</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress2Country" xml:space="preserve">
+    <value>Contact Home Address2 Country</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress2Locality" xml:space="preserve">
+    <value>Contact Home Address2 Locality</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress2PostalCode" xml:space="preserve">
+    <value>Contact Home Address2 Postal Code</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress2Region" xml:space="preserve">
+    <value>Contact Home Address2 Region</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress2Street" xml:space="preserve">
+    <value>Contact Home Address2 Street</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress3Country" xml:space="preserve">
+    <value>Contact Home Address3 Country</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress3Locality" xml:space="preserve">
+    <value>Contact Home Address3 Locality</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress3PostalCode" xml:space="preserve">
+    <value>Contact Home Address3 Postal Code</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress3Region" xml:space="preserve">
+    <value>Contact Home Address3 Region</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddress3Street" xml:space="preserve">
+    <value>Contact Home Address3 Street</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddressCity" xml:space="preserve">
+    <value>Contact Home Address City</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddressCountry" xml:space="preserve">
+    <value>Contact Home Address Country</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddressPostalCode" xml:space="preserve">
+    <value>Contact Home Address Postal Code</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddressPostOfficeBox" xml:space="preserve">
+    <value>Contact Home Address Post Office Box</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddressState" xml:space="preserve">
+    <value>Contact Home Address State</value>
+  </data>
+  <data name="PKEY_Contact_HomeAddressStreet" xml:space="preserve">
+    <value>Contact Home Address Street</value>
+  </data>
+  <data name="PKEY_Contact_HomeEmailAddresses" xml:space="preserve">
+    <value>Contact Home Email Addresses</value>
+  </data>
+  <data name="PKEY_Contact_HomeFaxNumber" xml:space="preserve">
+    <value>Contact Home Fax Number</value>
+  </data>
+  <data name="PKEY_Contact_HomeTelephone" xml:space="preserve">
+    <value>Contact Home Telephone</value>
+  </data>
+  <data name="PKEY_Contact_IMAddress" xml:space="preserve">
+    <value>Contact IMAddress</value>
+  </data>
+  <data name="PKEY_Contact_Initials" xml:space="preserve">
+    <value>Contact Initials</value>
+  </data>
+  <data name="PKEY_Contact_JA_CompanyNamePhonetic" xml:space="preserve">
+    <value>Contact JA Company Name Phonetic</value>
+  </data>
+  <data name="PKEY_Contact_JA_FirstNamePhonetic" xml:space="preserve">
+    <value>Contact JA First Name Phonetic</value>
+  </data>
+  <data name="PKEY_Contact_JA_LastNamePhonetic" xml:space="preserve">
+    <value>Contact JA Last Name Phonetic</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo1CompanyAddress" xml:space="preserve">
+    <value>Contact Job Info1 Company Address</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo1CompanyName" xml:space="preserve">
+    <value>Contact Job Info1 Company Name</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo1Department" xml:space="preserve">
+    <value>Contact Job Info1 Department</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo1Manager" xml:space="preserve">
+    <value>Contact Job Info1 Manager</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo1OfficeLocation" xml:space="preserve">
+    <value>Contact Job Info1 Office Location</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo1Title" xml:space="preserve">
+    <value>Contact Job Info1 Title</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo1YomiCompanyName" xml:space="preserve">
+    <value>Contact Job Info1 Yomi Company Name</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo2CompanyAddress" xml:space="preserve">
+    <value>Contact Job Info2 Company Address</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo2CompanyName" xml:space="preserve">
+    <value>Contact Job Info2 Company Name</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo2Department" xml:space="preserve">
+    <value>Contact Job Info2 Department</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo2Manager" xml:space="preserve">
+    <value>Contact Job Info2 Manager</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo2OfficeLocation" xml:space="preserve">
+    <value>Contact Job Info2 Office Location</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo2Title" xml:space="preserve">
+    <value>Contact Job Info2 Title</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo2YomiCompanyName" xml:space="preserve">
+    <value>Contact Job Info2 Yomi Company Name</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo3CompanyAddress" xml:space="preserve">
+    <value>Contact Job Info3 Company Address</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo3CompanyName" xml:space="preserve">
+    <value>Contact Job Info3 Company Name</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo3Department" xml:space="preserve">
+    <value>Contact Job Info3 Department</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo3Manager" xml:space="preserve">
+    <value>Contact Job Info3 Manager</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo3OfficeLocation" xml:space="preserve">
+    <value>Contact Job Info3 Office Location</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo3Title" xml:space="preserve">
+    <value>Contact Job Info3 Title</value>
+  </data>
+  <data name="PKEY_Contact_JobInfo3YomiCompanyName" xml:space="preserve">
+    <value>Contact Job Info3 Yomi Company Name</value>
+  </data>
+  <data name="PKEY_Contact_JobTitle" xml:space="preserve">
+    <value>Contact Job Title</value>
+  </data>
+  <data name="PKEY_Contact_Label" xml:space="preserve">
+    <value>Contact Label</value>
+  </data>
+  <data name="PKEY_Contact_LastName" xml:space="preserve">
+    <value>Contact Last Name</value>
+  </data>
+  <data name="PKEY_Contact_MailingAddress" xml:space="preserve">
+    <value>Contact Mailing Address</value>
+  </data>
+  <data name="PKEY_Contact_MiddleName" xml:space="preserve">
+    <value>Contact Middle Name</value>
+  </data>
+  <data name="PKEY_Contact_MobileTelephone" xml:space="preserve">
+    <value>Contact Mobile Telephone</value>
+  </data>
+  <data name="PKEY_Contact_NickName" xml:space="preserve">
+    <value>Contact Nick Name</value>
+  </data>
+  <data name="PKEY_Contact_OfficeLocation" xml:space="preserve">
+    <value>Contact Office Location</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress" xml:space="preserve">
+    <value>Contact Other Address</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress1Country" xml:space="preserve">
+    <value>Contact Other Address1 Country</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress1Locality" xml:space="preserve">
+    <value>Contact Other Address1 Locality</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress1PostalCode" xml:space="preserve">
+    <value>Contact Other Address1 Postal Code</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress1Region" xml:space="preserve">
+    <value>Contact Other Address1 Region</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress1Street" xml:space="preserve">
+    <value>Contact Other Address1 Street</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress2Country" xml:space="preserve">
+    <value>Contact Other Address2 Country</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress2Locality" xml:space="preserve">
+    <value>Contact Other Address2 Locality</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress2PostalCode" xml:space="preserve">
+    <value>Contact Other Address2 Postal Code</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress2Region" xml:space="preserve">
+    <value>Contact Other Address2 Region</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress2Street" xml:space="preserve">
+    <value>Contact Other Address2 Street</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress3Country" xml:space="preserve">
+    <value>Contact Other Address3 Country</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress3Locality" xml:space="preserve">
+    <value>Contact Other Address3 Locality</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress3PostalCode" xml:space="preserve">
+    <value>Contact Other Address3 Postal Code</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress3Region" xml:space="preserve">
+    <value>Contact Other Address3 Region</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddress3Street" xml:space="preserve">
+    <value>Contact Other Address3 Street</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddressCity" xml:space="preserve">
+    <value>Contact Other Address City</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddressCountry" xml:space="preserve">
+    <value>Contact Other Address Country</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddressPostalCode" xml:space="preserve">
+    <value>Contact Other Address Postal Code</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddressPostOfficeBox" xml:space="preserve">
+    <value>Contact Other Address Post Office Box</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddressState" xml:space="preserve">
+    <value>Contact Other Address State</value>
+  </data>
+  <data name="PKEY_Contact_OtherAddressStreet" xml:space="preserve">
+    <value>Contact Other Address Street</value>
+  </data>
+  <data name="PKEY_Contact_OtherEmailAddresses" xml:space="preserve">
+    <value>Contact Other Email Addresses</value>
+  </data>
+  <data name="PKEY_Contact_PagerTelephone" xml:space="preserve">
+    <value>Contact Pager Telephone</value>
+  </data>
+  <data name="PKEY_Contact_PersonalTitle" xml:space="preserve">
+    <value>Contact Personal Title</value>
+  </data>
+  <data name="PKEY_Contact_PhoneNumbersCanonical" xml:space="preserve">
+    <value>Contact Phone Numbers Canonical</value>
+  </data>
+  <data name="PKEY_Contact_Prefix" xml:space="preserve">
+    <value>Contact Prefix</value>
+  </data>
+  <data name="PKEY_Contact_PrimaryAddressCity" xml:space="preserve">
+    <value>Contact Primary Address City</value>
+  </data>
+  <data name="PKEY_Contact_PrimaryAddressCountry" xml:space="preserve">
+    <value>Contact Primary Address Country</value>
+  </data>
+  <data name="PKEY_Contact_PrimaryAddressPostalCode" xml:space="preserve">
+    <value>Contact Primary Address Postal Code</value>
+  </data>
+  <data name="PKEY_Contact_PrimaryAddressPostOfficeBox" xml:space="preserve">
+    <value>Contact Primary Address Post Office Box</value>
+  </data>
+  <data name="PKEY_Contact_PrimaryAddressState" xml:space="preserve">
+    <value>Contact Primary Address State</value>
+  </data>
+  <data name="PKEY_Contact_PrimaryAddressStreet" xml:space="preserve">
+    <value>Contact Primary Address Street</value>
+  </data>
+  <data name="PKEY_Contact_PrimaryEmailAddress" xml:space="preserve">
+    <value>Contact Primary Email Address</value>
+  </data>
+  <data name="PKEY_Contact_PrimaryTelephone" xml:space="preserve">
+    <value>Contact Primary Telephone</value>
+  </data>
+  <data name="PKEY_Contact_Profession" xml:space="preserve">
+    <value>Contact Profession</value>
+  </data>
+  <data name="PKEY_Contact_SpouseName" xml:space="preserve">
+    <value>Contact Spouse Name</value>
+  </data>
+  <data name="PKEY_Contact_Suffix" xml:space="preserve">
+    <value>Contact Suffix</value>
+  </data>
+  <data name="PKEY_Contact_TelexNumber" xml:space="preserve">
+    <value>Contact Telex Number</value>
+  </data>
+  <data name="PKEY_Contact_TTYTDDTelephone" xml:space="preserve">
+    <value>Contact TTYTDDTelephone</value>
+  </data>
+  <data name="PKEY_Contact_WebPage" xml:space="preserve">
+    <value>Contact Web Page</value>
+  </data>
+  <data name="PKEY_Contact_Webpage2" xml:space="preserve">
+    <value>Contact Webpage2</value>
+  </data>
+  <data name="PKEY_Contact_Webpage3" xml:space="preserve">
+    <value>Contact Webpage3</value>
+  </data>
+  <data name="PKEY_ContainedItems" xml:space="preserve">
+    <value>Contained Items</value>
+  </data>
+  <data name="PKEY_ContentId" xml:space="preserve">
+    <value>Content Id</value>
+  </data>
+  <data name="PKEY_ContentStatus" xml:space="preserve">
+    <value>Content Status</value>
+  </data>
+  <data name="PKEY_ContentType" xml:space="preserve">
+    <value>Content Type</value>
+  </data>
+  <data name="PKEY_ContentUri" xml:space="preserve">
+    <value>Content Uri</value>
+  </data>
+  <data name="PKEY_Copyright" xml:space="preserve">
+    <value>Copyright</value>
+  </data>
+  <data name="PKEY_CreatorAppId" xml:space="preserve">
+    <value>Creator App Id</value>
+  </data>
+  <data name="PKEY_CreatorOpenWithUIOptions" xml:space="preserve">
+    <value>Creator Open With UIOptions</value>
+  </data>
+  <data name="PKEY_DataObjectFormat" xml:space="preserve">
+    <value>Data Object Format</value>
+  </data>
+  <data name="PKEY_DateAccessed" xml:space="preserve">
+    <value>Date Accessed</value>
+  </data>
+  <data name="PKEY_DateAcquired" xml:space="preserve">
+    <value>Date Acquired</value>
+  </data>
+  <data name="PKEY_DateArchived" xml:space="preserve">
+    <value>Date Archived</value>
+  </data>
+  <data name="PKEY_DateCompleted" xml:space="preserve">
+    <value>Date Completed</value>
+  </data>
+  <data name="PKEY_DateCreated" xml:space="preserve">
+    <value>Date Created</value>
+  </data>
+  <data name="PKEY_DateImported" xml:space="preserve">
+    <value>Date Imported</value>
+  </data>
+  <data name="PKEY_DateModified" xml:space="preserve">
+    <value>Date Modified</value>
+  </data>
+  <data name="PKEY_DefaultSaveLocationDisplay" xml:space="preserve">
+    <value>Default Save Location Display</value>
+  </data>
+  <data name="PKEY_DescriptionID" xml:space="preserve">
+    <value>Description ID</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Bluetooth_DeviceAddress" xml:space="preserve">
+    <value>Device Interface Bluetooth Device Address</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Bluetooth_Flags" xml:space="preserve">
+    <value>Device Interface Bluetooth Flags</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Bluetooth_LastConnectedTime" xml:space="preserve">
+    <value>Device Interface Bluetooth Last Connected Time</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Bluetooth_Manufacturer" xml:space="preserve">
+    <value>Device Interface Bluetooth Manufacturer</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Bluetooth_ModelNumber" xml:space="preserve">
+    <value>Device Interface Bluetooth Model Number</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Bluetooth_ProductId" xml:space="preserve">
+    <value>Device Interface Bluetooth Product Id</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Bluetooth_ProductVersion" xml:space="preserve">
+    <value>Device Interface Bluetooth Product Version</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Bluetooth_ServiceGuid" xml:space="preserve">
+    <value>Device Interface Bluetooth Service Guid</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Bluetooth_VendorId" xml:space="preserve">
+    <value>Device Interface Bluetooth Vendor Id</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Bluetooth_VendorIdSource" xml:space="preserve">
+    <value>Device Interface Bluetooth Vendor Id Source</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Hid_IsReadOnly" xml:space="preserve">
+    <value>Device Interface Hid Is Read Only</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Hid_ProductId" xml:space="preserve">
+    <value>Device Interface Hid Product Id</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Hid_UsageId" xml:space="preserve">
+    <value>Device Interface Hid Usage Id</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Hid_UsagePage" xml:space="preserve">
+    <value>Device Interface Hid Usage Page</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Hid_VendorId" xml:space="preserve">
+    <value>Device Interface Hid Vendor Id</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Hid_VersionNumber" xml:space="preserve">
+    <value>Device Interface Hid Version Number</value>
+  </data>
+  <data name="PKEY_DeviceInterface_PrinterDriverDirectory" xml:space="preserve">
+    <value>Device Interface Printer Driver Directory</value>
+  </data>
+  <data name="PKEY_DeviceInterface_PrinterDriverName" xml:space="preserve">
+    <value>Device Interface Printer Driver Name</value>
+  </data>
+  <data name="PKEY_DeviceInterface_PrinterEnumerationFlag" xml:space="preserve">
+    <value>Device Interface Printer Enumeration Flag</value>
+  </data>
+  <data name="PKEY_DeviceInterface_PrinterName" xml:space="preserve">
+    <value>Device Interface Printer Name</value>
+  </data>
+  <data name="PKEY_DeviceInterface_PrinterPortName" xml:space="preserve">
+    <value>Device Interface Printer Port Name</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Proximity_SupportsNfc" xml:space="preserve">
+    <value>Device Interface Proximity Supports Nfc</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Serial_PortName" xml:space="preserve">
+    <value>Device Interface Serial Port Name</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Serial_UsbProductId" xml:space="preserve">
+    <value>Device Interface Serial Usb Product Id</value>
+  </data>
+  <data name="PKEY_DeviceInterface_Serial_UsbVendorId" xml:space="preserve">
+    <value>Device Interface Serial Usb Vendor Id</value>
+  </data>
+  <data name="PKEY_DeviceInterface_WinUsb_DeviceInterfaceClasses" xml:space="preserve">
+    <value>Device Interface Win Usb Device Interface Classes</value>
+  </data>
+  <data name="PKEY_DeviceInterface_WinUsb_UsbClass" xml:space="preserve">
+    <value>Device Interface Win Usb Usb Class</value>
+  </data>
+  <data name="PKEY_DeviceInterface_WinUsb_UsbProductId" xml:space="preserve">
+    <value>Device Interface Win Usb Usb Product Id</value>
+  </data>
+  <data name="PKEY_DeviceInterface_WinUsb_UsbProtocol" xml:space="preserve">
+    <value>Device Interface Win Usb Usb Protocol</value>
+  </data>
+  <data name="PKEY_DeviceInterface_WinUsb_UsbSubClass" xml:space="preserve">
+    <value>Device Interface Win Usb Usb Sub Class</value>
+  </data>
+  <data name="PKEY_DeviceInterface_WinUsb_UsbVendorId" xml:space="preserve">
+    <value>Device Interface Win Usb Usb Vendor Id</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_CanPair" xml:space="preserve">
+    <value>Devices Aep Container Can Pair</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_Categories" xml:space="preserve">
+    <value>Devices Aep Container Categories</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_Children" xml:space="preserve">
+    <value>Devices Aep Container Children</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_ContainerId" xml:space="preserve">
+    <value>Devices Aep Container Container Id</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_DialProtocol_InstalledApplications" xml:space="preserve">
+    <value>Devices Aep Container Dial Protocol Installed Applications</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_IsPaired" xml:space="preserve">
+    <value>Devices Aep Container Is Paired</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_IsPresent" xml:space="preserve">
+    <value>Devices Aep Container Is Present</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_Manufacturer" xml:space="preserve">
+    <value>Devices Aep Container Manufacturer</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_ModelIds" xml:space="preserve">
+    <value>Devices Aep Container Model Ids</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_ModelName" xml:space="preserve">
+    <value>Devices Aep Container Model Name</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_ProtocolIds" xml:space="preserve">
+    <value>Devices Aep Container Protocol Ids</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_SupportedUriSchemes" xml:space="preserve">
+    <value>Devices Aep Container Supported Uri Schemes</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_SupportsAudio" xml:space="preserve">
+    <value>Devices Aep Container Supports Audio</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_SupportsCapturing" xml:space="preserve">
+    <value>Devices Aep Container Supports Capturing</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_SupportsImages" xml:space="preserve">
+    <value>Devices Aep Container Supports Images</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_SupportsInformation" xml:space="preserve">
+    <value>Devices Aep Container Supports Information</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_SupportsLimitedDiscovery" xml:space="preserve">
+    <value>Devices Aep Container Supports Limited Discovery</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_SupportsNetworking" xml:space="preserve">
+    <value>Devices Aep Container Supports Networking</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_SupportsObjectTransfer" xml:space="preserve">
+    <value>Devices Aep Container Supports Object Transfer</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_SupportsPositioning" xml:space="preserve">
+    <value>Devices Aep Container Supports Positioning</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_SupportsRendering" xml:space="preserve">
+    <value>Devices Aep Container Supports Rendering</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_SupportsTelephony" xml:space="preserve">
+    <value>Devices Aep Container Supports Telephony</value>
+  </data>
+  <data name="PKEY_Devices_AepContainer_SupportsVideo" xml:space="preserve">
+    <value>Devices Aep Container Supports Video</value>
+  </data>
+  <data name="PKEY_Devices_AepService_AepId" xml:space="preserve">
+    <value>Devices Aep Service Aep Id</value>
+  </data>
+  <data name="PKEY_Devices_AepService_Bluetooth_CacheMode" xml:space="preserve">
+    <value>Devices Aep Service Bluetooth Cache Mode</value>
+  </data>
+  <data name="PKEY_Devices_AepService_Bluetooth_ServiceGuid" xml:space="preserve">
+    <value>Devices Aep Service Bluetooth Service Guid</value>
+  </data>
+  <data name="PKEY_Devices_AepService_Bluetooth_TargetDevice" xml:space="preserve">
+    <value>Devices Aep Service Bluetooth Target Device</value>
+  </data>
+  <data name="PKEY_Devices_AepService_ContainerId" xml:space="preserve">
+    <value>Devices Aep Service Container Id</value>
+  </data>
+  <data name="PKEY_Devices_AepService_FriendlyName" xml:space="preserve">
+    <value>Devices Aep Service Friendly Name</value>
+  </data>
+  <data name="PKEY_Devices_AepService_IoT_ServiceInterfaces" xml:space="preserve">
+    <value>Devices Aep Service Io T Service Interfaces</value>
+  </data>
+  <data name="PKEY_Devices_AepService_ParentAepIsPaired" xml:space="preserve">
+    <value>Devices Aep Service Parent Aep Is Paired</value>
+  </data>
+  <data name="PKEY_Devices_AepService_ProtocolId" xml:space="preserve">
+    <value>Devices Aep Service Protocol Id</value>
+  </data>
+  <data name="PKEY_Devices_AepService_ServiceClassId" xml:space="preserve">
+    <value>Devices Aep Service Service Class Id</value>
+  </data>
+  <data name="PKEY_Devices_AepService_ServiceId" xml:space="preserve">
+    <value>Devices Aep Service Service Id</value>
+  </data>
+  <data name="PKEY_Devices_Aep_AepId" xml:space="preserve">
+    <value>Devices Aep Aep Id</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Cod_Major" xml:space="preserve">
+    <value>Devices Aep Bluetooth Cod Major</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Cod_Minor" xml:space="preserve">
+    <value>Devices Aep Bluetooth Cod Minor</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Cod_Services_Audio" xml:space="preserve">
+    <value>Devices Aep Bluetooth Cod Services Audio</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Cod_Services_Capturing" xml:space="preserve">
+    <value>Devices Aep Bluetooth Cod Services Capturing</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Cod_Services_Information" xml:space="preserve">
+    <value>Devices Aep Bluetooth Cod Services Information</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Cod_Services_LimitedDiscovery" xml:space="preserve">
+    <value>Devices Aep Bluetooth Cod Services Limited Discovery</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Cod_Services_Networking" xml:space="preserve">
+    <value>Devices Aep Bluetooth Cod Services Networking</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Cod_Services_ObjectXfer" xml:space="preserve">
+    <value>Devices Aep Bluetooth Cod Services Object Xfer</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Cod_Services_Positioning" xml:space="preserve">
+    <value>Devices Aep Bluetooth Cod Services Positioning</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Cod_Services_Rendering" xml:space="preserve">
+    <value>Devices Aep Bluetooth Cod Services Rendering</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Cod_Services_Telephony" xml:space="preserve">
+    <value>Devices Aep Bluetooth Cod Services Telephony</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_LastSeenTime" xml:space="preserve">
+    <value>Devices Aep Bluetooth Last Seen Time</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Le_AddressType" xml:space="preserve">
+    <value>Devices Aep Bluetooth Le Address Type</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Le_Appearance" xml:space="preserve">
+    <value>Devices Aep Bluetooth Le Appearance</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Le_Appearance_Category" xml:space="preserve">
+    <value>Devices Aep Bluetooth Le Appearance Category</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Le_Appearance_Subcategory" xml:space="preserve">
+    <value>Devices Aep Bluetooth Le Appearance Subcategory</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Bluetooth_Le_IsConnectable" xml:space="preserve">
+    <value>Devices Aep Bluetooth Le Is Connectable</value>
+  </data>
+  <data name="PKEY_Devices_Aep_CanPair" xml:space="preserve">
+    <value>Devices Aep Can Pair</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Category" xml:space="preserve">
+    <value>Devices Aep Category</value>
+  </data>
+  <data name="PKEY_Devices_Aep_ContainerId" xml:space="preserve">
+    <value>Devices Aep Container Id</value>
+  </data>
+  <data name="PKEY_Devices_Aep_DeviceAddress" xml:space="preserve">
+    <value>Devices Aep Device Address</value>
+  </data>
+  <data name="PKEY_Devices_Aep_IsConnected" xml:space="preserve">
+    <value>Devices Aep Is Connected</value>
+  </data>
+  <data name="PKEY_Devices_Aep_IsPaired" xml:space="preserve">
+    <value>Devices Aep Is Paired</value>
+  </data>
+  <data name="PKEY_Devices_Aep_IsPresent" xml:space="preserve">
+    <value>Devices Aep Is Present</value>
+  </data>
+  <data name="PKEY_Devices_Aep_Manufacturer" xml:space="preserve">
+    <value>Devices Aep Manufacturer</value>
+  </data>
+  <data name="PKEY_Devices_Aep_ModelId" xml:space="preserve">
+    <value>Devices Aep Model Id</value>
+  </data>
+  <data name="PKEY_Devices_Aep_ModelName" xml:space="preserve">
+    <value>Devices Aep Model Name</value>
+  </data>
+  <data name="PKEY_Devices_Aep_PointOfService_ConnectionTypes" xml:space="preserve">
+    <value>Devices Aep Point Of Service Connection Types</value>
+  </data>
+  <data name="PKEY_Devices_Aep_ProtocolId" xml:space="preserve">
+    <value>Devices Aep Protocol Id</value>
+  </data>
+  <data name="PKEY_Devices_Aep_SignalStrength" xml:space="preserve">
+    <value>Devices Aep Signal Strength</value>
+  </data>
+  <data name="PKEY_Devices_AppPackageFamilyName" xml:space="preserve">
+    <value>Devices App Package Family Name</value>
+  </data>
+  <data name="PKEY_Devices_AudioDevice_Microphone_IsFarField" xml:space="preserve">
+    <value>Devices Audio Device Microphone Is Far Field</value>
+  </data>
+  <data name="PKEY_Devices_AudioDevice_Microphone_SensitivityInDbfs" xml:space="preserve">
+    <value>Devices Audio Device Microphone Sensitivity In Dbfs</value>
+  </data>
+  <data name="PKEY_Devices_AudioDevice_Microphone_SensitivityInDbfs2" xml:space="preserve">
+    <value>Devices Audio Device Microphone Sensitivity In Dbfs2</value>
+  </data>
+  <data name="PKEY_Devices_AudioDevice_Microphone_SignalToNoiseRatioInDb" xml:space="preserve">
+    <value>Devices Audio Device Microphone Signal To Noise Ratio In Db</value>
+  </data>
+  <data name="PKEY_Devices_AudioDevice_RawProcessingSupported" xml:space="preserve">
+    <value>Devices Audio Device Raw Processing Supported</value>
+  </data>
+  <data name="PKEY_Devices_AudioDevice_SpeechProcessingSupported" xml:space="preserve">
+    <value>Devices Audio Device Speech Processing Supported</value>
+  </data>
+  <data name="PKEY_Devices_BatteryLife" xml:space="preserve">
+    <value>Devices Battery Life</value>
+  </data>
+  <data name="PKEY_Devices_BatteryPlusCharging" xml:space="preserve">
+    <value>Devices Battery Plus Charging</value>
+  </data>
+  <data name="PKEY_Devices_BatteryPlusChargingText" xml:space="preserve">
+    <value>Devices Battery Plus Charging Text</value>
+  </data>
+  <data name="PKEY_Devices_Category" xml:space="preserve">
+    <value>Devices Category</value>
+  </data>
+  <data name="PKEY_Devices_CategoryGroup" xml:space="preserve">
+    <value>Devices Category Group</value>
+  </data>
+  <data name="PKEY_Devices_CategoryIds" xml:space="preserve">
+    <value>Devices Category Ids</value>
+  </data>
+  <data name="PKEY_Devices_CategoryPlural" xml:space="preserve">
+    <value>Devices Category Plural</value>
+  </data>
+  <data name="PKEY_Devices_ChargingState" xml:space="preserve">
+    <value>Devices Charging State</value>
+  </data>
+  <data name="PKEY_Devices_Children" xml:space="preserve">
+    <value>Devices Children</value>
+  </data>
+  <data name="PKEY_Devices_ClassGuid" xml:space="preserve">
+    <value>Devices Class Guid</value>
+  </data>
+  <data name="PKEY_Devices_CompatibleIds" xml:space="preserve">
+    <value>Devices Compatible Ids</value>
+  </data>
+  <data name="PKEY_Devices_Connected" xml:space="preserve">
+    <value>Devices Connected</value>
+  </data>
+  <data name="PKEY_Devices_ContainerId" xml:space="preserve">
+    <value>Devices Container Id</value>
+  </data>
+  <data name="PKEY_Devices_DefaultTooltip" xml:space="preserve">
+    <value>Devices Default Tooltip</value>
+  </data>
+  <data name="PKEY_Devices_DeviceCapabilities" xml:space="preserve">
+    <value>Devices Device Capabilities</value>
+  </data>
+  <data name="PKEY_Devices_DeviceCharacteristics" xml:space="preserve">
+    <value>Devices Device Characteristics</value>
+  </data>
+  <data name="PKEY_Devices_DeviceDescription1" xml:space="preserve">
+    <value>Devices Device Description1</value>
+  </data>
+  <data name="PKEY_Devices_DeviceDescription2" xml:space="preserve">
+    <value>Devices Device Description2</value>
+  </data>
+  <data name="PKEY_Devices_DeviceHasProblem" xml:space="preserve">
+    <value>Devices Device Has Problem</value>
+  </data>
+  <data name="PKEY_Devices_DeviceInstanceId" xml:space="preserve">
+    <value>Devices Device Instance Id</value>
+  </data>
+  <data name="PKEY_Devices_DeviceManufacturer" xml:space="preserve">
+    <value>Devices Device Manufacturer</value>
+  </data>
+  <data name="PKEY_Devices_DevObjectType" xml:space="preserve">
+    <value>Devices Dev Object Type</value>
+  </data>
+  <data name="PKEY_Devices_DialProtocol_InstalledApplications" xml:space="preserve">
+    <value>Devices Dial Protocol Installed Applications</value>
+  </data>
+  <data name="PKEY_Devices_DiscoveryMethod" xml:space="preserve">
+    <value>Devices Discovery Method</value>
+  </data>
+  <data name="PKEY_Devices_Dnssd_Domain" xml:space="preserve">
+    <value>Devices Dnssd Domain</value>
+  </data>
+  <data name="PKEY_Devices_Dnssd_FullName" xml:space="preserve">
+    <value>Devices Dnssd Full Name</value>
+  </data>
+  <data name="PKEY_Devices_Dnssd_HostName" xml:space="preserve">
+    <value>Devices Dnssd Host Name</value>
+  </data>
+  <data name="PKEY_Devices_Dnssd_InstanceName" xml:space="preserve">
+    <value>Devices Dnssd Instance Name</value>
+  </data>
+  <data name="PKEY_Devices_Dnssd_NetworkAdapterId" xml:space="preserve">
+    <value>Devices Dnssd Network Adapter Id</value>
+  </data>
+  <data name="PKEY_Devices_Dnssd_PortNumber" xml:space="preserve">
+    <value>Devices Dnssd Port Number</value>
+  </data>
+  <data name="PKEY_Devices_Dnssd_Priority" xml:space="preserve">
+    <value>Devices Dnssd Priority</value>
+  </data>
+  <data name="PKEY_Devices_Dnssd_ServiceName" xml:space="preserve">
+    <value>Devices Dnssd Service Name</value>
+  </data>
+  <data name="PKEY_Devices_Dnssd_TextAttributes" xml:space="preserve">
+    <value>Devices Dnssd Text Attributes</value>
+  </data>
+  <data name="PKEY_Devices_Dnssd_Ttl" xml:space="preserve">
+    <value>Devices Dnssd Ttl</value>
+  </data>
+  <data name="PKEY_Devices_Dnssd_Weight" xml:space="preserve">
+    <value>Devices Dnssd Weight</value>
+  </data>
+  <data name="PKEY_Devices_FriendlyName" xml:space="preserve">
+    <value>Devices Friendly Name</value>
+  </data>
+  <data name="PKEY_Devices_FunctionPaths" xml:space="preserve">
+    <value>Devices Function Paths</value>
+  </data>
+  <data name="PKEY_Devices_GlyphIcon" xml:space="preserve">
+    <value>Devices Glyph Icon</value>
+  </data>
+  <data name="PKEY_Devices_HardwareIds" xml:space="preserve">
+    <value>Devices Hardware Ids</value>
+  </data>
+  <data name="PKEY_Devices_Icon" xml:space="preserve">
+    <value>Devices Icon</value>
+  </data>
+  <data name="PKEY_Devices_InLocalMachineContainer" xml:space="preserve">
+    <value>Devices In Local Machine Container</value>
+  </data>
+  <data name="PKEY_Devices_InterfaceClassGuid" xml:space="preserve">
+    <value>Devices Interface Class Guid</value>
+  </data>
+  <data name="PKEY_Devices_InterfaceEnabled" xml:space="preserve">
+    <value>Devices Interface Enabled</value>
+  </data>
+  <data name="PKEY_Devices_InterfacePaths" xml:space="preserve">
+    <value>Devices Interface Paths</value>
+  </data>
+  <data name="PKEY_Devices_IpAddress" xml:space="preserve">
+    <value>Devices Ip Address</value>
+  </data>
+  <data name="PKEY_Devices_IsDefault" xml:space="preserve">
+    <value>Devices Is Default</value>
+  </data>
+  <data name="PKEY_Devices_IsNetworkConnected" xml:space="preserve">
+    <value>Devices Is Network Connected</value>
+  </data>
+  <data name="PKEY_Devices_IsShared" xml:space="preserve">
+    <value>Devices Is Shared</value>
+  </data>
+  <data name="PKEY_Devices_IsSoftwareInstalling" xml:space="preserve">
+    <value>Devices Is Software Installing</value>
+  </data>
+  <data name="PKEY_Devices_LaunchDeviceStageFromExplorer" xml:space="preserve">
+    <value>Devices Launch Device Stage From Explorer</value>
+  </data>
+  <data name="PKEY_Devices_LocalMachine" xml:space="preserve">
+    <value>Devices Local Machine</value>
+  </data>
+  <data name="PKEY_Devices_LocationPaths" xml:space="preserve">
+    <value>Devices Location Paths</value>
+  </data>
+  <data name="PKEY_Devices_Manufacturer" xml:space="preserve">
+    <value>Devices Manufacturer</value>
+  </data>
+  <data name="PKEY_Devices_MetadataPath" xml:space="preserve">
+    <value>Devices Metadata Path</value>
+  </data>
+  <data name="PKEY_Devices_MicrophoneArray_Geometry" xml:space="preserve">
+    <value>Devices Microphone Array Geometry</value>
+  </data>
+  <data name="PKEY_Devices_MissedCalls" xml:space="preserve">
+    <value>Devices Missed Calls</value>
+  </data>
+  <data name="PKEY_Devices_ModelId" xml:space="preserve">
+    <value>Devices Model Id</value>
+  </data>
+  <data name="PKEY_Devices_ModelName" xml:space="preserve">
+    <value>Devices Model Name</value>
+  </data>
+  <data name="PKEY_Devices_ModelNumber" xml:space="preserve">
+    <value>Devices Model Number</value>
+  </data>
+  <data name="PKEY_Devices_NetworkedTooltip" xml:space="preserve">
+    <value>Devices Networked Tooltip</value>
+  </data>
+  <data name="PKEY_Devices_NetworkName" xml:space="preserve">
+    <value>Devices Network Name</value>
+  </data>
+  <data name="PKEY_Devices_NetworkType" xml:space="preserve">
+    <value>Devices Network Type</value>
+  </data>
+  <data name="PKEY_Devices_NewPictures" xml:space="preserve">
+    <value>Devices New Pictures</value>
+  </data>
+  <data name="PKEY_Devices_Notification" xml:space="preserve">
+    <value>Devices Notification</value>
+  </data>
+  <data name="PKEY_Devices_NotificationStore" xml:space="preserve">
+    <value>Devices Notification Store</value>
+  </data>
+  <data name="PKEY_Devices_Notifications_LowBattery" xml:space="preserve">
+    <value>Devices Notifications Low Battery</value>
+  </data>
+  <data name="PKEY_Devices_Notifications_MissedCall" xml:space="preserve">
+    <value>Devices Notifications Missed Call</value>
+  </data>
+  <data name="PKEY_Devices_Notifications_NewMessage" xml:space="preserve">
+    <value>Devices Notifications New Message</value>
+  </data>
+  <data name="PKEY_Devices_Notifications_NewVoicemail" xml:space="preserve">
+    <value>Devices Notifications New Voicemail</value>
+  </data>
+  <data name="PKEY_Devices_Notifications_StorageFull" xml:space="preserve">
+    <value>Devices Notifications Storage Full</value>
+  </data>
+  <data name="PKEY_Devices_Notifications_StorageFullLinkText" xml:space="preserve">
+    <value>Devices Notifications Storage Full Link Text</value>
+  </data>
+  <data name="PKEY_Devices_NotWorkingProperly" xml:space="preserve">
+    <value>Devices Not Working Properly</value>
+  </data>
+  <data name="PKEY_Devices_Paired" xml:space="preserve">
+    <value>Devices Paired</value>
+  </data>
+  <data name="PKEY_Devices_Panel_PanelGroup" xml:space="preserve">
+    <value>Devices Panel Panel Group</value>
+  </data>
+  <data name="PKEY_Devices_Panel_PanelId" xml:space="preserve">
+    <value>Devices Panel Panel Id</value>
+  </data>
+  <data name="PKEY_Devices_Parent" xml:space="preserve">
+    <value>Devices Parent</value>
+  </data>
+  <data name="PKEY_Devices_PhoneLineTransportDevice_Connected" xml:space="preserve">
+    <value>Devices Phone Line Transport Device Connected</value>
+  </data>
+  <data name="PKEY_Devices_PhysicalDeviceLocation" xml:space="preserve">
+    <value>Devices Physical Device Location</value>
+  </data>
+  <data name="PKEY_Devices_PlaybackPositionPercent" xml:space="preserve">
+    <value>Devices Playback Position Percent</value>
+  </data>
+  <data name="PKEY_Devices_PlaybackState" xml:space="preserve">
+    <value>Devices Playback State</value>
+  </data>
+  <data name="PKEY_Devices_PlaybackTitle" xml:space="preserve">
+    <value>Devices Playback Title</value>
+  </data>
+  <data name="PKEY_Devices_Present" xml:space="preserve">
+    <value>Devices Present</value>
+  </data>
+  <data name="PKEY_Devices_PresentationUrl" xml:space="preserve">
+    <value>Devices Presentation Url</value>
+  </data>
+  <data name="PKEY_Devices_PrimaryCategory" xml:space="preserve">
+    <value>Devices Primary Category</value>
+  </data>
+  <data name="PKEY_Devices_RemainingDuration" xml:space="preserve">
+    <value>Devices Remaining Duration</value>
+  </data>
+  <data name="PKEY_Devices_RestrictedInterface" xml:space="preserve">
+    <value>Devices Restricted Interface</value>
+  </data>
+  <data name="PKEY_Devices_Roaming" xml:space="preserve">
+    <value>Devices Roaming</value>
+  </data>
+  <data name="PKEY_Devices_SafeRemovalRequired" xml:space="preserve">
+    <value>Devices Safe Removal Required</value>
+  </data>
+  <data name="PKEY_Devices_SchematicName" xml:space="preserve">
+    <value>Devices Schematic Name</value>
+  </data>
+  <data name="PKEY_Devices_ServiceAddress" xml:space="preserve">
+    <value>Devices Service Address</value>
+  </data>
+  <data name="PKEY_Devices_ServiceId" xml:space="preserve">
+    <value>Devices Service Id</value>
+  </data>
+  <data name="PKEY_Devices_SharedTooltip" xml:space="preserve">
+    <value>Devices Shared Tooltip</value>
+  </data>
+  <data name="PKEY_Devices_SignalStrength" xml:space="preserve">
+    <value>Devices Signal Strength</value>
+  </data>
+  <data name="PKEY_Devices_SmartCards_ReaderKind" xml:space="preserve">
+    <value>Devices Smart Cards Reader Kind</value>
+  </data>
+  <data name="PKEY_Devices_Status" xml:space="preserve">
+    <value>Devices Status</value>
+  </data>
+  <data name="PKEY_Devices_Status1" xml:space="preserve">
+    <value>Devices Status1</value>
+  </data>
+  <data name="PKEY_Devices_Status2" xml:space="preserve">
+    <value>Devices Status2</value>
+  </data>
+  <data name="PKEY_Devices_StorageCapacity" xml:space="preserve">
+    <value>Devices Storage Capacity</value>
+  </data>
+  <data name="PKEY_Devices_StorageFreeSpace" xml:space="preserve">
+    <value>Devices Storage Free Space</value>
+  </data>
+  <data name="PKEY_Devices_StorageFreeSpacePercent" xml:space="preserve">
+    <value>Devices Storage Free Space Percent</value>
+  </data>
+  <data name="PKEY_Devices_TextMessages" xml:space="preserve">
+    <value>Devices Text Messages</value>
+  </data>
+  <data name="PKEY_Devices_Voicemail" xml:space="preserve">
+    <value>Devices Voicemail</value>
+  </data>
+  <data name="PKEY_Devices_WiaDeviceType" xml:space="preserve">
+    <value>Devices Wia Device Type</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirectServices_AdvertisementId" xml:space="preserve">
+    <value>Devices Wi Fi Direct Services Advertisement Id</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirectServices_RequestServiceInformation" xml:space="preserve">
+    <value>Devices Wi Fi Direct Services Request Service Information</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirectServices_ServiceAddress" xml:space="preserve">
+    <value>Devices Wi Fi Direct Services Service Address</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirectServices_ServiceConfigMethods" xml:space="preserve">
+    <value>Devices Wi Fi Direct Services Service Config Methods</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirectServices_ServiceInformation" xml:space="preserve">
+    <value>Devices Wi Fi Direct Services Service Information</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirectServices_ServiceName" xml:space="preserve">
+    <value>Devices Wi Fi Direct Services Service Name</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirect_DeviceAddress" xml:space="preserve">
+    <value>Devices Wi Fi Direct Device Address</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirect_GroupId" xml:space="preserve">
+    <value>Devices Wi Fi Direct Group Id</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirect_InformationElements" xml:space="preserve">
+    <value>Devices Wi Fi Direct Information Elements</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirect_InterfaceAddress" xml:space="preserve">
+    <value>Devices Wi Fi Direct Interface Address</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirect_InterfaceGuid" xml:space="preserve">
+    <value>Devices Wi Fi Direct Interface Guid</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirect_IsConnected" xml:space="preserve">
+    <value>Devices Wi Fi Direct Is Connected</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirect_IsLegacyDevice" xml:space="preserve">
+    <value>Devices Wi Fi Direct Is Legacy Device</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirect_IsMiracastLcpSupported" xml:space="preserve">
+    <value>Devices Wi Fi Direct Is Miracast Lcp Supported</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirect_IsVisible" xml:space="preserve">
+    <value>Devices Wi Fi Direct Is Visible</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirect_MiracastVersion" xml:space="preserve">
+    <value>Devices Wi Fi Direct Miracast Version</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirect_Services" xml:space="preserve">
+    <value>Devices Wi Fi Direct Services</value>
+  </data>
+  <data name="PKEY_Devices_WiFiDirect_SupportedChannelList" xml:space="preserve">
+    <value>Devices Wi Fi Direct Supported Channel List</value>
+  </data>
+  <data name="PKEY_Devices_WiFi_InterfaceGuid" xml:space="preserve">
+    <value>Devices Wi Fi Interface Guid</value>
+  </data>
+  <data name="PKEY_Devices_WinPhone8CameraFlags" xml:space="preserve">
+    <value>Devices Win Phone8 Camera Flags</value>
+  </data>
+  <data name="PKEY_Devices_Wwan_InterfaceGuid" xml:space="preserve">
+    <value>Devices Wwan Interface Guid</value>
+  </data>
+  <data name="PKEY_Device_PrinterURL" xml:space="preserve">
+    <value>Device Printer URL</value>
+  </data>
+  <data name="PKEY_Document_ByteCount" xml:space="preserve">
+    <value>Document Byte Count</value>
+  </data>
+  <data name="PKEY_Document_CharacterCount" xml:space="preserve">
+    <value>Document Character Count</value>
+  </data>
+  <data name="PKEY_Document_ClientID" xml:space="preserve">
+    <value>Document Client ID</value>
+  </data>
+  <data name="PKEY_Document_Contributor" xml:space="preserve">
+    <value>Document Contributor</value>
+  </data>
+  <data name="PKEY_Document_DateCreated" xml:space="preserve">
+    <value>Document Date Created</value>
+  </data>
+  <data name="PKEY_Document_DatePrinted" xml:space="preserve">
+    <value>Document Date Printed</value>
+  </data>
+  <data name="PKEY_Document_DateSaved" xml:space="preserve">
+    <value>Document Date Saved</value>
+  </data>
+  <data name="PKEY_Document_Division" xml:space="preserve">
+    <value>Document Division</value>
+  </data>
+  <data name="PKEY_Document_DocumentID" xml:space="preserve">
+    <value>Document Document ID</value>
+  </data>
+  <data name="PKEY_Document_HiddenSlideCount" xml:space="preserve">
+    <value>Document Hidden Slide Count</value>
+  </data>
+  <data name="PKEY_Document_LastAuthor" xml:space="preserve">
+    <value>Document Last Author</value>
+  </data>
+  <data name="PKEY_Document_LineCount" xml:space="preserve">
+    <value>Document Line Count</value>
+  </data>
+  <data name="PKEY_Document_Manager" xml:space="preserve">
+    <value>Document Manager</value>
+  </data>
+  <data name="PKEY_Document_MultimediaClipCount" xml:space="preserve">
+    <value>Document Multimedia Clip Count</value>
+  </data>
+  <data name="PKEY_Document_NoteCount" xml:space="preserve">
+    <value>Document Note Count</value>
+  </data>
+  <data name="PKEY_Document_PageCount" xml:space="preserve">
+    <value>Document Page Count</value>
+  </data>
+  <data name="PKEY_Document_ParagraphCount" xml:space="preserve">
+    <value>Document Paragraph Count</value>
+  </data>
+  <data name="PKEY_Document_PresentationFormat" xml:space="preserve">
+    <value>Document Presentation Format</value>
+  </data>
+  <data name="PKEY_Document_RevisionNumber" xml:space="preserve">
+    <value>Document Revision Number</value>
+  </data>
+  <data name="PKEY_Document_Security" xml:space="preserve">
+    <value>Document Security</value>
+  </data>
+  <data name="PKEY_Document_SlideCount" xml:space="preserve">
+    <value>Document Slide Count</value>
+  </data>
+  <data name="PKEY_Document_Template" xml:space="preserve">
+    <value>Document Template</value>
+  </data>
+  <data name="PKEY_Document_TotalEditingTime" xml:space="preserve">
+    <value>Document Total Editing Time</value>
+  </data>
+  <data name="PKEY_Document_Version" xml:space="preserve">
+    <value>Document Version</value>
+  </data>
+  <data name="PKEY_Document_WordCount" xml:space="preserve">
+    <value>Document Word Count</value>
+  </data>
+  <data name="PKEY_DRM_DatePlayExpires" xml:space="preserve">
+    <value>DRM Date Play Expires</value>
+  </data>
+  <data name="PKEY_DRM_DatePlayStarts" xml:space="preserve">
+    <value>DRM Date Play Starts</value>
+  </data>
+  <data name="PKEY_DRM_Description" xml:space="preserve">
+    <value>DRM Description</value>
+  </data>
+  <data name="PKEY_DRM_IsDisabled" xml:space="preserve">
+    <value>DRM Is Disabled</value>
+  </data>
+  <data name="PKEY_DRM_IsProtected" xml:space="preserve">
+    <value>DRM Is Protected</value>
+  </data>
+  <data name="PKEY_DRM_PlayCount" xml:space="preserve">
+    <value>DRM Play Count</value>
+  </data>
+  <data name="PKEY_DueDate" xml:space="preserve">
+    <value>Due Date</value>
+  </data>
+  <data name="PKEY_EdgeGesture_DisableTouchWhenFullscreen" xml:space="preserve">
+    <value>Edge Gesture Disable Touch When Fullscreen</value>
+  </data>
+  <data name="PKEY_EndDate" xml:space="preserve">
+    <value>End Date</value>
+  </data>
+  <data name="PKEY_ExpandoProperties" xml:space="preserve">
+    <value>Expando Properties</value>
+  </data>
+  <data name="PKEY_FileAllocationSize" xml:space="preserve">
+    <value>File Allocation Size</value>
+  </data>
+  <data name="PKEY_FileAttributes" xml:space="preserve">
+    <value>File Attributes</value>
+  </data>
+  <data name="PKEY_FileCount" xml:space="preserve">
+    <value>File Count</value>
+  </data>
+  <data name="PKEY_FileDescription" xml:space="preserve">
+    <value>File Description</value>
+  </data>
+  <data name="PKEY_FileExtension" xml:space="preserve">
+    <value>File Extension</value>
+  </data>
+  <data name="PKEY_FileFRN" xml:space="preserve">
+    <value>File FRN</value>
+  </data>
+  <data name="PKEY_FileName" xml:space="preserve">
+    <value>File Name</value>
+  </data>
+  <data name="PKEY_FileOfflineAvailabilityStatus" xml:space="preserve">
+    <value>File Offline Availability Status</value>
+  </data>
+  <data name="PKEY_FileOwner" xml:space="preserve">
+    <value>File Owner</value>
+  </data>
+  <data name="PKEY_FilePlaceholderStatus" xml:space="preserve">
+    <value>File Placeholder Status</value>
+  </data>
+  <data name="PKEY_FileVersion" xml:space="preserve">
+    <value>File Version</value>
+  </data>
+  <data name="PKEY_FindData" xml:space="preserve">
+    <value>Find Data</value>
+  </data>
+  <data name="PKEY_FlagColor" xml:space="preserve">
+    <value>Flag Color</value>
+  </data>
+  <data name="PKEY_FlagColorText" xml:space="preserve">
+    <value>Flag Color Text</value>
+  </data>
+  <data name="PKEY_FlagStatus" xml:space="preserve">
+    <value>Flag Status</value>
+  </data>
+  <data name="PKEY_FlagStatusText" xml:space="preserve">
+    <value>Flag Status Text</value>
+  </data>
+  <data name="PKEY_FolderKind" xml:space="preserve">
+    <value>Folder Kind</value>
+  </data>
+  <data name="PKEY_FolderNameDisplay" xml:space="preserve">
+    <value>Folder Name Display</value>
+  </data>
+  <data name="PKEY_FreeSpace" xml:space="preserve">
+    <value>Free Space</value>
+  </data>
+  <data name="PKEY_FullText" xml:space="preserve">
+    <value>Full Text</value>
+  </data>
+  <data name="PKEY_GPS_Altitude" xml:space="preserve">
+    <value>GPS Altitude</value>
+  </data>
+  <data name="PKEY_GPS_AltitudeDenominator" xml:space="preserve">
+    <value>GPS Altitude Denominator</value>
+  </data>
+  <data name="PKEY_GPS_AltitudeNumerator" xml:space="preserve">
+    <value>GPS Altitude Numerator</value>
+  </data>
+  <data name="PKEY_GPS_AltitudeRef" xml:space="preserve">
+    <value>GPS Altitude Ref</value>
+  </data>
+  <data name="PKEY_GPS_AreaInformation" xml:space="preserve">
+    <value>GPS Area Information</value>
+  </data>
+  <data name="PKEY_GPS_Date" xml:space="preserve">
+    <value>GPS Date</value>
+  </data>
+  <data name="PKEY_GPS_DestBearing" xml:space="preserve">
+    <value>GPS Dest Bearing</value>
+  </data>
+  <data name="PKEY_GPS_DestBearingDenominator" xml:space="preserve">
+    <value>GPS Dest Bearing Denominator</value>
+  </data>
+  <data name="PKEY_GPS_DestBearingNumerator" xml:space="preserve">
+    <value>GPS Dest Bearing Numerator</value>
+  </data>
+  <data name="PKEY_GPS_DestBearingRef" xml:space="preserve">
+    <value>GPS Dest Bearing Ref</value>
+  </data>
+  <data name="PKEY_GPS_DestDistance" xml:space="preserve">
+    <value>GPS Dest Distance</value>
+  </data>
+  <data name="PKEY_GPS_DestDistanceDenominator" xml:space="preserve">
+    <value>GPS Dest Distance Denominator</value>
+  </data>
+  <data name="PKEY_GPS_DestDistanceNumerator" xml:space="preserve">
+    <value>GPS Dest Distance Numerator</value>
+  </data>
+  <data name="PKEY_GPS_DestDistanceRef" xml:space="preserve">
+    <value>GPS Dest Distance Ref</value>
+  </data>
+  <data name="PKEY_GPS_DestLatitude" xml:space="preserve">
+    <value>GPS Dest Latitude</value>
+  </data>
+  <data name="PKEY_GPS_DestLatitudeDenominator" xml:space="preserve">
+    <value>GPS Dest Latitude Denominator</value>
+  </data>
+  <data name="PKEY_GPS_DestLatitudeNumerator" xml:space="preserve">
+    <value>GPS Dest Latitude Numerator</value>
+  </data>
+  <data name="PKEY_GPS_DestLatitudeRef" xml:space="preserve">
+    <value>GPS Dest Latitude Ref</value>
+  </data>
+  <data name="PKEY_GPS_DestLongitude" xml:space="preserve">
+    <value>GPS Dest Longitude</value>
+  </data>
+  <data name="PKEY_GPS_DestLongitudeDenominator" xml:space="preserve">
+    <value>GPS Dest Longitude Denominator</value>
+  </data>
+  <data name="PKEY_GPS_DestLongitudeNumerator" xml:space="preserve">
+    <value>GPS Dest Longitude Numerator</value>
+  </data>
+  <data name="PKEY_GPS_DestLongitudeRef" xml:space="preserve">
+    <value>GPS Dest Longitude Ref</value>
+  </data>
+  <data name="PKEY_GPS_Differential" xml:space="preserve">
+    <value>GPS Differential</value>
+  </data>
+  <data name="PKEY_GPS_DOP" xml:space="preserve">
+    <value>GPS DOP</value>
+  </data>
+  <data name="PKEY_GPS_DOPDenominator" xml:space="preserve">
+    <value>GPS DOPDenominator</value>
+  </data>
+  <data name="PKEY_GPS_DOPNumerator" xml:space="preserve">
+    <value>GPS DOPNumerator</value>
+  </data>
+  <data name="PKEY_GPS_ImgDirection" xml:space="preserve">
+    <value>GPS Img Direction</value>
+  </data>
+  <data name="PKEY_GPS_ImgDirectionDenominator" xml:space="preserve">
+    <value>GPS Img Direction Denominator</value>
+  </data>
+  <data name="PKEY_GPS_ImgDirectionNumerator" xml:space="preserve">
+    <value>GPS Img Direction Numerator</value>
+  </data>
+  <data name="PKEY_GPS_ImgDirectionRef" xml:space="preserve">
+    <value>GPS Img Direction Ref</value>
+  </data>
+  <data name="PKEY_GPS_Latitude" xml:space="preserve">
+    <value>GPS Latitude</value>
+  </data>
+  <data name="PKEY_GPS_LatitudeDecimal" xml:space="preserve">
+    <value>GPS Latitude Decimal</value>
+  </data>
+  <data name="PKEY_GPS_LatitudeDenominator" xml:space="preserve">
+    <value>GPS Latitude Denominator</value>
+  </data>
+  <data name="PKEY_GPS_LatitudeNumerator" xml:space="preserve">
+    <value>GPS Latitude Numerator</value>
+  </data>
+  <data name="PKEY_GPS_LatitudeRef" xml:space="preserve">
+    <value>GPS Latitude Ref</value>
+  </data>
+  <data name="PKEY_GPS_Longitude" xml:space="preserve">
+    <value>GPS Longitude</value>
+  </data>
+  <data name="PKEY_GPS_LongitudeDecimal" xml:space="preserve">
+    <value>GPS Longitude Decimal</value>
+  </data>
+  <data name="PKEY_GPS_LongitudeDenominator" xml:space="preserve">
+    <value>GPS Longitude Denominator</value>
+  </data>
+  <data name="PKEY_GPS_LongitudeNumerator" xml:space="preserve">
+    <value>GPS Longitude Numerator</value>
+  </data>
+  <data name="PKEY_GPS_LongitudeRef" xml:space="preserve">
+    <value>GPS Longitude Ref</value>
+  </data>
+  <data name="PKEY_GPS_MapDatum" xml:space="preserve">
+    <value>GPS Map Datum</value>
+  </data>
+  <data name="PKEY_GPS_MeasureMode" xml:space="preserve">
+    <value>GPS Measure Mode</value>
+  </data>
+  <data name="PKEY_GPS_ProcessingMethod" xml:space="preserve">
+    <value>GPS Processing Method</value>
+  </data>
+  <data name="PKEY_GPS_Satellites" xml:space="preserve">
+    <value>GPS Satellites</value>
+  </data>
+  <data name="PKEY_GPS_Speed" xml:space="preserve">
+    <value>GPS Speed</value>
+  </data>
+  <data name="PKEY_GPS_SpeedDenominator" xml:space="preserve">
+    <value>GPS Speed Denominator</value>
+  </data>
+  <data name="PKEY_GPS_SpeedNumerator" xml:space="preserve">
+    <value>GPS Speed Numerator</value>
+  </data>
+  <data name="PKEY_GPS_SpeedRef" xml:space="preserve">
+    <value>GPS Speed Ref</value>
+  </data>
+  <data name="PKEY_GPS_Status" xml:space="preserve">
+    <value>GPS Status</value>
+  </data>
+  <data name="PKEY_GPS_Track" xml:space="preserve">
+    <value>GPS Track</value>
+  </data>
+  <data name="PKEY_GPS_TrackDenominator" xml:space="preserve">
+    <value>GPS Track Denominator</value>
+  </data>
+  <data name="PKEY_GPS_TrackNumerator" xml:space="preserve">
+    <value>GPS Track Numerator</value>
+  </data>
+  <data name="PKEY_GPS_TrackRef" xml:space="preserve">
+    <value>GPS Track Ref</value>
+  </data>
+  <data name="PKEY_GPS_VersionID" xml:space="preserve">
+    <value>GPS Version ID</value>
+  </data>
+  <data name="PKEY_HighKeywords" xml:space="preserve">
+    <value>High Keywords</value>
+  </data>
+  <data name="PKEY_History_SelectionCount" xml:space="preserve">
+    <value>History Selection Count</value>
+  </data>
+  <data name="PKEY_History_TargetUrlHostName" xml:space="preserve">
+    <value>History Target Url Host Name</value>
+  </data>
+  <data name="PKEY_History_VisitCount" xml:space="preserve">
+    <value>History Visit Count</value>
+  </data>
+  <data name="PKEY_Identity" xml:space="preserve">
+    <value>Identity</value>
+  </data>
+  <data name="PKEY_IdentityProvider_Name" xml:space="preserve">
+    <value>Identity Provider Name</value>
+  </data>
+  <data name="PKEY_IdentityProvider_Picture" xml:space="preserve">
+    <value>Identity Provider Picture</value>
+  </data>
+  <data name="PKEY_Identity_Blob" xml:space="preserve">
+    <value>Identity Blob</value>
+  </data>
+  <data name="PKEY_Identity_DisplayName" xml:space="preserve">
+    <value>Identity Display Name</value>
+  </data>
+  <data name="PKEY_Identity_InternetSid" xml:space="preserve">
+    <value>Identity Internet Sid</value>
+  </data>
+  <data name="PKEY_Identity_IsMeIdentity" xml:space="preserve">
+    <value>Identity Is Me Identity</value>
+  </data>
+  <data name="PKEY_Identity_KeyProviderContext" xml:space="preserve">
+    <value>Identity Key Provider Context</value>
+  </data>
+  <data name="PKEY_Identity_KeyProviderName" xml:space="preserve">
+    <value>Identity Key Provider Name</value>
+  </data>
+  <data name="PKEY_Identity_LogonStatusString" xml:space="preserve">
+    <value>Identity Logon Status String</value>
+  </data>
+  <data name="PKEY_Identity_PrimaryEmailAddress" xml:space="preserve">
+    <value>Identity Primary Email Address</value>
+  </data>
+  <data name="PKEY_Identity_PrimarySid" xml:space="preserve">
+    <value>Identity Primary Sid</value>
+  </data>
+  <data name="PKEY_Identity_ProviderData" xml:space="preserve">
+    <value>Identity Provider Data</value>
+  </data>
+  <data name="PKEY_Identity_ProviderID" xml:space="preserve">
+    <value>Identity Provider ID</value>
+  </data>
+  <data name="PKEY_Identity_QualifiedUserName" xml:space="preserve">
+    <value>Identity Qualified User Name</value>
+  </data>
+  <data name="PKEY_Identity_UniqueID" xml:space="preserve">
+    <value>Identity Unique ID</value>
+  </data>
+  <data name="PKEY_Identity_UserName" xml:space="preserve">
+    <value>Identity User Name</value>
+  </data>
+  <data name="PKEY_ImageParsingName" xml:space="preserve">
+    <value>Image Parsing Name</value>
+  </data>
+  <data name="PKEY_Image_BitDepth" xml:space="preserve">
+    <value>Image Bit Depth</value>
+  </data>
+  <data name="PKEY_Image_ColorSpace" xml:space="preserve">
+    <value>Image Color Space</value>
+  </data>
+  <data name="PKEY_Image_CompressedBitsPerPixel" xml:space="preserve">
+    <value>Image Compressed Bits Per Pixel</value>
+  </data>
+  <data name="PKEY_Image_CompressedBitsPerPixelDenominator" xml:space="preserve">
+    <value>Image Compressed Bits Per Pixel Denominator</value>
+  </data>
+  <data name="PKEY_Image_CompressedBitsPerPixelNumerator" xml:space="preserve">
+    <value>Image Compressed Bits Per Pixel Numerator</value>
+  </data>
+  <data name="PKEY_Image_Compression" xml:space="preserve">
+    <value>Image Compression</value>
+  </data>
+  <data name="PKEY_Image_CompressionText" xml:space="preserve">
+    <value>Image Compression Text</value>
+  </data>
+  <data name="PKEY_Image_Dimensions" xml:space="preserve">
+    <value>Image Dimensions</value>
+  </data>
+  <data name="PKEY_Image_HorizontalResolution" xml:space="preserve">
+    <value>Image Horizontal Resolution</value>
+  </data>
+  <data name="PKEY_Image_HorizontalSize" xml:space="preserve">
+    <value>Image Horizontal Size</value>
+  </data>
+  <data name="PKEY_Image_ImageID" xml:space="preserve">
+    <value>Image Image ID</value>
+  </data>
+  <data name="PKEY_Image_ResolutionUnit" xml:space="preserve">
+    <value>Image Resolution Unit</value>
+  </data>
+  <data name="PKEY_Image_VerticalResolution" xml:space="preserve">
+    <value>Image Vertical Resolution</value>
+  </data>
+  <data name="PKEY_Image_VerticalSize" xml:space="preserve">
+    <value>Image Vertical Size</value>
+  </data>
+  <data name="PKEY_Importance" xml:space="preserve">
+    <value>Importance</value>
+  </data>
+  <data name="PKEY_ImportanceText" xml:space="preserve">
+    <value>Importance Text</value>
+  </data>
+  <data name="PKEY_InfoTipText" xml:space="preserve">
+    <value>Info Tip Text</value>
+  </data>
+  <data name="PKEY_InternalName" xml:space="preserve">
+    <value>Internal Name</value>
+  </data>
+  <data name="PKEY_IsAttachment" xml:space="preserve">
+    <value>Is Attachment</value>
+  </data>
+  <data name="PKEY_IsDefaultNonOwnerSaveLocation" xml:space="preserve">
+    <value>Is Default Non Owner Save Location</value>
+  </data>
+  <data name="PKEY_IsDefaultSaveLocation" xml:space="preserve">
+    <value>Is Default Save Location</value>
+  </data>
+  <data name="PKEY_IsDeleted" xml:space="preserve">
+    <value>Is Deleted</value>
+  </data>
+  <data name="PKEY_IsEncrypted" xml:space="preserve">
+    <value>Is Encrypted</value>
+  </data>
+  <data name="PKEY_IsFlagged" xml:space="preserve">
+    <value>Is Flagged</value>
+  </data>
+  <data name="PKEY_IsFlaggedComplete" xml:space="preserve">
+    <value>Is Flagged Complete</value>
+  </data>
+  <data name="PKEY_IsIncomplete" xml:space="preserve">
+    <value>Is Incomplete</value>
+  </data>
+  <data name="PKEY_IsLocationSupported" xml:space="preserve">
+    <value>Is Location Supported</value>
+  </data>
+  <data name="PKEY_IsPinnedToNameSpaceTree" xml:space="preserve">
+    <value>Is Pinned To Name Space Tree</value>
+  </data>
+  <data name="PKEY_IsRead" xml:space="preserve">
+    <value>Is Read</value>
+  </data>
+  <data name="PKEY_IsSearchOnlyItem" xml:space="preserve">
+    <value>Is Search Only Item</value>
+  </data>
+  <data name="PKEY_IsSendToTarget" xml:space="preserve">
+    <value>Is Send To Target</value>
+  </data>
+  <data name="PKEY_IsShared" xml:space="preserve">
+    <value>Is Shared</value>
+  </data>
+  <data name="PKEY_ItemAuthors" xml:space="preserve">
+    <value>Item Authors</value>
+  </data>
+  <data name="PKEY_ItemClassType" xml:space="preserve">
+    <value>Item Class Type</value>
+  </data>
+  <data name="PKEY_ItemDate" xml:space="preserve">
+    <value>Item Date</value>
+  </data>
+  <data name="PKEY_ItemFolderNameDisplay" xml:space="preserve">
+    <value>Item Folder Name Display</value>
+  </data>
+  <data name="PKEY_ItemFolderPathDisplay" xml:space="preserve">
+    <value>Item Folder Path Display</value>
+  </data>
+  <data name="PKEY_ItemFolderPathDisplayNarrow" xml:space="preserve">
+    <value>Item Folder Path Display Narrow</value>
+  </data>
+  <data name="PKEY_ItemName" xml:space="preserve">
+    <value>Item Name</value>
+  </data>
+  <data name="PKEY_ItemNameDisplay" xml:space="preserve">
+    <value>Item Name Display</value>
+  </data>
+  <data name="PKEY_ItemNameDisplayWithoutExtension" xml:space="preserve">
+    <value>Item Name Display Without Extension</value>
+  </data>
+  <data name="PKEY_ItemNamePrefix" xml:space="preserve">
+    <value>Item Name Prefix</value>
+  </data>
+  <data name="PKEY_ItemNameSortOverride" xml:space="preserve">
+    <value>Item Name Sort Override</value>
+  </data>
+  <data name="PKEY_ItemParticipants" xml:space="preserve">
+    <value>Item Participants</value>
+  </data>
+  <data name="PKEY_ItemPathDisplay" xml:space="preserve">
+    <value>Item Path Display</value>
+  </data>
+  <data name="PKEY_ItemPathDisplayNarrow" xml:space="preserve">
+    <value>Item Path Display Narrow</value>
+  </data>
+  <data name="PKEY_ItemSubType" xml:space="preserve">
+    <value>Item Sub Type</value>
+  </data>
+  <data name="PKEY_ItemType" xml:space="preserve">
+    <value>Item Type</value>
+  </data>
+  <data name="PKEY_ItemTypeText" xml:space="preserve">
+    <value>Item Type Text</value>
+  </data>
+  <data name="PKEY_ItemUrl" xml:space="preserve">
+    <value>Item Url</value>
+  </data>
+  <data name="PKEY_Journal_Contacts" xml:space="preserve">
+    <value>Journal Contacts</value>
+  </data>
+  <data name="PKEY_Journal_EntryType" xml:space="preserve">
+    <value>Journal Entry Type</value>
+  </data>
+  <data name="PKEY_Keywords" xml:space="preserve">
+    <value>Keywords</value>
+  </data>
+  <data name="PKEY_Kind" xml:space="preserve">
+    <value>Kind</value>
+  </data>
+  <data name="PKEY_KindText" xml:space="preserve">
+    <value>Kind Text</value>
+  </data>
+  <data name="PKEY_Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="PKEY_LastSyncError" xml:space="preserve">
+    <value>Last Sync Error</value>
+  </data>
+  <data name="PKEY_LastSyncWarning" xml:space="preserve">
+    <value>Last Sync Warning</value>
+  </data>
+  <data name="PKEY_LastWriterPackageFamilyName" xml:space="preserve">
+    <value>Last Writer Package Family Name</value>
+  </data>
+  <data name="PKEY_LayoutPattern_ContentViewModeForBrowse" xml:space="preserve">
+    <value>Layout Pattern Content View Mode For Browse</value>
+  </data>
+  <data name="PKEY_LayoutPattern_ContentViewModeForSearch" xml:space="preserve">
+    <value>Layout Pattern Content View Mode For Search</value>
+  </data>
+  <data name="PKEY_LibraryLocationsCount" xml:space="preserve">
+    <value>Library Locations Count</value>
+  </data>
+  <data name="PKEY_Link_Arguments" xml:space="preserve">
+    <value>Link Arguments</value>
+  </data>
+  <data name="PKEY_Link_Comment" xml:space="preserve">
+    <value>Link Comment</value>
+  </data>
+  <data name="PKEY_Link_DateVisited" xml:space="preserve">
+    <value>Link Date Visited</value>
+  </data>
+  <data name="PKEY_Link_Description" xml:space="preserve">
+    <value>Link Description</value>
+  </data>
+  <data name="PKEY_Link_FeedItemLocalId" xml:space="preserve">
+    <value>Link Feed Item Local Id</value>
+  </data>
+  <data name="PKEY_Link_Status" xml:space="preserve">
+    <value>Link Status</value>
+  </data>
+  <data name="PKEY_Link_TargetExtension" xml:space="preserve">
+    <value>Link Target Extension</value>
+  </data>
+  <data name="PKEY_Link_TargetParsingPath" xml:space="preserve">
+    <value>Link Target Parsing Path</value>
+  </data>
+  <data name="PKEY_Link_TargetSFGAOFlags" xml:space="preserve">
+    <value>Link Target SFGAOFlags</value>
+  </data>
+  <data name="PKEY_Link_TargetSFGAOFlagsStrings" xml:space="preserve">
+    <value>Link Target SFGAOFlags Strings</value>
+  </data>
+  <data name="PKEY_Link_TargetUrl" xml:space="preserve">
+    <value>Link Target Url</value>
+  </data>
+  <data name="PKEY_Link_TargetUrlHostName" xml:space="preserve">
+    <value>Link Target Url Host Name</value>
+  </data>
+  <data name="PKEY_Link_TargetUrlPath" xml:space="preserve">
+    <value>Link Target Url Path</value>
+  </data>
+  <data name="PKEY_LowKeywords" xml:space="preserve">
+    <value>Low Keywords</value>
+  </data>
+  <data name="PKEY_Media_AuthorUrl" xml:space="preserve">
+    <value>Media Author Url</value>
+  </data>
+  <data name="PKEY_Media_AverageLevel" xml:space="preserve">
+    <value>Media Average Level</value>
+  </data>
+  <data name="PKEY_Media_ClassPrimaryID" xml:space="preserve">
+    <value>Media Class Primary ID</value>
+  </data>
+  <data name="PKEY_Media_ClassSecondaryID" xml:space="preserve">
+    <value>Media Class Secondary ID</value>
+  </data>
+  <data name="PKEY_Media_CollectionGroupID" xml:space="preserve">
+    <value>Media Collection Group ID</value>
+  </data>
+  <data name="PKEY_Media_CollectionID" xml:space="preserve">
+    <value>Media Collection ID</value>
+  </data>
+  <data name="PKEY_Media_ContentDistributor" xml:space="preserve">
+    <value>Media Content Distributor</value>
+  </data>
+  <data name="PKEY_Media_ContentID" xml:space="preserve">
+    <value>Media Content ID</value>
+  </data>
+  <data name="PKEY_Media_CreatorApplication" xml:space="preserve">
+    <value>Media Creator Application</value>
+  </data>
+  <data name="PKEY_Media_CreatorApplicationVersion" xml:space="preserve">
+    <value>Media Creator Application Version</value>
+  </data>
+  <data name="PKEY_Media_DateEncoded" xml:space="preserve">
+    <value>Media Date Encoded</value>
+  </data>
+  <data name="PKEY_Media_DateReleased" xml:space="preserve">
+    <value>Media Date Released</value>
+  </data>
+  <data name="PKEY_Media_DlnaProfileID" xml:space="preserve">
+    <value>Media Dlna Profile ID</value>
+  </data>
+  <data name="PKEY_Media_Duration" xml:space="preserve">
+    <value>Media Duration</value>
+  </data>
+  <data name="PKEY_Media_DVDID" xml:space="preserve">
+    <value>Media DVDID</value>
+  </data>
+  <data name="PKEY_Media_EncodedBy" xml:space="preserve">
+    <value>Media Encoded By</value>
+  </data>
+  <data name="PKEY_Media_EncodingSettings" xml:space="preserve">
+    <value>Media Encoding Settings</value>
+  </data>
+  <data name="PKEY_Media_EpisodeNumber" xml:space="preserve">
+    <value>Media Episode Number</value>
+  </data>
+  <data name="PKEY_Media_FrameCount" xml:space="preserve">
+    <value>Media Frame Count</value>
+  </data>
+  <data name="PKEY_Media_MCDI" xml:space="preserve">
+    <value>Media MCDI</value>
+  </data>
+  <data name="PKEY_Media_MetadataContentProvider" xml:space="preserve">
+    <value>Media Metadata Content Provider</value>
+  </data>
+  <data name="PKEY_Media_Producer" xml:space="preserve">
+    <value>Media Producer</value>
+  </data>
+  <data name="PKEY_Media_PromotionUrl" xml:space="preserve">
+    <value>Media Promotion Url</value>
+  </data>
+  <data name="PKEY_Media_ProtectionType" xml:space="preserve">
+    <value>Media Protection Type</value>
+  </data>
+  <data name="PKEY_Media_ProviderRating" xml:space="preserve">
+    <value>Media Provider Rating</value>
+  </data>
+  <data name="PKEY_Media_ProviderStyle" xml:space="preserve">
+    <value>Media Provider Style</value>
+  </data>
+  <data name="PKEY_Media_Publisher" xml:space="preserve">
+    <value>Media Publisher</value>
+  </data>
+  <data name="PKEY_Media_SeasonNumber" xml:space="preserve">
+    <value>Media Season Number</value>
+  </data>
+  <data name="PKEY_Media_SeriesName" xml:space="preserve">
+    <value>Media Series Name</value>
+  </data>
+  <data name="PKEY_Media_SubscriptionContentId" xml:space="preserve">
+    <value>Media Subscription Content Id</value>
+  </data>
+  <data name="PKEY_Media_SubTitle" xml:space="preserve">
+    <value>Media Sub Title</value>
+  </data>
+  <data name="PKEY_Media_ThumbnailLargePath" xml:space="preserve">
+    <value>Media Thumbnail Large Path</value>
+  </data>
+  <data name="PKEY_Media_ThumbnailLargeUri" xml:space="preserve">
+    <value>Media Thumbnail Large Uri</value>
+  </data>
+  <data name="PKEY_Media_ThumbnailSmallPath" xml:space="preserve">
+    <value>Media Thumbnail Small Path</value>
+  </data>
+  <data name="PKEY_Media_ThumbnailSmallUri" xml:space="preserve">
+    <value>Media Thumbnail Small Uri</value>
+  </data>
+  <data name="PKEY_Media_UniqueFileIdentifier" xml:space="preserve">
+    <value>Media Unique File Identifier</value>
+  </data>
+  <data name="PKEY_Media_UserNoAutoInfo" xml:space="preserve">
+    <value>Media User No Auto Info</value>
+  </data>
+  <data name="PKEY_Media_UserWebUrl" xml:space="preserve">
+    <value>Media User Web Url</value>
+  </data>
+  <data name="PKEY_Media_Writer" xml:space="preserve">
+    <value>Media Writer</value>
+  </data>
+  <data name="PKEY_Media_Year" xml:space="preserve">
+    <value>Media Year</value>
+  </data>
+  <data name="PKEY_MediumKeywords" xml:space="preserve">
+    <value>Medium Keywords</value>
+  </data>
+  <data name="PKEY_Message_AttachmentContents" xml:space="preserve">
+    <value>Message Attachment Contents</value>
+  </data>
+  <data name="PKEY_Message_AttachmentNames" xml:space="preserve">
+    <value>Message Attachment Names</value>
+  </data>
+  <data name="PKEY_Message_BccAddress" xml:space="preserve">
+    <value>Message Bcc Address</value>
+  </data>
+  <data name="PKEY_Message_BccName" xml:space="preserve">
+    <value>Message Bcc Name</value>
+  </data>
+  <data name="PKEY_Message_CcAddress" xml:space="preserve">
+    <value>Message Cc Address</value>
+  </data>
+  <data name="PKEY_Message_CcName" xml:space="preserve">
+    <value>Message Cc Name</value>
+  </data>
+  <data name="PKEY_Message_ConversationID" xml:space="preserve">
+    <value>Message Conversation ID</value>
+  </data>
+  <data name="PKEY_Message_ConversationIndex" xml:space="preserve">
+    <value>Message Conversation Index</value>
+  </data>
+  <data name="PKEY_Message_DateReceived" xml:space="preserve">
+    <value>Message Date Received</value>
+  </data>
+  <data name="PKEY_Message_DateSent" xml:space="preserve">
+    <value>Message Date Sent</value>
+  </data>
+  <data name="PKEY_Message_Flags" xml:space="preserve">
+    <value>Message Flags</value>
+  </data>
+  <data name="PKEY_Message_FromAddress" xml:space="preserve">
+    <value>Message From Address</value>
+  </data>
+  <data name="PKEY_Message_FromName" xml:space="preserve">
+    <value>Message From Name</value>
+  </data>
+  <data name="PKEY_Message_HasAttachments" xml:space="preserve">
+    <value>Message Has Attachments</value>
+  </data>
+  <data name="PKEY_Message_IsFwdOrReply" xml:space="preserve">
+    <value>Message Is Fwd Or Reply</value>
+  </data>
+  <data name="PKEY_Message_MessageClass" xml:space="preserve">
+    <value>Message Message Class</value>
+  </data>
+  <data name="PKEY_Message_Participants" xml:space="preserve">
+    <value>Message Participants</value>
+  </data>
+  <data name="PKEY_Message_ProofInProgress" xml:space="preserve">
+    <value>Message Proof In Progress</value>
+  </data>
+  <data name="PKEY_Message_SenderAddress" xml:space="preserve">
+    <value>Message Sender Address</value>
+  </data>
+  <data name="PKEY_Message_SenderName" xml:space="preserve">
+    <value>Message Sender Name</value>
+  </data>
+  <data name="PKEY_Message_Store" xml:space="preserve">
+    <value>Message Store</value>
+  </data>
+  <data name="PKEY_Message_ToAddress" xml:space="preserve">
+    <value>Message To Address</value>
+  </data>
+  <data name="PKEY_Message_ToDoFlags" xml:space="preserve">
+    <value>Message To Do Flags</value>
+  </data>
+  <data name="PKEY_Message_ToDoTitle" xml:space="preserve">
+    <value>Message To Do Title</value>
+  </data>
+  <data name="PKEY_Message_ToName" xml:space="preserve">
+    <value>Message To Name</value>
+  </data>
+  <data name="PKEY_MileageInformation" xml:space="preserve">
+    <value>Mileage Information</value>
+  </data>
+  <data name="PKEY_MIMEType" xml:space="preserve">
+    <value>MIMEType</value>
+  </data>
+  <data name="PKEY_Music_AlbumArtist" xml:space="preserve">
+    <value>Music Album Artist</value>
+  </data>
+  <data name="PKEY_Music_AlbumArtistSortOverride" xml:space="preserve">
+    <value>Music Album Artist Sort Override</value>
+  </data>
+  <data name="PKEY_Music_AlbumID" xml:space="preserve">
+    <value>Music Album ID</value>
+  </data>
+  <data name="PKEY_Music_AlbumTitle" xml:space="preserve">
+    <value>Music Album Title</value>
+  </data>
+  <data name="PKEY_Music_AlbumTitleSortOverride" xml:space="preserve">
+    <value>Music Album Title Sort Override</value>
+  </data>
+  <data name="PKEY_Music_Artist" xml:space="preserve">
+    <value>Music Artist</value>
+  </data>
+  <data name="PKEY_Music_ArtistSortOverride" xml:space="preserve">
+    <value>Music Artist Sort Override</value>
+  </data>
+  <data name="PKEY_Music_BeatsPerMinute" xml:space="preserve">
+    <value>Music Beats Per Minute</value>
+  </data>
+  <data name="PKEY_Music_Composer" xml:space="preserve">
+    <value>Music Composer</value>
+  </data>
+  <data name="PKEY_Music_ComposerSortOverride" xml:space="preserve">
+    <value>Music Composer Sort Override</value>
+  </data>
+  <data name="PKEY_Music_Conductor" xml:space="preserve">
+    <value>Music Conductor</value>
+  </data>
+  <data name="PKEY_Music_ContentGroupDescription" xml:space="preserve">
+    <value>Music Content Group Description</value>
+  </data>
+  <data name="PKEY_Music_DiscNumber" xml:space="preserve">
+    <value>Music Disc Number</value>
+  </data>
+  <data name="PKEY_Music_DisplayArtist" xml:space="preserve">
+    <value>Music Display Artist</value>
+  </data>
+  <data name="PKEY_Music_Genre" xml:space="preserve">
+    <value>Music Genre</value>
+  </data>
+  <data name="PKEY_Music_InitialKey" xml:space="preserve">
+    <value>Music Initial Key</value>
+  </data>
+  <data name="PKEY_Music_IsCompilation" xml:space="preserve">
+    <value>Music Is Compilation</value>
+  </data>
+  <data name="PKEY_Music_Lyrics" xml:space="preserve">
+    <value>Music Lyrics</value>
+  </data>
+  <data name="PKEY_Music_Mood" xml:space="preserve">
+    <value>Music Mood</value>
+  </data>
+  <data name="PKEY_Music_PartOfSet" xml:space="preserve">
+    <value>Music Part Of Set</value>
+  </data>
+  <data name="PKEY_Music_Period" xml:space="preserve">
+    <value>Music Period</value>
+  </data>
+  <data name="PKEY_Music_SynchronizedLyrics" xml:space="preserve">
+    <value>Music Synchronized Lyrics</value>
+  </data>
+  <data name="PKEY_Music_TrackNumber" xml:space="preserve">
+    <value>Music Track Number</value>
+  </data>
+  <data name="PKEY_NamespaceCLSID" xml:space="preserve">
+    <value>Namespace CLSID</value>
+  </data>
+  <data name="PKEY_Note_Color" xml:space="preserve">
+    <value>Note Color</value>
+  </data>
+  <data name="PKEY_Note_ColorText" xml:space="preserve">
+    <value>Note Color Text</value>
+  </data>
+  <data name="PKEY_Null" xml:space="preserve">
+    <value>Null</value>
+  </data>
+  <data name="PKEY_OfflineAvailability" xml:space="preserve">
+    <value>Offline Availability</value>
+  </data>
+  <data name="PKEY_OfflineStatus" xml:space="preserve">
+    <value>Offline Status</value>
+  </data>
+  <data name="PKEY_OriginalFileName" xml:space="preserve">
+    <value>Original File Name</value>
+  </data>
+  <data name="PKEY_OwnerSID" xml:space="preserve">
+    <value>Owner SID</value>
+  </data>
+  <data name="PKEY_ParentalRating" xml:space="preserve">
+    <value>Parental Rating</value>
+  </data>
+  <data name="PKEY_ParentalRatingReason" xml:space="preserve">
+    <value>Parental Rating Reason</value>
+  </data>
+  <data name="PKEY_ParentalRatingsOrganization" xml:space="preserve">
+    <value>Parental Ratings Organization</value>
+  </data>
+  <data name="PKEY_ParsingBindContext" xml:space="preserve">
+    <value>Parsing Bind Context</value>
+  </data>
+  <data name="PKEY_ParsingName" xml:space="preserve">
+    <value>Parsing Name</value>
+  </data>
+  <data name="PKEY_ParsingPath" xml:space="preserve">
+    <value>Parsing Path</value>
+  </data>
+  <data name="PKEY_PerceivedType" xml:space="preserve">
+    <value>Perceived Type</value>
+  </data>
+  <data name="PKEY_PercentFull" xml:space="preserve">
+    <value>Percent Full</value>
+  </data>
+  <data name="PKEY_Photo_Aperture" xml:space="preserve">
+    <value>Photo Aperture</value>
+  </data>
+  <data name="PKEY_Photo_ApertureDenominator" xml:space="preserve">
+    <value>Photo Aperture Denominator</value>
+  </data>
+  <data name="PKEY_Photo_ApertureNumerator" xml:space="preserve">
+    <value>Photo Aperture Numerator</value>
+  </data>
+  <data name="PKEY_Photo_Brightness" xml:space="preserve">
+    <value>Photo Brightness</value>
+  </data>
+  <data name="PKEY_Photo_BrightnessDenominator" xml:space="preserve">
+    <value>Photo Brightness Denominator</value>
+  </data>
+  <data name="PKEY_Photo_BrightnessNumerator" xml:space="preserve">
+    <value>Photo Brightness Numerator</value>
+  </data>
+  <data name="PKEY_Photo_CameraManufacturer" xml:space="preserve">
+    <value>Photo Camera Manufacturer</value>
+  </data>
+  <data name="PKEY_Photo_CameraModel" xml:space="preserve">
+    <value>Photo Camera Model</value>
+  </data>
+  <data name="PKEY_Photo_CameraSerialNumber" xml:space="preserve">
+    <value>Photo Camera Serial Number</value>
+  </data>
+  <data name="PKEY_Photo_Contrast" xml:space="preserve">
+    <value>Photo Contrast</value>
+  </data>
+  <data name="PKEY_Photo_ContrastText" xml:space="preserve">
+    <value>Photo Contrast Text</value>
+  </data>
+  <data name="PKEY_Photo_DateTaken" xml:space="preserve">
+    <value>Photo Date Taken</value>
+  </data>
+  <data name="PKEY_Photo_DigitalZoom" xml:space="preserve">
+    <value>Photo Digital Zoom</value>
+  </data>
+  <data name="PKEY_Photo_DigitalZoomDenominator" xml:space="preserve">
+    <value>Photo Digital Zoom Denominator</value>
+  </data>
+  <data name="PKEY_Photo_DigitalZoomNumerator" xml:space="preserve">
+    <value>Photo Digital Zoom Numerator</value>
+  </data>
+  <data name="PKEY_Photo_Event" xml:space="preserve">
+    <value>Photo Event</value>
+  </data>
+  <data name="PKEY_Photo_EXIFVersion" xml:space="preserve">
+    <value>Photo EXIFVersion</value>
+  </data>
+  <data name="PKEY_Photo_ExposureBias" xml:space="preserve">
+    <value>Photo Exposure Bias</value>
+  </data>
+  <data name="PKEY_Photo_ExposureBiasDenominator" xml:space="preserve">
+    <value>Photo Exposure Bias Denominator</value>
+  </data>
+  <data name="PKEY_Photo_ExposureBiasNumerator" xml:space="preserve">
+    <value>Photo Exposure Bias Numerator</value>
+  </data>
+  <data name="PKEY_Photo_ExposureIndex" xml:space="preserve">
+    <value>Photo Exposure Index</value>
+  </data>
+  <data name="PKEY_Photo_ExposureIndexDenominator" xml:space="preserve">
+    <value>Photo Exposure Index Denominator</value>
+  </data>
+  <data name="PKEY_Photo_ExposureIndexNumerator" xml:space="preserve">
+    <value>Photo Exposure Index Numerator</value>
+  </data>
+  <data name="PKEY_Photo_ExposureProgram" xml:space="preserve">
+    <value>Photo Exposure Program</value>
+  </data>
+  <data name="PKEY_Photo_ExposureProgramText" xml:space="preserve">
+    <value>Photo Exposure Program Text</value>
+  </data>
+  <data name="PKEY_Photo_ExposureTime" xml:space="preserve">
+    <value>Photo Exposure Time</value>
+  </data>
+  <data name="PKEY_Photo_ExposureTimeDenominator" xml:space="preserve">
+    <value>Photo Exposure Time Denominator</value>
+  </data>
+  <data name="PKEY_Photo_ExposureTimeNumerator" xml:space="preserve">
+    <value>Photo Exposure Time Numerator</value>
+  </data>
+  <data name="PKEY_Photo_Flash" xml:space="preserve">
+    <value>Photo Flash</value>
+  </data>
+  <data name="PKEY_Photo_FlashEnergy" xml:space="preserve">
+    <value>Photo Flash Energy</value>
+  </data>
+  <data name="PKEY_Photo_FlashEnergyDenominator" xml:space="preserve">
+    <value>Photo Flash Energy Denominator</value>
+  </data>
+  <data name="PKEY_Photo_FlashEnergyNumerator" xml:space="preserve">
+    <value>Photo Flash Energy Numerator</value>
+  </data>
+  <data name="PKEY_Photo_FlashManufacturer" xml:space="preserve">
+    <value>Photo Flash Manufacturer</value>
+  </data>
+  <data name="PKEY_Photo_FlashModel" xml:space="preserve">
+    <value>Photo Flash Model</value>
+  </data>
+  <data name="PKEY_Photo_FlashText" xml:space="preserve">
+    <value>Photo Flash Text</value>
+  </data>
+  <data name="PKEY_Photo_FNumber" xml:space="preserve">
+    <value>Photo FNumber</value>
+  </data>
+  <data name="PKEY_Photo_FNumberDenominator" xml:space="preserve">
+    <value>Photo FNumber Denominator</value>
+  </data>
+  <data name="PKEY_Photo_FNumberNumerator" xml:space="preserve">
+    <value>Photo FNumber Numerator</value>
+  </data>
+  <data name="PKEY_Photo_FocalLength" xml:space="preserve">
+    <value>Photo Focal Length</value>
+  </data>
+  <data name="PKEY_Photo_FocalLengthDenominator" xml:space="preserve">
+    <value>Photo Focal Length Denominator</value>
+  </data>
+  <data name="PKEY_Photo_FocalLengthInFilm" xml:space="preserve">
+    <value>Photo Focal Length In Film</value>
+  </data>
+  <data name="PKEY_Photo_FocalLengthNumerator" xml:space="preserve">
+    <value>Photo Focal Length Numerator</value>
+  </data>
+  <data name="PKEY_Photo_FocalPlaneXResolution" xml:space="preserve">
+    <value>Photo Focal Plane XResolution</value>
+  </data>
+  <data name="PKEY_Photo_FocalPlaneXResolutionDenominator" xml:space="preserve">
+    <value>Photo Focal Plane XResolution Denominator</value>
+  </data>
+  <data name="PKEY_Photo_FocalPlaneXResolutionNumerator" xml:space="preserve">
+    <value>Photo Focal Plane XResolution Numerator</value>
+  </data>
+  <data name="PKEY_Photo_FocalPlaneYResolution" xml:space="preserve">
+    <value>Photo Focal Plane YResolution</value>
+  </data>
+  <data name="PKEY_Photo_FocalPlaneYResolutionDenominator" xml:space="preserve">
+    <value>Photo Focal Plane YResolution Denominator</value>
+  </data>
+  <data name="PKEY_Photo_FocalPlaneYResolutionNumerator" xml:space="preserve">
+    <value>Photo Focal Plane YResolution Numerator</value>
+  </data>
+  <data name="PKEY_Photo_GainControl" xml:space="preserve">
+    <value>Photo Gain Control</value>
+  </data>
+  <data name="PKEY_Photo_GainControlDenominator" xml:space="preserve">
+    <value>Photo Gain Control Denominator</value>
+  </data>
+  <data name="PKEY_Photo_GainControlNumerator" xml:space="preserve">
+    <value>Photo Gain Control Numerator</value>
+  </data>
+  <data name="PKEY_Photo_GainControlText" xml:space="preserve">
+    <value>Photo Gain Control Text</value>
+  </data>
+  <data name="PKEY_Photo_ISOSpeed" xml:space="preserve">
+    <value>Photo ISOSpeed</value>
+  </data>
+  <data name="PKEY_Photo_LensManufacturer" xml:space="preserve">
+    <value>Photo Lens Manufacturer</value>
+  </data>
+  <data name="PKEY_Photo_LensModel" xml:space="preserve">
+    <value>Photo Lens Model</value>
+  </data>
+  <data name="PKEY_Photo_LightSource" xml:space="preserve">
+    <value>Photo Light Source</value>
+  </data>
+  <data name="PKEY_Photo_MakerNote" xml:space="preserve">
+    <value>Photo Maker Note</value>
+  </data>
+  <data name="PKEY_Photo_MakerNoteOffset" xml:space="preserve">
+    <value>Photo Maker Note Offset</value>
+  </data>
+  <data name="PKEY_Photo_MaxAperture" xml:space="preserve">
+    <value>Photo Max Aperture</value>
+  </data>
+  <data name="PKEY_Photo_MaxApertureDenominator" xml:space="preserve">
+    <value>Photo Max Aperture Denominator</value>
+  </data>
+  <data name="PKEY_Photo_MaxApertureNumerator" xml:space="preserve">
+    <value>Photo Max Aperture Numerator</value>
+  </data>
+  <data name="PKEY_Photo_MeteringMode" xml:space="preserve">
+    <value>Photo Metering Mode</value>
+  </data>
+  <data name="PKEY_Photo_MeteringModeText" xml:space="preserve">
+    <value>Photo Metering Mode Text</value>
+  </data>
+  <data name="PKEY_Photo_Orientation" xml:space="preserve">
+    <value>Photo Orientation</value>
+  </data>
+  <data name="PKEY_Photo_OrientationText" xml:space="preserve">
+    <value>Photo Orientation Text</value>
+  </data>
+  <data name="PKEY_Photo_PeopleNames" xml:space="preserve">
+    <value>Photo People Names</value>
+  </data>
+  <data name="PKEY_Photo_PhotometricInterpretation" xml:space="preserve">
+    <value>Photo Photometric Interpretation</value>
+  </data>
+  <data name="PKEY_Photo_PhotometricInterpretationText" xml:space="preserve">
+    <value>Photo Photometric Interpretation Text</value>
+  </data>
+  <data name="PKEY_Photo_ProgramMode" xml:space="preserve">
+    <value>Photo Program Mode</value>
+  </data>
+  <data name="PKEY_Photo_ProgramModeText" xml:space="preserve">
+    <value>Photo Program Mode Text</value>
+  </data>
+  <data name="PKEY_Photo_RelatedSoundFile" xml:space="preserve">
+    <value>Photo Related Sound File</value>
+  </data>
+  <data name="PKEY_Photo_Saturation" xml:space="preserve">
+    <value>Photo Saturation</value>
+  </data>
+  <data name="PKEY_Photo_SaturationText" xml:space="preserve">
+    <value>Photo Saturation Text</value>
+  </data>
+  <data name="PKEY_Photo_Sharpness" xml:space="preserve">
+    <value>Photo Sharpness</value>
+  </data>
+  <data name="PKEY_Photo_SharpnessText" xml:space="preserve">
+    <value>Photo Sharpness Text</value>
+  </data>
+  <data name="PKEY_Photo_ShutterSpeed" xml:space="preserve">
+    <value>Photo Shutter Speed</value>
+  </data>
+  <data name="PKEY_Photo_ShutterSpeedDenominator" xml:space="preserve">
+    <value>Photo Shutter Speed Denominator</value>
+  </data>
+  <data name="PKEY_Photo_ShutterSpeedNumerator" xml:space="preserve">
+    <value>Photo Shutter Speed Numerator</value>
+  </data>
+  <data name="PKEY_Photo_SubjectDistance" xml:space="preserve">
+    <value>Photo Subject Distance</value>
+  </data>
+  <data name="PKEY_Photo_SubjectDistanceDenominator" xml:space="preserve">
+    <value>Photo Subject Distance Denominator</value>
+  </data>
+  <data name="PKEY_Photo_SubjectDistanceNumerator" xml:space="preserve">
+    <value>Photo Subject Distance Numerator</value>
+  </data>
+  <data name="PKEY_Photo_TagViewAggregate" xml:space="preserve">
+    <value>Photo Tag View Aggregate</value>
+  </data>
+  <data name="PKEY_Photo_TranscodedForSync" xml:space="preserve">
+    <value>Photo Transcoded For Sync</value>
+  </data>
+  <data name="PKEY_Photo_WhiteBalance" xml:space="preserve">
+    <value>Photo White Balance</value>
+  </data>
+  <data name="PKEY_Photo_WhiteBalanceText" xml:space="preserve">
+    <value>Photo White Balance Text</value>
+  </data>
+  <data name="PKEY_Priority" xml:space="preserve">
+    <value>Priority</value>
+  </data>
+  <data name="PKEY_PriorityText" xml:space="preserve">
+    <value>Priority Text</value>
+  </data>
+  <data name="PKEY_Project" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="PKEY_PropGroup_Advanced" xml:space="preserve">
+    <value>Prop Group Advanced</value>
+  </data>
+  <data name="PKEY_PropGroup_Audio" xml:space="preserve">
+    <value>Prop Group Audio</value>
+  </data>
+  <data name="PKEY_PropGroup_Calendar" xml:space="preserve">
+    <value>Prop Group Calendar</value>
+  </data>
+  <data name="PKEY_PropGroup_Camera" xml:space="preserve">
+    <value>Prop Group Camera</value>
+  </data>
+  <data name="PKEY_PropGroup_Contact" xml:space="preserve">
+    <value>Prop Group Contact</value>
+  </data>
+  <data name="PKEY_PropGroup_Content" xml:space="preserve">
+    <value>Prop Group Content</value>
+  </data>
+  <data name="PKEY_PropGroup_Description" xml:space="preserve">
+    <value>Prop Group Description</value>
+  </data>
+  <data name="PKEY_PropGroup_FileSystem" xml:space="preserve">
+    <value>Prop Group File System</value>
+  </data>
+  <data name="PKEY_PropGroup_General" xml:space="preserve">
+    <value>Prop Group General</value>
+  </data>
+  <data name="PKEY_PropGroup_GPS" xml:space="preserve">
+    <value>Prop Group GPS</value>
+  </data>
+  <data name="PKEY_PropGroup_Image" xml:space="preserve">
+    <value>Prop Group Image</value>
+  </data>
+  <data name="PKEY_PropGroup_Media" xml:space="preserve">
+    <value>Prop Group Media</value>
+  </data>
+  <data name="PKEY_PropGroup_MediaAdvanced" xml:space="preserve">
+    <value>Prop Group Media Advanced</value>
+  </data>
+  <data name="PKEY_PropGroup_Message" xml:space="preserve">
+    <value>Prop Group Message</value>
+  </data>
+  <data name="PKEY_PropGroup_Music" xml:space="preserve">
+    <value>Prop Group Music</value>
+  </data>
+  <data name="PKEY_PropGroup_Origin" xml:space="preserve">
+    <value>Prop Group Origin</value>
+  </data>
+  <data name="PKEY_PropGroup_PhotoAdvanced" xml:space="preserve">
+    <value>Prop Group Photo Advanced</value>
+  </data>
+  <data name="PKEY_PropGroup_RecordedTV" xml:space="preserve">
+    <value>Prop Group Recorded TV</value>
+  </data>
+  <data name="PKEY_PropGroup_Video" xml:space="preserve">
+    <value>Prop Group Video</value>
+  </data>
+  <data name="PKEY_PropList_ConflictPrompt" xml:space="preserve">
+    <value>Prop List Conflict Prompt</value>
+  </data>
+  <data name="PKEY_PropList_ContentViewModeForBrowse" xml:space="preserve">
+    <value>Prop List Content View Mode For Browse</value>
+  </data>
+  <data name="PKEY_PropList_ContentViewModeForSearch" xml:space="preserve">
+    <value>Prop List Content View Mode For Search</value>
+  </data>
+  <data name="PKEY_PropList_ExtendedTileInfo" xml:space="preserve">
+    <value>Prop List Extended Tile Info</value>
+  </data>
+  <data name="PKEY_PropList_FileOperationPrompt" xml:space="preserve">
+    <value>Prop List File Operation Prompt</value>
+  </data>
+  <data name="PKEY_PropList_FullDetails" xml:space="preserve">
+    <value>Prop List Full Details</value>
+  </data>
+  <data name="PKEY_PropList_InfoTip" xml:space="preserve">
+    <value>Prop List Info Tip</value>
+  </data>
+  <data name="PKEY_PropList_NonPersonal" xml:space="preserve">
+    <value>Prop List Non Personal</value>
+  </data>
+  <data name="PKEY_PropList_PreviewDetails" xml:space="preserve">
+    <value>Prop List Preview Details</value>
+  </data>
+  <data name="PKEY_PropList_PreviewTitle" xml:space="preserve">
+    <value>Prop List Preview Title</value>
+  </data>
+  <data name="PKEY_PropList_QuickTip" xml:space="preserve">
+    <value>Prop List Quick Tip</value>
+  </data>
+  <data name="PKEY_PropList_TileInfo" xml:space="preserve">
+    <value>Prop List Tile Info</value>
+  </data>
+  <data name="PKEY_PropList_XPDetailsPanel" xml:space="preserve">
+    <value>Prop List XPDetails Panel</value>
+  </data>
+  <data name="PKEY_ProviderItemID" xml:space="preserve">
+    <value>Provider Item ID</value>
+  </data>
+  <data name="PKEY_Rating" xml:space="preserve">
+    <value>Rating</value>
+  </data>
+  <data name="PKEY_RatingText" xml:space="preserve">
+    <value>Rating Text</value>
+  </data>
+  <data name="PKEY_RecordedTV_ChannelNumber" xml:space="preserve">
+    <value>Recorded TV Channel Number</value>
+  </data>
+  <data name="PKEY_RecordedTV_Credits" xml:space="preserve">
+    <value>Recorded TV Credits</value>
+  </data>
+  <data name="PKEY_RecordedTV_DateContentExpires" xml:space="preserve">
+    <value>Recorded TV Date Content Expires</value>
+  </data>
+  <data name="PKEY_RecordedTV_EpisodeName" xml:space="preserve">
+    <value>Recorded TV Episode Name</value>
+  </data>
+  <data name="PKEY_RecordedTV_IsATSCContent" xml:space="preserve">
+    <value>Recorded TV Is ATSCContent</value>
+  </data>
+  <data name="PKEY_RecordedTV_IsClosedCaptioningAvailable" xml:space="preserve">
+    <value>Recorded TV Is Closed Captioning Available</value>
+  </data>
+  <data name="PKEY_RecordedTV_IsDTVContent" xml:space="preserve">
+    <value>Recorded TV Is DTVContent</value>
+  </data>
+  <data name="PKEY_RecordedTV_IsHDContent" xml:space="preserve">
+    <value>Recorded TV Is HDContent</value>
+  </data>
+  <data name="PKEY_RecordedTV_IsRepeatBroadcast" xml:space="preserve">
+    <value>Recorded TV Is Repeat Broadcast</value>
+  </data>
+  <data name="PKEY_RecordedTV_IsSAP" xml:space="preserve">
+    <value>Recorded TV Is SAP</value>
+  </data>
+  <data name="PKEY_RecordedTV_NetworkAffiliation" xml:space="preserve">
+    <value>Recorded TV Network Affiliation</value>
+  </data>
+  <data name="PKEY_RecordedTV_OriginalBroadcastDate" xml:space="preserve">
+    <value>Recorded TV Original Broadcast Date</value>
+  </data>
+  <data name="PKEY_RecordedTV_ProgramDescription" xml:space="preserve">
+    <value>Recorded TV Program Description</value>
+  </data>
+  <data name="PKEY_RecordedTV_RecordingTime" xml:space="preserve">
+    <value>Recorded TV Recording Time</value>
+  </data>
+  <data name="PKEY_RecordedTV_StationCallSign" xml:space="preserve">
+    <value>Recorded TV Station Call Sign</value>
+  </data>
+  <data name="PKEY_RecordedTV_StationName" xml:space="preserve">
+    <value>Recorded TV Station Name</value>
+  </data>
+  <data name="PKEY_RemoteConflictingFile" xml:space="preserve">
+    <value>Remote Conflicting File</value>
+  </data>
+  <data name="PKEY_Search_AutoSummary" xml:space="preserve">
+    <value>Search Auto Summary</value>
+  </data>
+  <data name="PKEY_Search_ContainerHash" xml:space="preserve">
+    <value>Search Container Hash</value>
+  </data>
+  <data name="PKEY_Search_Contents" xml:space="preserve">
+    <value>Search Contents</value>
+  </data>
+  <data name="PKEY_Search_EntryID" xml:space="preserve">
+    <value>Search Entry ID</value>
+  </data>
+  <data name="PKEY_Search_ExtendedProperties" xml:space="preserve">
+    <value>Search Extended Properties</value>
+  </data>
+  <data name="PKEY_Search_GatherTime" xml:space="preserve">
+    <value>Search Gather Time</value>
+  </data>
+  <data name="PKEY_Search_HitCount" xml:space="preserve">
+    <value>Search Hit Count</value>
+  </data>
+  <data name="PKEY_Search_IsClosedDirectory" xml:space="preserve">
+    <value>Search Is Closed Directory</value>
+  </data>
+  <data name="PKEY_Search_IsFullyContained" xml:space="preserve">
+    <value>Search Is Fully Contained</value>
+  </data>
+  <data name="PKEY_Search_QueryFocusedSummary" xml:space="preserve">
+    <value>Search Query Focused Summary</value>
+  </data>
+  <data name="PKEY_Search_QueryFocusedSummaryWithFallback" xml:space="preserve">
+    <value>Search Query Focused Summary With Fallback</value>
+  </data>
+  <data name="PKEY_Search_QueryPropertyHits" xml:space="preserve">
+    <value>Search Query Property Hits</value>
+  </data>
+  <data name="PKEY_Search_Rank" xml:space="preserve">
+    <value>Search Rank</value>
+  </data>
+  <data name="PKEY_Search_Store" xml:space="preserve">
+    <value>Search Store</value>
+  </data>
+  <data name="PKEY_Search_UrlToIndex" xml:space="preserve">
+    <value>Search Url To Index</value>
+  </data>
+  <data name="PKEY_Search_UrlToIndexWithModificationTime" xml:space="preserve">
+    <value>Search Url To Index With Modification Time</value>
+  </data>
+  <data name="PKEY_Security_AllowedEnterpriseDataProtectionIdentities" xml:space="preserve">
+    <value>Security Allowed Enterprise Data Protection Identities</value>
+  </data>
+  <data name="PKEY_Security_EncryptionOwners" xml:space="preserve">
+    <value>Security Encryption Owners</value>
+  </data>
+  <data name="PKEY_Security_EncryptionOwnersDisplay" xml:space="preserve">
+    <value>Security Encryption Owners Display</value>
+  </data>
+  <data name="PKEY_Sensitivity" xml:space="preserve">
+    <value>Sensitivity</value>
+  </data>
+  <data name="PKEY_SensitivityText" xml:space="preserve">
+    <value>Sensitivity Text</value>
+  </data>
+  <data name="PKEY_SFGAOFlags" xml:space="preserve">
+    <value>SFGAOFlags</value>
+  </data>
+  <data name="PKEY_SharedWith" xml:space="preserve">
+    <value>Shared With</value>
+  </data>
+  <data name="PKEY_ShareUserRating" xml:space="preserve">
+    <value>Share User Rating</value>
+  </data>
+  <data name="PKEY_SharingStatus" xml:space="preserve">
+    <value>Sharing Status</value>
+  </data>
+  <data name="PKEY_Shell_OmitFromView" xml:space="preserve">
+    <value>Shell Omit From View</value>
+  </data>
+  <data name="PKEY_Shell_SFGAOFlagsStrings" xml:space="preserve">
+    <value>Shell SFGAOFlags Strings</value>
+  </data>
+  <data name="PKEY_SimpleRating" xml:space="preserve">
+    <value>Simple Rating</value>
+  </data>
+  <data name="PKEY_Size" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="PKEY_SoftwareUsed" xml:space="preserve">
+    <value>Software Used</value>
+  </data>
+  <data name="PKEY_Software_DateLastUsed" xml:space="preserve">
+    <value>Software Date Last Used</value>
+  </data>
+  <data name="PKEY_Software_ProductName" xml:space="preserve">
+    <value>Software Product Name</value>
+  </data>
+  <data name="PKEY_SourceItem" xml:space="preserve">
+    <value>Source Item</value>
+  </data>
+  <data name="PKEY_SourcePackageFamilyName" xml:space="preserve">
+    <value>Source Package Family Name</value>
+  </data>
+  <data name="PKEY_StartDate" xml:space="preserve">
+    <value>Start Date</value>
+  </data>
+  <data name="PKEY_Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="PKEY_StatusBarSelectedItemCount" xml:space="preserve">
+    <value>Status Bar Selected Item Count</value>
+  </data>
+  <data name="PKEY_StatusBarViewItemCount" xml:space="preserve">
+    <value>Status Bar View Item Count</value>
+  </data>
+  <data name="PKEY_StorageProviderCallerVersionInformation" xml:space="preserve">
+    <value>Storage Provider Caller Version Information</value>
+  </data>
+  <data name="PKEY_StorageProviderError" xml:space="preserve">
+    <value>Storage Provider Error</value>
+  </data>
+  <data name="PKEY_StorageProviderFileChecksum" xml:space="preserve">
+    <value>Storage Provider File Checksum</value>
+  </data>
+  <data name="PKEY_StorageProviderFileFlags" xml:space="preserve">
+    <value>Storage Provider File Flags</value>
+  </data>
+  <data name="PKEY_StorageProviderFileIdentifier" xml:space="preserve">
+    <value>Storage Provider File Identifier</value>
+  </data>
+  <data name="PKEY_StorageProviderFileRemoteUri" xml:space="preserve">
+    <value>Storage Provider File Remote Uri</value>
+  </data>
+  <data name="PKEY_StorageProviderFileVersion" xml:space="preserve">
+    <value>Storage Provider File Version</value>
+  </data>
+  <data name="PKEY_StorageProviderFileVersionWaterline" xml:space="preserve">
+    <value>Storage Provider File Version Waterline</value>
+  </data>
+  <data name="PKEY_StorageProviderId" xml:space="preserve">
+    <value>Storage Provider Id</value>
+  </data>
+  <data name="PKEY_StorageProviderShareStatuses" xml:space="preserve">
+    <value>Storage Provider Share Statuses</value>
+  </data>
+  <data name="PKEY_StorageProviderSharingStatus" xml:space="preserve">
+    <value>Storage Provider Sharing Status</value>
+  </data>
+  <data name="PKEY_StorageProviderStatus" xml:space="preserve">
+    <value>Storage Provider Status</value>
+  </data>
+  <data name="PKEY_Storage_Portable" xml:space="preserve">
+    <value>Storage Portable</value>
+  </data>
+  <data name="PKEY_Storage_RemovableMedia" xml:space="preserve">
+    <value>Storage Removable Media</value>
+  </data>
+  <data name="PKEY_Storage_SystemCritical" xml:space="preserve">
+    <value>Storage System Critical</value>
+  </data>
+  <data name="PKEY_Subject" xml:space="preserve">
+    <value>Subject</value>
+  </data>
+  <data name="PKEY_Supplemental_Album" xml:space="preserve">
+    <value>Supplemental Album</value>
+  </data>
+  <data name="PKEY_Supplemental_AlbumID" xml:space="preserve">
+    <value>Supplemental Album ID</value>
+  </data>
+  <data name="PKEY_Supplemental_Location" xml:space="preserve">
+    <value>Supplemental Location</value>
+  </data>
+  <data name="PKEY_Supplemental_Person" xml:space="preserve">
+    <value>Supplemental Person</value>
+  </data>
+  <data name="PKEY_Supplemental_ResourceId" xml:space="preserve">
+    <value>Supplemental Resource Id</value>
+  </data>
+  <data name="PKEY_Supplemental_Tag" xml:space="preserve">
+    <value>Supplemental Tag</value>
+  </data>
+  <data name="PKEY_SyncTransferStatus" xml:space="preserve">
+    <value>Sync Transfer Status</value>
+  </data>
+  <data name="PKEY_Sync_Comments" xml:space="preserve">
+    <value>Sync Comments</value>
+  </data>
+  <data name="PKEY_Sync_ConflictDescription" xml:space="preserve">
+    <value>Sync Conflict Description</value>
+  </data>
+  <data name="PKEY_Sync_ConflictFirstLocation" xml:space="preserve">
+    <value>Sync Conflict First Location</value>
+  </data>
+  <data name="PKEY_Sync_ConflictSecondLocation" xml:space="preserve">
+    <value>Sync Conflict Second Location</value>
+  </data>
+  <data name="PKEY_Sync_HandlerCollectionID" xml:space="preserve">
+    <value>Sync Handler Collection ID</value>
+  </data>
+  <data name="PKEY_Sync_HandlerID" xml:space="preserve">
+    <value>Sync Handler ID</value>
+  </data>
+  <data name="PKEY_Sync_HandlerName" xml:space="preserve">
+    <value>Sync Handler Name</value>
+  </data>
+  <data name="PKEY_Sync_HandlerType" xml:space="preserve">
+    <value>Sync Handler Type</value>
+  </data>
+  <data name="PKEY_Sync_HandlerTypeLabel" xml:space="preserve">
+    <value>Sync Handler Type Label</value>
+  </data>
+  <data name="PKEY_Sync_ItemID" xml:space="preserve">
+    <value>Sync Item ID</value>
+  </data>
+  <data name="PKEY_Sync_ItemName" xml:space="preserve">
+    <value>Sync Item Name</value>
+  </data>
+  <data name="PKEY_Sync_ProgressPercentage" xml:space="preserve">
+    <value>Sync Progress Percentage</value>
+  </data>
+  <data name="PKEY_Sync_State" xml:space="preserve">
+    <value>Sync State</value>
+  </data>
+  <data name="PKEY_Sync_Status" xml:space="preserve">
+    <value>Sync Status</value>
+  </data>
+  <data name="PKEY_Task_BillingInformation" xml:space="preserve">
+    <value>Task Billing Information</value>
+  </data>
+  <data name="PKEY_Task_CompletionStatus" xml:space="preserve">
+    <value>Task Completion Status</value>
+  </data>
+  <data name="PKEY_Task_Owner" xml:space="preserve">
+    <value>Task Owner</value>
+  </data>
+  <data name="PKEY_Thumbnail" xml:space="preserve">
+    <value>Thumbnail</value>
+  </data>
+  <data name="PKEY_ThumbnailCacheId" xml:space="preserve">
+    <value>Thumbnail Cache Id</value>
+  </data>
+  <data name="PKEY_ThumbnailStream" xml:space="preserve">
+    <value>Thumbnail Stream</value>
+  </data>
+  <data name="PKEY_Title" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="PKEY_TitleSortOverride" xml:space="preserve">
+    <value>Title Sort Override</value>
+  </data>
+  <data name="PKEY_TotalFileSize" xml:space="preserve">
+    <value>Total File Size</value>
+  </data>
+  <data name="PKEY_Trademarks" xml:space="preserve">
+    <value>Trademarks</value>
+  </data>
+  <data name="PKEY_TransferOrder" xml:space="preserve">
+    <value>Transfer Order</value>
+  </data>
+  <data name="PKEY_TransferPosition" xml:space="preserve">
+    <value>Transfer Position</value>
+  </data>
+  <data name="PKEY_TransferSize" xml:space="preserve">
+    <value>Transfer Size</value>
+  </data>
+  <data name="PKEY_Video_Compression" xml:space="preserve">
+    <value>Video Compression</value>
+  </data>
+  <data name="PKEY_Video_Director" xml:space="preserve">
+    <value>Video Director</value>
+  </data>
+  <data name="PKEY_Video_EncodingBitrate" xml:space="preserve">
+    <value>Video Encoding Bitrate</value>
+  </data>
+  <data name="PKEY_Video_FourCC" xml:space="preserve">
+    <value>Video Four CC</value>
+  </data>
+  <data name="PKEY_Video_FrameHeight" xml:space="preserve">
+    <value>Video Frame Height</value>
+  </data>
+  <data name="PKEY_Video_FrameRate" xml:space="preserve">
+    <value>Video Frame Rate</value>
+  </data>
+  <data name="PKEY_Video_FrameWidth" xml:space="preserve">
+    <value>Video Frame Width</value>
+  </data>
+  <data name="PKEY_Video_HorizontalAspectRatio" xml:space="preserve">
+    <value>Video Horizontal Aspect Ratio</value>
+  </data>
+  <data name="PKEY_Video_IsSpherical" xml:space="preserve">
+    <value>Video Is Spherical</value>
+  </data>
+  <data name="PKEY_Video_IsStereo" xml:space="preserve">
+    <value>Video Is Stereo</value>
+  </data>
+  <data name="PKEY_Video_Orientation" xml:space="preserve">
+    <value>Video Orientation</value>
+  </data>
+  <data name="PKEY_Video_SampleSize" xml:space="preserve">
+    <value>Video Sample Size</value>
+  </data>
+  <data name="PKEY_Video_StreamName" xml:space="preserve">
+    <value>Video Stream Name</value>
+  </data>
+  <data name="PKEY_Video_StreamNumber" xml:space="preserve">
+    <value>Video Stream Number</value>
+  </data>
+  <data name="PKEY_Video_TotalBitrate" xml:space="preserve">
+    <value>Video Total Bitrate</value>
+  </data>
+  <data name="PKEY_Video_TranscodedForSync" xml:space="preserve">
+    <value>Video Transcoded For Sync</value>
+  </data>
+  <data name="PKEY_Video_VerticalAspectRatio" xml:space="preserve">
+    <value>Video Vertical Aspect Ratio</value>
+  </data>
+  <data name="PKEY_VolumeId" xml:space="preserve">
+    <value>Volume Id</value>
+  </data>
+  <data name="PKEY_Volume_FileSystem" xml:space="preserve">
+    <value>Volume File System</value>
+  </data>
+  <data name="PKEY_Volume_IsMappedDrive" xml:space="preserve">
+    <value>Volume Is Mapped Drive</value>
+  </data>
+  <data name="PKEY_Volume_IsRoot" xml:space="preserve">
+    <value>Volume Is Root</value>
+  </data>
+  <data name="PKEY_ZoneIdentifier" xml:space="preserve">
+    <value>Zone Identifier</value>
+  </data>
+</root>
