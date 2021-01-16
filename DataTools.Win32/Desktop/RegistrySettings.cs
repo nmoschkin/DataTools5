@@ -20,6 +20,7 @@ namespace DataTools.Desktop
     public abstract class RegistrySettings : ObservableBase, IDisposable
     {
         private RegistryKey baseKey;
+        private RegistryKey parentKey;
 
         protected bool primAsStrings;
         protected bool asLists;
@@ -57,14 +58,14 @@ namespace DataTools.Desktop
         }
 
         /// <summary>
-        /// Get the active registry key.
+        /// Get the active parent registry key that is opened.
         /// </summary>
-        protected RegistryKey BaseKey
+        protected RegistryKey ParentKey
         {
-            get => baseKey;
+            get => parentKey;
             private set
             {
-                SetProperty(ref baseKey, value);
+                SetProperty(ref parentKey, value);
             }
         }
 
@@ -116,9 +117,9 @@ namespace DataTools.Desktop
             this.rootKey = rootKey;
             this.view = view;
 
-            BaseKey = RegistryKey.OpenBaseKey(hive, view);
+            baseKey = RegistryKey.OpenBaseKey(hive, view);
+            parentKey = baseKey.OpenSubKey(rootKey, true);
         }
-
 
         /// <summary>
         /// Returns true if the specified type is a primitive type or primitive array type.
@@ -181,6 +182,41 @@ namespace DataTools.Desktop
         }
 
         /// <summary>
+        /// Gets the Parse and TryParse methods of a Parseable type.
+        /// </summary>
+        /// <param name="t">The type to check.</param>
+        /// <param name="parseFunc">The Parse function <see cref="MethodInfo"/> object.</param>
+        /// <param name="tryParseFunc">The TryParse function <see cref="MethodInfo"/> object.</param>
+        /// <returns>True if the type is parseable.</returns>
+        protected static bool GetParseableInfo(Type t, out MethodInfo parseFunc, out MethodInfo tryParseFunc)
+        {
+            var mtd = t.GetMethod("Parse");
+
+            if (mtd == null || !mtd.IsStatic || !mtd.IsPublic)
+            {
+                parseFunc = null;
+                tryParseFunc = null;
+
+                return false;
+            }
+
+            parseFunc = mtd;
+
+            mtd = t.GetMethod("TryParse");
+
+            if (mtd != null && mtd.IsStatic && mtd.IsPublic)
+            {
+                tryParseFunc = mtd;
+            }
+            else
+            {
+                tryParseFunc = null;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Gets the suggested <see cref="RegistryValueKind"/> for a given type.
         /// </summary>
         /// <param name="t"></param>
@@ -229,7 +265,7 @@ namespace DataTools.Desktop
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
         /// <returns></returns>
-        protected T[] BinaryToArray<T>(byte[] data) where T: struct
+        protected static T[] BinaryToArray<T>(byte[] data) where T: struct
         {
             var mm = (SafePtr)data;
             var output = mm.ToArray<T>();
@@ -243,7 +279,7 @@ namespace DataTools.Desktop
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        protected byte[] ArrayToBinary<T>(T[] value) where T: struct
+        protected static byte[] ArrayToBinary<T>(T[] value) where T: struct
         {
             var mm = new SafePtr();
             mm.FromArray<T>(value);
@@ -256,27 +292,43 @@ namespace DataTools.Desktop
 
 
         /// <summary>
+        /// Try to create a new instance of the specified type.
+        /// </summary>
+        /// <param name="t">The type to instantiate.</param>
+        /// <returns>A new object or null if unsuccessful.</returns>
+        protected virtual object TryCreateInstance(Type t)
+        {
+            var c = t.GetConstructor(Type.EmptyTypes);
+
+            if (c == null) return null;
+            return c.Invoke(new object[0]);
+        }
+
+
+
+        /// <summary>
         /// Write a parseable object to the registry.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="valueName"></param>
         /// <param name="value"></param>
         /// <param name="subKey"></param>
-        protected void WriteParseable<T>(string valueName, T value, string subKey = null) where T : struct
+        protected virtual void WriteParseable<T>(string valueName, T value, string subKey = null) 
         {
-            var mtd = typeof(T).GetMethod("Parse");
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
 
-            if (mtd == null || !mtd.IsStatic || !mtd.IsPublic) throw new InvalidCastException();
-
+            MethodInfo mtd;
+            if (!GetParseableInfo(typeof(T), out mtd, out _) &&) throw new InvalidCastException();
+          
             RegistryKey k;
 
             if (subKey != null)
             {
-                k = BaseKey.OpenSubKey(subKey);
+                k = ParentKey.OpenSubKey(subKey);
             }
             else
             {
-                k = BaseKey;
+                k = ParentKey;
             }
 
             string s = value.ToString();
@@ -298,28 +350,29 @@ namespace DataTools.Desktop
         /// <param name="subKey"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        protected T? ReadParseable<T>(string valueName, string subKey = null, string defaultValue = null) where T: struct
+        protected virtual T ReadParseable<T>(string valueName, string subKey = null, string defaultValue = null) 
         {
-            var mtd = typeof(T).GetMethod("Parse");
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
 
-            if (mtd == null || !mtd.IsStatic || !mtd.IsPublic) throw new InvalidCastException();
+            MethodInfo mtd;
+            if (!GetParseableInfo(typeof(T), out mtd, out _)) throw new InvalidCastException();
 
             RegistryKey k;
 
             if (subKey != null)
             {
-                k = BaseKey.OpenSubKey(subKey);
+                k = ParentKey.OpenSubKey(subKey);
             }
             else
             {
-                k = BaseKey;
+                k = ParentKey;
             }
             
             T output;
 
             string s = (string)k.GetValue(valueName, defaultValue);
 
-            if (s == null) return null;
+            if (s == null) return default;
             output = (T)mtd.Invoke(null, new object[] { s });
 
             if (subKey != null)
@@ -337,17 +390,19 @@ namespace DataTools.Desktop
         /// <param name="subKey"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        protected bool? ReadValue(string valueName, string subKey = null, bool? defaultValue = null) 
+        protected virtual bool? ReadValue(string valueName, string subKey = null, bool? defaultValue = null) 
         {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
             RegistryKey k;
 
             if (subKey != null)
             {
-                k = BaseKey.OpenSubKey(subKey);
+                k = ParentKey.OpenSubKey(subKey);
             }
             else
             {
-                k = BaseKey;
+                k = ParentKey;
             }
 
             string defVal;
@@ -387,17 +442,19 @@ namespace DataTools.Desktop
         /// <param name="valueName"></param>
         /// <param name="value"></param>
         /// <param name="subKey"></param>
-        protected void WriteValue(string valueName, bool value, string subKey = null) 
+        protected virtual void WriteValue(string valueName, bool value, string subKey = null) 
         {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
             RegistryKey k;
 
             if (subKey != null)
             {
-                k = BaseKey.OpenSubKey(subKey);
+                k = ParentKey.OpenSubKey(subKey);
             }
             else
             {
-                k = BaseKey;
+                k = ParentKey;
             }
 
             if (value == true)
@@ -424,17 +481,19 @@ namespace DataTools.Desktop
         /// <param name="subKey"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        protected T? ReadValue<T>(string valueName, string subKey = null, T? defaultValue = null) where T: struct
+        protected virtual T? ReadValue<T>(string valueName, string subKey = null, T? defaultValue = null) where T: struct
         {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
             RegistryKey k;
 
             if (subKey != null)
             {
-                k = BaseKey.OpenSubKey(subKey);
+                k = ParentKey.OpenSubKey(subKey);
             }
             else
             {
-                k = BaseKey;
+                k = ParentKey;
             }
 
             T output;
@@ -459,17 +518,19 @@ namespace DataTools.Desktop
         /// <param name="valueName"></param>
         /// <param name="value"></param>
         /// <param name="subKey"></param>
-        protected void WriteValue<T>(string valueName, T value, string subKey = null) where T : struct
+        protected virtual void WriteValue<T>(string valueName, T value, string subKey = null) where T : struct
         {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
             RegistryKey k;
 
             if (subKey != null)
             {
-                k = BaseKey.OpenSubKey(subKey);
+                k = ParentKey.OpenSubKey(subKey);
             }
             else
             {
-                k = BaseKey;
+                k = ParentKey;
             }
 
             var vk = GetValueKind(typeof(T));
@@ -490,18 +551,19 @@ namespace DataTools.Desktop
         /// <param name="subKey"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        protected string ReadValue(string valueName, string subKey = null, string defaultValue = null)
+        protected virtual string ReadValue(string valueName, string subKey = null, string defaultValue = null)
         {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
 
             RegistryKey k;
 
             if (subKey != null)
             {
-                k = BaseKey.OpenSubKey(subKey);
+                k = ParentKey.OpenSubKey(subKey);
             }
             else
             {
-                k = BaseKey;
+                k = ParentKey;
             }
 
             var output = (string)k.GetValue(valueName, defaultValue);
@@ -521,18 +583,19 @@ namespace DataTools.Desktop
         /// <param name="value"></param>
         /// <param name="subKey"></param>
         /// <param name="expandEnv"></param>
-        protected void WriteValue(string valueName, string value, string subKey = null, bool expandEnv = false)
+        protected virtual void WriteValue(string valueName, string value, string subKey = null, bool expandEnv = false)
         {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
 
             RegistryKey k;
 
             if (subKey != null)
             {
-                k = BaseKey.OpenSubKey(subKey);
+                k = ParentKey.OpenSubKey(subKey);
             }
             else
             {
-                k = BaseKey;
+                k = ParentKey;
             }
 
             if (expandEnv)
@@ -557,18 +620,19 @@ namespace DataTools.Desktop
         /// <param name="valueName">The name of the value.</param>
         /// <param name="subKey">Optional sub key.</param>
         /// <param name="defaultValue">Optional default value.</param>
-        protected string[] ReadValue(string valueName, string subKey = null, string[] defaultValue = null)
+        protected virtual string[] ReadValue(string valueName, string subKey = null, string[] defaultValue = null)
         {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
 
             RegistryKey k;
 
             if (subKey != null)
             {
-                k = BaseKey.OpenSubKey(subKey);
+                k = ParentKey.OpenSubKey(subKey);
             }
             else
             {
-                k = BaseKey;
+                k = ParentKey;
             }
 
             var output = (string[])k.GetValue(valueName, defaultValue);
@@ -587,17 +651,19 @@ namespace DataTools.Desktop
         /// <param name="valueName">The name of the value.</param>
         /// <param name="value">The value.</param>
         /// <param name="subKey">Optional sub key.</param>
-        protected void WriteValue(string valueName, string[] value, string subKey = null)
+        protected virtual void WriteValue(string valueName, string[] value, string subKey = null)
         {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
             RegistryKey k;
 
             if (subKey != null)
             {
-                k = BaseKey.OpenSubKey(subKey);
+                k = ParentKey.OpenSubKey(subKey);
             }
             else
             {
-                k = BaseKey;
+                k = ParentKey;
             }
 
             k.SetValue(valueName, value, RegistryValueKind.MultiString);
@@ -616,8 +682,10 @@ namespace DataTools.Desktop
         /// <param name="valueName">The name of the list key.</param>
         /// <param name="subKey">Optional name of the sub key beneath the root but above the list key.</param>
         /// <param name="itemPrefix">Optional item name prefix.</param>
-        protected List<T> ReadList<T>(string valueName, string subKey = null, string itemPrefix = "Item_") where T: struct
+        protected virtual IList<T> ReadList<T>(string valueName, string subKey = null, string itemPrefix = "Item_") where T: struct
         {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
             string sk;
             RegistryKey k;
             var output = new List<T>();
@@ -631,7 +699,7 @@ namespace DataTools.Desktop
                 sk = valueName;
             }
 
-            k = BaseKey.OpenSubKey(sk);
+            k = ParentKey.OpenSubKey(sk);
 
             int i = 0;
             int c = k.GetValueNames().Length;
@@ -659,8 +727,10 @@ namespace DataTools.Desktop
         /// <param name="value">The values.</param>
         /// <param name="subKey">Optional name of the sub key beneath the root but above the list key.</param>
         /// <param name="itemPrefix">Optional item name prefix.</param>
-        protected void WriteList<T>(string valueName, IEnumerable<T> value, string subKey = null, string itemPrefix = "Item_") where T : struct
+        protected virtual void WriteList<T>(string valueName, IEnumerable<T> value, string subKey = null, string itemPrefix = "Item_") where T : struct
         {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
             string sk;
             RegistryKey k;
 
@@ -673,7 +743,7 @@ namespace DataTools.Desktop
                 sk = valueName;
             }
 
-            k = BaseKey.OpenSubKey(sk);
+            k = ParentKey.OpenSubKey(sk);
 
             int i = 1;
 
@@ -695,8 +765,10 @@ namespace DataTools.Desktop
         /// <param name="subKey">Optional name of the sub key beneath the root but above the list key.</param>
         /// <param name="itemPrefix">Optional item name prefix.</param>
         /// <returns></returns>
-        protected List<string> ReadList(string valueName, string subKey = null, string itemPrefix = "Item_") 
+        protected virtual IList<string> ReadList(string valueName, string subKey = null, string itemPrefix = "Item_") 
         {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
             string sk;
             RegistryKey k;
             var output = new List<string>();
@@ -710,7 +782,7 @@ namespace DataTools.Desktop
                 sk = valueName;
             }
 
-            k = BaseKey.OpenSubKey(sk);
+            k = ParentKey.OpenSubKey(sk);
 
             int i = 0;
             int c = k.GetValueNames().Length;
@@ -737,8 +809,10 @@ namespace DataTools.Desktop
         /// <param name="value">The values.</param>
         /// <param name="subKey">Optional name of the sub key beneath the root but above the list key.</param>
         /// <param name="itemPrefix">Optional item name prefix.</param>
-        protected void WriteList(string valueName, IEnumerable<string> value, string subKey = null, string itemPrefix = "Item_") 
+        protected virtual void WriteList(string valueName, IEnumerable<string> value, string subKey = null, string itemPrefix = "Item_") 
         {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
             string sk;
             RegistryKey k;
 
@@ -751,7 +825,7 @@ namespace DataTools.Desktop
                 sk = valueName;
             }
 
-            k = BaseKey.OpenSubKey(sk);
+            k = ParentKey.OpenSubKey(sk);
 
             int i = 1;
 
@@ -773,17 +847,19 @@ namespace DataTools.Desktop
         /// <param name="subKey">Optional sub key</param>
         /// <param name="defaultValue">Default value.</param>
         /// <returns></returns>
-        protected T[] ReadArray<T>(string valueName, string subKey = null, T[] defaultValue = null) where T: struct
+        protected virtual T[] ReadArray<T>(string valueName, string subKey = null, T[] defaultValue = null) where T: struct
         {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
             RegistryKey k;
 
             if (subKey != null)
             {
-                k = BaseKey.OpenSubKey(subKey);
+                k = ParentKey.OpenSubKey(subKey);
             }
             else
             {
-                k = BaseKey;
+                k = ParentKey;
             }
 
             byte[] defVal;
@@ -815,8 +891,10 @@ namespace DataTools.Desktop
         /// <param name="valueName">The value name.</param>
         /// <param name="value">The values to write.</param>
         /// <param name="subKey">Optional sub key</param>
-        protected void WriteArray<T>(string valueName, IEnumerable<T> value, string subKey = null) where T: struct
+        protected virtual void WriteArray<T>(string valueName, IEnumerable<T> value, string subKey = null) where T: struct
         {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
             RegistryKey k;
 
             var l = new List<T>();
@@ -830,11 +908,11 @@ namespace DataTools.Desktop
 
             if (subKey != null)
             {
-                k = BaseKey.OpenSubKey(subKey);
+                k = ParentKey.OpenSubKey(subKey);
             }
             else
             {
-                k = BaseKey;
+                k = ParentKey;
             }
 
             var output = ArrayToBinary(work);
@@ -845,6 +923,293 @@ namespace DataTools.Desktop
                 k.Close();
             }
         }
+
+        /// <summary>
+        /// Write a <see cref="IDictionary{TKey, TValue}"/> object to a sub key.
+        /// </summary>
+        /// <typeparam name="T">The type parameter.</typeparam>
+        /// <param name="valueName">The name of the key.</param>
+        /// <param name="value">The values to write.</param>
+        /// <param name="subKey">The optional sub key that is above the valueName but below the root key.</param>
+        protected virtual void WriteDictionary<T>(string valueName, IDictionary<string, T> value, string subKey = null) where T: struct
+        {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
+            string sk;
+            RegistryKey k;
+
+            if (subKey != null)
+            {
+                sk = Path.Join(subKey, valueName);
+            }
+            else
+            {
+                sk = valueName;
+            }
+
+            k = ParentKey.OpenSubKey(sk);
+
+            int i = 1;
+
+            foreach (var val in value)
+            {
+                WriteValue(val.Key, val.Value);
+                i++;
+            }
+
+            k.Close();
+        }
+
+        /// <summary>
+        /// Read the values of a sub key into a <see cref="IDictionary{TKey, TValue}"/> object.
+        /// </summary>
+        /// <typeparam name="T">The type parameter.</typeparam>
+        /// <param name="valueName">The name of the key.</param>
+        /// <param name="subKey">The optional sub key that is above the valueName but below the root key.</param>
+        protected virtual IDictionary<string, T> ReadDictionary<T>(string valueName, string subKey = null) where T : struct
+        {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
+            string sk;
+            RegistryKey k;
+
+            if (subKey != null)
+            {
+                sk = Path.Join(subKey, valueName);
+            }
+            else
+            {
+                sk = valueName;
+            }
+
+            k = ParentKey.OpenSubKey(sk);
+
+            string[] vn = k.GetValueNames();
+
+            var dict = new Dictionary<string, T>();
+
+            foreach(var name in vn)
+            {
+                var obj = k.GetValue(name);
+                
+                if (obj == null) continue;
+
+                var value = (T)obj;
+
+                dict.Add(name, value);
+            }
+
+            
+            k.Close();
+
+            return dict;
+        }
+
+
+        /// <summary>
+        /// Write a <see cref="IDictionary{TKey, TValue}"/> object to a sub key.
+        /// </summary>
+        /// <param name="valueName">The name of the key.</param>
+        /// <param name="value">The values to write.</param>
+        /// <param name="subKey">The optional sub key that is above the valueName but below the root key.</param>
+        protected virtual void WriteDictionary(string valueName, IDictionary<string, string> value, string subKey = null)
+        {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
+            string sk;
+            RegistryKey k;
+
+            if (subKey != null)
+            {
+                sk = Path.Join(subKey, valueName);
+            }
+            else
+            {
+                sk = valueName;
+            }
+
+            k = ParentKey.OpenSubKey(sk);
+
+            int i = 1;
+
+            foreach (var val in value)
+            {
+                k.SetValue(val.Key, val.Value);
+                i++;
+            }
+
+            k.Close();
+        }
+
+        /// <summary>
+        /// Read the values of a sub key into a <see cref="IDictionary{TKey, TValue}"/> object.
+        /// </summary>
+        /// <param name="valueName">The name of the key.</param>
+        /// <param name="subKey">The optional sub key that is above the valueName but below the root key.</param>
+        protected virtual IDictionary<string, string> ReadDictionary(string valueName, string subKey = null) 
+        {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+
+            string sk;
+            RegistryKey k;
+
+            if (subKey != null)
+            {
+                sk = Path.Join(subKey, valueName);
+            }
+            else
+            {
+                sk = valueName;
+            }
+
+            k = ParentKey.OpenSubKey(sk);
+
+            string[] vn = k.GetValueNames();
+
+            var dict = new Dictionary<string, string>();
+
+            foreach (var name in vn)
+            {
+                var obj = k.GetValue(name);
+
+                if (obj == null) continue;
+
+                var value = (string)obj;
+
+                dict.Add(name, value);
+            }
+
+
+            k.Close();
+
+            return dict;
+        }
+
+
+        /// <summary>
+        /// Read an object graph from the registry.
+        /// </summary>
+        /// <param name="valueName">The value name of the key that will continue the graph.</param>
+        /// <param name="t">The type of object to read.</param>
+        /// <param name="subKey">The key path between the parent key and the valueName.</param>
+        /// <returns></returns>
+        protected virtual object ReadObject(string valueName, Type t, string subKey = null) 
+        {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+            if (t == null || !t.IsClass) throw new ArgumentException($"Type '{t.FullName}' is not a class");
+
+            var ret = TryCreateInstance(t);
+
+            if (ret == null) throw new ArgumentException($"Cannot create instance of type '{t.FullName}'.");
+
+            string sk;
+            RegistryKey k;
+
+            if (subKey != null)
+            {
+                sk = Path.Join(subKey, valueName);
+            }
+            else
+            {
+                sk = valueName;
+            }
+
+            k = ParentKey.OpenSubKey(sk);
+
+            var pi = t.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (var p in pi)
+            {
+                if (!p.CanWrite) continue;
+                MethodInfo mtd;
+
+                var pb = GetParseableInfo(p.PropertyType, out mtd, out _);
+
+                if (typeof(string).IsAssignableTo(p.PropertyType) || pb)
+                {
+                    string sp = (string)k.GetValue(p.Name);
+
+                    if (sp == null) continue;
+
+                    if (mtd != null)
+                    {
+                        try
+                        {
+                            p.SetValue(ret, mtd.Invoke(null, new object[] { sp }));
+                        }
+                        catch { }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            p.SetValue(ret, sp);
+                        }
+                        catch { }
+                    }
+                }
+                else if (p.PropertyType.IsClass)
+                {
+                    p.SetValue(ret, ReadObject(p.Name, p.PropertyType, sk));
+                }
+            }
+
+            k.Close();
+
+            return ret;
+        }
+
+        /// <summary>
+        /// Write an object graph to a registry key.
+        /// </summary>
+        /// <param name="valueName">The value name of the key that will continue the graph.</param>
+        /// <param name="value">The object to write.</param>
+        /// <param name="subKey">The key path between the parent key and the valueName.</param>
+        protected virtual void WriteObject(string valueName, object value, string subKey = null) 
+        {
+            if (disposed) throw new ObjectDisposedException(nameof(RegistrySettings));
+            Type t = value.GetType();
+            if (t == null || !t.IsClass) throw new ArgumentException();
+
+            string sk;
+            RegistryKey k;
+
+            if (subKey != null)
+            {
+                sk = Path.Join(subKey, valueName);
+            }
+            else
+            {
+                sk = valueName;
+            }
+
+            k = ParentKey.OpenSubKey(sk);
+
+            var pi = t.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (var p in pi)
+            {
+                if (!p.CanWrite) continue;
+
+                var pb = GetParseableInfo(p.PropertyType, out _, out _);
+                
+                if (p.PropertyType.IsAssignableFrom(typeof(string)) || pb)
+                {
+                    string sp = p.GetValue(value)?.ToString() ?? null;
+                    if (sp == null) continue;
+
+                    k.SetValue(p.Name, sp);
+                }
+                else if (p.PropertyType.IsClass)
+                {
+                    WriteObject(p.Name, p.GetValue(value), sk);
+                }
+            }
+
+            k.Close();
+        }
+
+
 
         #region IDisposable
 
@@ -863,6 +1228,9 @@ namespace DataTools.Desktop
 
         protected void Dispose(bool isDisposing)
         {
+            parentKey?.Close();
+            parentKey = null;
+
             baseKey?.Close();
             baseKey = null;
 
