@@ -16,10 +16,15 @@ namespace DataTools.Observable
     /// <summary>
     /// Class or property decorator to specify the key property.
     /// </summary>
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
     public class KeyPropertyAttribute : Attribute
     {
         #region Public Constructors
 
+        /// <summary>
+        /// Instantiate an attribute to specify the key property of an ObservableDictionary.
+        /// </summary>
+        /// <param name="propertyName"></param>
         public KeyPropertyAttribute([CallerMemberName] string propertyName = null)
         {
             PropertyName = propertyName;
@@ -29,6 +34,9 @@ namespace DataTools.Observable
 
         #region Public Properties
 
+        /// <summary>
+        /// Gets the name of the property associated with this attribute.
+        /// </summary>
         public string PropertyName { get; private set; }
 
         #endregion Public Properties
@@ -213,14 +221,18 @@ namespace DataTools.Observable
             {
                 if (!typeof(IComparable<TKey>).IsAssignableFrom(typeof(TKey)))
                 {
-                    foreach (var c in Comparers)
+                    
+                    if (Comparers != null)
                     {
-                        if (typeof(IComparer<TKey>).IsAssignableFrom(c))
+                        foreach (var c in Comparers)
                         {
-                            var tc = (IComparer<TKey>)Assembly.GetExecutingAssembly().CreateInstance(c.FullName);
+                            if (typeof(IComparer<TKey>).IsAssignableFrom(c))
+                            {
+                                var tc = (IComparer<TKey>)Assembly.GetExecutingAssembly().CreateInstance(c.FullName);
 
-                            keycomp = new Comparison<TKey>(tc.Compare);
-                            break;
+                                keycomp = new Comparison<TKey>(tc.Compare);
+                                break;
+                            }
                         }
                     }
 
@@ -268,11 +280,11 @@ namespace DataTools.Observable
             {
                 if (propertyName == null)
                 {
-                    throw new ArgumentException(nameof(propertyName), $"No key property specified or found in '{typeof(TValue).FullName}'.");
+                    throw new ArgumentException(nameof(propertyName), $"No key property specified or found in class type '{typeof(TValue).FullName}'.");
                 }
                 else
                 {
-                    throw new ArgumentException(nameof(propertyName), $"Property '{propertyName}' does not exist in '{typeof(TValue).FullName}'.");
+                    throw new ArgumentException(nameof(propertyName), $"Property '{propertyName}' does not exist in class type '{typeof(TValue).FullName}'.");
                 }
             }
 
@@ -350,7 +362,7 @@ namespace DataTools.Observable
             get => _capacity;
             set
             {
-                EnsureCapacity(value); ;
+                EnsureCapacity(value); 
             }
         }
 
@@ -548,15 +560,24 @@ namespace DataTools.Observable
             Array.Clear(keyToIdx, 0, keyToIdx?.Length ?? 0);
             Array.Clear(idxToKey, 0, idxToKey?.Length ?? 0);
 
-            _Values = null;
-            _Keys = null;
-            keyToIdx = null;
-            idxToKey = null;
-
             _size = 0;
 
             if (_autoBuffer != 0)
+            {
+                _Values = null;
+                _Keys = null;
+                keyToIdx = null;
+                idxToKey = null;
+
                 EnsureCapacity(_autoBuffer);
+            }
+            else
+            {
+                _Values = new TValue[0];
+                _Keys = new TKey[0];
+                keyToIdx = new int[0];
+                idxToKey = new int[0];
+            }
 
             if (CollectionChanged != null)
             {
@@ -674,11 +695,7 @@ namespace DataTools.Observable
             return ret;
         }
 
-        public void RemoveAt(int index)
-
-        {
-            RemoveAt(index, false);
-        }
+        public void RemoveAt(int index) => RemoveAt(index, false);
 
         /// <summary>
         /// Remove an item by its key.
@@ -717,7 +734,7 @@ namespace DataTools.Observable
             }
             else
             {
-                throw new NotSupportedException("No compatible comparer found for type {" + typeof(TValue).Name + "}.");
+                throw new NotSupportedException("No compatible comparer found for type {" + typeof(TValue).FullName + "}.");
             }
         }
 
@@ -809,10 +826,16 @@ namespace DataTools.Observable
             if (ContainsKey(key))
                 throw new ArgumentException($"Collection already contains key '{key}'.", nameof(item));
 
+            // value and index -> key indexes are resized, here.
             Array.Resize(ref _Values, x + 1);
             Array.Resize(ref idxToKey, x + 1);
 
             int idx;
+
+            // key and key -> index indexes are resized in this function.
+            // Search will automatically insert a key.
+            // Search only resizes keys and key to index.  
+            // Conversely, add/remove/move/delete do not resize keys and key indexes, at all.
             Search(key, out idx, true);
 
             keyToIdx[idx] = x;
@@ -839,6 +862,11 @@ namespace DataTools.Observable
 
         }
 
+        /// <summary>
+        /// Add a range of items to the dictionary.
+        /// </summary>
+        /// <param name="items">The items to add.</param>
+        /// <param name="suppressEvent">True to suppress the CollectionChanged event.</param>
         private void AddRange(IEnumerable<TValue> items, bool suppressEvent)
         {
             int c = items.Count();
@@ -880,8 +908,6 @@ namespace DataTools.Observable
                 x++;
                 _size++;
             }
-
-            //KeySort();
 
             if (!suppressEvent && CollectionChanged != null)
             {
@@ -987,11 +1013,13 @@ namespace DataTools.Observable
         /// <summary>
         /// Remove, Insert, Move operations.
         /// </summary>
-        /// <typeparam name="U"></typeparam>
-        /// <param name="mode"></param>
-        /// <param name="arr"></param>
-        /// <param name="oldIndex"></param>
-        /// <param name="newIndex"></param>
+        /// <typeparam name="U">The type of the array on which the operation will be performed.</typeparam>
+        /// <param name="mode">The <see cref="ArrayOperation"/> to execute.</param>
+        /// <param name="arr">The array to manipulate.</param>
+        /// <param name="oldIndex">Old Index.</param>
+        /// <param name="newIndex">New Index.</param>
+        /// <param name="expanded">If the array is larger than its logical size. <paramref name="virtSize"/> must be specified if this value is true.</param>
+        /// <param name="virtSize">The logical size. Must be specified if <paramref name="expanded"/> is true.</param>
         /// <remarks>
         /// In <see cref="ArrayOperation.Insert"/> mode, the item space is created, but the item is not, itself, inserted.
         /// Inserting is up to the caller.
@@ -1375,7 +1403,7 @@ namespace DataTools.Observable
 
             foreach (KeyValuePair<TKey, TValue> item in (IDictionary<TKey, TValue>)this)
             {
-                array[x] = item;
+                array[x++] = item;
             }
         }
 
