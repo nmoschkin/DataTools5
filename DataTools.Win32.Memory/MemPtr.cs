@@ -1275,7 +1275,7 @@ namespace DataTools.Win32.Memory
                 return ReAlloc(size);
             }
 
-            handle = Native.HeapAlloc((IntPtr)hHeap, zeroMem ? 8 : 0, (IntPtr)size);
+            handle = Native.HeapAlloc((IntPtr)hHeap, zeroMem ? 8u : 0, (IntPtr)size);
             al = handle != IntPtr.Zero;
 
             // see if we need to tell the garbage collector anything.

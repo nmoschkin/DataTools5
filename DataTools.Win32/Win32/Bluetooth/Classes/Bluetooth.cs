@@ -2368,7 +2368,7 @@ namespace DataTools.Win32
                 mm.Alloc(size);
                 mm.UIntAt(0L) = ManufacturerId;
                 mm.ByteAt(4L) = LmpVersion;
-                mm.ByteAt(5L) = MatchAnySinglePattern ? 1 : 0;
+                mm.ByteAt(5L) = MatchAnySinglePattern ? (byte)1 : (byte)0;
                 mm.FromStructAt(6L, HciHeader);
                 mm.FromByteArray(Data, dataStart);
                 return mm;
