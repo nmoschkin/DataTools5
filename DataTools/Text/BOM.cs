@@ -694,12 +694,14 @@ namespace DataTools.Text.ByteOrderMark
             }
             else
             {
-                BOM.Type = BOMTYPE.ASCII;
-                retVal = value;
+                BOM._Type = BOMTYPE.ASCII;
+                return value;
             }
 
             BOM._BOM = new byte[b._BOM.Length - 1 + 1];
+
             b._BOM.CopyTo(BOM._BOM, 0);
+
             BOM._Type = b.Type;
 
             return retVal;

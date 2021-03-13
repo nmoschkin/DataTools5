@@ -11,7 +11,6 @@ namespace DataTools.Standard.Memory.StringBlob
     /// StringBlob manages unmanaged arrays of strings in memory (either the LPWSTR or BSTR varierty.)
     /// </summary>
     /// <remarks></remarks>
-    [StructLayout(LayoutKind.Sequential)]
     public class StringBlob : List<string>
     {
 

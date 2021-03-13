@@ -6,6 +6,7 @@
 // ' Commercial use prohibited without express authorization from Nathaniel Moschkin.
 
 using System;
+using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -39,7 +40,7 @@ namespace DataTools.Text.Csv
         public delegate void NotifyPropertyChangedEventHandler(object sender, PropertyChangedEventArgs e);
 
         internal string[] _Lines;
-        internal CsvRow _Cols;
+        internal CsvRow cols;
 
         
         public bool ImportCollection<T>(ICollection<T> col, ImportFlags flags = ImportFlags.Browsable | ImportFlags.Descriptions)
@@ -114,8 +115,8 @@ namespace DataTools.Text.Csv
                 // ' all set, let's make the data.
                 Clear();
 
-                _Cols = new CsvRow(this);
-                _Cols.Columns = scol.ToArray();
+                cols = new CsvRow(this);
+                cols.Columns = scol.ToArray();
 
                 scol.Clear();
 
@@ -180,18 +181,18 @@ namespace DataTools.Text.Csv
             
             try
             {
-                var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-                if (OpenDocument(fs))
+                using (var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    FileName = fileName;
-                    return true;
+                    if (OpenDocument(fs))
+                    {
+                        FileName = fileName;
+                        return true;
+                    }
                 }
             }
             catch (Exception ex)
             {
                 throw ex;
-                //Interaction.MsgBox("Cannot open '" + Path.GetFileName(fileName) + "': " + ex.Message);
             }
 
             return false;
@@ -211,9 +212,9 @@ namespace DataTools.Text.Csv
                 b = new byte[((int)stream.Length)];
                 stream.Read(b, 0, b.Length);
                 
-                Lines = CPGlobal.SafeTextRead(b).Replace("\r\n", "\n").Replace("\r", "\n").Split("\n");
+                Lines = FixBadCsv(Encoding.UTF8.GetString(b)).Split("\n");
             }
-            catch //(Exception ex)
+            catch 
             {
                 return false;
             }
@@ -243,14 +244,15 @@ namespace DataTools.Text.Csv
         public bool SaveDocument(string fileName)
         {
             bool ret;
-            
-            var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None);
-            
-            ret = SaveDocument(fs);
 
-            if (ret)
+            using (var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                FileName = fileName;
+                ret = SaveDocument(fs, false);
+
+                if (ret)
+                {
+                    FileName = fileName;
+                }
             }
 
             return ret;
@@ -278,7 +280,7 @@ namespace DataTools.Text.Csv
         {
             try
             {
-                var b = CPGlobal.SafeTextWrite(((StringBlob)Lines).ToFormattedString(StringBlobFormats.CrLf));
+                var b = Encoding.UTF8.GetBytes(((StringBlob)Lines).ToFormattedString(StringBlobFormats.CrLf));
 
                 stream.Write(b, 0, b.Length);
 
@@ -303,10 +305,10 @@ namespace DataTools.Text.Csv
         /// <remarks></remarks>
         public CsvRow ColumnNames
         {
-            get => _Cols;
+            get => cols;
             set
             {
-                _Cols = value;
+                cols = value;
                 OnPropertyChanged(nameof(ColumnNames));
 
                 CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
@@ -326,9 +328,9 @@ namespace DataTools.Text.Csv
             {
                 var l = new List<string>();
 
-                if (_Cols is object)
+                if (cols is object)
                 {
-                    l.Add(_Cols.Text);
+                    l.Add(cols.Text);
                 }
 
                 l.AddRange(_Lines);
@@ -338,16 +340,18 @@ namespace DataTools.Text.Csv
             set
             {
                 int i;
-                int c = value.Count();
+                int c = value.Length;
 
-                _Lines = new string[c];
+                _Lines = new string[c - 1];
 
                 for (i = 1; i < c; i++)
                     _Lines[i - 1] = value[i];
 
-                _Cols = value[0];
+                cols = value[0];
 
                 OnPropertyChanged(nameof(Lines));
+                OnPropertyChanged(nameof(ColumnNames));
+            
                 CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
         }
@@ -377,6 +381,7 @@ namespace DataTools.Text.Csv
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add));
         }
 
+
         /// <summary>
         /// Gets or sets a CsvRow object to the specified row index.
         /// </summary>
@@ -393,8 +398,13 @@ namespace DataTools.Text.Csv
 
             set
             {
-                _Lines[index] = value.ToString();
-                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace));
+                var newitem = value.Text;
+                var olditem = _Lines[index];
+
+                if (newitem == olditem) return;
+
+                _Lines[index] = value;
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, value, olditem, index));
             }
         }
 
@@ -413,11 +423,19 @@ namespace DataTools.Text.Csv
 
             set
             {
-                Lines = TextTools.GetLines(value);
-                OnPropertyChanged(nameof(Text));
+                Lines = FixBadCsv(value).Split("\n");
 
+                OnPropertyChanged(nameof(Text));
                 CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
+        }
+
+
+        protected string FixBadCsv(string value)
+        {
+            value = value.Replace("\r\n", "\n");
+            Regex r = new Regex("\"\n(?!\")");
+            return r.Replace(value, "\"");
         }
 
         /// <summary>
@@ -434,8 +452,8 @@ namespace DataTools.Text.Csv
                     cc = c.Count();
             }
 
-            if (_Cols.Count() > cc)
-                cc = _Cols.Count();
+            if (cols.Count() > cc)
+                cc = cols.Count();
             return cc;
         }
 

@@ -104,7 +104,7 @@ namespace DataTools.Text.Csv
         /// <remarks></remarks>
         public int FindKeyNumber(string key)
         {
-            string[] s = (string[])row.Parent.ColumnNames;
+            string[] s = row.Parent.ColumnNames;
             int i;
 
             int c = s.Count();

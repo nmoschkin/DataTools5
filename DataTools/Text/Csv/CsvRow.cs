@@ -9,7 +9,7 @@ using DataTools.Observable;
 
 namespace DataTools.Text.Csv
 {
-    public class CsvRow : ObservableBase, ICsvRow, IEnumerable<string>, ICloneable
+    public class CsvRow : ObservableBase, ICsvRow, IEnumerable<string>, ICloneable, IComparable<string>, IComparable<CsvRow>
     {
         protected List<string> fields = new List<string>();
         protected CsvWrapper parent;
@@ -71,6 +71,13 @@ namespace DataTools.Text.Csv
                 value = value.Replace("\n", "").Replace("\r", "");
                 var sa = TextTools.Split(value, ",", true, true, '"', '"', true);
 
+                int c = sa.Length;
+
+                for (var i = 0; i < c; i++)
+                {
+                    sa[i] = sa[i].Replace("\t", " ").Trim();
+                }
+
                 fields.AddRange(sa);
 
                 OnPropertyChanged(nameof(Text));
@@ -104,7 +111,15 @@ namespace DataTools.Text.Csv
             set
             {
                 fields.Clear();
-                fields.AddRange(value);
+
+                if (value != null && value.Length > 0)
+                {
+                    
+                    foreach (var s in value)
+                    {
+                        fields.Add(s.Replace("\t", " ").Trim());
+                    }
+                }
 
                 OnPropertyChanged(nameof(Columns));
             }
@@ -136,14 +151,22 @@ namespace DataTools.Text.Csv
         /// <remarks></remarks>
         public int GetColumnIndex(string name)
         {
+
+            CsvRow cn;
+
             if (parent is null)
-                return -1;
+                cn = this;
+            else
+                cn = parent.ColumnNames;
 
             int i = 0;
+            string tv = name?.Trim().ToUpper() ?? "";
 
-            foreach (var s in parent.ColumnNames)
+            foreach (var s in cn)
             {
-                if ((name.Trim().ToUpper() ?? "") == (s.Trim().ToUpper() ?? ""))
+                string av = (s?.Trim().ToUpper() ?? "");
+
+                if (string.Compare(tv, av) == 0)
                 {
                     return i;
                 }
@@ -155,6 +178,30 @@ namespace DataTools.Text.Csv
         }
 
         /// <summary>
+        /// Gets or sets the value of the data in this row at the specified column matched by name.
+        /// </summary>
+        /// <param name="name">The name of the column.</param>
+        /// <returns></returns>
+        public string this[string name]
+        {
+            get
+            {
+                return fields[GetColumnIndex(name)];
+            }
+            set
+            {
+                var idx = GetColumnIndex(name);
+
+                while (idx >= fields.Count)
+                {
+                    fields.Add("");
+                }
+
+                fields[idx] = value?.Replace("\t", " ").Trim() ?? "";
+            }
+        }
+
+        /// <summary>
         /// Returns the value for the given column name.
         /// The CsvRow object must be associated with a parent CsvWrapper with a list of column names for this function to succeed.
         /// </summary>
@@ -163,22 +210,7 @@ namespace DataTools.Text.Csv
         /// <remarks></remarks>
         public string GetColumnData(string name)
         {
-            if (parent is null)
-                return (-1).ToString();
-
-            int i = 0;
-
-            foreach (var s in parent.ColumnNames)
-            {
-                if ((name.Trim().ToUpper() ?? "") == (s.Trim().ToUpper() ?? ""))
-                {
-                    return Columns[i];
-                }
-
-                i += 1;
-            }
-
-            return null;
+            return this[name];
         }
 
         /// <summary>
@@ -225,7 +257,7 @@ namespace DataTools.Text.Csv
                 while (d != c)
                 {
                     fields.Add("");
-                    d += 1;
+                    d++;
                 }
             }
             else
@@ -291,7 +323,7 @@ namespace DataTools.Text.Csv
             var l = new List<string>();
         
             foreach (var v in values)
-                l.Add(v);
+                l.Add(v?.Replace("\t", " ").Trim() ?? "");
             
             fields = l;
             
@@ -308,50 +340,15 @@ namespace DataTools.Text.Csv
             var l = new List<string>();
 
             foreach (var v in values)
-                l.Add(v);
+                l.Add(v?.Replace("\t", " ").Trim() ?? "");
 
             fields = l;
 
             Normalize();
         }
 
-
-        public static implicit operator CsvRow(string operand)
-        {
-            return new CsvRow(operand);
-        }
-
-        public static implicit operator string(CsvRow operand)
-        {
-            return operand.Text;
-        }
-
-        public static explicit operator string[](CsvRow operand)
-        {
-            return operand.GetValues();
-        }
-
-        public static explicit operator CsvRow(string[] operand)
-        {
-            var c = new CsvRow();
-
-            c.fields.AddRange(operand);
-
-            return c;
-        }
-
-        public object Clone()
-        {
-            var r = new CsvRow();
-
-            foreach (var s in fields)
-                r.fields.Add(s);
-
-            r.Parent = parent;
-
-            return r;
-        }
-
+        public object Clone() => Clone(parent);
+   
         public CsvRow Clone(CsvWrapper parent)
         {
             var r = new CsvRow();
@@ -379,6 +376,141 @@ namespace DataTools.Text.Csv
         {
             return Text;
         }
+
+        public override int GetHashCode()
+        {
+            return (int)Streams.Crc32.Calculate(Encoding.UTF8.GetBytes(Text));
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (obj.GetType() == typeof(string))
+            {
+                return Text.Equals((string)obj);
+            }
+
+            if (obj.GetType() != this.GetType()) return false;
+
+            var fields2 = ((CsvRow)obj).fields;
+
+            if (fields2.Count != fields.Count) return false;
+
+            int i, c = fields.Count;
+
+            for (i = 0; i < c; i++)
+            {
+                if (!fields[i].Equals(fields2[i])) return false;
+            }
+
+            return true;
+        }
+
+        public int CompareTo(CsvRow other)
+        {
+            var c = fields.Count;
+
+            if (other.fields.Count != c)
+            {
+                return c - other.fields.Count;
+            }
+
+            for (int i = 0; i < c; i++)
+            {
+                int d = string.Compare(fields[i], other.fields[i]);
+                if (d != 0) return d;
+            }
+
+            return 0;
+        }
+
+        public int CompareTo(string other)
+        {
+            return string.Compare(this, other);
+        }
+
+        public static bool operator ==(CsvRow val1, string val2)
+        {
+            if (!(val1 is object) && !(val2 is object)) return true;
+            if (!(val1 is object) && (val2 is object)) return false;
+            if ((val1 is object) && !(val2 is object)) return false;
+
+
+            return val1.Equals(val2);
+        }
+
+        public static bool operator !=(CsvRow val1, string val2)
+        {
+            if (!(val1 is object) && !(val2 is object)) return false;
+            if (!(val1 is object) && (val2 is object)) return true;
+            if ((val1 is object) && !(val2 is object)) return true;
+
+            return !val1.Equals(val2);
+        }
+
+        public static bool operator ==(string val1, CsvRow val2)
+        {
+            if (!(val1 is object) && !(val2 is object)) return true;
+            if (!(val1 is object) && (val2 is object)) return false;
+            if ((val1 is object) && !(val2 is object)) return false;
+
+
+            return val1.Equals(val2);
+        }
+
+        public static bool operator !=(string val1, CsvRow val2)
+        {
+            if (!(val1 is object) && !(val2 is object)) return false;
+            if (!(val1 is object) && (val2 is object)) return true;
+            if ((val1 is object) && !(val2 is object)) return true;
+
+            return !val1.Equals(val2);
+        }
+
+
+        public static bool operator ==(CsvRow val1, CsvRow val2)
+        {
+            if (!(val1 is object) && !(val2 is object)) return true;
+            if (!(val1 is object) && (val2 is object)) return false;
+            if ((val1 is object) && !(val2 is object)) return false;
+
+
+            return val1.Equals(val2);
+        }
+
+        public static bool operator !=(CsvRow val1, CsvRow val2)
+        {
+            if (!(val1 is object) && !(val2 is object)) return false;
+            if (!(val1 is object) && (val2 is object)) return true;
+            if ((val1 is object) && !(val2 is object)) return true;
+
+            return !val1.Equals(val2);
+        }
+
+
+        public static implicit operator CsvRow(string operand)
+        {
+            return new CsvRow(operand);
+        }
+
+        public static implicit operator string(CsvRow operand)
+        {
+            return operand.Text;
+        }
+
+        public static implicit operator string[](CsvRow operand)
+        {
+            return operand.GetValues();
+        }
+
+        public static implicit operator CsvRow(string[] operand)
+        {
+            var c = new CsvRow();
+            c.fields.AddRange(operand);
+            return c;
+        }
+
     }
 
 
