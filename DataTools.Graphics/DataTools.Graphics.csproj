@@ -20,6 +20,7 @@
     <ProjectReference Include="..\DataTools\DataTools.csproj" />
   </ItemGroup>
 
+
   <ItemGroup>
     <Compile Update="AppResources.Designer.cs">
       <DependentUpon>AppResources.resx</DependentUpon>
