@@ -2033,6 +2033,7 @@ namespace DataTools.Text
 
             if (input == null)
                 return "";
+
             input = SearchReplace(input, "_", " ");
 
             b = input.Length - 1;
@@ -2057,11 +2058,11 @@ namespace DataTools.Text
                     {
                         if (a == 0 || nextCap)
                         {
-                            varOut.Append(input[a].ToString().ToUpper());
+                            varOut.Append(char.ToUpper(input[a]));
                         }
                         else 
                         {
-                            varOut.Append(input[a].ToString().ToLower());
+                            varOut.Append(char.ToLower(input[a]));
                         }
 
                         if (nextCap)
