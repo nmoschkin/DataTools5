@@ -20,6 +20,7 @@ namespace DataTools.Desktop
     {
         private IShellItem shellObj;
         private IShellItemPS psshellObj;
+        private IShellItem2 psshellObj2;
 
         private string displayName;
         private string filename;
@@ -60,6 +61,7 @@ namespace DataTools.Desktop
                     // let's see if we can parse it.
                     IShellItem shitem = null;
                     IShellItemPS pssh = null;
+                    IShellItem2 shitem2 = null;
 
                     res = NativeShell.SHCreateItemFromParsingName(parsingName, IntPtr.Zero, ref riid, ref shitem);
                     string fp = null;
@@ -68,6 +70,11 @@ namespace DataTools.Desktop
                     {
                         NativeShell.SHCreateItemFromParsingName(parsingName, IntPtr.Zero, ref riid, ref pssh);
                         psshellObj = pssh;
+
+                        riid = Guid.Parse(ShellIIDGuid.IShellItem2);
+                        NativeShell.SHCreateItemFromParsingName(parsingName, IntPtr.Zero, ref riid, ref shitem2);
+                        psshellObj2 = shitem2;
+
 
                         shitem.GetDisplayName(ShellItemDesignNameOptions.DesktopAbsoluteParsing, out mm.handle);
                         fp = (string)mm;
@@ -541,6 +548,14 @@ namespace DataTools.Desktop
             return pks;
         }
 
+        public T GetPropertyValue<T>(string key)
+        {
+            var pk = PropertyKeys.FindByName(key);
+            if (!pk.HasValue) return default;
+
+            return (T)GetPropertyValue(pk.Value);
+        }
+
         public object GetPropertyValue(string key)
         {
             var pk = PropertyKeys.FindByName(key);
@@ -549,6 +564,7 @@ namespace DataTools.Desktop
             return GetPropertyValue(pk.Value);
         }
 
+        
         public object GetPropertyValue(PropertyKey key)
         {
             if (psshellObj == null) return null;
@@ -572,30 +588,138 @@ namespace DataTools.Desktop
                 else return null;
 
             }
-            catch(Exception ex)
+            catch
             {
                 return null;
             }
 
         }
 
+        public bool SetPropertyValues(Dictionary<string, object> values)
+        {
+            IPropertyStore p = null;
+            bool b = true;
+
+            foreach (var kv in values)
+            {
+                var pk = PropertyKeys.FindByName(kv.Key);
+                if (!pk.HasValue)
+                {
+                    b = false;
+                    continue;
+                }
+
+                b &= SetPropertyValue((PropertyKey)pk, kv.Value, false, ref p);
+
+                if (p == null)
+                {
+                    b = false;
+                    break;
+                }
+
+            }
+
+            if (p != null)
+            {
+                p.Commit();
+
+                Marshal.FinalReleaseComObject(p);
+                p = null;
+                GC.Collect(0);
+            }
+
+
+            return b;
+        }
+
+        public bool SetPropertyValues(Dictionary<PropertyKey, object> values)
+        {
+            IPropertyStore p = null;
+            bool b = true;
+
+            foreach (var kv in values)
+            {
+                b &= SetPropertyValue(kv.Key, kv.Value, false, ref p);
+
+                if (p == null)
+                {
+                    b = false;
+                    break;
+                }
+
+            }
+
+            if (p != null)
+            {
+                p.Commit();
+                Marshal.FinalReleaseComObject(p);
+                p = null;
+                GC.Collect(0);
+            }
+
+            return b;
+        }
+
+        public bool SetPropertyValue<T>(string key, T value)
+        {
+            var pk = PropertyKeys.FindByName(key);
+            if (!pk.HasValue) return false;
+
+            else return SetPropertyValue((PropertyKey)pk, value);
+        }
+
+        public bool SetPropertyValue(string key, object value)
+        {
+            var pk = PropertyKeys.FindByName(key);
+            if (!pk.HasValue) return false;
+
+            else return SetPropertyValue((PropertyKey)pk, value);
+        }
+
         public bool SetPropertyValue(PropertyKey key, object value)
         {
-            if (psshellObj == null) return false;
+            IPropertyStore p = null;
+            var b = SetPropertyValue(key, value, true, ref p);
+            Marshal.FinalReleaseComObject(p);
+            return b;
+        }
 
-            var g1 = Guid.Parse(ShellBHIDGuid.PropertyStore);
-            var g2 = Guid.Parse(ShellIIDGuid.IPropertyStore);
 
-            IPropertyStore p;
+        private bool SetPropertyValue(PropertyKey key, object value, bool commit, ref IPropertyStore p)
+        {
+            if (psshellObj == null)
+            {
+                return false;
+            }
+            
+            HResult h;
 
-            var h = psshellObj.BindToHandler(IntPtr.Zero, ref g1, ref g2, out p);
+            if (p == null)
+            {
+                var g1 = Guid.Parse(ShellBHIDGuid.PropertyStore);
+                var g2 = Guid.Parse(ShellIIDGuid.IPropertyStore);
 
-            if (h != HResult.Ok) return false;
+                h = (HResult)psshellObj2.GetPropertyStore(GetPropertyStoreOptions.ReadWrite, g2, out p);
+
+                if (h != HResult.Ok)
+                {
+                    var str = NativeErrorMethods.FormatLastError((uint)h);
+
+                    h = psshellObj.BindToHandler(IntPtr.Zero, ref g1, ref g2, out p);
+
+                    if (h != HResult.Ok) return false;
+                }
+            }
+
+            if (p == null) return false;
 
             try
             {
                 PropVariant pv = PropVariant.FromObject(value);
+
                 h = p.SetValue(ref key, pv);
+                if (commit) p.Commit();
+
 
                 if (h != HResult.Ok) return false;
                 return true;
@@ -706,6 +830,7 @@ namespace DataTools.Desktop
             {
                 IShellItem shitem = null;
                 IShellItemPS pssh = null;
+                IShellItem2 shitem2 = null;
 
                 var riid = Guid.Parse(ShellIIDGuid.IShellItem);
 
@@ -717,6 +842,11 @@ namespace DataTools.Desktop
 
                     NativeShell.SHCreateItemFromParsingName(filename, IntPtr.Zero, ref riid, ref pssh);
                     psshellObj = pssh;
+
+                    riid = Guid.Parse(ShellIIDGuid.IShellItem2);
+                    NativeShell.SHCreateItemFromParsingName(filename, IntPtr.Zero, ref riid, ref shitem2);
+                    psshellObj2 = shitem2;
+
                 }
             }
 

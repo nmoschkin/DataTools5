@@ -2058,7 +2058,11 @@ namespace DataTools.Text
                     {
                         if (a == 0 || nextCap)
                         {
-                            varOut.Append(char.ToUpper(input[a]));
+                            if (a > 0 && input[a - 1] == '\'')
+                                varOut.Append(char.ToLower(input[a]));
+                            else
+                                varOut.Append(char.ToUpper(input[a]));
+
                         }
                         else 
                         {

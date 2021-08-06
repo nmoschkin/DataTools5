@@ -52,12 +52,18 @@ namespace DataTools.Shell.Native
 
         static PropertyKeys()
         {
-            var fis = typeof(PropertyKeys).GetFields(BindingFlags.Public | BindingFlags.Static);
+            var unsprop = typeof(PropertyKeys).GetFields(BindingFlags.Public | BindingFlags.Static);
 
+
+            var fis = new List<FieldInfo>(unsprop);
+
+            fis.Sort((a, b) =>
+            {
+                return string.Compare(a.Name, b.Name);
+            });
 
             foreach (var fi in fis)
             {
-
                 var obj = fi.GetValue(null);
 
                 if (obj is PropertyKey pk)
