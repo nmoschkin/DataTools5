@@ -1,1532 +1,905 @@
-﻿using System;
-using System.ComponentModel;
-using System.Collections;
-using System.Reflection;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Runtime.CompilerServices;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
+﻿
 using Newtonsoft.Json;
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Net.Http.Headers;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DataTools.Observable
 {
+
     /// <summary>
-    /// Class or property decorator to specify the key property.
+    /// Identify a property inside of a class as a default value for the key of an <see cref="ObservableDictionary{TKey, TValue}"/>.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property)]
     public class KeyPropertyAttribute : Attribute
     {
-        #region Public Constructors
+        public string PropertyName { get; private set; }
 
         /// <summary>
-        /// Instantiate an attribute to specify the key property of an ObservableDictionary.
+        /// The name of the property.
         /// </summary>
+        /// <remarks>
+        /// If this attribute is used at the class level, the property name must be specified.
+        /// </remarks>
         /// <param name="propertyName"></param>
         public KeyPropertyAttribute([CallerMemberName] string propertyName = null)
         {
             PropertyName = propertyName;
         }
 
-        #endregion Public Constructors
-
-        #region Public Properties
+        public override string ToString() => PropertyName;
 
         /// <summary>
-        /// Gets the name of the property associated with this attribute.
+        /// Gets the value of the property with the specified name from the specified object.
         /// </summary>
-        public string PropertyName { get; private set; }
+        /// <typeparam name="T">The type of the property value to retrieve.</typeparam>
+        /// <param name="obj">The object from which to retrieve the property value.</param>
+        /// <returns></returns>
+        public T GetValue<T>(object obj)
+        {
+            return (T)obj.GetType().GetProperty(PropertyName)?.GetValue(obj);
+        }
 
-        #endregion Public Properties
+        /// <summary>
+        /// Gets the property info for the specified object.
+        /// </summary>
+        /// <param name="obj">The object from which to retrieve the property.</param>
+        /// <returns></returns>
+        public PropertyInfo GetProperty(object obj)
+        {
+            return obj.GetType().GetProperty(PropertyName);
+        }
     }
 
+
+
     /// <summary>
-    /// Sortable, keyed observable dictionary for classes.
+    /// A dictionary class that implements <see cref="INotifyCollectionChanged"/>.
     /// </summary>
-    /// <typeparam name="TKey">The key type.  <see cref="TKey"/> must implement <see cref="IComparable{TKey}"/> or a suitable comparison must be provided.</typeparam>
-    /// <typeparam name="TValue">The value type.  <see cref="TValue"/> must contain a property of type <see cref="TKey"/>.</typeparam>
-    public class ObservableDictionary<TKey, TValue> : ObservableBase, IDictionary<TKey, TValue>, IList<TValue>, INotifyCollectionChanged where TValue : class
+    /// <typeparam name="TKey">They key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    public class ObservableDictionary<TKey, TValue> : KeyedCollection<TKey, TValue>, INotifyCollectionChanged, INotifyPropertyChanged where TValue : class
     {
-        #region Private Fields
-
-        private int _autoBuffer = 10;
-
-        private int _capacity = 0;
-
-        private TKey[] _Keys;
-
-        private int _size = 0;
-
-        private TValue[] _Values;
-
-        private bool dynamic = true;
-
-        private int[] idxToKey;
-
-        private bool isObs;
-
-        private Comparison<TKey> keycomp;
-
-        private PropertyInfo keyProp;
-
-        private string keyPropName;
-
-        private int[] keyToIdx;
-
-        #endregion Private Fields
-
-        #region Public Constructors
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        public ObservableDictionary() : this(null, (Comparison<TKey>)null)
-        {
-        }
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        /// <param name="propertyName">The name of the property in the class object to use as the key.</param>
-        public ObservableDictionary(string propertyName) : this(propertyName, (Comparison<TKey>)null)
-        {
-        }
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        /// <param name="items">An <see cref="IReadOnlyDictionary{TKey, TValue}"/> of items used to initialize the collection.</param>
-        public ObservableDictionary(IReadOnlyDictionary<TKey, TValue> items) : this(null, (Comparison<TKey>)null, items)
-        {
-        }
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        /// <param name="items">An <see cref="IEnumerable{TValue}"/> of items used to initialize the collection.</param>
-        public ObservableDictionary(IEnumerable<TValue> items) : this(null, (Comparison<TKey>)null, items)
-        {
-        }
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        /// <param name="propertyName">The name of the property in the class object to use as the key.</param>
-        /// <param name="items">An <see cref="IReadOnlyDictionary{TKey, TValue}"/> of items used to initialize the collection.</param>
-        public ObservableDictionary(string propertyName, IReadOnlyDictionary<TKey, TValue> items) : this(propertyName, (Comparison<TKey>)null, items)
-        {
-        }
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        /// <param name="propertyName">The name of the property in the class object to use as the key.</param>
-        /// <param name="items">An <see cref="IEnumerable{TValue}"/> of items used to initialize the collection.</param>
-        public ObservableDictionary(string propertyName, IEnumerable<TValue> items) : this(propertyName, (Comparison<TKey>)null, items)
-        {
-        }
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        /// <param name="keyComparer">The <see cref="IComparer{TKey}"/> to use to sort the keys.</param>
-        /// <param name="items">An <see cref="IReadOnlyDictionary{TKey, TValue}"/> of items used to initialize the collection.</param>
-        public ObservableDictionary(IComparer<TKey> keyComparer, IReadOnlyDictionary<TKey, TValue> items) : this(null, new Comparison<TKey>(keyComparer.Compare), items)
-        {
-        }
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        /// <param name="keyComparer">The <see cref="IComparer{TKey}"/> to use to sort the keys.</param>
-        /// <param name="items">An <see cref="IEnumerable{TValue}"/> of items used to initialize the collection.</param>
-        public ObservableDictionary(IComparer<TKey> keyComparer, IEnumerable<TValue> items) : this(null, new Comparison<TKey>(keyComparer.Compare), items)
-        {
-        }
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        /// <param name="keyComparison">The <see cref="Comparison{TKey}"/> to use to sort the keys.</param>
-        /// <param name="items">An <see cref="IReadOnlyDictionary{TKey, TValue}"/> of items used to initialize the collection.</param>
-        public ObservableDictionary(Comparison<TKey> keyComparison, IReadOnlyDictionary<TKey, TValue> items) : this(null, keyComparison, items)
-        {
-        }
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        /// <param name="keyComparison">The <see cref="Comparison{TKey}"/> to use to sort the keys.</param>
-        /// <param name="items">An <see cref="IEnumerable{TValue}"/> of items used to initialize the collection.</param>
-        public ObservableDictionary(Comparison<TKey> keyComparison, IEnumerable<TValue> items) : this(null, keyComparison, items)
-        {
-        }
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        /// <param name="propertyName">The name of the property in the class object to use as the key.</param>
-        /// <param name="keyComparer">The <see cref="IComparer{TKey}"/> to use to sort the keys.</param>
-        /// <param name="items">An <see cref="IReadOnlyDictionary{TKey, TValue}"/> of items used to initialize the collection.</param>
-        public ObservableDictionary(string propertyName, IComparer<TKey> keyComparer, IReadOnlyDictionary<TKey, TValue> items) : this(propertyName, new Comparison<TKey>(keyComparer.Compare), items)
-        {
-        }
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        /// <param name="propertyName">The name of the property in the class object to use as the key.</param>
-        /// <param name="keyComparer">The <see cref="IComparer{TKey}"/> to use to sort the keys.</param>
-        /// <param name="items">An <see cref="IEnumerable{TValue}"/> of items used to initialize the collection.</param>
-        public ObservableDictionary(string propertyName, IComparer<TKey> keyComparer, IEnumerable<TValue> items) : this(propertyName, new Comparison<TKey>(keyComparer.Compare), items)
-        {
-        }
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        /// <param name="propertyName">The name of the property in the class object to use as the key.</param>
-        /// <param name="keyComparison">The <see cref="Comparison{TKey}"/> to use to sort the keys.</param>
-        /// <param name="items">An <see cref="IReadOnlyDictionary{TKey, TValue}"/> of items used to initialize the collection.</param>
-        public ObservableDictionary(string propertyName, Comparison<TKey> keyComparison, IReadOnlyDictionary<TKey, TValue> items) : this(propertyName, keyComparison)
-        {
-            AddRange(items);
-        }
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        /// <param name="propertyName">The name of the property in the class object to use as the key.</param>
-        /// <param name="keyComparison">The <see cref="Comparison{TKey}"/> to use to sort the keys.</param>
-        /// <param name="items">An <see cref="IEnumerable{TValue}"/> of items used to initialize the collection.</param>
-        public ObservableDictionary(string propertyName, Comparison<TKey> keyComparison, IEnumerable<TValue> items) : this(propertyName, keyComparison)
-        {
-            AddRange(items, true);
-        }
-
-        /// <summary>
-        /// Create a new <see cref="ObservableDictionary{TKey, TValue}"/>
-        /// </summary>
-        /// <param name="propertyName">The name of the property in the class object to use as the key.</param>
-        /// <param name="keyComparison">The <see cref="Comparison{TKey}"/> to use to sort the keys.</param>
-        public ObservableDictionary(string propertyName, Comparison<TKey> keyComparison)
-        {
-            if (keyComparison != null)
-            {
-                keycomp = keyComparison;
-            }
-            else
-            {
-                if (!typeof(IComparable<TKey>).IsAssignableFrom(typeof(TKey)))
-                {
-                    
-                    if (Comparers != null)
-                    {
-                        foreach (var c in Comparers)
-                        {
-                            if (typeof(IComparer<TKey>).IsAssignableFrom(c))
-                            {
-                                var tc = (IComparer<TKey>)Assembly.GetExecutingAssembly().CreateInstance(c.FullName);
-
-                                keycomp = new Comparison<TKey>(tc.Compare);
-                                break;
-                            }
-                        }
-                    }
-
-                    if (keycomp == null)
-                    {
-                        throw new NotSupportedException("No compatible comparer found for type '" + typeof(TKey).FullName + "'.");
-                    }
-                }
-            }
-
-            Type valType = typeof(TValue);
-
-            if (propertyName != null)
-            {
-                keyProp = valType.GetProperty(propertyName);
-            }
-            else
-            {
-                Attribute attr;
-
-                attr = valType.GetCustomAttribute(typeof(KeyPropertyAttribute));
-
-                if (attr is KeyPropertyAttribute kpa && !string.IsNullOrEmpty(kpa.PropertyName))
-                {
-                    keyProp = valType.GetProperty(kpa.PropertyName);
-                }
-
-                if (keyProp == null)
-                {
-                    var props = valType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-                    foreach (var prop in props)
-                    {
-                        attr = prop.GetCustomAttribute(typeof(KeyPropertyAttribute));
-                        if (attr != null)
-                        {
-                            keyProp = prop;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (keyProp == null)
-            {
-                if (propertyName == null)
-                {
-                    throw new ArgumentException(nameof(propertyName), $"No key property specified or found in class type '{typeof(TValue).FullName}'.");
-                }
-                else
-                {
-                    throw new ArgumentException(nameof(propertyName), $"Property '{propertyName}' does not exist in class type '{typeof(TValue).FullName}'.");
-                }
-            }
-
-            if (keyProp.PropertyType != typeof(TKey))
-            {
-                throw new ArgumentException(nameof(propertyName), $"Property '{propertyName}' is not of type '{typeof(TKey).FullName}'.");
-            }
-
-
-            if (typeof(INotifyPropertyChanged).IsAssignableFrom(valType) && keyProp.CanWrite)
-            {
-
-                // we can observe a key that could change.
-                isObs = true;
-            }
-
-
-            keyPropName = keyProp.Name;
-            EnsureCapacity(_autoBuffer);
-        }
-
-        #endregion Public Constructors
-
-        #region Public Events
+        protected object lockObject = new object();
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-        #endregion Public Events
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        #region Private Enums
+        protected string id = Guid.NewGuid().ToString("d");
 
-        private enum ArrayOperation
-        {
-            Remove,
-            Insert,
-            Move
-        }
+        protected string keyProperty = null;
 
-        #endregion Private Enums
+        protected PropertyInfo keyPropInfo = null;
 
-        #region Public Properties
+        protected ListSortDirection direction;
 
-        /// <summary>
-        /// List of registered <see cref="Comparer{TKey}"/> instances.
-        /// </summary>
-        public static List<Type> Comparers { get; set; } = new List<Type>();
+        protected Comparison<TValue> comparer;
+
+        protected bool sorted;
+
+        protected bool noevent;
 
         /// <summary>
-        /// Get or set the number of elements to expand the buffer when capacity is reached.
+        /// Create a new observable dictionary.
         /// </summary>
-        /// <remarks>
-        /// Set to 0 to disable.
-        /// </remarks>
-        [JsonIgnore]
-        public int AutoBuffer
-        {
-            get => _autoBuffer;
-            set
-            {
-                int oldVal = _autoBuffer;
+        public ObservableDictionary() : base()
+        {                
+            var attr = typeof(TValue).GetCustomAttribute<KeyPropertyAttribute>();
 
-                if (SetProperty(ref _autoBuffer, value) && _autoBuffer > oldVal)
+            if (attr == null || typeof(TValue).GetProperty(attr.PropertyName) == null)
+            { 
+                var v = typeof(TValue).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+                foreach (var p in v)
                 {
-                    EnsureCapacity(_capacity + _autoBuffer);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the capacity of the collection buffer.
-        /// </summary>
-        [JsonIgnore]
-        public int Capacity
-        {
-            get => _capacity;
-            set
-            {
-                EnsureCapacity(value); 
-            }
-        }
-
-        [JsonIgnore]
-        public int Count => _size;
-        int ICollection<KeyValuePair<TKey, TValue>>.Count => _size;
-
-        /// <summary>
-        /// Gets or sets a value indicating that items can be dynamically added via indexer reference if they are not already present.
-        /// </summary>
-        [JsonIgnore]
-        public bool Dynamic
-        {
-            get => dynamic;
-            set
-            {
-                SetProperty(ref dynamic, value);
-            }
-        }
-
-        public bool IsReadOnly => false;
-        bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
-
-        /// <summary>
-        /// Gets or sets the <see cref="Comparison{TKey}"/> to use to sort the keys.
-        /// </summary>
-        [JsonIgnore]
-        public Comparison<TKey> KeyComparison
-        {
-            get => keycomp;
-            set
-            {
-                SetProperty(ref keycomp, value);
-            }
-        }
-
-        /// <summary>
-        /// Get the <see cref="PropertyInfo"/> for the <see cref="TKey"/> value.
-        /// </summary>
-        [JsonIgnore]
-        public PropertyInfo KeyProperty
-        {
-            get => keyProp;
-        }
-
-        /// <summary>
-        /// Gets the name of the key property.
-        /// </summary>
-        [JsonProperty("KeyProperty")]
-        public string KeyPropertyName
-        {
-            get => keyPropName;
-        }
-
-        public ICollection<TKey> Keys
-        {
-            get
-            {
-                var x = new TKey[_size];
-                if (_size == 0) return x;
-
-                Array.ConstrainedCopy(_Keys, 0, x, 0, _size);
-                return x;
-            }
-        }
-
-        public ICollection<TValue> Values
-        {
-            get => ToArray();
-        }
-
-        #endregion Public Properties
-
-        #region Public Indexers
-
-        TValue IList<TValue>.this[int index]
-        {
-            get => _Values[index];
-            set
-            {
-                var item = _Values[index];
-                _Values[index] = value;
-
-                if (CollectionChanged != null)
-                {
-                    var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, value, item);
-                    CollectionChanged.Invoke(this, e);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the value of the item represented by the specified key.
-        /// </summary>
-        /// <param name="key">The key of the item.</param>
-        /// <returns></returns>
-        public TValue this[TKey key]
-        {
-            get
-            {
-                int i = Search(key);
-
-                if (i >= 0)
-                {
-                    return _Values[i];
-                }
-                else
-                {
-                    throw new KeyNotFoundException(key.ToString());
-                }
-            }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-
-                int i;
-                i = Search(key);
-
-                if (i >= 0)
-                {
-                    var item = _Values[i];
-
-                    if (item.Equals(value)) return;
-
-                    _Values[i] = value;
-
-                    if (CollectionChanged != null)
-                    {
-                        var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, value, item);
-                        CollectionChanged.Invoke(this, e);
-                    }
-                }
-                else
-                {
-                    if (dynamic)
-                        Add(key, value);
-                    else
-                        throw new KeyNotFoundException(key.ToString());
-                }
-            }
-        }
-
-        #endregion Public Indexers
-
-        #region Public Methods
-
-        public void Add(TValue item)
-        {
-            Add(item, false);
-        }
-
-        /// <summary>
-        /// Add a range of items to the collection.
-        /// </summary>
-        /// <param name="items">The list of items to add.</param>
-        public void AddRange(IEnumerable<TValue> items) => AddRange(items, false);
-
-        public void AddRange(IReadOnlyDictionary<TKey, TValue> items)
-        {
-            foreach (var item in items)
-            {
-                TKey kv = (TKey)keyProp.GetValue(item.Value);
-
-                if (!kv.Equals(item.Key))
-                {
-                    throw new InvalidOperationException($"Key must match value of '{keyPropName}' property.");
-                }
-            }
-
-            AddRange(items.Values);
-        }
-
-        public void Clear()
-        {
-            if (_Values == null) return;
-
-            if (isObs)
-            {
-                int c = _capacity = _Values?.Length ?? 0;
-                for (int i = 0; i < c; i++)
-                {
-                    if (_Values[i] != null && _Values[i] is INotifyPropertyChanged v)
-                    {
-                        v.PropertyChanged -= Value_PropertyChanged;
-                    }
-                    else
+                    attr = p.GetCustomAttribute<KeyPropertyAttribute>();
+                    if (attr != null)
                     {
                         break;
                     }
                 }
             }
-
-            Array.Clear(_Values, 0, _Values?.Length ?? 0);
-            Array.Clear(_Keys, 0, _Keys?.Length ?? 0);
-            Array.Clear(keyToIdx, 0, keyToIdx?.Length ?? 0);
-            Array.Clear(idxToKey, 0, idxToKey?.Length ?? 0);
-
-            _size = 0;
-
-            if (_autoBuffer != 0)
+            
+            if (attr != null)
             {
-                _Values = null;
-                _Keys = null;
-                keyToIdx = null;
-                idxToKey = null;
+                var pi = typeof(TValue).GetProperty(attr.PropertyName);
 
-                EnsureCapacity(_autoBuffer);
+                if (!typeof(TKey).IsAssignableFrom(pi.PropertyType)) throw new InvalidCastException($"{pi.PropertyType.FullName} is an invalid type for key.");
+
+                keyProperty = attr.PropertyName;
+                keyPropInfo = pi;
             }
             else
             {
-                _Values = new TValue[0];
-                _Keys = new TKey[0];
-                keyToIdx = new int[0];
-                idxToKey = new int[0];
+                throw new MissingMemberException("Cannot determine the key property for this collection of objects.  Try calling a different constructor, or use the KeyPropertyAttribute.");
             }
 
-            if (CollectionChanged != null)
+            // default comparer
+            if (typeof(IComparable<TKey>).IsAssignableFrom(typeof(TKey))) 
             {
-                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
-                CollectionChanged.Invoke(this, e);
-                OnPropertyChanged(nameof(Count));
-            }
-        }
-
-        public bool Contains(TValue item)
-        {
-            TKey tk = (TKey)keyProp.GetValue(item);
-            int idx = Search(tk);
-            return idx != -1;
-        }
-
-        /// <summary>
-        /// Check whether a key exists in the collection.
-        /// </summary>
-        /// <param name="key">The key to search for.</param>
-        /// <returns>True if the key exists</returns>
-        public bool ContainsKey(TKey key)
-        {
-            return ContainsKey(key, out _);
-        }
-
-        /// <summary>
-        /// Check whether a key exists in the collection.
-        /// </summary>
-        /// <param name="key">The key to search for.</param>
-        /// <param name="item">Receives the item at the location indicated by the key.</param>
-        /// <returns>True if the key exists</returns>
-        public bool ContainsKey(TKey key, out TValue item)
-        {
-            int i;
-
-            i = Search(key);
-
-            if (i != -1)
-            {
-                item = _Values[i];
-                return true;
-            }
-            else
-            {
-                item = null;
-                return false;
-            }
-        }
-        public void CopyTo(TValue[] array, int arrayIndex)
-        {
-            _Values.CopyTo(array, arrayIndex);
-        }
-
-        public int IndexOf(TValue item)
-        {
-            int i = 0;
-            foreach (var t in _Values)
-            {
-                if (t == item) return i;
-                i++;
-            }
-            return -1;
-        }
-
-        /// <summary>
-        /// Gets the index of the item by key.
-        /// </summary>
-        /// <param name="key">The key of the item.</param>
-        /// <returns></returns>
-        public int IndexOfKey(TKey key) => Search(key);
-
-        public void Insert(int index, TValue item)
-        {
-            Insert(index, item, false);
-        }
-
-        /// <summary>
-        /// Move an item in the collection from one index to another.
-        /// </summary>
-        /// <param name="oldIndex">The source item index.</param>
-        /// <param name="newIndex">The destination item index.</param>
-        public void Move(int oldIndex, int newIndex)
-        {
-            var item = _Values[oldIndex];
-
-            RemoveAt(oldIndex, true);
-            Insert(newIndex, item, true);
-
-            if (CollectionChanged != null)
-            {
-                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newIndex, oldIndex);
-                CollectionChanged.Invoke(this, e);
-            }
-        }
-
-        public bool Remove(TValue item)
-        {
-            bool ret;
-
-            int i = IndexOf(item);
-            ret = i >= 0;
-
-            if (ret)
-            {
-                if (isObs && _Values[i] is INotifyPropertyChanged p)
+                comparer = new Comparison<TValue>((obja, objb) =>
                 {
-                    p.PropertyChanged -= Value_PropertyChanged;
+                    TKey a = (TKey)keyPropInfo.GetValue(obja);
+                    TKey b = (TKey)keyPropInfo.GetValue(objb);
+
+                    if (!(a is object) && !(b is object))
+                    {
+                        return 0;
+                    }
+                    else if (!(a is object))
+                    {
+                        return 1;
+                    }
+                    else if (!(b is object))
+                    {
+                        return -1;
+                    }
+
+                    return ((IComparable<TKey>)a).CompareTo(b);
+                });
+
+                sorted = true;
+                direction = ListSortDirection.Ascending;
+            }
+            else
+            {
+                direction = ListSortDirection.Ascending;
+                comparer = MakeComparison();
+
+                sorted = (comparer != null);
+            }
+
+        }
+
+        /// <summary>
+        /// Create a new dictionary with the specified sort configuration.
+        /// </summary>
+        /// <param name="valueComparer">The value comparer</param>
+        /// <param name="direction">The sort direction</param>
+        public ObservableDictionary(IComparer<TValue> valueComparer, ListSortDirection direction) : this()
+        {
+            ChangeSort(valueComparer, direction);
+        }
+
+        /// <summary>
+        /// Create a new dictionary with the specified sort configuration.
+        /// </summary>
+        /// <param name="valueComparison">The value comparison</param>
+        /// <param name="direction">The sort direction</param>
+        public ObservableDictionary(Comparison<TValue> valueComparison, ListSortDirection direction) : this()
+        {
+            ChangeSort(valueComparison, direction);
+        }
+
+        /// <summary>
+        /// Create a new dictionary with the specified sort configuration.
+        /// </summary>
+        /// <param name="sortPropertyName">The name of the property to sort on</param>
+        /// <param name="direction">The sort direction</param>
+        public ObservableDictionary(string sortPropertyName, ListSortDirection direction) : this()
+        {
+            ChangeSort(sortPropertyName, direction);
+        }
+
+        /// <summary>
+        /// Create a new dictionary with the specified sort configuration.
+        /// </summary>
+        /// <param name="valueComparer">The value comparer</param>
+        /// <param name="direction">The sort direction</param>
+        /// <param name="values">Items to initialize the collection with</param>
+        public ObservableDictionary(IComparer<TValue> valueComparer, ListSortDirection direction, IEnumerable<TValue> values) : this(valueComparer, direction)
+        {
+            AddRange(values);
+        }
+
+        /// <summary>
+        /// Create a new dictionary with the specified sort configuration.
+        /// </summary>
+        /// <param name="valueComparison">The value comparison</param>
+        /// <param name="direction">The sort direction</param>
+        /// <param name="values">Items to initialize the collection with</param>
+        public ObservableDictionary(Comparison<TValue> valueComparison, ListSortDirection direction, IEnumerable<TValue> values) : this(valueComparison, direction)
+        {
+            AddRange(values);
+        }
+
+        public ObservableDictionary(string sortPropertyName, ListSortDirection direction, IEnumerable<TValue> values) : this(sortPropertyName, direction)
+        {
+            AddRange(values);
+        }
+
+        /// <summary>
+        /// Creates a new observable dictionary from the specified items.
+        /// </summary>
+        /// <remarks>
+        /// The items must be of a class type, and must be decorated with the <see cref="KeyPropertyAttribute"/> attribute.
+        /// </remarks>
+        /// <param name="items"></param>
+        public ObservableDictionary(IEnumerable<TValue> items) : this()
+        {
+            AddRange(items);
+        }
+
+        /// <summary>
+        /// Create a new observable dictionary of class objects using the specified property as the key.
+        /// </summary>
+        /// <param name="keyPropertyName">The name of the key property inside the <see cref="TKey"/> class type.</param>
+        public ObservableDictionary(string keyPropertyName) : base()
+        {
+            var prop = typeof(TValue).GetProperty(keyPropertyName);
+
+            if (prop == null) throw new MissingMemberException("Cannot determine the key property for this collection of objects.  Try calling a different constructor, or use the KeyPropertyAttribute.");
+            if (!typeof(TKey).IsAssignableFrom(prop.PropertyType)) throw new InvalidCastException($"{prop.PropertyType.FullName} is an invalid type for key.");
+
+            keyPropInfo = prop;
+            keyProperty = prop.Name;
+        }
+
+        /// <summary>
+        /// Create a new observable dictionary of class objects using the specified property as the key.
+        /// </summary>
+        /// <param name="keyPropertyName">The name of the key property inside the <see cref="TKey"/> class type.</param>
+        /// <param name="values">A sequence of items of type <see cref="TValue"/>.</param>
+        public ObservableDictionary(string keyPropertyName, IEnumerable<TValue> values) : this(keyPropertyName)
+        {
+            AddRange(values);
+        }
+
+        public ObservableDictionary(string keyPropertyName, string sortPropertyName, ListSortDirection direction) : this(keyPropertyName)
+        {
+            ChangeSort(sortPropertyName, direction);
+        }
+
+        public ObservableDictionary(string keyPropertyName, IComparer<TValue> valueComparer, ListSortDirection direction) : this(keyPropertyName)
+        {
+            ChangeSort(valueComparer, direction);
+        }
+
+        public ObservableDictionary(string keyPropertyName, Comparison<TValue> valueComparison, ListSortDirection direction) : this(keyPropertyName)
+        {
+            ChangeSort(valueComparison, direction);
+        }
+        public ObservableDictionary(string keyPropertyName, string sortPropertyName, ListSortDirection direction, IEnumerable<TValue> values) : this(keyPropertyName)
+        {
+            ChangeSort(sortPropertyName, direction);
+            AddRange(values);
+        }
+
+        public ObservableDictionary(string keyPropertyName, IComparer<TValue> valueComparer, ListSortDirection direction, IEnumerable<TValue> values) : this(keyPropertyName)
+        {
+            ChangeSort(valueComparer, direction);
+            AddRange(values);
+        }
+
+        public ObservableDictionary(string keyPropertyName, Comparison<TValue> valueComparison, ListSortDirection direction, IEnumerable<TValue> values) : this(keyPropertyName)
+        {
+            ChangeSort(valueComparison, direction);
+            AddRange(values);
+        }
+
+
+        /// <summary>
+        /// Gets a value indicating whether this collection sorted.
+        /// </summary>
+        [JsonProperty("sorted")]
+        public bool Sorted
+        {
+            get => sorted;
+
+            // Only used for JSON Deserialization
+            internal set
+            {
+                SetProperty(ref sorted, value);
+            }
+        }
+
+        /// <summary>
+        /// The name of the KeyProperty.
+        /// </summary>
+        [JsonIgnore]
+        public string KeyProperty
+        {
+            get => keyProperty;
+
+            // Only used for JSON deserialization
+            internal set
+            {
+                SetProperty(ref keyProperty, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a unique id for this ObservableDictionary.
+        /// </summary>
+        [JsonProperty("id")]
+        public string Id
+        {
+            get => id;
+            set
+            {
+                SetProperty(ref id, value);
+            }
+        }
+
+        /// <summary>
+        /// Add a range of items to the collection.
+        /// </summary>
+        /// <param name="items">The items to add.</param>
+        public void AddRange(IEnumerable<TValue> items)
+        {
+            lock (lockObject)
+            {
+                var oldno = noevent;
+                noevent = true;
+
+                foreach (var item in items)
+                {
+                    Add(item);
                 }
 
-                RemoveAt(i);
-                OnPropertyChanged(nameof(Count));
+                noevent = oldno;
+                if (!noevent) OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
+        }
+
+        /// <summary>
+        /// Try to get the value with the specified key.
+        /// </summary>
+        /// <param name="key">The key to search for.</param>
+        /// <param name="value">Receives the item that was found, or null/default.</param>
+        /// <returns>True if the item was found.</returns>
+#if DOTNETSTD
+        public bool TryGetValue(TKey key, out TValue value)
+#else
+        new public bool TryGetValue(TKey key, out TValue value)
+#endif
+        {
+            if (!Contains(key))
+            {
+                value = default;
+                return false;
+            }
+            else
+            {
+                value = ((IDictionary<TKey, TValue>)this)[key];
+                return true;
             }
 
-            return ret;
         }
 
-        public void RemoveAt(int index) => RemoveAt(index, false);
-
         /// <summary>
-        /// Remove an item by its key.
+        /// Return the contents of this collection as an array of <see cref="T"/>.
         /// </summary>
-        /// <param name="key">Key of item to remove.</param>
-        public bool RemoveKey(TKey key)
+        /// <returns></returns>
+        public TValue[] ToArray()
         {
-            int i = Search(key);
-            if (i == -1) return false;
-            RemoveAt(i);
-            return true;
+            lock (lockObject)
+            {
+                if (Count == 0) return new TValue[0];
+                TValue[] output = new TValue[Count];
+
+                CopyTo(output, 0);
+                return output;
+            }
         }
 
         /// <summary>
-        /// Sorts a collection where <see cref="TValue"/> implements <see cref="IComparable{TValue}"/>.
+        /// Perform a binary search for the specified value
         /// </summary>
-        public void Sort()
+        /// <param name="value">The value to search for.</param>
+        /// <returns>The index of the value or -1.</returns>
+        public int BinarySearchBySortProperty(TValue value)
+        {
+            return GetInsertIndex(value, true);
+        }
+
+#region KeyedCollection overrides
+
+        protected override TKey GetKeyForItem(TValue item)
+        {
+            return (TKey)keyPropInfo.GetValue(item);
+        }
+
+        protected override void ClearItems()
+        {
+            lock(lockObject)
+            {
+                base.ClearItems();
+                if (!noevent) OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
+
+        }
+
+        protected override void InsertItem(int index, TValue item)
+        {
+            lock(lockObject)
+            {
+                if (sorted) index = GetInsertIndex(item);
+                base.InsertItem(index, item);
+
+                if (!noevent) OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
+            }
+
+        }
+
+        protected override void RemoveItem(int index)
+        {
+            TValue oldItem;
+
+            lock(lockObject)
+            {
+                oldItem = ((IList<TValue>)this)[index];
+                base.RemoveItem(index);
+
+                if (!noevent) OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, oldItem, index));
+            }
+
+        }
+
+        protected override void SetItem(int index, TValue item)
+        {
+            TValue oldItem;
+            TKey keyVal;
+
+            lock(lockObject)
+            {
+                if (index >= Count)
+                {
+                    InsertItem(0, item);
+                    return;
+                }
+
+                oldItem = ((IList<TValue>)this)[index];
+                keyVal = (TKey)keyPropInfo.GetValue(item);
+
+                if (Contains(keyVal))
+                {
+                    Remove(keyVal);
+                    InsertItem(Count, item);
+
+                    return;
+                }
+
+                base.SetItem(index, item);
+
+                if (!noevent) OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, oldItem, index));
+            }
+
+        }
+
+#endregion
+
+#region INotifyCollectionChanged
+
+        protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (!noevent) CollectionChanged?.Invoke(this, e);
+        }
+
+#endregion
+
+
+#region INotifyPropertyChanged
+
+        /// <summary>
+        /// Set a property value if the current value is not equal to the new value and raise the <see cref="INotifyPropertyChanged.PropertyChanged"/> event.
+        /// </summary>
+        /// <typeparam name="T">The type of the value.</typeparam>
+        /// <param name="backingStore">The value to compare and set.</param>
+        /// <param name="value">The new value.</param>
+        /// <param name="propertyName">The property name.</param>
+        /// <returns></returns>
+        protected virtual bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = null)
+        {
+            bool pass;
+            if (typeof(T).IsValueType)
+            {
+                pass = !backingStore.Equals(value);
+            }
+            else
+            {
+                if (!(backingStore is object) && !(value is object))
+                {
+                    pass = false;
+                }
+                else if (backingStore is object && !(value is object))
+                {
+                    pass = true;
+                }
+                else if (!(backingStore is object) && value is object)
+                {
+                    pass = true;
+                }
+                else
+                {
+                    pass = !backingStore.Equals(value);
+                }
+            }
+
+            if (pass)
+            {
+                backingStore = value;
+                OnPropertyChanged(propertyName);
+            }
+
+            return pass;
+        }
+
+        /// <summary>
+        /// Raise <see cref="INotifyPropertyChanged.PropertyChanged"/>.
+        /// </summary>
+        /// <param name="propertyName"></param>
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+#endregion
+
+
+
+#region Sorting
+
+
+        /// <summary>
+        /// Change the way items are sorted in this collection
+        /// </summary>
+        /// <param name="valueComparer">The new value comparer</param>
+        /// <param name="direction">The new sort direction</param>
+        public virtual void ChangeSort(IComparer<TValue> valueComparer, ListSortDirection direction)
+        {
+            lock (lockObject)
+            {
+                sorted = true;
+                this.direction = direction;
+                comparer = MakeComparison(valueComparer);
+
+                if (Count > 0) Sort();
+            }
+        }
+
+        /// <summary>
+        /// Change the way items are sorted in this collection
+        /// </summary>
+        /// <param name="valueComparison">The new value comparison</param>
+        /// <param name="direction">The new sort direction</param>
+        public virtual void ChangeSort(Comparison<TValue> valueComparison, ListSortDirection direction)
+        {
+            lock (lockObject)
+            {
+                sorted = true;
+                this.direction = direction;
+                comparer = valueComparison;
+
+                if (Count > 0) Sort();
+            }
+        }
+
+        /// <summary>
+        /// Change the way items are sorted in this collection
+        /// </summary>
+        /// <param name="sortPropertyName">The new sort property name</param>
+        /// <param name="direction">The new sort direction</param>
+        public virtual void ChangeSort(string sortPropertyName, ListSortDirection direction)
+        {
+            lock (lockObject)
+            {
+                sorted = true;
+                this.direction = direction;
+
+                var p = typeof(TValue).GetProperty(sortPropertyName);
+                if (p == null) throw new KeyNotFoundException("sortPropertyName not found in " + typeof(TValue).FullName);
+
+                comparer = MakeComparison(p);
+                if (comparer == null) throw new NotSupportedException("Cannot sort on a key that is not IComparable.");
+
+                if (Count > 0) Sort();
+            }
+        }
+
+        /// <summary>
+        /// Clear and reset the sorting enforcement
+        /// </summary>
+        public virtual void ClearSort()
+        {
+            sorted = false;
+            comparer = null;
+            direction = ListSortDirection.Ascending;
+        }
+
+        protected virtual void Sort()
+        {
+            if (!sorted) return;
+
+            lock (lockObject)
+            {
+                var oldno = noevent;
+                noevent = true;
+
+                var values = ToArray();
+
+                Clear();
+                AddRange(values);
+
+                noevent = oldno;
+                if (!noevent) OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
+        }
+
+#endregion
+
+#region Comparison 
+
+        protected virtual Comparison<TValue> MakeComparison()
         {
             if (typeof(IComparable<TValue>).IsAssignableFrom(typeof(TValue)))
             {
-                var comp = new Comparison<TValue>((a, b) =>
+                if (direction == ListSortDirection.Ascending)
                 {
+                    return new Comparison<TValue>((a, b) =>
+                    {
+                        if (!(a is object) && !(b is object))
+                        {
+                            return 0;
+                        }
+                        else if (!(a is object))
+                        {
+                            return 1;
+                        }
+                        else if (!(b is object))
+                        {
+                            return -1;
+                        }
 
-                    if (a is IComparable<TValue> ai)
+                        return ((IComparable<TValue>)a).CompareTo(b);
+                    });
+                }
+                else
+                {
+                    return new Comparison<TValue>((a, b) =>
                     {
-                        return ai.CompareTo(b);
-                    }
-                    else if (b is IComparable<TValue> bi)
+                        if (!(a is object) && !(b is object))
+                        {
+                            return 0;
+                        }
+                        else if (!(a is object))
+                        {
+                            return -1;
+                        }
+                        else if (!(b is object))
+                        {
+                            return 1;
+                        }
+
+                        return -((IComparable<TValue>)a).CompareTo(b);
+                    });
+                }
+            }
+            else if (typeof(IComparable).IsAssignableFrom(typeof(TValue)))
+            {
+
+                if (direction == ListSortDirection.Ascending)
+                {
+                    return new Comparison<TValue>((a, b) =>
                     {
-                        return -bi.CompareTo(a);
-                    }
-                    else return 0;
+                        if (!(a is object) && !(b is object))
+                        {
+                            return 0;
+                        }
+                        else if (!(a is object))
+                        {
+                            return 1;
+                        }
+                        else if (!(b is object))
+                        {
+                            return -1;
+                        }
+
+                        return ((IComparable)a).CompareTo(b);
+                    });
+
+                }
+                else
+                {
+                    return new Comparison<TValue>((a, b) =>
+                    {
+                        if (!(a is object) && !(b is object))
+                        {
+                            return 0;
+                        }
+                        else if (!(a is object))
+                        {
+                            return -1;
+                        }
+                        else if (!(b is object))
+                        {
+                            return 1;
+                        }
+
+                        return -((IComparable)a).CompareTo(b);
+                    });
+
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        protected virtual Comparison<TValue> MakeComparison(PropertyInfo destProp)
+        {
+            var gt = typeof(IComparable).MakeGenericType(destProp.PropertyType);
+
+            if (gt.IsAssignableFrom(destProp.PropertyType))
+            {
+                if (direction == ListSortDirection.Ascending)
+                {
+                    return new Comparison<TValue>((obja, objb) =>
+                    {
+                        IComparable a, b;
+
+                        a = (IComparable)destProp.GetValue(obja);
+                        b = (IComparable)destProp.GetValue(objb);
+
+                        if (!(a is object) && !(b is object))
+                        {
+                            return 0;
+                        }
+                        else if (!(a is object))
+                        {
+                            return 1;
+                        }
+                        else if (!(b is object))
+                        {
+                            return -1;
+                        }
+
+                        return a.CompareTo(b);
+
+                    });
+                }
+                else
+                {
+                    return new Comparison<TValue>((obja, objb) =>
+                    {
+                        IComparable a, b;
+
+                        a = (IComparable)destProp.GetValue(obja);
+                        b = (IComparable)destProp.GetValue(objb);
+
+                        if (!(a is object) && !(b is object))
+                        {
+                            return 0;
+                        }
+                        else if (!(a is object))
+                        {
+                            return -1;
+                        }
+                        else if (!(b is object))
+                        {
+                            return 1;
+                        }
+
+                        return -a.CompareTo(b);
+
+                    });
+                }
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
+        protected virtual Comparison<TValue> MakeComparison(IComparer<TValue> comp)
+        {
+            if (direction == ListSortDirection.Ascending)
+            {
+                return new Comparison<TValue>((a, b) =>
+                {
+                    return comp.Compare(a, b);
                 });
 
-                Sort(comp);
             }
             else
             {
-                throw new NotSupportedException("No compatible comparer found for type {" + typeof(TValue).FullName + "}.");
-            }
-        }
-
-        /// <summary>
-        /// Sort the collection using the specified <see cref="Comparison{T}"/>.
-        /// </summary>
-        /// <param name="comparison">The comparison to use to sort the collection.</param>
-        public void Sort(Comparison<TValue> comparison)
-        {
-            if (Count < 2) return;
-
-            int lo = 0;
-            int hi = Count - 1;
-
-            Sort(comparison, lo, hi, false);
-
-            if (CollectionChanged != null)
-            {
-                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
-                CollectionChanged.Invoke(this, e);
-            }
-        }
-
-        public TValue[] ToArray()
-        {
-            var x = new TValue[_size];
-            if (_size == 0) return x;
-
-            Array.ConstrainedCopy(_Values, 0, x, 0, _size);
-            return x;
-        }
-        public bool TryGetValue(TKey key, out TValue value)
-        {
-            int i = Search(key);
-            if (i == -1)
-            {
-                value = null;
-                return false;
-            }
-            else
-            {
-                value = _Values[i];
-                return true;
-            }
-        }
-
-        #endregion Public Methods
-
-        #region Internal Methods
-
-        internal bool EnsureCapacity(int size)
-        {
-            int c = size;
-
-            if (size <= _size) return false;
-
-            if (_size == 0 || keyToIdx == null)
-            {
-                _Values = new TValue[c];
-                _Keys = new TKey[c];
-                keyToIdx = new int[c];
-                idxToKey = new int[c];
-            }
-            else
-            {
-                Array.Resize(ref _Values, c);
-                Array.Resize(ref _Keys, c);
-                Array.Resize(ref keyToIdx, c);
-                Array.Resize(ref idxToKey, c);
-            }
-
-            _capacity = c;
-            OnPropertyChanged(nameof(Capacity));
-
-            return true;
-        }
-
-        #endregion Internal Methods
-
-        #region Private Methods
-
-        private void Add(TValue item, bool suppressEvent)
-        {
-            if (item == null) throw new ArgumentNullException(nameof(item));
-            int x = _size;
-
-            TKey key = (TKey)keyProp.GetValue(item);
-
-            if (ContainsKey(key))
-                throw new ArgumentException($"Collection already contains key '{key}'.", nameof(item));
-
-            // value and index -> key indexes are resized, here.
-            Array.Resize(ref _Values, x + 1);
-            Array.Resize(ref idxToKey, x + 1);
-
-            int idx;
-
-            // key and key -> index indexes are resized in this function.
-            // Search will automatically insert a key.
-            // Search only resizes keys and key to index.  
-            // Conversely, add/remove/move/delete do not resize keys and key indexes, at all.
-            Search(key, out idx, true);
-
-            keyToIdx[idx] = x;
-            _Keys[idx] = key;
-
-            _Values[x] = item;
-            idxToKey[x] = idx;
-
-            if (isObs && item is INotifyPropertyChanged p)
-            {
-                p.PropertyChanged += Value_PropertyChanged;
-            }
-
-            _size++;
-
-            // KeySort();
-
-            if (!suppressEvent && CollectionChanged != null)
-            {
-                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, x);
-                CollectionChanged.Invoke(this, e);
-                OnPropertyChanged(nameof(Count));
-            }
-
-        }
-
-        /// <summary>
-        /// Add a range of items to the dictionary.
-        /// </summary>
-        /// <param name="items">The items to add.</param>
-        /// <param name="suppressEvent">True to suppress the CollectionChanged event.</param>
-        private void AddRange(IEnumerable<TValue> items, bool suppressEvent)
-        {
-            int c = items.Count();
-            int x = _size;
-
-            var ns = x + c;
-            var zp = ns + (_autoBuffer - ns % _autoBuffer);
-
-            EnsureCapacity(zp);
-
-            foreach (var item in items)
-            {
-                if (item == null) throw new ArgumentNullException(nameof(item));
-
-                TKey key = (TKey)keyProp.GetValue(item);
-
-                if (ContainsKey(key))
+                return new Comparison<TValue>((a, b) =>
                 {
-                    TValue tv;
-                    var tk = ContainsKey(key, out tv);
+                    return -comp.Compare(a, b);
+                });
 
-                    throw new ArgumentException($"Collection already contains key '{key}'.", nameof(item));
-                }
-
-                int idx;
-                Search(key, out idx, true);
-
-                keyToIdx[idx] = x;
-                _Keys[idx] = key;
-
-                idxToKey[x] = idx;
-                _Values[x] = item;
-
-                if (isObs && item is INotifyPropertyChanged p)
-                {
-                    p.PropertyChanged += Value_PropertyChanged;
-                }
-
-                x++;
-                _size++;
-            }
-
-            if (!suppressEvent && CollectionChanged != null)
-            {
-                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
-                CollectionChanged.Invoke(this, e);
-                OnPropertyChanged(nameof(Count));
-            }
-        }
-
-        private void Insert(int index, TValue item, bool suppressEvent)
-        {
-            if (item == null) throw new ArgumentNullException(nameof(item));
-
-            TKey key = (TKey)keyProp.GetValue(item);
-
-            if (ContainsKey(key))
-                throw new ArgumentException($"Collection already contains key '{key}'.", nameof(item));
-
-
-            for (int g = index; g < _size; g++)
-            {
-                keyToIdx[idxToKey[g]]++;
-            }
-
-            ArrOp(ArrayOperation.Insert, ref _Values, newIndex: index);
-            ArrOp(ArrayOperation.Insert, ref idxToKey, newIndex: index);
-
-            int idx;
-            Search(key, out idx, true);
-
-            keyToIdx[idx] = index;
-            _Keys[idx] = key;
-
-            _Values[index] = item;
-            idxToKey[index] = idx;
-
-            _size++;
-
-            if (!suppressEvent && CollectionChanged != null)
-            {
-                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
-                CollectionChanged.Invoke(this, e);
-                OnPropertyChanged(nameof(Count));
-            }
-        }
-        private void RemoveAt(int index, bool suppressEvent)
-        {
-            var item = _Values[index];
-            var idx = idxToKey[index];
-
-            ArrOp(ArrayOperation.Remove, ref _Values, oldIndex: index);
-            ArrOp(ArrayOperation.Remove, ref idxToKey, oldIndex: index);
-            ArrOp(ArrayOperation.Remove, ref _Keys, oldIndex: idx);
-            ArrOp(ArrayOperation.Remove, ref keyToIdx, oldIndex: idx);
-
-            --_size;
-
-            for (int g = 0; g < _size; g++)
-            {
-                if (keyToIdx[g] >= index)
-                {
-                    keyToIdx[g]--;
-                }
-                if (idxToKey[g] >= idx)
-                {
-                    idxToKey[g]--;
-                }
             }
             
-            if (!suppressEvent && CollectionChanged != null)
-            {
-                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
-                CollectionChanged.Invoke(this, e);
-                OnPropertyChanged(nameof(Count));
-            }
-        }
-        private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == KeyPropertyName)
-            {
-                var key = (TKey)keyProp.GetValue(sender);
-                int idx = Search(key);
-
-                if (idx != -1)
-                {
-                    throw new InvalidOperationException($"Key property changed to a key that already exists.\r\nItem #: {idx}, Key: '{key}'.");
-                }
-                else
-                {
-                    int i = IndexOf((TValue)sender);
-
-                    _Keys[idxToKey[i]] = key;
-
-                    Sort(null, 0, _size - 1, true);
-                }
-            }
         }
 
-        #endregion Private Methods
-
-        #region ArrOp
-
-        /// <summary>
-        /// Remove, Insert, Move operations.
-        /// </summary>
-        /// <typeparam name="U">The type of the array on which the operation will be performed.</typeparam>
-        /// <param name="mode">The <see cref="ArrayOperation"/> to execute.</param>
-        /// <param name="arr">The array to manipulate.</param>
-        /// <param name="oldIndex">Old Index.</param>
-        /// <param name="newIndex">New Index.</param>
-        /// <param name="expanded">If the array is larger than its logical size. <paramref name="virtSize"/> must be specified if this value is true.</param>
-        /// <param name="virtSize">The logical size. Must be specified if <paramref name="expanded"/> is true.</param>
-        /// <remarks>
-        /// In <see cref="ArrayOperation.Insert"/> mode, the item space is created, but the item is not, itself, inserted.
-        /// Inserting is up to the caller.
-        /// </remarks>
-        private void ArrOp<U>(
-            ArrayOperation mode,
-            ref U[] arr,
-            int oldIndex = -1,
-            int newIndex = -1,
-            bool expanded = false,
-            int virtSize = -1)
+        protected virtual int GetInsertIndex(TValue item, bool mustExist = false)
         {
-            U[] a2;
+            if (Count == 0) return 0;
 
-            int i;
-            int c, d;
+            int hi = Count - 1;
+            int lo = 0;
+            int mid;
 
-            if (expanded)
+            var l = this as IList<TValue>;
+            var origitem = item;
+
+            TValue curritem;
+
+            if (direction == ListSortDirection.Ascending)
             {
-                c = d = virtSize;
-            }
-            else
-            {
-                c = d = arr?.Length ?? 0;
-            }
-
-            if (mode != ArrayOperation.Insert && (oldIndex < 0 || oldIndex >= arr.Length))
-                throw new ArgumentOutOfRangeException(nameof(oldIndex));
-
-            if (mode == ArrayOperation.Remove) // remove
-            {
-                --d;
-
-                a2 = new U[d]; // dest array
-
-                if (oldIndex > 0)
+                while (true)
                 {
-                    Array.ConstrainedCopy(arr, 0, a2, 0, oldIndex);
-                }
-
-                if (oldIndex < c - 1)
-                {
-                    Array.ConstrainedCopy(arr, oldIndex + 1, a2, oldIndex, d - oldIndex);
-                }
-
-                arr = a2;
-                return;
-            }
-
-            if (newIndex < 0 || newIndex > (arr?.Length ?? 0))
-                throw new ArgumentOutOfRangeException(nameof(newIndex));
-
-            if (mode == ArrayOperation.Insert) // insert 
-            {
-                ++c;
-                if (!expanded)
-                {
-                    a2 = new U[c];
-
-                    if (newIndex > 0)
+                    if (hi < lo)
                     {
-                        Array.ConstrainedCopy(arr, 0, a2, 0, newIndex);
+                        return mustExist ? -1 : lo;
+                    }
+
+                    mid = (hi + lo) / 2;
+                    curritem = l[mid];
+
+                    if (comparer(origitem, curritem) > 0)
+                    {
+                        lo = mid + 1;
+                    }
+                    else if (comparer(origitem, curritem) < 0)
+                    {
+                        hi = mid - 1;
+                    }
+                    else
+                    {
+                        return mid;
                     }
                 }
-                else
-                {
-                    a2 = arr;
-                }
-
-                if (newIndex < c - 1)
-                {
-                    Array.ConstrainedCopy(arr, newIndex, a2, newIndex + 1, d - newIndex);
-                }
-                arr = a2;
             }
-            else if (mode == ArrayOperation.Move) // move
-            {
-                U elem = arr[oldIndex];
-
-                if (oldIndex < newIndex)
-                {
-                    i = newIndex - oldIndex;
-                    a2 = new U[i];
-
-                    Array.ConstrainedCopy(arr, oldIndex + 1, a2, 0, i);
-                    Array.ConstrainedCopy(a2, 0, arr, oldIndex, i);
-                }
-                else
-                {
-                    i = oldIndex - newIndex;
-                    a2 = new U[i];
-
-                    Array.ConstrainedCopy(arr, newIndex, a2, 0, i);
-                    Array.ConstrainedCopy(a2, 0, arr, newIndex + 1, i);
-                }
-
-                arr[newIndex] = elem;
-            }
-
-        }
-
-
-        #endregion
-
-        #region QuickSort
-        private int Partition(Comparison<TValue> comparison, int lo, int hi)
-        {
-            var ppt = (hi + lo) / 2;
-            var pivot = _Values[ppt];
-
-            int i = lo - 1;
-            int j = hi + 1;
-
-            while (true)
-            {
-                try
-                {
-                    do
-                    {
-                        ++i;
-                    } while (i <= hi && comparison(_Values[i], pivot) < 0);
-                    do
-                    {
-                        --j;
-                    } while (j >= 0 && comparison(_Values[j], pivot) > 0);
-
-                    if (i >= j) return j;
-
-                    TValue sw = _Values[i];
-                    _Values[i] = _Values[j];
-                    _Values[j] = sw;
-
-                    int si = idxToKey[i];
-
-                    idxToKey[i] = idxToKey[j];
-                    idxToKey[j] = si;
-
-                    keyToIdx[idxToKey[i]] = i;
-                    keyToIdx[idxToKey[j]] = j;
-                }
-                catch (Exception ex)
-                {
-                    var e = ex;
-                }
-            }
-        }
-
-        private int PartitionOnKey(int lo, int hi)
-        {
-            var ppt = (hi + lo) / 2;
-
-            TKey kpivot = _Keys[ppt];
-
-            int i = lo - 1;
-            int j = hi + 1;
-
-            Comparison<TKey> def = keycomp;
-
-            if (def == null)
-            {
-                def = new Comparison<TKey>((a, b) => ((IComparable<TKey>)a).CompareTo(b));
-            }
-
-            while (true)
-            {
-                do
-                {
-                    ++i;
-                } while (i <= hi && def(_Keys[i], kpivot) < 0);
-                do
-                {
-                    --j;
-                } while (j >= 0 && def(_Keys[j], kpivot) > 0);
-
-                if (i >= j) return j;
-
-                TKey sw = _Keys[i];
-
-                _Keys[i] = _Keys[j];
-                _Keys[j] = sw;
-
-                int si = keyToIdx[i];
-
-                keyToIdx[i] = keyToIdx[j];
-                keyToIdx[j] = si;
-
-                idxToKey[keyToIdx[i]] = i;
-                idxToKey[keyToIdx[j]] = j;
-            }
-        }
-
-        private void Sort(Comparison<TValue> comparison, int lo, int hi, bool onKey)
-        {
-            if (lo < hi)
-            {
-                int p;
-
-                if (onKey)
-                {
-                    p = PartitionOnKey(lo, hi);
-                }
-                else
-                {
-                    p = Partition(comparison, lo, hi);
-                }
-
-                Sort(comparison, lo, p, onKey);
-                Sort(comparison, p + 1, hi, onKey);
-            }
-        }
-        #endregion
-
-        #region Binary Search 
-
-        private int GetInsertIndex(int inLo, int inHi, TKey value, Comparison<TKey> comp, int max)
-        {
-            if (max < 0) return 0;
-
-            int lo = inLo <= inHi ? inLo : inHi;
-
-            if (lo < 2)
-                lo = 0;
             else
-                --lo;
-
-            int hi = inLo >= inHi ? inLo : inHi;
-
-            if (hi > max - 2)
-                hi = max;
-            else
-                hi++;
-
-            int i, test;
-            int lt = -1;
-
-            for (i = lo; i <= hi; i++)
             {
-                test = comp(value, _Keys[i]);
-
-                if (test <= 0)
+                while (true)
                 {
-                    return i;
-                }
-                else
-                {
-                    lt = i;
-                }
-            }
-
-            if (lt != -1)
-                return lt + 1;
-            else
-                return i;
-        }
-
-        private int Search(TKey value)
-        {
-            return Search(value, out _, false);
-        }
-
-        private int Search(TKey value, out int keyIdx, bool insert) 
-        {
-            int max = _size - 1;
-            int lo = 0, hi = max;
-
-            Comparison<TKey> def = keycomp;
-
-            if (def == null)
-            {
-                def = new Comparison<TKey>((a, b) =>
-                {
-
-                    if (a == null && b == null) return 0;
-
-                    if (a == null && b != null) return -1;
-
-                    if (a != null && b == null) return 1;
-
-                    return ((IComparable<TKey>)a).CompareTo(b);
-
-
-                });
-
-                KeyComparison = def;
-            }
-
-            while (true)
-            {
-                int p;
-
-                if (lo > hi)
-                {
-                    if (insert)
+                    if (hi < lo)
                     {
-                        if (_capacity <= _size && _autoBuffer > 0)
-                        {
-                            EnsureCapacity(_size + _autoBuffer);
-                        }
-
-                        bool expanded = _capacity > _size;
-
-                        p = GetInsertIndex(lo, hi, value, def, max);
-
-                        ArrOp(ArrayOperation.Insert,
-                            ref _Keys,
-                            newIndex: p,
-                            expanded: expanded,
-                            virtSize: max + 1);
-
-                        ArrOp(ArrayOperation.Insert,
-                            ref keyToIdx,
-                            newIndex: p,
-                            expanded: expanded,
-                            virtSize: max + 1);
-
-                        if (max >= 0)
-                        {
-                            for (int g = 0; g <= max + 1; g++)
-                            {
-                                if (idxToKey[g] >= p)
-                                {
-                                    idxToKey[g]++;
-                                }
-                            }
-                        }
-
-                        keyIdx = p;
-                        return -1;
+                        return mustExist ? -1 : lo;
                     }
-                    break;
+
+                    mid = (hi + lo) / 2;
+                    curritem = l[mid];
+
+                    if (comparer(origitem, curritem) < 0)
+                    {
+                        lo = mid + 1;
+                    }
+                    else if (comparer(origitem, curritem) > 0)
+                    {
+                        hi = mid - 1;
+                    }
+                    else
+                    {
+                        return mid;
+                    }
+
                 }
 
-                p = (hi + lo) / 2;
-
-
-                TKey elem = _Keys[p];
-                int c;
-
-                c = def(value, elem);
-
-                if (c == 0)
-                {
-                    keyIdx = p;
-                    return keyToIdx[p];
-                }
-                else if (c < 0)
-                {
-                    hi = p - 1;
-                }
-                else
-                {
-                    lo = p + 1;
-                }
             }
 
-            keyIdx = -1;
-            return -1;
-        }
-        #endregion
-
-        #region IEnumerable
-
-        public void Add(TKey key, TValue value)
-        {
-            TKey kchk = (TKey)keyProp.GetValue(value);
-            if (!Equals(kchk, key))
-                throw new InvalidOperationException($"Key must match value of '{keyPropName}' property.");
-
-            Add(value);
         }
 
-        public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
-
-        void ICollection<KeyValuePair<TKey, TValue>>.Clear() => Clear();
-
-        bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> item) => ContainsKey(item.Key);
-
-        void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-        {
-            int x = arrayIndex;
-
-            foreach (KeyValuePair<TKey, TValue> item in (IDictionary<TKey, TValue>)this)
-            {
-                array[x++] = item;
-            }
-        }
-
-        public IEnumerator<TValue> GetEnumerator()
-        {
-            return new KeyedCollectionEnumerator(this);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return new KeyedCollectionEnumerator(this);
-        }
-
-        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
-        {
-            return new KeyValueEnumerator(this);
-        }
-        bool IDictionary<TKey, TValue>.Remove(TKey key) => RemoveKey(key);
-        bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)
-        {
-            TKey kchk = (TKey)keyProp.GetValue(item.Value);
-            if (!Equals(kchk, item.Key))
-                throw new InvalidOperationException($"Key must match value of '{keyPropName}' property.");
-
-            return Remove(item.Value);
-        }
-
-        private class KeyedCollectionEnumerator : IEnumerator<TValue>
-        {
-            #region Private Fields
-
-            private int idx = -1;
-            private IList<TValue> objs;
-
-            #endregion Private Fields
-
-            #region Public Constructors
-
-            public KeyedCollectionEnumerator(ObservableDictionary<TKey, TValue> list)
-            {
-                objs = list;
-            }
-
-            #endregion Public Constructors
-
-            #region Public Properties
-
-            public TValue Current => objs[idx];
-
-            object IEnumerator.Current => objs[idx];
-
-            #endregion Public Properties
-
-            #region Public Methods
-
-            public void Dispose()
-            {
-                idx = -1;
-                objs = null;
-            }
-
-            public bool MoveNext()
-            {
-                return ++idx < (objs?.Count ?? -1);
-            }
-
-            public void Reset()
-            {
-                idx = -1;
-            }
-
-            #endregion Public Methods
-        }
-
-        private class KeyValueEnumerator : IEnumerator<KeyValuePair<TKey, TValue>>
-        {
-            #region Private Fields
-
-            private int idx = -1;
-            private ObservableDictionary<TKey, TValue> objs;
-
-            #endregion Private Fields
-
-            #region Public Constructors
-
-            public KeyValueEnumerator(ObservableDictionary<TKey, TValue> list)
-            {
-                objs = list;
-            }
-
-            #endregion Public Constructors
-
-            #region Public Properties
-
-            public KeyValuePair<TKey, TValue> Current => new KeyValuePair<TKey, TValue>(objs._Keys[objs.idxToKey[idx]], objs._Values[idx]);
-
-            object IEnumerator.Current => new KeyValuePair<TKey, TValue>(objs._Keys[objs.idxToKey[idx]], objs._Values[idx]);
-
-            #endregion Public Properties
-
-            #region Public Methods
-
-            public void Dispose()
-            {
-                idx = -1;
-                objs = null;
-            }
-
-            public bool MoveNext()
-            {
-                return ++idx < (objs?.Count ?? -1);
-            }
-
-            public void Reset()
-            {
-                idx = -1;
-            }
-
-            #endregion Public Methods
-        }
-
-        #endregion
-
+#endregion
     }
+
 
 }
