@@ -36,20 +36,27 @@ namespace DataTools.Observable
         }
     }
 
+    public delegate void ObservablePropertyChangingEventHandler(object sender, ObservablePropertyChangingEventArgs e);
+
+    public interface IObservablePropertyChanging
+    {
+        event ObservablePropertyChangingEventHandler PropertyChanging;
+    }
+
     /// <summary>
     /// Base class for observable classes.
     /// </summary>
-    public abstract class ObservableBase : INotifyPropertyChanged, INotifyPropertyChanging
+    public abstract class ObservableBase : INotifyPropertyChanged, INotifyPropertyChanging, IObservablePropertyChanging
     { 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private List<EventHandler<ObservablePropertyChangingEventArgs>> invokerList1 = new List<EventHandler<ObservablePropertyChangingEventArgs>>();
+        private List<ObservablePropertyChangingEventHandler> invokerList1 = new List<ObservablePropertyChangingEventHandler>();
         private List<PropertyChangingEventHandler> invokerList2 = new List<PropertyChangingEventHandler>();
 
         /// <summary>
         /// Occurs when a property value is changing.
         /// </summary>
-        public event EventHandler<ObservablePropertyChangingEventArgs> PropertyChanging
+        public event ObservablePropertyChangingEventHandler PropertyChanging
         {
             add
             {
