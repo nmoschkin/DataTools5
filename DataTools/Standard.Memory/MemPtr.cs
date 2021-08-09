@@ -313,7 +313,6 @@ namespace DataTools.Standard.Memory
         /// <typeparam name="U"></typeparam>
         /// <param name="val1"></param>
         /// <param name="val2"></param>
-        /// <param name="size"></param>
         public static void Union<T, U>(ref T val1, ref U val2) 
             where T : struct 
             where U : struct
