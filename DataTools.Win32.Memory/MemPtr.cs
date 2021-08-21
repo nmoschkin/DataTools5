@@ -516,6 +516,7 @@ namespace DataTools.Win32.Memory
             if (handle == IntPtr.Zero || length < 0) return null;
 
             long len = length;
+            if (len == 0) len = Length;
             //long size = Size;
 
             //if (len == 0) len = (size - index);

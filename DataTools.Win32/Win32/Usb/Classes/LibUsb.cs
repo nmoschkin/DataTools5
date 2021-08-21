@@ -1172,7 +1172,7 @@ namespace DataTools.Win32
         // Public Declare Function usb_find_devices Lib "libusb0.dll" () As Integer
 
         //' usb_devices
-        // Public Declare Function get_usb_device Lib "libusb0.dll" Alias "usb_device" (dev As IntPtr) As IntPtr
+        // Public Declare Function usb_device Lib "libusb0.dll" Alias "usb_device" (dev As IntPtr) As IntPtr
 
         //' usb_busses
         // Public Declare Function usb_get_busses Lib "libusb0.dll" () As IntPtr

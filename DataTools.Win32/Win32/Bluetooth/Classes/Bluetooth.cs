@@ -1874,7 +1874,7 @@ namespace DataTools.Win32
                 }
             }
 
-            public BTH_DEVICE_INFO get_Devices(uint index)
+            public BTH_DEVICE_INFO Devices(uint index)
             {
                 var offset = new IntPtr(Marshal.SizeOf<uint>() + Marshal.SizeOf<BTH_DEVICE_INFO>() * index);
                 var mm = _ptr + offset;

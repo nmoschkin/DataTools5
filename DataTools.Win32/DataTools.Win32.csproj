@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0-windows</TargetFramework>
+		<TargetFramework>net6.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
 		<AssemblyVersion>5.0.2020.1011</AssemblyVersion>
@@ -15,6 +15,7 @@
 		<RepositoryType>GitHub</RepositoryType>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<Platforms>AnyCPU;x64;x86</Platforms>
+		<LangVersion>preview</LangVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

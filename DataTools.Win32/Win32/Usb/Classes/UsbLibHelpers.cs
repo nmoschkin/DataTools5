@@ -13,8 +13,11 @@
 using System;
 using System.ComponentModel;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+
+[assembly: InternalsVisibleTo("TLModel")]
 
 namespace DataTools.Win32
 {
@@ -45,5 +48,32 @@ namespace DataTools.Win32
         public static extern bool HidD_GetPreparsedData(IntPtr HidDeviceObject, ref IntPtr PreparsedData);
         [DllImport("hid.dll")]
         public static extern bool HidD_FreePreparsedData(IntPtr PreparsedData);
+
+
+        [DllImport("hid.dll")]
+        public static extern bool HidP_GetValueCaps(
+          HidPReportType ReportType,
+          
+          [MarshalAs(UnmanagedType.LPArray)]
+          [Out]
+          HidPValueCaps[] ValueCaps,
+          ref ushort ValueCapsLength,
+          IntPtr PreparsedData
+        );
+
+
+        [DllImport("hid.dll")]
+        public static extern bool HidP_GetValueCaps(
+          HidPReportType ReportType,
+
+          [MarshalAs(UnmanagedType.LPArray)]
+          [Out]
+          HidPValueCapsRange[] ValueCaps,
+          ref ushort ValueCapsLength,
+          IntPtr PreparsedData
+        );
+
+
+
     }
 }

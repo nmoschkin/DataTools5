@@ -85,6 +85,12 @@ namespace DataTools.SystemInformation
 
         internal OSVersionInfo(OSVERSIONINFOEX source, string displayVersion)
         {
+            
+            if (source.dwBuildNumber >= 22000 && source.dwMajorVersion == 10)
+            {
+                source.dwMajorVersion = 11;
+            }
+
             Source = source;
             this.displayVersion = displayVersion;
         }
@@ -287,10 +293,29 @@ namespace DataTools.SystemInformation
                 {
                     string s = (string)(key.GetValue("ProductName"));
                     key.Close();
+
+                    if (BuildNumber >= 22000 || MajorVersion == 11)
+                    {
+                        s = s.Replace(" 10", " 11");
+                    }
                     return s;
                 }
 
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if this version is greater than or equal to Windows 11
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public bool IsWindows11
+        {
+            get
+            {
+                return MajorVersion >= 11 ? true : false;
             }
         }
 

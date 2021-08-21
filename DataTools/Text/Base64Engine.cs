@@ -43,7 +43,7 @@ namespace DataTools.Text
             get => B64.Data;
         }
 
-        public string get_DataString(bool Escape)
+        public string DataString(bool Escape)
         {
             return System.Text.Encoding.ASCII.GetString(B64.Data);
         }
