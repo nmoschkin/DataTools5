@@ -59,6 +59,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\DataTools.Win32.Memory\DataTools.Win32.Memory.csproj" />
+	  <ProjectReference Include="..\DataTools\DataTools.csproj" />
 	</ItemGroup>
 
 

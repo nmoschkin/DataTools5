@@ -12,14 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 using DataTools.Graphics;
+using DataTools.Windows.Extensions;
 using DataTools.MathTools.PolarMath;
 
 using static DataTools.Graphics.ColorMath;
 
 namespace DataTools.ColorControls
 {
- 
+
     /// <summary>
     /// Interaction logic for ColorPicker.xaml
     /// </summary>

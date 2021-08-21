@@ -7,7 +7,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataTools.MathTools.Extensions
+namespace DataTools.Windows.Extensions
 {
     public static class PolarCoordinatesExtensions
     {

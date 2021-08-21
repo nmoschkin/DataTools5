@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 using DataTools.Graphics;
 using System.Runtime.InteropServices;
 using DataTools.Standard.Memory;
+using DataTools.Graphics.Extensions;
 
 namespace DataTools.Graphics
 {
-    
+
     /// <summary>
     /// Color picker mode
     /// </summary>

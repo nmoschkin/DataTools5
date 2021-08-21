@@ -1,11 +1,13 @@
-﻿using System;
+﻿using DataTools.MathTools.PolarMath;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataTools.MathTools.PolarMath
+namespace DataTools.Graphics.Extensions
 {
     public static class PolarCoordinatesExtensions
     {
