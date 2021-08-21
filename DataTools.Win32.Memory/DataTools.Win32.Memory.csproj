@@ -22,8 +22,4 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DataTools\DataTools.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -16,10 +16,6 @@
     <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\DataTools\DataTools.csproj" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <Compile Update="AppResources.Designer.cs">
