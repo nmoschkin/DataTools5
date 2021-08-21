@@ -551,6 +551,19 @@ namespace DataTools.Graphics
             return c;
         }
 
+        public static void HSVToColor(HSVDATA hsv, ref UniColor dest)
+        {
+            // preserve alpha
+            var a = dest.A;
+            dest.SetValue(HSVToColorRaw(hsv));
+            dest.A = a;
+        }
+
+        /// <summary>
+        /// Convert Hue, Saturation, Value to a raw 32 bit color value.
+        /// </summary>
+        /// <param name="hsv">The hue, saturation, value to convert.</param>
+        /// <returns></returns>
         public static int HSVToColorRaw(HSVDATA hsv)
         {
             int c = 0;
@@ -559,7 +572,7 @@ namespace DataTools.Graphics
         }
         public static void HSVToColorRaw(HSVDATA hsv, ref int retColor)
         {
-            HSVToColorRaw(hsv.Hue, hsv.Saturation, hsv.Value, ref retColor);
+            HSVToColorRaw(hsv.Hue, hsv.Saturation, hsv.Value, ref retColor);            
         }
 
         // http://en.wikipedia.org/wiki/HSL_and_HSV#Hue_and_chroma
@@ -573,16 +586,22 @@ namespace DataTools.Graphics
                 double a;
                 double b;
                 double c;
+                
                 int ab;
                 int bb;
                 int cb;
+                
                 double chroma;
                 double Mx;
                 double Mn;
+                
                 int j = (int)0xFF000000;
+                
                 double n;
+                
                 if (hue >= 360d)
                     hue -= 360d;
+                
                 if (hue == -1)
                 {
                     if (saturation > value)
@@ -603,11 +622,16 @@ namespace DataTools.Graphics
                 }
 
                 chroma = value * saturation;
+                
                 Mn = Math.Abs(value - chroma);
                 Mx = value;
+            
                 n = hue / 60d;
+                
                 a = Mx;
+                
                 c = Mn;
+                
                 b = chroma * (1d - Math.Abs(n % 2d - 1d));
                 b += c;
 
@@ -622,40 +646,28 @@ namespace DataTools.Graphics
                 {
                     case 0d:
                     case 6d: // 0, 360 - Red
-                        {
-                            j = j | ab << 16 | bb << 8 | cb;
-                            break;
-                        }
+                        j = j | ab << 16 | bb << 8 | cb;
+                        break;
 
                     case 1d: // 60 - Yellow
-                        {
-                            j = j | bb << 16 | ab << 8 | cb;
-                            break;
-                        }
+                        j = j | bb << 16 | ab << 8 | cb;
+                        break;
 
                     case 2d: // 120 - Green
-                        {
-                            j = j | cb << 16 | ab << 8 | bb;
-                            break;
-                        }
+                        j = j | cb << 16 | ab << 8 | bb;
+                        break;
 
                     case 3d: // 180 - Cyan
-                        {
-                            j = j | cb << 16 | bb << 8 | ab;
-                            break;
-                        }
+                        j = j | cb << 16 | bb << 8 | ab;
+                        break;
 
                     case 4d: // 240 - Blue
-                        {
-                            j = j | bb << 16 | cb << 8 | ab;
-                            break;
-                        }
+                        j = j | bb << 16 | cb << 8 | ab;
+                        break;
 
                     case 5d: // 300 - Magenta
-                        {
-                            j = j | ab << 16 | cb << 8 | bb;
-                            break;
-                        }
+                        j = j | ab << 16 | cb << 8 | bb;
+                        break;
                 }
 
                 retColor = j;
@@ -669,12 +681,17 @@ namespace DataTools.Graphics
             byte r;
             byte g;
             byte b;
+            
             int x;
+            
             GetRGB(Color, out r, out g, out b);
+            
             x = Max(r, g, b);
+            
             r = (byte)Math.Abs(1 - r);
             g = (byte)Math.Abs(1 - g);
             b = (byte)Math.Abs(1 - b);
+        
             cmy.Magenta = r;
             cmy.Yellow = g;
             cmy.Cyan = b;
@@ -687,17 +704,20 @@ namespace DataTools.Graphics
             int c;
             int m;
             int y;
+
             byte r;
             byte g;
             byte b;
+
             c = cmy.Cyan;
             m = cmy.Magenta;
             y = cmy.Yellow;
+
             r = (byte)Math.Abs(1 - m);
             g = (byte)Math.Abs(1 - y);
             b = (byte)Math.Abs(1 - c);
-            CMYToColorRet = new UniColor(255, r, g, b);
-            return CMYToColorRet;
+
+            return new UniColor(255, r, g, b);
         }
 
         public static void GetPercentages(UniColor Color, ref double dpRed, ref double dpGreen, ref double dpBlue)

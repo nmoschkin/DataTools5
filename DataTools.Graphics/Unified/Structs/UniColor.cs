@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using DataTools.Text;
 
@@ -25,8 +26,8 @@ namespace DataTools.Graphics
     /// without any modification or type coercion.
     /// </summary>
     /// <remarks></remarks>
-    [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode)]
-    public struct UniColor : IComparable<UniColor>
+    [StructLayout(LayoutKind.Explicit, CharSet = CharSet.Unicode, Size = 4)]
+    public struct UniColor : IComparable<UniColor>, IFormattable
     {
         public static readonly UniColor Empty = new UniColor(0, 0, 0, 0);
         public static readonly UniColor Transparent = new UniColor(0, 0, 0, 0);
@@ -60,16 +61,13 @@ namespace DataTools.Graphics
         /// <remarks></remarks>
         public uint Value
         {
-            get
-            {
-                uint ValueRet = default;
-                ValueRet = _Value;
-                return ValueRet;
-            }
-
+            get => _Value;
             set
             {
-                _Value = value;
+                if (_Value != value)
+                {
+                    SetValue(value);
+                }
             }
         }
 
@@ -81,14 +79,13 @@ namespace DataTools.Graphics
         /// <remarks></remarks>
         public int IntValue
         {
-            get
-            {
-                return _intvalue;
-            }
-
+            get => _intvalue;
             set
             {
-                _intvalue = value;
+                if (_intvalue != value)
+                {
+                    SetValue(value);
+                }
             }
         }
 
@@ -108,7 +105,10 @@ namespace DataTools.Graphics
 
             set
             {
-                _A = value;
+                if (_A != value)
+                {
+                    SetValue(A: value);
+                }
             }
         }
 
@@ -127,7 +127,10 @@ namespace DataTools.Graphics
 
             set
             {
-                _R = value;
+                if (_R != value)
+                {
+                    SetValue(R: value);
+                }
             }
         }
 
@@ -143,10 +146,12 @@ namespace DataTools.Graphics
             {
                 return _G;
             }
-
             set
             {
-                _G = value;
+                if (_G != value)
+                {
+                    SetValue(G: value);
+                }
             }
         }
 
@@ -162,16 +167,100 @@ namespace DataTools.Graphics
             {
                 return _B;
             }
-
             set
             {
-                _B = value;
+                if (_B != value)
+                {
+                    SetValue(B: value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the hue
+        /// </summary>
+        public double H
+        {
+            get
+            {
+                return ColorMath.ColorToHSV(this).Hue;
+            }
+            set
+            {
+                var hsv = ColorMath.ColorToHSV(this);
+                
+                if (hsv.Hue != value)
+                {
+                    hsv.Hue = value;
+                    ColorMath.HSVToColor(hsv, ref this);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the saturation
+        /// </summary>
+        public double S
+        {
+            get
+            {
+                return ColorMath.ColorToHSV(this).Saturation;
+            }
+            set
+            {
+                var hsv = ColorMath.ColorToHSV(this);
+
+                if (hsv.Saturation != value)
+                {
+                    hsv.Saturation = value;
+                    ColorMath.HSVToColor(hsv, ref this);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the value
+        /// </summary>
+        public double V
+        {
+            get
+            {
+                return ColorMath.ColorToHSV(this).Value;
+            }
+            set
+            {
+                var hsv = ColorMath.ColorToHSV(this);
+
+                if (hsv.Value != value)
+                {
+                    hsv.Value = value;
+                    ColorMath.HSVToColor(hsv, ref this);
+                }
             }
         }
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            if (obj is UniColor other)
+            {
+                return other._intvalue == this._intvalue;
+            }
+            else if (obj is System.Drawing.Color color)
+            {
+                return color.ToArgb() == this._intvalue;
+            }
+            else if (obj is int i)
+            {
+                return i == this._intvalue; 
+            }
+            else if (obj is uint ui)
+            {
+                return ui == this._Value;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public override int GetHashCode()
@@ -180,105 +269,59 @@ namespace DataTools.Graphics
         }
 
         /// <summary>
-        /// Gets the byte array for the current color.
-        /// </summary>
-        /// <param name="reverse">True to return a reversed array.</param>
-        /// <returns>An array of 4 bytes.</returns>
-        /// <remarks></remarks>
-        public byte[] GetBytes(bool reverse = false)
-        {
-            var gb = BitConverter.GetBytes(_Value);
-            if (!reverse)
-                Array.Reverse(gb);
-            return gb;
-        }
-
-        /// <summary>
-        /// Sets the color from the byte array.
-        /// </summary>
-        /// <param name="b">The input byte array.</param>
-        /// <param name="reversed">True if the input array is reversed.</param>
-        /// <returns>True if successful.</returns>
-        /// <remarks></remarks>
-        public bool SetBytes(byte[] b, bool reversed = false)
-        {
-            if (reversed)
-                Array.Reverse(b);
-            _Value = BitConverter.ToUInt32(b, 0);
-            return true;
-        }
-
-        /// <summary>
-        /// Gets the values as an array of integers
-        /// </summary>
-        /// <param name="reverse">True to return a reversed array.</param>
-        /// <returns>An array of 4 integers.</returns>
-        /// <remarks></remarks>
-        public int[] GetIntegers(bool reverse = false)
-        {
-            var b = GetBytes(reverse);
-            int[] i;
-            i = new int[b.Length];
-            for (int x = 0; x <= 3; x++)
-                i[x] = b[x];
-            return i;
-        }
-
-        /// <summary>
-        /// Sets the color values from an integer array.
-        /// </summary>
-        /// <param name="i"></param>
-        /// <param name="reversed">True if the input array is reversed.</param>
-        /// <returns>True if successful.  Overflows are not excepted.</returns>
-        /// <remarks></remarks>
-        public bool SetIntegers(int[] i, bool reversed = false)
-        {
-            if (i.Length != 4)
-                return false;
-            var b = new byte[4];
-            for (int x = 0; x <= 3; x++)
-            {
-                if (i[x] < 0 || i[x] > 255)
-                    return false;
-                b[x] = (byte)i[x];
-            }
-
-            SetBytes(b, reversed);
-            return true;
-        }
-
-        /// <summary>
         /// Get the ARGB 32-bit color value.
         /// </summary>
         /// <returns></returns>
-        public int ToArgb() => _intvalue;
+        public int ToArgb() => IntValue;
 
         /// <summary>
-        /// Initialize a new UniColor structure with the given UInteger
+        /// Initialize a new <see cref="UniColor"/> structure with the specified unsigned <see cref="uint" /> value.
         /// </summary>
-        /// <param name="color"></param>
+        /// <param name="color">The 32-bit ARGB color value.</param>
         /// <remarks></remarks>
         public UniColor(uint color)
         {
+            _Value = 0;
             _intvalue = 0;
             _A = _R = _G = _B = 0;
 
-            _Value = color;
+            SetValue(color);
         }
 
         /// <summary>
-        /// Initialize a new UniColor structure with the given Integer
+        /// Initialize a new <see cref="UniColor"/> structure with the specified signed <see cref="int" /> value.
         /// </summary>
-        /// <param name="color"></param>
+        /// <param name="color">The 32-bit ARGB color value.</param>
         /// <remarks></remarks>
         public UniColor(int color)
         {
             _Value = 0;
+            _intvalue = 0;
             _A = _R = _G = _B = 0;
-            _intvalue = color;
 
+            SetValue(color);
         }
 
+        /// <summary>
+        /// Initialize a new <see cref="UniColor"/> structure with the specified <see cref="System.Drawing.Color"/> structure.
+        /// </summary>
+        /// <param name="color">The color.</param>
+        public UniColor(System.Drawing.Color color)
+        {
+            _Value = 0;
+            _intvalue = 0;
+            _A = _R = _G = _B = 0;
+
+            SetValue(color.ToArgb());
+        }
+
+        /// <summary>
+        /// Initialize a new <see cref="UniColor"/> structure with the specified named color.
+        /// </summary>
+        /// <param name="color">The named color.</param>
+        /// <remarks>
+        /// If the named color cannot be found, the structure is initialized as transparent.
+        /// </remarks>
         public UniColor(string color)
         {
             bool succeed = false;
@@ -302,8 +345,9 @@ namespace DataTools.Graphics
 
             _Value = 0;
             _A = _R = _G = _B = 0;
-
             _intvalue = c.ToArgb();
+
+            SetValue(_intvalue);
         }
 
         /// <summary>
@@ -344,10 +388,13 @@ namespace DataTools.Graphics
         {
             _intvalue = 0;
             _Value = 0;
-            _A = a;
-            _R = r;
-            _G = g;
-            _B = b;
+
+            _A = 0;
+            _R = 0;
+            _G = 0;
+            _B = 0;
+
+            SetValue(a, r, g, b);
         }
 
         public HSVDATA ToHSV() => ColorMath.ColorToHSV(this);
@@ -359,34 +406,168 @@ namespace DataTools.Graphics
             return cmy;
         }
 
-        
-        
+        /// <summary>
+        /// Change the specified color channel values.
+        /// </summary>
+        /// <param name="A">Alpha Channel</param>
+        /// <param name="R">Red Channel</param>
+        /// <param name="G">Green Channel</param>
+        /// <param name="B">Blue Channel</param>
+        public void SetValue(byte? A = null, byte? R = null, byte? G = null, byte? B = null)
+        {
+            var values = new byte[4];
+
+            values[0] = A ?? _A;
+            values[1] = R ?? _R;
+            values[2] = G ?? _G;
+            values[3] = B ?? _B;
+
+            SetValue(values);
+        }
+
+        /// <summary>
+        /// Sets the color to the specified color value.
+        /// </summary>
+        /// <param name="values">The raw A, R, G, B values to set.</param>
+        public void SetValue(byte[] values)
+        {
+            _A = values[0];
+            _R = values[1];
+            _G = values[2];
+            _B = values[3];
+
+            _intvalue = BitConverter.ToInt32(values, 4);
+            _Value = BitConverter.ToUInt32(values, 4);
+        }
+
+        /// <summary>
+        /// Sets the color to the specified color value.
+        /// </summary>
+        /// <param name="color">The raw 32 bit color value to set.</param>
+        public void SetValue(int color)
+        {
+            var values = BitConverter.GetBytes(color);
+
+            _A = values[3];
+            _R = values[2];
+            _G = values[1];
+            _B = values[0];
+
+            _intvalue = color;
+            _Value = BitConverter.ToUInt32(values, 4);
+        }
+
+        /// <summary>
+        /// Sets the color to the specified color value.
+        /// </summary>
+        /// <param name="color">The raw 32 bit color value to set.</param>
+        public void SetValue(uint color)
+        {
+            var values = BitConverter.GetBytes(color);
+
+            _A = values[3];
+            _R = values[2];
+            _G = values[1];
+            _B = values[0];
+
+            _intvalue = BitConverter.ToInt32(values, 4);
+            _Value = color;
+        }
+
+
         /// <summary>
         /// Converts this color structure into its string representation.
-        /// DetailedDefaultToString affects the behavior of this function.
+        /// <see cref="DetailedDefaultToString"/> affects the behavior of this function.
         /// </summary>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <returns>A string representing the current color value.</returns>       
         public override string ToString()
         {
             return ToString(UniColorFormatOptions.Default);
         }
 
         /// <summary>
-        /// Richly format the color for a variety of scenarios including named color detection.
+        /// Format the color for a variety of scenarios including named color detection.
         /// </summary>
-        /// <param name="format">Extensive formatting flags.  Some may not be used in conjunction with others.</param>
-        /// <returns></returns>
-        /// <remarks></remarks>
+        /// <param name="format">The format options string.</param>
+        /// <param name="formatProvider">Format provider (not used.)</param>
+        /// <remarks>
+        /// Format options: <br />
+        ///  <br /><br />
+        /// g - Default (0) <br />
+        /// D - DecimalDigit (1) <br />
+        /// h/H - hex (2) or HEX (2 | 0x8000) <br />
+        /// C - CStyle (4) <br />
+        /// V - VBStyle (8) <br />
+        /// A - AsmStyle (16) <br />
+        /// S - Spaced (32) <br />
+        /// d - CommaDelimited (64) <br />
+        /// r - Rgb (128) <br />
+        /// a - Argb (256) <br />
+        /// w - WebFormat (512) <br />
+        /// N - DetailNamedColors (0x2000) <br />
+        /// R - Reverse (0x4000) <br />
+        /// M - ClosestNamedColor (0x10000)
+        ///  <br /><br />
+        /// These may be combined into many possible combinations. 
+        ///  <br />
+        /// </remarks>
+        /// <returns>A string representing the current color value.</returns>       
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return ToString(UniColorFormatter.ProvideFormatOptions(format));
+        }
+
+
+        /// <summary>
+        /// Format the color for a variety of scenarios including named color detection.
+        /// </summary>
+        /// <param name="format">The format options string.</param>
+        /// <remarks>
+        /// Format options: <br />
+        ///  <br /><br />
+        /// g - Default (0) <br />
+        /// D - DecimalDigit (1) <br />
+        /// h/H - hex (2) or HEX (2 | 0x8000) <br />
+        /// C - CStyle (4) <br />
+        /// V - VBStyle (8) <br />
+        /// A - AsmStyle (16) <br />
+        /// S - Spaced (32) <br />
+        /// d - CommaDelimited (64) <br />
+        /// r - Rgb (128) <br />
+        /// a - Argb (256) <br />
+        /// w - WebFormat (512) <br />
+        /// N - DetailNamedColors (0x2000) <br />
+        /// R - Reverse (0x4000) <br />
+        /// M - ClosestNamedColor (0x10000)
+        ///  <br /><br />
+        /// These may be combined into many possible combinations. 
+        ///  <br />
+        /// </remarks>
+        /// <returns>A string representing the current color value.</returns>       
+        public string ToString(string format)
+        {
+            return ToString(UniColorFormatter.ProvideFormatOptions(format));
+        }
+
+        /// <summary>
+        /// Format the color for a variety of scenarios including named color detection.
+        /// </summary>
+        /// <param name="format">Extensive formatting flags. Some may not be used in conjunction with others.</param>
+        /// <returns>A string representing the current color value.</returns>       
         public string ToString(UniColorFormatOptions format)
         {
             string hexCase = (format & UniColorFormatOptions.LowerCase) == UniColorFormatOptions.LowerCase ? "x" : "X";
-            var argbVals = GetIntegers((format & UniColorFormatOptions.Reverse) == UniColorFormatOptions.Reverse);
+
+            var argbVals = BitConverter.GetBytes((format & UniColorFormatOptions.Reverse) == UniColorFormatOptions.Reverse);
+
             string[] argbStrs = null;
+
             string str1 = "";
             string str2 = "";
+
             int i;
             int c;
+
             if ((format & UniColorFormatOptions.DecimalDigit) == UniColorFormatOptions.DecimalDigit)
             {
                 if ((format & UniColorFormatOptions.CommaDelimited) == UniColorFormatOptions.CommaDelimited)
@@ -967,16 +1148,26 @@ namespace DataTools.Graphics
 
         public static explicit operator UniColor(byte[] value)
         {
-            byte[] vin;
-            vin = new byte[4];
-            for (int i = 0; i <= 3; i++)
-            {
-                if (value.Length <= i)
-                    break;
-                vin[i] = value[i];
-            }
+            if (value == null || value.Length < 4) throw new InvalidCastException("Not enough bytes in the array to compose a 32-bit value.");
 
-            return new UniColor(BitConverter.ToInt32(vin, 0));
+            var clr = new UniColor();
+            clr.SetValue(value);
+            return clr;
+        }
+
+        public static unsafe explicit operator UniColor(void *ptr)
+        {
+            return FromPointer(ptr);
+        }
+
+        public static unsafe explicit operator UniColor(byte* ptr)
+        {
+            return FromPointer(ptr);
+        }
+
+        public static unsafe explicit operator UniColor(int* ptr)
+        {
+            return FromPointer(ptr);
         }
 
         public static implicit operator Color(UniColor value)
@@ -986,7 +1177,7 @@ namespace DataTools.Graphics
 
         public static implicit operator UniColor(Color value)
         {
-            return new UniColor(value.ToArgb());
+            return new UniColor(value);
         }
 
         public static implicit operator int(UniColor value)
