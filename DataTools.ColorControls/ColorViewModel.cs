@@ -24,37 +24,37 @@ namespace DataTools.ColorControls
             get {  return source; }
         }
 
-        public System.Windows.Media.Color Color
+        public System.Windows.Media.Color SelectedColor
         {
             get => source.GetWPFColor();
             set
             {
-                if (Color != value)
+                if (SelectedColor != value)
                 {
-                    source.SetValue(value);
-
-                    OnPropertyChanged();
-                    RaiseARGBChange();
-                    RaiseHSVChange(false);
+                    source = value.GetUniColor();
+                    RaiseARGBChange(false, false);
+                    RaiseHSVChange();
                 }
             }
         }
       
-        private void RaiseARGBChange(bool raiseSource = true)
+        private void RaiseARGBChange(bool raiseSource = true, bool raiseSelColor = true)
         {
             OnPropertyChanged(nameof(A));
             OnPropertyChanged(nameof(R));
             OnPropertyChanged(nameof(G));
             OnPropertyChanged(nameof(B));
             if (raiseSource) OnPropertyChanged(nameof(Source));
+            if (raiseSelColor) OnPropertyChanged(nameof(SelectedColor));
         }
 
-        private void RaiseHSVChange(bool raiseSource = true)
+        private void RaiseHSVChange(bool raiseSource = true, bool raiseSelColor = true)
         {
             OnPropertyChanged(nameof(H));
             OnPropertyChanged(nameof(S));
             OnPropertyChanged(nameof(V));
             if (raiseSource) OnPropertyChanged(nameof(Source));
+            if (raiseSelColor) OnPropertyChanged(nameof(SelectedColor));
         }
 
         public byte A
@@ -112,12 +112,12 @@ namespace DataTools.ColorControls
 
         public double H
         {
-            get => source.H;
+            get => Math.Round(source.H, 2);
             set
             {
                 if (source.H != value)
                 {
-                    source.H = value;
+                    source.H = Math.Round(value, 2);
                     OnPropertyChanged(nameof(H));
                     RaiseARGBChange();
                 }

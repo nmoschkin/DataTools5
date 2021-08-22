@@ -340,6 +340,7 @@ namespace DataTools.ColorControls
                 SelectedColorName = clr.ToString(UniColorFormatOptions.HexRgbWebFormat);
             }
 
+            if (cpRender == null) return;
 
             HSVDATA hsv1 = ColorToHSV(clr);
             HSVDATA hsv2;

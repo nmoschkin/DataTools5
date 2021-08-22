@@ -8,7 +8,13 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <local:ColorConverter x:Key="colorConv" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid x:Name="ControlGrid">
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition />
@@ -26,12 +32,11 @@
         <local:ColorElement
             x:Name="ColorSwatch"
             Grid.Row="0"
-            Grid.RowSpan="3"
+            Grid.RowSpan="2"
             Grid.Column="0"
             Grid.ColumnSpan="3"
             Margin="14"
             ElementSize="24"
-            Mode="HexagonWheel"
             SelectedColor="{Binding SelectedColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Grid
@@ -42,6 +47,7 @@
             Margin="14">
 
             <Grid.RowDefinitions>
+                <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
@@ -65,14 +71,188 @@
                 FontSize="14"
                 Text="Red:" />
 
-            <local:NumericTextBox
+            <TextBox
                 Grid.Row="0"
                 Grid.Column="1"
                 Margin="8"
                 FontFamily="Segoe UI"
+                FontSize="14"                
+                >
+                <TextBox.Text>
+                    <Binding Path="R" >
+                        <Binding.ValidationRules>
+                            <local:ColorValidator  />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+                
+            </TextBox>
+
+
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="0"
+                Margin="8,4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                FontFamily="Segoe UI"
                 FontSize="14"
-                NumberStyle="Integer"
-                NumericValue="{Binding Red}" />
+                Text="Green:" />
+
+            <TextBox
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="8"
+                FontFamily="Segoe UI"
+                FontSize="14"                
+                >
+                <TextBox.Text>
+                    <Binding Path="G" >
+                        <Binding.ValidationRules>
+                            <local:ColorValidator  />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+
+            </TextBox>
+
+
+            <TextBlock
+                Grid.Row="2"
+                Grid.Column="0"
+                Margin="8,4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                FontFamily="Segoe UI"
+                FontSize="14"
+                Text="Blue:" />
+
+            <TextBox
+                Grid.Row="2"
+                Grid.Column="1"
+                Margin="8"
+                FontFamily="Segoe UI"
+                FontSize="14"                
+                >
+                <TextBox.Text>
+                    <Binding Path="B" >
+                        <Binding.ValidationRules>
+                            <local:ColorValidator />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+
+            </TextBox>
+
+            <TextBlock
+                Grid.Row="3"
+                Grid.Column="0"
+                Margin="8,4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                FontFamily="Segoe UI"
+                FontSize="14"
+                Text="Hue:" />
+
+            <TextBox
+                Grid.Row="3"
+                Grid.Column="1"
+                Margin="8"
+                FontFamily="Segoe UI"
+                FontSize="14"                
+                >
+                <TextBox.Text>
+                    <Binding Path="H" >
+                        <Binding.ValidationRules>
+                            <local:ColorValidator ValidateHue="True" />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+
+            </TextBox>
+
+
+            <TextBlock
+                Grid.Row="4"
+                Grid.Column="0"
+                Margin="8,4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                FontFamily="Segoe UI"
+                FontSize="14"
+                Text="Saturation:" />
+
+            <TextBox
+                Grid.Row="4"
+                Grid.Column="1"
+                Margin="8"
+                FontFamily="Segoe UI"
+                FontSize="14"                
+                >
+                <TextBox.Text>
+                    <Binding Path="S" >
+                        <Binding.ValidationRules>
+                            <local:ColorValidator ValidateSatVal="True" />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+
+            </TextBox>
+
+            <TextBlock
+                Grid.Row="5"
+                Grid.Column="0"
+                Margin="8,4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                FontFamily="Segoe UI"
+                FontSize="14"
+                Text="Value:" />
+
+            <TextBox
+                Grid.Row="5"
+                Grid.Column="1"
+                Margin="8"
+                FontFamily="Segoe UI"
+                FontSize="14"                
+                >
+                <TextBox.Text>
+                    <Binding Path="V" >
+                        <Binding.ValidationRules>
+                            <local:ColorValidator ValidateSatVal="True" />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+
+            </TextBox>
+
+            <TextBlock
+                Grid.Row="6"
+                Grid.Column="0"
+                Margin="8,4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                FontFamily="Segoe UI"
+                FontSize="14"
+                Text="Web Hex Value:" />
+
+            <TextBox
+                Grid.Row="6"
+                Grid.Column="1"
+                Margin="8"
+                FontFamily="Segoe UI"
+                FontSize="14"                
+                >
+                <TextBox.Text>
+                    <Binding Path="SelectedColor" Converter="{StaticResource colorConv}">
+                        <Binding.ValidationRules>
+                            <local:ColorValidator ValidateWebHex="True" />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+
+            </TextBox>
+
 
         </Grid>
 
