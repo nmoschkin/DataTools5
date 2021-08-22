@@ -53,10 +53,10 @@ namespace DataTools.Text.Csv
                 try
                 {
                     string[] argvalues = null;
-                    xcmp = TextTools.JustNumbers(xcmp, values: ref argvalues);
+                    xcmp = TextTools.JustNumbers(xcmp, values: out argvalues);
 
                     string[] argvalues1 = null;
-                    ycmp = TextTools.JustNumbers(ycmp, values: ref argvalues1);
+                    ycmp = TextTools.JustNumbers(ycmp, values: out argvalues1);
 
                     double xd = double.Parse(xcmp, System.Globalization.NumberStyles.Any);
                     double yd = double.Parse(ycmp, System.Globalization.NumberStyles.Any);

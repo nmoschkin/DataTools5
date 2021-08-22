@@ -365,7 +365,7 @@ namespace DataTools.Observable
 #if DOTNETSTD
         public bool TryGetValue(TKey key, out TValue value)
 #else
-        new public bool TryGetValue(TKey key, out TValue value)
+        public bool TryGetValue(TKey key, out TValue value)
 #endif
         {
             if (!Contains(key))

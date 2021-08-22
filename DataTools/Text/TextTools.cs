@@ -871,6 +871,18 @@ namespace DataTools.Text
 
         }
 
+        public static string JustNumbers(string value, bool justDigits = false)
+        {
+            if (justDigits)
+            {
+                return JustDigits(value);
+            }
+            else
+            {
+                return JustNumbers(value, out _);
+            }
+        }
+
         /// <summary>
         /// Returns a string suitable for parsing by Val() or <see cref="FVal" />.
         /// The default behavior processes the string exactly as the Val function looks at it, but it is customizable.
@@ -883,7 +895,7 @@ namespace DataTools.Text
         /// <param name="skipChars">Specific characters to ignore or step over in search of a number (default is common currency).</param>
         /// <returns>A result ready to be parsed by a numeric parser.</returns>
         /// <remarks></remarks>
-        public static string JustNumbers(string value, ref string[] values, bool justFirst = true, bool allInOne = true, int maxSkip = 0, string skipChars = "$£€#")
+        public static string JustNumbers(string value, out string[] values, bool justFirst = true, bool allInOne = true, int maxSkip = 0, string skipChars = "$£€#")
         {
             char[] sn = value.ToCharArray();
             char[] sc = null;
@@ -899,7 +911,7 @@ namespace DataTools.Text
             bool t = false;
 
             string firstScan = "&0123456789+-. ";
-            string scan = " 1234567890-+.eEHhOo";
+            string scan = " 1234567890-+.eEHhOoxX";
 
             sc = new char[c + 1];
 
@@ -917,10 +929,7 @@ namespace DataTools.Text
                         {
                             if (maxSkip > -1 && skip > maxSkip)
                             {
-                                if (values != null)
-                                {
-                                    values = (string[])Array.CreateInstance(typeof(string), 0);
-                                }
+                                values = null;
                                 return "";
                             }
                             else
@@ -961,16 +970,14 @@ namespace DataTools.Text
                 }
                 else if (justFirst && !string.IsNullOrEmpty(skipChars) && skipChars.IndexOf(sn[i]) == -1)
                 {
+                    values = null;
                     return "";
                 }
             }
 
             if (e == 0)
             {
-                if (values != null)
-                {
-                    values = (string[])Array.CreateInstance(typeof(string), 0);
-                }
+                values = null;
                 return "";
             }
 
@@ -979,14 +986,25 @@ namespace DataTools.Text
                 Array.Resize(ref sc, e + 1);
             }
 
-            if (values != null)
-            {
-                values = Split(new string(sc), " ");
-            }
-
+            values = Split(new string(sc), " ");
             return new string(sc);
         }
 
+        public static string JustDigits(string value)
+        {
+            var chars = value.ToCharArray();
+            var sb = new StringBuilder();
+            
+            foreach (var ch in chars)
+            {
+                if (char.IsDigit(ch))
+                {
+                    sb.Append(ch);
+                }
+            }
+
+            return sb.ToString();
+        }
 
         /// <summary>
         /// A better Val() function.  Will parse hexadecimal with 0x or &amp;H markers or binary digits with a 'b' marker.
