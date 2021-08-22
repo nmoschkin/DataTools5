@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using DataTools.Text;
 
-namespace DataTools.Desktop.Unified
+namespace DataTools.Graphics
 {
     /// <summary>
     /// Unified size structure for WinForms, WPF and the Win32 API.
@@ -393,7 +393,7 @@ namespace DataTools.Desktop.Unified
         /// Copy the structure to the pointer.
         /// </summary>
         /// <param name="ptr"></param>
-        public void CopyToInt32Sizeer(IntPtr ptr)
+        public void CopyToInt32SizePtr(IntPtr ptr)
         {
             unsafe
             {
@@ -416,7 +416,7 @@ namespace DataTools.Desktop.Unified
         /// Copy the structure to the pointer.
         /// </summary>
         /// <param name="ptr"></param>
-        public void CopyToDoubleSizeer(IntPtr ptr)
+        public void CopyToDoubleSizePtr(IntPtr ptr)
         {
             unsafe
             {
@@ -440,7 +440,7 @@ namespace DataTools.Desktop.Unified
         /// Copy the structure to the pointer.
         /// </summary>
         /// <param name="ptr"></param>
-        public void CopyToFloatSizeer(IntPtr ptr)
+        public void CopyToFloatSizePtr(IntPtr ptr)
         {
             unsafe
             {
@@ -454,7 +454,7 @@ namespace DataTools.Desktop.Unified
         /// </summary>
         /// <param name="ptr"></param>
         /// <returns></returns>
-        public unsafe static UniSize FromSizeer(int* ptr)
+        public unsafe static UniSize FromSizePtr(int* ptr)
         {
             var up = new UniSize();
 
@@ -469,11 +469,11 @@ namespace DataTools.Desktop.Unified
         /// </summary>
         /// <param name="ptr"></param>
         /// <returns></returns>
-        public static UniSize FromInt32Sizeer(IntPtr ptr)
+        public static UniSize FromInt32SizePtr(IntPtr ptr)
         {
             unsafe
             {
-                return FromSizeer((int*)ptr);
+                return FromSizePtr((int*)ptr);
             }
         }
 
@@ -482,7 +482,7 @@ namespace DataTools.Desktop.Unified
         /// </summary>
         /// <param name="ptr"></param>
         /// <returns></returns>
-        public unsafe static UniSize FromSizeer(double* ptr)
+        public unsafe static UniSize FromSizePtr(double* ptr)
         {
             var up = new UniSize();
 
@@ -497,11 +497,11 @@ namespace DataTools.Desktop.Unified
         /// </summary>
         /// <param name="ptr"></param>
         /// <returns></returns>
-        public static UniSize FromDoubleSizeer(IntPtr ptr)
+        public static UniSize FromDoubleSizePtr(IntPtr ptr)
         {
             unsafe
             {
-                return FromSizeer((double*)ptr);
+                return FromSizePtr((double*)ptr);
             }
         }
 
@@ -511,7 +511,7 @@ namespace DataTools.Desktop.Unified
         /// </summary>
         /// <param name="ptr"></param>
         /// <returns></returns>
-        public unsafe static UniSize FromSizeer(float* ptr)
+        public unsafe static UniSize FromSizePtr(float* ptr)
         {
             var up = new UniSize();
 
@@ -526,11 +526,11 @@ namespace DataTools.Desktop.Unified
         /// </summary>
         /// <param name="ptr"></param>
         /// <returns></returns>
-        public static UniSize FromFloatSizeer(IntPtr ptr)
+        public static UniSize FromFloatSizePtr(IntPtr ptr)
         {
             unsafe
             {
-                return FromSizeer((float*)ptr);
+                return FromSizePtr((float*)ptr);
             }
         }
 

@@ -27,8 +27,8 @@ using System.Runtime.InteropServices;
 using DataTools.Text;
 using DataTools.MathTools;
 using DataTools.Win32;
-using DataTools.Desktop.Unified;
 using DataTools.Win32.Memory;
+using DataTools.Graphics;
 
 namespace DataTools.Hardware.Printers
 {
@@ -1852,11 +1852,11 @@ namespace DataTools.Hardware.Printers
             {
                 if (_Nationality == PaperNationalities.American)
                 {
-                    return SizeInches;
+                    return (SizeInches.Width, SizeInches.Height);
                 }
                 else
                 {
-                    return SizeMillimeters;
+                    return (SizeMillimeters.Width, SizeMillimeters.Height);
                 }
             }
 
@@ -1864,11 +1864,11 @@ namespace DataTools.Hardware.Printers
             {
                 if (_Nationality == PaperNationalities.American)
                 {
-                    SizeInches = value;
+                    SizeInches = new System.Windows.Size(value.Width, value.Height);
                 }
                 else
                 {
-                    SizeMillimeters = value;
+                    SizeMillimeters = new System.Windows.Size(value.Width, value.Height);
                 }
             }
         }

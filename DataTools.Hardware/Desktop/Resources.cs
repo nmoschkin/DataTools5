@@ -19,6 +19,7 @@ using DataTools.Text;
 using DataTools.Win32;
 using DataTools.Shell.Native;
 using DataTools.Win32.Memory;
+using DataTools.Graphics;
 
 namespace DataTools.Desktop
 {
@@ -1152,7 +1153,7 @@ namespace DataTools.Desktop
         public static Image GrayIcon(Icon icn)
         {
             var n = new Bitmap(icn.Width, icn.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            var g = Graphics.FromImage(n);
+            var g = System.Drawing.Graphics.FromImage(n);
             g.FillRectangle(Brushes.Transparent, new Rectangle(0, 0, n.Width, n.Height));
             g.DrawIcon(icn, 0, 0);
             g.Dispose();
@@ -1382,7 +1383,7 @@ namespace DataTools.Desktop
         public static Image HiliteIcon(Icon icn, Color liteColor)
         {
             var n = new Bitmap(icn.Width, icn.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            var g = Graphics.FromImage(n);
+            var g = System.Drawing.Graphics.FromImage(n);
             int lc = liteColor.ToArgb();
             g.FillRectangle(Brushes.Transparent, new Rectangle(0, 0, n.Width, n.Height));
             g.DrawIcon(icn, 0, 0);
@@ -1437,7 +1438,7 @@ namespace DataTools.Desktop
             if (icn is null)
                 return null;
             var n = new Bitmap(icn.Width, icn.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            var g = Graphics.FromImage(n);
+            var g = System.Drawing.Graphics.FromImage(n);
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Bicubic;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
             g.Clear(Color.Transparent);

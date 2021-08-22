@@ -24,6 +24,7 @@ using DataTools.Win32.Network;
 using DataTools.MathTools;
 using DataTools.Text;
 using DataTools.Win32;
+using System.Threading;
 
 namespace SysInfoTool
 {
@@ -310,17 +311,22 @@ namespace SysInfoTool
             SysInfoWindow.Show();
         }
 
+        Thread lrThread;
+
         private void IPWindow_Loaded(object sender, RoutedEventArgs e)
         {
 
-            Task.Run(async () =>
+            lrThread = new Thread(() =>
             {
                 while(true)
                 {
                     RefreshAdapters();
-                    await Task.Delay(3575);
+                    Thread.Sleep(3275);
                 }
             });
+
+            lrThread.IsBackground = true;
+            lrThread.Start();
 
         }
 
@@ -335,10 +341,10 @@ namespace SysInfoTool
 
             if (_Adapters != null)
             {
-                Dispatcher.Invoke(() =>
-                {
+                //Dispatcher.Invoke(() =>
+               // {
                     _Adapters.Refresh();
-                });
+                //});
             }
             else
             {

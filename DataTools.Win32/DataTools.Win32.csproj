@@ -45,7 +45,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Desktop\Unified\**" />
+	  <EmbeddedResource Remove="Desktop\Unified\**" />
+	  <None Remove="Desktop\Unified\**" />
+	  <Page Remove="Desktop\Unified\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Desktop\ColorMath.cs" />
 	  <Compile Remove="SystemInformation\SysInfo.cs" />
+	  <Compile Remove="Win32\User32\Structs\CMYDATA.cs" />
+	  <Compile Remove="Win32\User32\Structs\HSLDATA.cs" />
+	  <Compile Remove="Win32\User32\Structs\HSVDATA.cs" />
 	</ItemGroup>
 
 
@@ -58,6 +69,7 @@
 
 
 	<ItemGroup>
+	  <ProjectReference Include="..\DataTools.Graphics\DataTools.Graphics.csproj" />
 	  <ProjectReference Include="..\DataTools.Win32.Memory\DataTools.Win32.Memory.csproj" />
 	  <ProjectReference Include="..\DataTools\DataTools.csproj" />
 	</ItemGroup>

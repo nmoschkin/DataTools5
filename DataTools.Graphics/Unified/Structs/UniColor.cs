@@ -415,14 +415,10 @@ namespace DataTools.Graphics
         /// <param name="B">Blue Channel</param>
         public void SetValue(byte? A = null, byte? R = null, byte? G = null, byte? B = null)
         {
-            var values = new byte[4];
-
-            values[0] = A ?? _A;
-            values[1] = R ?? _R;
-            values[2] = G ?? _G;
-            values[3] = B ?? _B;
-
-            SetValue(values);
+            _A = A ?? _A;
+            _R = R ?? _R;
+            _G = G ?? _G;
+            _B = B ?? _B;
         }
 
         /// <summary>
@@ -431,13 +427,10 @@ namespace DataTools.Graphics
         /// <param name="values">The raw A, R, G, B values to set.</param>
         public void SetValue(byte[] values)
         {
-            _A = values[0];
-            _R = values[1];
-            _G = values[2];
-            _B = values[3];
-
-            _intvalue = BitConverter.ToInt32(values, 4);
-            _Value = BitConverter.ToUInt32(values, 4);
+            _A = values[3];
+            _R = values[2];
+            _G = values[1];
+            _B = values[0];
         }
 
         /// <summary>
@@ -446,15 +439,7 @@ namespace DataTools.Graphics
         /// <param name="color">The raw 32 bit color value to set.</param>
         public void SetValue(int color)
         {
-            var values = BitConverter.GetBytes(color);
-
-            _A = values[3];
-            _R = values[2];
-            _G = values[1];
-            _B = values[0];
-
             _intvalue = color;
-            _Value = BitConverter.ToUInt32(values, 4);
         }
 
         /// <summary>
@@ -463,14 +448,6 @@ namespace DataTools.Graphics
         /// <param name="color">The raw 32 bit color value to set.</param>
         public void SetValue(uint color)
         {
-            var values = BitConverter.GetBytes(color);
-
-            _A = values[3];
-            _R = values[2];
-            _G = values[1];
-            _B = values[0];
-
-            _intvalue = BitConverter.ToInt32(values, 4);
             _Value = color;
         }
 
@@ -862,7 +839,7 @@ namespace DataTools.Graphics
                 if (b == true)
                 {
                     var u = new UniColor();
-                    switch (c + 1)
+                    switch (c)
                     {
                         case 3:
                             {

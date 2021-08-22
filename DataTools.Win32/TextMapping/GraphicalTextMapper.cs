@@ -7,7 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-using DataTools.Desktop.Unified;
+using DataTools.Graphics;
 using DataTools.MathTools;
 using DataTools.Win32;
 using DataTools.Win32.Memory;
@@ -427,8 +427,8 @@ namespace DataTools.Shell.TextMapping
             double x;
             double y;
             var img2 = new Bitmap(_img.Width, _img.Height, PixelFormat.Format32bppArgb);
-            Graphics g;
-            var g2 = Graphics.FromImage(img2);
+            System.Drawing.Graphics g;
+            var g2 = System.Drawing.Graphics.FromImage(img2);
             g2.DrawImage(_img, 0, 0, _img.Width, _img.Height);
             if (drawRectangles)
             {
@@ -450,7 +450,7 @@ namespace DataTools.Shell.TextMapping
             }
 
             _rendered = new Bitmap((int)x, (int)y, PixelFormat.Format32bppArgb);
-            g = Graphics.FromImage(_rendered);
+            g = System.Drawing.Graphics.FromImage(_rendered);
             g.DrawImage(img2, 0f, 0f, (float)x, (float)y);
             img2.Dispose();
             g.Dispose();
@@ -473,16 +473,8 @@ namespace DataTools.Shell.TextMapping
         /// <param name="DashPatternY">The Y dash pattern.</param>
         /// <remarks></remarks>
         public static void RenderGrid(Bitmap img, float GridX, float GridY, UniColor ColorX, UniColor ColorY, double Thickness = 1.0d, GridLinesType GridType = GridLinesType.Dotted, float[] DashPatternX = null, float[] DashPatternY = null)
-
-
-
-
-
-
-
-
         {
-            var g = Graphics.FromImage(img);
+            var g = System.Drawing.Graphics.FromImage(img);
             int x;
             int y;
             int cx;

@@ -33,6 +33,7 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using DataTools.SortedLists;
 using DataTools.Win32.Memory;
+using System.Windows;
 
 namespace DataTools.Hardware.Network
 {
@@ -442,7 +443,10 @@ namespace DataTools.Hardware.Network
                     }
                     else
                     {
-                        adapters.RemoveAt(i);
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            adapters.RemoveAt(i);
+                        });
                     }
                 }
 
@@ -450,7 +454,10 @@ namespace DataTools.Hardware.Network
                 {
                     if (!kseen.Contains(kv.Value.IfIndex))
                     {
-                        adapters.Add(kv.Value);
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            adapters.Add(kv.Value);
+                        });
                     }
                 }
 

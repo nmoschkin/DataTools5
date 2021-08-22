@@ -510,7 +510,7 @@ namespace DataTools.Desktop
             {
                 im = new Bitmap(sz, sz, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-                var g = Graphics.FromImage(im);
+                var g = System.Drawing.Graphics.FromImage(im);
 
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;

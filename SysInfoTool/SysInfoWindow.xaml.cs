@@ -14,7 +14,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using DataTools.ColorControls;
-using DataTools.Desktop.Unified;
 
 namespace SysInfoTool
 {

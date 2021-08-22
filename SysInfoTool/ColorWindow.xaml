@@ -19,21 +19,10 @@
         <ResourceDictionary Source="Themes.xaml" />
     </Window.Resources>
 
-    <Grid
-        Width="{Binding}"
-        Height="{Binding}"
-        HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch"
-        Background="{DynamicResource HWGradient}"
-        ShowGridLines="False">
+    <Grid>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition />
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -53,38 +42,70 @@
             </MenuItem>
         </Menu>
 
-        <cc:ColorPicker
-            x:Name="WheelPicker"
-            Grid.Row="1"
-            Grid.Column="0"
-            Margin="8"
-            ColorHit="WheelPicker_ColorHit"
-            ElementSize="10"
-            Mode="Wheel" />
 
-        <cc:ColorPicker
-            x:Name="HuePicker"
-            Grid.Row="1"
-            Grid.Column="1"
-            HuePointerSize="7"
-            HueWheelThickness="12"
-            Margin="8"
-            ColorHit="HuePicker_ColorHit"
-            ElementSize="10"
-            Mode="HueWheel" />
+        <TabControl Grid.Row="1">
+            <TabItem Header="Color Picker">
 
-        <cc:ColorPicker
-            x:Name="LinePicker"
-            Grid.Row="2"
-            Grid.Column="0"
-            Grid.ColumnSpan="2"
-            Margin="8"
-            ColorHit="LinePicker_ColorHit"
-            ElementSize="10"
-            InvertSaturation="True"
-            Mode="LinearHorizontal" />
+                <cc:ColorPicker />
+            </TabItem>
+            
+            <TabItem Header="Color Elements">
 
-        <StatusBar Grid.Row="3" Grid.ColumnSpan="3">
+                <Grid
+                    Width="{Binding}"
+                    Height="{Binding}"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="{DynamicResource HWGradient}"
+                    ShowGridLines="False">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <cc:ColorElement
+                        x:Name="WheelPicker"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="8"
+                        ColorHit="WheelPicker_ColorHit"
+                        ElementSize="10"
+                        Mode="Wheel" />
+
+                    <cc:ColorElement
+                        x:Name="HuePicker"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        HuePointerSize="7"
+                        HueWheelThickness="12"
+                        Margin="8"
+                        ColorHit="HuePicker_ColorHit"
+                        ElementSize="10"
+                        Mode="HueWheel" />
+
+                    <cc:ColorElement
+                        x:Name="LinePicker"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Margin="8"
+                        ColorHit="LinePicker_ColorHit"
+                        ElementSize="10"
+                        InvertSaturation="True"
+                        Mode="LinearHorizontal" />
+
+                </Grid>
+
+
+            </TabItem>
+            
+        </TabControl>
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="3">
             <StatusBarItem HorizontalAlignment="Right">
                 <StackPanel Margin="4,2" Orientation="Horizontal">
 
