@@ -6,50 +6,92 @@
     xmlns:local="clr-namespace:DataTools.ColorControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignWidth="660"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <local:ColorConverter x:Key="colorConv" />
+
+            <Style x:Key="Elements" TargetType="TextBox">
+                <Setter Property="Width" Value="60" />
+            </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    <Grid x:Name="ControlGrid">
+
+    <Grid
+        x:Name="ControlGrid"
+        MinWidth="660"
+        Margin="0">
+
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
         </Grid.ColumnDefinitions>
-
-        <local:ColorElement
-            x:Name="ColorSwatch"
-            Grid.Row="0"
-            Grid.RowSpan="2"
-            Grid.Column="0"
-            Grid.ColumnSpan="3"
-            Margin="14"
-            ElementSize="24"
-            SelectedColor="{Binding SelectedColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Grid
             Grid.Row="0"
-            Grid.RowSpan="2"
-            Grid.Column="3"
-            Grid.ColumnSpan="2"
-            Margin="14">
+            Grid.RowSpan="1"
+            Grid.Column="0">
 
             <Grid.RowDefinitions>
                 <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+
+            <local:ColorElement
+                x:Name="ColorSwatch"
+                Grid.Row="0"
+                Grid.Column="0"
+                Height="225"
+                Margin="14"
+                Background="Transparent"
+                ColorValue="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                ElementSize="24"
+                SelectedColor="{Binding SelectedColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+
+            <Rectangle
+                Grid.Row="1"
+                Height="12"
+                Margin="14,4,14,0">
+                <Rectangle.Fill>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Offset="0" Color="Black" />
+                        <GradientStop Offset="1" Color="White" />
+
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Slider
+                Grid.Row="2"
+                Margin="14,0,14,8"
+                LargeChange="0.10"
+                Maximum="1"
+                Minimum="0"
+                TickFrequency="0.02"
+                TickPlacement="TopLeft"
+                Ticks="0.01"
+                Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        </Grid>
+
+
+        <Grid
+            Grid.Row="0"
+            Grid.RowSpan="1"
+            Grid.Column="1"
+            Height="172"
+            Margin="14">
+
+            <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
@@ -58,7 +100,9 @@
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <TextBlock
@@ -76,16 +120,16 @@
                 Grid.Column="1"
                 Margin="8"
                 FontFamily="Segoe UI"
-                FontSize="14"                
-                >
+                FontSize="14"
+                Style="{StaticResource Elements}">
                 <TextBox.Text>
-                    <Binding Path="R" >
+                    <Binding Path="R">
                         <Binding.ValidationRules>
-                            <local:ColorValidator  />
+                            <local:ColorValidator />
                         </Binding.ValidationRules>
                     </Binding>
                 </TextBox.Text>
-                
+
             </TextBox>
 
 
@@ -104,12 +148,12 @@
                 Grid.Column="1"
                 Margin="8"
                 FontFamily="Segoe UI"
-                FontSize="14"                
-                >
+                FontSize="14"
+                Style="{StaticResource Elements}">
                 <TextBox.Text>
-                    <Binding Path="G" >
+                    <Binding Path="G">
                         <Binding.ValidationRules>
-                            <local:ColorValidator  />
+                            <local:ColorValidator />
                         </Binding.ValidationRules>
                     </Binding>
                 </TextBox.Text>
@@ -132,10 +176,10 @@
                 Grid.Column="1"
                 Margin="8"
                 FontFamily="Segoe UI"
-                FontSize="14"                
-                >
+                FontSize="14"
+                Style="{StaticResource Elements}">
                 <TextBox.Text>
-                    <Binding Path="B" >
+                    <Binding Path="B">
                         <Binding.ValidationRules>
                             <local:ColorValidator />
                         </Binding.ValidationRules>
@@ -145,8 +189,8 @@
             </TextBox>
 
             <TextBlock
-                Grid.Row="3"
-                Grid.Column="0"
+                Grid.Row="0"
+                Grid.Column="2"
                 Margin="8,4"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
@@ -155,14 +199,14 @@
                 Text="Hue:" />
 
             <TextBox
-                Grid.Row="3"
-                Grid.Column="1"
+                Grid.Row="0"
+                Grid.Column="3"
                 Margin="8"
                 FontFamily="Segoe UI"
-                FontSize="14"                
-                >
+                FontSize="14"
+                Style="{StaticResource Elements}">
                 <TextBox.Text>
-                    <Binding Path="H" >
+                    <Binding Path="H">
                         <Binding.ValidationRules>
                             <local:ColorValidator ValidateHue="True" />
                         </Binding.ValidationRules>
@@ -173,8 +217,8 @@
 
 
             <TextBlock
-                Grid.Row="4"
-                Grid.Column="0"
+                Grid.Row="1"
+                Grid.Column="2"
                 Margin="8,4"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
@@ -183,14 +227,14 @@
                 Text="Saturation:" />
 
             <TextBox
-                Grid.Row="4"
-                Grid.Column="1"
+                Grid.Row="1"
+                Grid.Column="3"
                 Margin="8"
                 FontFamily="Segoe UI"
-                FontSize="14"                
-                >
+                FontSize="14"
+                Style="{StaticResource Elements}">
                 <TextBox.Text>
-                    <Binding Path="S" >
+                    <Binding Path="S">
                         <Binding.ValidationRules>
                             <local:ColorValidator ValidateSatVal="True" />
                         </Binding.ValidationRules>
@@ -200,8 +244,8 @@
             </TextBox>
 
             <TextBlock
-                Grid.Row="5"
-                Grid.Column="0"
+                Grid.Row="2"
+                Grid.Column="2"
                 Margin="8,4"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
@@ -210,14 +254,14 @@
                 Text="Value:" />
 
             <TextBox
-                Grid.Row="5"
-                Grid.Column="1"
+                Grid.Row="2"
+                Grid.Column="3"
                 Margin="8"
                 FontFamily="Segoe UI"
-                FontSize="14"                
-                >
+                FontSize="14"
+                Style="{StaticResource Elements}">
                 <TextBox.Text>
-                    <Binding Path="V" >
+                    <Binding Path="V">
                         <Binding.ValidationRules>
                             <local:ColorValidator ValidateSatVal="True" />
                         </Binding.ValidationRules>
@@ -227,8 +271,9 @@
             </TextBox>
 
             <TextBlock
-                Grid.Row="6"
+                Grid.Row="3"
                 Grid.Column="0"
+                Grid.ColumnSpan="2"
                 Margin="8,4"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
@@ -237,14 +282,14 @@
                 Text="Web Hex Value:" />
 
             <TextBox
-                Grid.Row="6"
-                Grid.Column="1"
+                Grid.Row="3"
+                Grid.Column="2"
+                Grid.ColumnSpan="2"
                 Margin="8"
                 FontFamily="Segoe UI"
-                FontSize="14"                
-                >
+                FontSize="14">
                 <TextBox.Text>
-                    <Binding Path="SelectedColor" Converter="{StaticResource colorConv}">
+                    <Binding Converter="{StaticResource colorConv}" Path="SelectedColor">
                         <Binding.ValidationRules>
                             <local:ColorValidator ValidateWebHex="True" />
                         </Binding.ValidationRules>
@@ -256,16 +301,155 @@
 
         </Grid>
 
-        <Rectangle
-            Grid.Row="2"
-            Grid.Column="4"
-            Margin="14"
-            Stroke="{x:Static SystemColors.ActiveBorderBrush}">
+        <Grid
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2">
 
-            <Rectangle.Fill>
-                <SolidColorBrush Color="{Binding SelectedColor, Mode=OneWay}" />
-            </Rectangle.Fill>
-        </Rectangle>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+
+                <TextBlock Margin="14,8,14,2" Text="Named Colors:" />
+
+                <ListBox
+                    Grid.Row="1"
+                    Margin="14,3,14,13"
+                    ItemsSource="{x:Static local:NamedColorViewModel.AllNamedColors}"
+                    SelectedItem="{Binding SelectedNamedColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ListBox.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.HeaderTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Margin="0,2,0,2"
+                                        Background="LightSlateGray"
+                                        BorderBrush="DarkSlateGray"
+                                        BorderThickness="0.75">
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition />
+                                            </Grid.RowDefinitions>
+
+                                            <TextBlock
+                                                Grid.Row="0"
+                                                Padding="4"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Background="Transparent"
+                                                FontFamily="Calibri"
+                                                FontSize="12"
+                                                FontWeight="Bold"
+                                                Foreground="White"
+                                                Text="{Binding Name}" />
+
+                                        </Grid>
+
+                                    </Border>
+                                </DataTemplate>
+                            </GroupStyle.HeaderTemplate>
+                        </GroupStyle>
+                    </ListBox.GroupStyle>
+                    <ListBox.ItemTemplate>
+
+                        <DataTemplate>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+
+                                <Rectangle
+                                    Width="24"
+                                    Height="24"
+                                    Margin="8,2"
+                                    VerticalAlignment="Top"
+                                    Stroke="{x:Static SystemColors.ActiveBorderBrush}">
+
+                                    <Rectangle.Fill>
+                                        <SolidColorBrush Color="{Binding Color, Mode=OneWay}" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Margin="8,2"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    FontFamily="Segoe UI"
+                                    FontSize="14"
+                                    Text="{Binding Name}" />
+
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+
+
+            <StackPanel
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <StackPanel
+                    Grid.Row="1"
+                    Grid.Column="4"
+                    Margin="14,14"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Orientation="Vertical">
+
+                    <TextBlock
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        FontFamily="Segoe UI"
+                        FontSize="14"
+                        Text="Selected Color:" />
+
+                    <TextBlock
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        FontFamily="Segoe UI"
+                        FontSize="14"
+                        Text="{Binding ElementName=ColorSwatch, Path=SelectedColorName}" />
+
+                </StackPanel>
+
+                <Rectangle
+                    Grid.Row="1"
+                    Grid.Column="5"
+                    Width="48"
+                    Height="48"
+                    Margin="14,14"
+                    VerticalAlignment="Top"
+                    Stroke="{x:Static SystemColors.ActiveBorderBrush}">
+
+                    <Rectangle.Fill>
+                        <SolidColorBrush Color="{Binding SelectedColor, Mode=OneWay}" />
+                    </Rectangle.Fill>
+                </Rectangle>
+
+            </StackPanel>
+
+
+        </Grid>
+
 
     </Grid>
+
 </UserControl>

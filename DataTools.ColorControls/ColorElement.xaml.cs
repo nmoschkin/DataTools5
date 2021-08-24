@@ -18,6 +18,7 @@ using DataTools.Windows.Extensions;
 using DataTools.MathTools.PolarMath;
 
 using static DataTools.Graphics.ColorMath;
+using System.Runtime.CompilerServices;
 
 namespace DataTools.ColorControls
 {
@@ -33,7 +34,8 @@ namespace DataTools.ColorControls
         public event ColorHitEvent ColorHit;
         public event ColorHitEvent ColorOver;
 
-
+        ColorWheelElement? selectedElement;
+        bool updateForValueChange;
 
 
         public int HuePointerSize
@@ -253,15 +255,11 @@ namespace DataTools.ColorControls
                         return;
                     }
 
-                    //p.RenderPicker();
+                    p.updateForValueChange = true;
                     p.InvalidateVisual();
                 }
             }
         }
-
-
-
-
 
         public ColorPickerMode Mode
         {
@@ -436,6 +434,7 @@ namespace DataTools.ColorControls
                 Surround.SetValue(Canvas.TopProperty, (double)cel.Center.Y - 8);
 
                 Surround.Stroke = Point.Stroke = new SolidColorBrush((Color)SelectedColor);
+                selectedElement = cel;
 
             }
 
@@ -567,6 +566,7 @@ namespace DataTools.ColorControls
 
                 }
 
+
                 disp.Invoke(() =>
                 {
                     CursorCanvas.Width = w;
@@ -575,7 +575,33 @@ namespace DataTools.ColorControls
                     //CursorCanvas.RenderSize = new Size(w, h);
                     cpRender = cw;
                     PickerSite.Source = DataTools.Desktop.BitmapTools.MakeWPFImage(cpRender.Bitmap);
-                    SetSelectedColor();
+
+
+
+                    UniColor? selc = null;
+
+                    if (updateForValueChange && SelectedColor is Color scolor && selectedElement is ColorWheelElement selem)
+                    {
+                        var pp = selem.Center;
+
+                        foreach (var testelem in cw.Elements)
+                        {
+                            if (testelem.Bounds.Contains(pp))
+                            {
+
+                                SetSelectedColor(new UniColor(testelem.Color.ToArgb()));
+                                break;
+                            }
+                        }
+                    }
+
+                    updateForValueChange = false;
+
+                    if (selc == null)
+                    {
+                        SetSelectedColor();
+                    }
+
                 });
 
             });

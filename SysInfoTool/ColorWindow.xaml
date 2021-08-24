@@ -12,7 +12,7 @@
     xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
     x:Name="SysInfo"
     Title="Color Picker Demo"
-    Width="510"
+    Width="660"
     Height="500"
     mc:Ignorable="d">
     <Window.Resources>
@@ -48,7 +48,7 @@
 
                 <cc:ColorPicker />
             </TabItem>
-            
+
             <TabItem Header="Color Elements">
 
                 <Grid
@@ -81,11 +81,11 @@
                         x:Name="HuePicker"
                         Grid.Row="0"
                         Grid.Column="1"
-                        HuePointerSize="7"
-                        HueWheelThickness="12"
                         Margin="8"
                         ColorHit="HuePicker_ColorHit"
                         ElementSize="10"
+                        HuePointerSize="7"
+                        HueWheelThickness="12"
                         Mode="HueWheel" />
 
                     <cc:ColorElement
@@ -103,7 +103,7 @@
 
 
             </TabItem>
-            
+
         </TabControl>
         <StatusBar Grid.Row="2" Grid.ColumnSpan="3">
             <StatusBarItem HorizontalAlignment="Right">

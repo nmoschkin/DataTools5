@@ -13,6 +13,17 @@ namespace DataTools.ColorControls
     {
 
         private UniColor source;
+        private NamedColorViewModel namedColor;
+        private double colorValue = 1d;
+
+        public double Value
+        {
+            get => colorValue;
+            set
+            {
+                SetProperty(ref colorValue, value);
+            }
+        }
 
         public ColorViewModel(UniColor source)
         {
@@ -34,6 +45,22 @@ namespace DataTools.ColorControls
                     source = value.GetUniColor();
                     RaiseARGBChange(false, false);
                     RaiseHSVChange();
+
+                    if (namedColor != null)
+                    {
+                        if (!namedColor.Color.Equals(SelectedColor))
+                        {
+                            foreach (NamedColorViewModel nc in NamedColorViewModel.AllNamedColors)
+                            {
+                                if (nc.Color.Equals(SelectedColor))
+                                {
+                                    SelectedNamedColor = nc;
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         }
@@ -46,6 +73,7 @@ namespace DataTools.ColorControls
             OnPropertyChanged(nameof(B));
             if (raiseSource) OnPropertyChanged(nameof(Source));
             if (raiseSelColor) OnPropertyChanged(nameof(SelectedColor));
+            if (raiseSelColor) OnPropertyChanged(nameof(SelectedColor));
         }
 
         private void RaiseHSVChange(bool raiseSource = true, bool raiseSelColor = true)
@@ -55,6 +83,29 @@ namespace DataTools.ColorControls
             OnPropertyChanged(nameof(V));
             if (raiseSource) OnPropertyChanged(nameof(Source));
             if (raiseSelColor) OnPropertyChanged(nameof(SelectedColor));
+        }
+
+        public NamedColorViewModel SelectedNamedColor
+        {
+            get => namedColor;
+            set
+            {
+                if (SetProperty(ref namedColor, value))
+                {
+                    if (namedColor != null)
+                    {
+                        if (namedColor.Color.Equals(SelectedColor)) return;
+
+                        //Task.Run(() =>
+                        //{
+                        //    Value = namedColor.Color.GetUniColor().V;
+                        //}).ContinueWith((t) =>
+                        //{
+                            SelectedColor = namedColor.Color;
+                        //});
+                    }
+                }
+            }
         }
 
         public byte A
