@@ -73,7 +73,7 @@ namespace DataTools.ColorControls
             OnPropertyChanged(nameof(B));
             if (raiseSource) OnPropertyChanged(nameof(Source));
             if (raiseSelColor) OnPropertyChanged(nameof(SelectedColor));
-            if (raiseSelColor) OnPropertyChanged(nameof(SelectedColor));
+            //if (raiseSelColor) OnPropertyChanged(nameof(SelectedColor));
         }
 
         private void RaiseHSVChange(bool raiseSource = true, bool raiseSelColor = true)
