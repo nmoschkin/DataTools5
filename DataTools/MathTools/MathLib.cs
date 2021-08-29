@@ -167,6 +167,71 @@ namespace DataTools.MathTools
             // We're done!
             return output;
         }
+
+        
+        /// <summary>
+        /// Find the greatest common factor between a group of integers.
+        /// </summary>
+        /// <param name="values">The integers to search.</param>
+        /// <returns>The greatest common factor of all integers.</returns>
+        public static int FindGreatestCommonFactor(params int[] values)
+        {
+            if (values == null || values.Length == 1) throw new ArgumentOutOfRangeException("Function takes 2 or more numbers.");
+            int candidate = values[0];
+
+            int i, c = values.Length;
+            int min, max, mod;
+
+            int gcf = -1;
+
+            for (i = 1; i < c; i++)
+            {
+                min = candidate;
+                max = values[i];
+
+                // put the numbers in the right position.
+                if (min > max)
+                {
+                    min = max;
+                    max = values[i - 1];
+                }
+
+                // find the remaineder.
+                mod = max % min;
+
+
+                while (mod != 0)
+                {
+                    // just keep taking the remainder until it's zero, the last number we used is the candidate.
+                    max = min;
+                    min = mod;
+                    mod = max % min;
+                }
+
+                candidate = min;
+
+                // it may seem counter-intuitive that we're looking for the lesser value to get the 'greatest' common factor.
+                // but it's simply that we are looking for the largest number that will go into all numbers.
+                // if the number we just got is less than then number that we already had (the candidate), 
+                // that means that new, smaller number becomes the new largest possible value.
+
+                // so, we're looking for 1 result for each pair of numbers.
+                // we want that 1 result for each pair to be the biggest number possible (the greatest common factor).
+                // BUT, when we're dealing with more than 1 pair, we have to take all the numbers into account,
+                // and so we have a set of 'biggest numbers possible'.
+
+                // and we're looking for the smallest number in that set.
+                // because THAT will ultimately be the final 'biggest number possible.' 
+
+                if (gcf == -1 || candidate < gcf) gcf = candidate;
+
+                // unless the laws of mathematics change, tomorrow, this can end, here.
+                if (gcf == 1) break;
+            }
+
+            return gcf;
+        }
+
         /// <summary>
         /// Strips the units from a number, returns both, cleaned.
         /// </summary>
