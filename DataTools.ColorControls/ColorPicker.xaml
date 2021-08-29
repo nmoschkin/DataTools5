@@ -50,11 +50,12 @@
                 x:Name="ColorSwatch"
                 Grid.Row="0"
                 Grid.Column="0"
-                Height="225"
+                Mode="HueWheel"
+                Height="225"                
                 Margin="14"
                 Background="Transparent"
                 ColorValue="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                ElementSize="24"
+                ElementSize="10"
                 SelectedColor="{Binding SelectedColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
 

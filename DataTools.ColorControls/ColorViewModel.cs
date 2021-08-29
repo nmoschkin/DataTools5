@@ -95,14 +95,7 @@ namespace DataTools.ColorControls
                     if (namedColor != null)
                     {
                         if (namedColor.Color.Equals(SelectedColor)) return;
-
-                        //Task.Run(() =>
-                        //{
-                        //    Value = namedColor.Color.GetUniColor().V;
-                        //}).ContinueWith((t) =>
-                        //{
-                            SelectedColor = namedColor.Color;
-                        //});
+                        SelectedColor = namedColor.Color;
                     }
                 }
             }
