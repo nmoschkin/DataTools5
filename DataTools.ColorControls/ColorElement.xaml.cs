@@ -291,7 +291,9 @@ namespace DataTools.ColorControls
             // this.SizeChanged += ColorPicker_SizeChanged;
             CursorCanvas.MouseMove += PickerSite_MouseMove;
             CursorCanvas.MouseDown += PickerSite_MouseDown;
+            CursorCanvas.MouseUp += PickerSite_MouseUp;
         }
+
 
         protected override void OnRender(DrawingContext drawingContext)
         {
@@ -441,6 +443,8 @@ namespace DataTools.ColorControls
 
         }
 
+        bool dragPick = false;
+
         private void PickerSite_MouseMove(object sender, MouseEventArgs e)
         {
             var pt = e.GetPosition(PickerSite);
@@ -455,7 +459,7 @@ namespace DataTools.ColorControls
                 Cursor = Cursors.Cross;
             }
 
-            if (ColorOver != null || ((e.LeftButton == MouseButtonState.Pressed) && (ColorHit != null)))
+            if (dragPick)
             {
                 var ev = new ColorHitEventArgs(c);
 
@@ -466,7 +470,6 @@ namespace DataTools.ColorControls
                     SetSelectedColor(c);
                     ColorHit?.Invoke(this, ev);
                 }
-
             }
         }
 
@@ -477,9 +480,14 @@ namespace DataTools.ColorControls
             
             SetSelectedColor(c);
             ColorHit?.Invoke(this, new ColorHitEventArgs(c));
+            dragPick = true;
 
         }
 
+        private void PickerSite_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            dragPick = false;
+        }
         private void ColorPicker_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             //RenderPicker((int)e.NewSize.Width, (int)e.NewSize.Height);

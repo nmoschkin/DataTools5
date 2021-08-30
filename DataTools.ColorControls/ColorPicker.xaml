@@ -1,19 +1,35 @@
 ﻿<UserControl
+    x:Name="Picker"
     x:Class="DataTools.ColorControls.ColorPicker"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:DataTools.ColorControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="450"
-    d:DesignWidth="660"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <local:ColorConverter x:Key="colorConv" />
-
+            <local:BoolConverter Mode="Visibility" x:Key="visConv" />
+             
             <Style x:Key="Elements" TargetType="TextBox">
                 <Setter Property="Width" Value="60" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="Margin" Value="8,8,0,8" />                
+                <Setter Property="Padding" Value="2,4" />                
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="14" />
+            </Style>
+
+            <Style x:Key="BigElements" TargetType="TextBox">
+                <Setter Property="Width" Value="160" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="Margin" Value="8,8,0,8" />
+                <Setter Property="Padding" Value="2,4" />
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="14" />
             </Style>
 
         </ResourceDictionary>
@@ -31,7 +47,7 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
         <Grid
@@ -48,10 +64,10 @@
 
             <local:ColorElement
                 x:Name="ColorSwatch"
+                VerticalAlignment="Stretch"
                 Grid.Row="0"
                 Grid.Column="0"
-                Mode="HueWheel"
-                Height="225"                
+                Mode="{Binding ElementName=Picker, Path=Mode, Mode=OneWay}"
                 Margin="14"
                 Background="Transparent"
                 ColorValue="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -61,6 +77,8 @@
 
             <Rectangle
                 Grid.Row="1"
+                                    Width="{Binding ElementName=ColorSwatch, Path=ActualWidth}"
+
                 Height="12"
                 Margin="14,4,14,0">
                 <Rectangle.Fill>
@@ -73,6 +91,8 @@
             </Rectangle>
             <Slider
                 Grid.Row="2"
+                    Width="{Binding ElementName=ColorSwatch, Path=ActualWidth}"
+
                 Margin="14,0,14,8"
                 LargeChange="0.10"
                 Maximum="1"
@@ -86,17 +106,18 @@
 
 
         <Grid
+            VerticalAlignment="Center"
             Grid.Row="0"
             Grid.RowSpan="1"
             Grid.Column="1"
-            Height="172"
             Margin="14">
 
             <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -106,9 +127,10 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock
+            <TextBlock                
                 Grid.Row="0"
                 Grid.Column="0"
+                Visibility="{Binding ShowRGB, Converter={StaticResource visConv}, Mode=OneWay}"
                 Margin="8,4"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
@@ -119,9 +141,7 @@
             <TextBox
                 Grid.Row="0"
                 Grid.Column="1"
-                Margin="8"
-                FontFamily="Segoe UI"
-                FontSize="14"
+                Visibility="{Binding ShowRGB, Converter={StaticResource visConv}, Mode=OneWay}"
                 Style="{StaticResource Elements}">
                 <TextBox.Text>
                     <Binding Path="R">
@@ -136,6 +156,7 @@
 
             <TextBlock
                 Grid.Row="1"
+                Visibility="{Binding ShowRGB, Converter={StaticResource visConv}, Mode=OneWay}"
                 Grid.Column="0"
                 Margin="8,4"
                 HorizontalAlignment="Right"
@@ -146,10 +167,8 @@
 
             <TextBox
                 Grid.Row="1"
+                Visibility="{Binding ShowRGB, Converter={StaticResource visConv}, Mode=OneWay}"
                 Grid.Column="1"
-                Margin="8"
-                FontFamily="Segoe UI"
-                FontSize="14"
                 Style="{StaticResource Elements}">
                 <TextBox.Text>
                     <Binding Path="G">
@@ -165,6 +184,7 @@
             <TextBlock
                 Grid.Row="2"
                 Grid.Column="0"
+                Visibility="{Binding ShowRGB, Converter={StaticResource visConv}, Mode=OneWay}"
                 Margin="8,4"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
@@ -175,9 +195,7 @@
             <TextBox
                 Grid.Row="2"
                 Grid.Column="1"
-                Margin="8"
-                FontFamily="Segoe UI"
-                FontSize="14"
+                Visibility="{Binding ShowRGB, Converter={StaticResource visConv}, Mode=OneWay}"
                 Style="{StaticResource Elements}">
                 <TextBox.Text>
                     <Binding Path="B">
@@ -193,6 +211,7 @@
                 Grid.Row="0"
                 Grid.Column="2"
                 Margin="8,4"
+                Visibility="{Binding ShowHSV, Converter={StaticResource visConv}, Mode=OneWay}"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 FontFamily="Segoe UI"
@@ -201,10 +220,8 @@
 
             <TextBox
                 Grid.Row="0"
+                Visibility="{Binding ShowHSV, Converter={StaticResource visConv}, Mode=OneWay}"
                 Grid.Column="3"
-                Margin="8"
-                FontFamily="Segoe UI"
-                FontSize="14"
                 Style="{StaticResource Elements}">
                 <TextBox.Text>
                     <Binding Path="H">
@@ -220,6 +237,7 @@
             <TextBlock
                 Grid.Row="1"
                 Grid.Column="2"
+                Visibility="{Binding ShowHSV, Converter={StaticResource visConv}, Mode=OneWay}"
                 Margin="8,4"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
@@ -229,10 +247,8 @@
 
             <TextBox
                 Grid.Row="1"
+                Visibility="{Binding ShowHSV, Converter={StaticResource visConv}, Mode=OneWay}"
                 Grid.Column="3"
-                Margin="8"
-                FontFamily="Segoe UI"
-                FontSize="14"
                 Style="{StaticResource Elements}">
                 <TextBox.Text>
                     <Binding Path="S">
@@ -247,6 +263,7 @@
             <TextBlock
                 Grid.Row="2"
                 Grid.Column="2"
+                Visibility="{Binding ShowHSV, Converter={StaticResource visConv}, Mode=OneWay}"
                 Margin="8,4"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
@@ -255,11 +272,9 @@
                 Text="Value:" />
 
             <TextBox
+                Visibility="{Binding ShowHSV, Converter={StaticResource visConv}, Mode=OneWay}"
                 Grid.Row="2"
                 Grid.Column="3"
-                Margin="8"
-                FontFamily="Segoe UI"
-                FontSize="14"
                 Style="{StaticResource Elements}">
                 <TextBox.Text>
                     <Binding Path="V">
@@ -271,24 +286,66 @@
 
             </TextBox>
 
+            <CheckBox Content="Show Alpha" 
+                      FlowDirection="RightToLeft"
+                      IsChecked="{Binding ShowAlpha, Mode=TwoWay}"
+                      Visibility="{Binding ShowAlphaOption, Converter={StaticResource visConv}, Mode=OneWay}"
+                      Grid.Row="3"
+                      Height="{Binding ElementName=AlphaBox, Path=ActualHeight}"
+                      Grid.Column="0"
+                      Grid.ColumnSpan="2"
+                      VerticalContentAlignment="Center"
+                      Margin="14,14,0,14"
+                      />
             <TextBlock
                 Grid.Row="3"
+                Grid.Column="2"
+                Margin="8,4"
+                      Visibility="{Binding ShowAlpha, Converter={StaticResource visConv}, Mode=OneWay}"
+                
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                FontFamily="Segoe UI"
+                FontSize="14"
+                Text="Alpha:" />
+
+            <TextBox
+                Grid.Row="3"
+                x:Name="AlphaBox"
+                Grid.Column="3"
+                      Visibility="{Binding ShowAlpha, Converter={StaticResource visConv}, Mode=OneWay}"
+                Style="{StaticResource Elements}">
+                <TextBox.Text>
+                    <Binding Path="A">
+                        <Binding.ValidationRules>
+                            <local:ColorValidator ValidateSatVal="True" />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+
+            </TextBox>
+
+
+
+            <TextBlock
+                Grid.Row="4"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 Margin="8,4"
                 HorizontalAlignment="Right"
+                      Visibility="{Binding ShowWebHexValue, Converter={StaticResource visConv}, Mode=OneWay}"
                 VerticalAlignment="Center"
                 FontFamily="Segoe UI"
                 FontSize="14"
                 Text="Web Hex Value:" />
 
             <TextBox
-                Grid.Row="3"
+                Grid.Row="4"
+                      Visibility="{Binding ShowWebHexValue, Converter={StaticResource visConv}, Mode=OneWay}"
                 Grid.Column="2"
                 Grid.ColumnSpan="2"
-                Margin="8"
-                FontFamily="Segoe UI"
-                FontSize="14">
+                Style="{StaticResource BigElements}">
+                
                 <TextBox.Text>
                     <Binding Converter="{StaticResource colorConv}" Path="SelectedColor">
                         <Binding.ValidationRules>
@@ -300,20 +357,23 @@
             </TextBox>
 
 
+
         </Grid>
 
         <Grid
             Grid.Row="1"
             Grid.Column="0"
+            HorizontalAlignment="Stretch"
             Grid.ColumnSpan="2">
 
             <Grid.RowDefinitions>
-                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition x:Name="RHColor" />
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0">
@@ -324,14 +384,22 @@
                 </Grid.RowDefinitions>
 
 
-                <TextBlock Margin="14,8,14,2" Text="Named Colors:" />
+                <TextBlock 
+                    Visibility="{Binding ShowNamedColors, Converter={StaticResource visConv}}" 
+                    Margin="14,8,14,2" 
+                    Text="Named Colors:" />
 
-                <ListBox
+                <ComboBox
+                    Visibility="{Binding ShowNamedColors, Converter={StaticResource visConv}}" 
                     Grid.Row="1"
+                    Height="32"
+                    HorizontalAlignment="Left"
+                    Width="{Binding ElementName=ColorSwatch, Path=ActualWidth}"
+                    VerticalAlignment="Top"
                     Margin="14,3,14,13"
                     ItemsSource="{x:Static local:NamedColorViewModel.AllNamedColors}"
                     SelectedItem="{Binding SelectedNamedColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <ListBox.GroupStyle>
+                    <ComboBox.GroupStyle>
                         <GroupStyle>
                             <GroupStyle.HeaderTemplate>
                                 <DataTemplate>
@@ -364,8 +432,8 @@
                                 </DataTemplate>
                             </GroupStyle.HeaderTemplate>
                         </GroupStyle>
-                    </ListBox.GroupStyle>
-                    <ListBox.ItemTemplate>
+                    </ComboBox.GroupStyle>
+                    <ComboBox.ItemTemplate>
 
                         <DataTemplate>
 
@@ -398,18 +466,17 @@
 
                             </Grid>
                         </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </Grid>
 
 
             <StackPanel
+                x:Name="SelPanel"
                 Grid.Column="1"
                 HorizontalAlignment="Right"
                 Orientation="Horizontal">
                 <StackPanel
-                    Grid.Row="1"
-                    Grid.Column="4"
                     Margin="14,14"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"

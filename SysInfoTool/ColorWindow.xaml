@@ -12,7 +12,7 @@
     xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
     x:Name="SysInfo"
     Title="Color Picker Demo"
-    Width="660"
+    Width="700"
     Height="500"
     mc:Ignorable="d">
     <Window.Resources>
@@ -36,6 +36,11 @@
             VerticalAlignment="Top">
             <MenuItem x:Name="fileMenu" Header="_File">
                 <MenuItem.Items>
+                    <MenuItem
+                        x:Name="_Show"
+                        Click="_Show_Click"
+                        Header="_Show Color Dialog" />
+                    <Separator />
                     <MenuItem x:Name="_Close" Header="_Close Window" />
                     <MenuItem x:Name="_Quit" Header="_Quit" />
                 </MenuItem.Items>
@@ -46,7 +51,7 @@
         <TabControl Grid.Row="1">
             <TabItem Header="Color Picker">
 
-                <cc:ColorPicker />
+                <cc:ColorPicker VerticalAlignment="Stretch" />
             </TabItem>
 
             <TabItem Header="Color Elements">

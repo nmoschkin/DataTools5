@@ -1,5 +1,6 @@
 ﻿using DataTools.Graphics;
 using DataTools.Observable;
+using DataTools.Win32;
 
 using System;
 using System.Collections.Generic;
@@ -73,7 +74,7 @@ namespace DataTools.ColorControls
             OnPropertyChanged(nameof(B));
             if (raiseSource) OnPropertyChanged(nameof(Source));
             if (raiseSelColor) OnPropertyChanged(nameof(SelectedColor));
-            //if (raiseSelColor) OnPropertyChanged(nameof(SelectedColor));
+            if (raiseSelColor) OnPropertyChanged(nameof(WebHexColor));
         }
 
         private void RaiseHSVChange(bool raiseSource = true, bool raiseSelColor = true)
@@ -83,6 +84,34 @@ namespace DataTools.ColorControls
             OnPropertyChanged(nameof(V));
             if (raiseSource) OnPropertyChanged(nameof(Source));
             if (raiseSelColor) OnPropertyChanged(nameof(SelectedColor));
+            if (raiseSelColor) OnPropertyChanged(nameof(WebHexColor));
+        }
+
+        public string WebHexColor
+        {
+            get
+            {
+                if (ShowAlpha || SelectedColor.A != 255)
+                {
+                    return SelectedColor.GetUniColor().ToString("awh");
+                }
+                else
+                {
+                    return SelectedColor.GetUniColor().ToString("rwh");
+                }
+            }
+            set
+            {
+                try
+                {
+                    var clr = UniColor.Parse(value);
+                    if (clr != UniColor.Empty && clr.GetWPFColor() != SelectedColor)
+                    {
+                        SelectedColor = clr.GetWPFColor();
+                    }
+                }
+                catch { }
+            }
         }
 
         public NamedColorViewModel SelectedNamedColor
@@ -193,6 +222,83 @@ namespace DataTools.ColorControls
                 }
             }
         }
+
+
+        private bool _ShowNamedColors = true;
+
+        public bool ShowNamedColors
+        {
+            get => _ShowNamedColors;
+            set
+            {
+                SetProperty(ref _ShowNamedColors, value);
+            }
+        }
+
+
+        private bool _ShowWebHexValue = true;
+
+        public bool ShowWebHexValue
+        {
+            get => _ShowWebHexValue;
+            set
+            {
+                SetProperty(ref _ShowWebHexValue, value);
+            }
+        }
+
+
+
+        private bool _ShowRGB = true;
+
+        public bool ShowRGB
+        {
+            get => _ShowRGB;
+            set
+            {
+                SetProperty(ref _ShowRGB, value);
+            }
+        }
+
+
+
+        private bool _ShowHSV = true;
+
+        public bool ShowHSV
+        {
+            get => _ShowHSV;
+            set
+            {
+                SetProperty(ref _ShowHSV, value);
+            }
+        }
+
+
+
+        private bool _ShowAlpha = true;
+
+        public bool ShowAlpha
+        {
+            get => _ShowAlpha;
+            set
+            {
+                SetProperty(ref _ShowAlpha, value);
+            }
+        }
+
+
+
+        private bool _ShowAlphaOption = true;
+
+        public bool ShowAlphaOption
+        {
+            get => _ShowAlphaOption;
+            set
+            {
+                SetProperty(ref _ShowAlphaOption, value);
+            }
+        }
+
 
 
     }

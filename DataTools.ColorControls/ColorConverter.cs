@@ -17,11 +17,25 @@ namespace DataTools.ColorControls
             if (value is System.Windows.Media.Color cc)
             {
                 UniColor ac = cc.GetUniColor();
-                return ac.ToString("awH");
+                if (ac.A != 255)
+                {
+                    return ac.ToString("awH");
+                }
+                else
+                {
+                    return ac.ToString("rwH");
+                }
             }
             else if (value is UniColor uc)
             {
-                return uc.ToString("awH");
+                if (uc.A != 255)
+                {
+                    return uc.ToString("awH");
+                }
+                else
+                {
+                    return uc.ToString("rwH");
+                }
             }
             else
             {

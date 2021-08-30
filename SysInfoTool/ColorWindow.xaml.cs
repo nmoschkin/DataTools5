@@ -88,5 +88,10 @@ namespace SysInfoTool
         {
 
         }
+
+        private void _Show_Click(object sender, RoutedEventArgs e)
+        {
+            ColorDialog.OpenDialog();
+        }
     }
 }
