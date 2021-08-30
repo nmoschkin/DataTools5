@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTools.Graphics", "DataT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataTools.XamarinForms.ColorControls", "DataTools.XamarinForms.ColorControls\DataTools.XamarinForms.ColorControls.csproj", "{6F86C54B-4080-4361-B6EB-D59E5327C442}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Universal", "Universal", "{B4F34DA1-5199-4CBE-BD8E-9BF8D9C7F6AD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{B4F34DA1-5199-4CBE-BD8E-9BF8D9C7F6AD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Win32", "Win32", "{2094B98B-5151-4159-AC13-E804A9340C61}"
 EndProject
@@ -29,7 +29,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamCtlTest.Android", "XamCt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamCtlTest.iOS", "XamCtlTest\XamCtlTest.iOS\XamCtlTest.iOS.csproj", "{25E61D41-BF74-451E-B2C1-47365946A3C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamCtlTest", "XamCtlTest\XamCtlTest\XamCtlTest.csproj", "{D0C77A37-3584-4CA0-B332-5ADF9E446BB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XamCtlTest", "XamCtlTest\XamCtlTest\XamCtlTest.csproj", "{D0C77A37-3584-4CA0-B332-5ADF9E446BB9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WinUI", "WinUI", "{39CE9BF9-77C1-4A8A-94F8-EE69032B6B0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTools.WinUI.ColorControls", "DataTools.WinUI.ColorControls\DataTools.WinUI.ColorControls.csproj", "{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -269,6 +273,26 @@ Global
 		{D0C77A37-3584-4CA0-B332-5ADF9E446BB9}.Release|x64.Build.0 = Release|Any CPU
 		{D0C77A37-3584-4CA0-B332-5ADF9E446BB9}.Release|x86.ActiveCfg = Release|Any CPU
 		{D0C77A37-3584-4CA0-B332-5ADF9E446BB9}.Release|x86.Build.0 = Release|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Debug|x64.Build.0 = Debug|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Debug|x86.Build.0 = Debug|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Release|iPhone.Build.0 = Release|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Release|x64.ActiveCfg = Release|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Release|x64.Build.0 = Release|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Release|x86.ActiveCfg = Release|Any CPU
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -285,6 +309,7 @@ Global
 		{0428A2CD-5AAB-44FB-8DD0-EE00BEDB45E7} = {A70F75EE-6EA3-46F4-B8A8-8C254414221D}
 		{25E61D41-BF74-451E-B2C1-47365946A3C8} = {A70F75EE-6EA3-46F4-B8A8-8C254414221D}
 		{D0C77A37-3584-4CA0-B332-5ADF9E446BB9} = {A70F75EE-6EA3-46F4-B8A8-8C254414221D}
+		{2689CD55-EA98-40A6-9FA3-85DD08EF4A23} = {39CE9BF9-77C1-4A8A-94F8-EE69032B6B0C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A54880F4-31D4-48B7-827E-0113F6551C9C}
