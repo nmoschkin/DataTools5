@@ -373,7 +373,7 @@ namespace DataTools.XamarinForms.ColorControls
         void OnTouch(object sender, TouchActionEventArgs args)
         {
 
-            if (args.Type == TouchActionType.Pressed)
+            if (args.Type == TouchActionType.Pressed || args.Type == TouchActionType.Moved)
             {
                 var pt = new UniPoint(args.Location.X, args.Location.Y);
                 selCoord = pt;
