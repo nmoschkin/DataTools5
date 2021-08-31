@@ -6,6 +6,9 @@
     <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
     <UseWinUI>true</UseWinUI>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="ColorElement.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ProjectReunion" Version="0.8.0" />
@@ -16,5 +19,11 @@
   <ItemGroup>
     <ProjectReference Include="..\DataTools.Graphics\DataTools.Graphics.csproj" />
     <ProjectReference Include="..\DataTools\DataTools.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="ColorElement.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>
