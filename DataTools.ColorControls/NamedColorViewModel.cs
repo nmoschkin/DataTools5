@@ -15,8 +15,9 @@ namespace DataTools.ColorControls
     public class NamedColorViewModel : ObservableBase
     {
         NamedColor source;
+        public static ReadOnlyCollection<NamedColorViewModel> GlobalCatalog { get; private set; }
 
-        public static ListCollectionView AllNamedColors { get; private set; }
+        public ListCollectionView AllNamedColors { get; private set; }
 
         private string category;
 
@@ -26,6 +27,17 @@ namespace DataTools.ColorControls
             foreach (var clr in NamedColor.Catalog)
             {
                 l.Add(new NamedColorViewModel(clr));
+            }
+
+            GlobalCatalog = new ReadOnlyCollection<NamedColorViewModel>(l);
+        }
+
+        public NamedColorViewModel()
+        {
+            var l = new List<NamedColorViewModel>();
+            foreach (var clr in GlobalCatalog)
+            {
+                l.Add(clr);
             }
 
             AllNamedColors = new ListCollectionView(l);

@@ -35,7 +35,7 @@ namespace DataTools.ColorControls
 
         // Using a DependencyProperty as the backing store for SelectedColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedColorProperty =
-            DependencyProperty.Register("SelectedColor", typeof(Color), typeof(ColorPicker), new PropertyMetadata(Colors.Black, OnColorChanged));
+            DependencyProperty.Register("SelectedColor", typeof(Color), typeof(ColorPicker), new PropertyMetadata(Colors.White, OnColorChanged));
 
         private static void OnColorChanged(object sender, DependencyPropertyChangedEventArgs e)
         {

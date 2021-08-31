@@ -215,8 +215,9 @@ namespace DataTools.Graphics
                 cc.eidxstr = TextTools.NoSpace(extra?.ToLower() ?? "");
 
                 cc.idxstr = cc.nidxstr + cc.eidxstr;
-
-                cl.Add(cc);
+                
+                var test = cl.Where((a) => a.Color == cc.Color).FirstOrDefault();
+                if (test == null) cl.Add(cc);
             }
 
             catalog = cl.ToArray();

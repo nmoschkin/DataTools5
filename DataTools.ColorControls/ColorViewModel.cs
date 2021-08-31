@@ -51,7 +51,7 @@ namespace DataTools.ColorControls
                     {
                         if (!namedColor.Color.Equals(SelectedColor))
                         {
-                            foreach (NamedColorViewModel nc in NamedColorViewModel.AllNamedColors)
+                            foreach (NamedColorViewModel nc in NamedColorViewModel.GlobalCatalog)
                             {
                                 if (nc.Color.Equals(SelectedColor))
                                 {
@@ -73,8 +73,14 @@ namespace DataTools.ColorControls
             OnPropertyChanged(nameof(G));
             OnPropertyChanged(nameof(B));
             if (raiseSource) OnPropertyChanged(nameof(Source));
-            if (raiseSelColor) OnPropertyChanged(nameof(SelectedColor));
-            if (raiseSelColor) OnPropertyChanged(nameof(WebHexColor));
+
+            if (raiseSelColor)
+            {
+                OnPropertyChanged(nameof(SelectedColor));
+                OnPropertyChanged(nameof(WebHexColor));
+
+             
+            }
         }
 
         private void RaiseHSVChange(bool raiseSource = true, bool raiseSelColor = true)
@@ -83,8 +89,13 @@ namespace DataTools.ColorControls
             OnPropertyChanged(nameof(S));
             OnPropertyChanged(nameof(V));
             if (raiseSource) OnPropertyChanged(nameof(Source));
-            if (raiseSelColor) OnPropertyChanged(nameof(SelectedColor));
-            if (raiseSelColor) OnPropertyChanged(nameof(WebHexColor));
+
+            if (raiseSelColor)
+            {
+                OnPropertyChanged(nameof(SelectedColor));
+                OnPropertyChanged(nameof(WebHexColor));
+
+            }
         }
 
         public string WebHexColor
@@ -127,6 +138,20 @@ namespace DataTools.ColorControls
                         SelectedColor = namedColor.Color;
                     }
                 }
+            }
+        }
+
+        public string SelectedColorName
+        {
+            get => namedColor?.Name;
+            set
+            {
+                if (namedColor == null || value != namedColor.Name)
+                {
+                    var f = NamedColorViewModel.GlobalCatalog.Where((a) => a.Name == value).FirstOrDefault();
+                    SelectedNamedColor = f;
+                }
+
             }
         }
 

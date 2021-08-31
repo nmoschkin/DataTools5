@@ -22,6 +22,22 @@ using System.Runtime.CompilerServices;
 
 namespace DataTools.ColorControls
 {
+    
+    /// <summary>
+    /// How to select color names.
+    /// </summary>
+    public enum ColorNameResolution
+    {
+        /// <summary>
+        /// Return a color name for an exact color match, only.
+        /// </summary>
+        Exact,
+
+        /// <summary>
+        /// Return a color name for a closely matched color.
+        /// </summary>
+        Closest
+    }
 
     /// <summary>
     /// Interaction logic for ColorPicker.xaml
@@ -101,6 +117,32 @@ namespace DataTools.ColorControls
                 {
                     //p.RenderPicker();
                     p.InvalidateVisual();
+                }
+            }
+        }
+
+
+
+
+
+        public ColorNameResolution NameResolution
+        {
+            get { return (ColorNameResolution)GetValue(NameResolutionProperty); }
+            set { SetValue(NameResolutionProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for NameResolution.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty NameResolutionProperty =
+            DependencyProperty.Register("NameResolution", typeof(ColorNameResolution), typeof(ColorElement), new PropertyMetadata(ColorNameResolution.Closest, NameResolutionChanged));
+
+        private static void NameResolutionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ColorElement p)
+            {
+                if ((int)e.OldValue != (int)e.NewValue)
+                {
+                    //p.RenderPicker();
+                    p.SetSelectedColor();
                 }
             }
         }
@@ -329,7 +371,7 @@ namespace DataTools.ColorControls
 
             clr = ((Color)SelectedColor).GetUniColor();
 
-            var nc = NamedColor.FindColor(clr, true);
+            var nc = NamedColor.FindColor(clr, NameResolution == ColorNameResolution.Closest);
 
             if (nc != null)
             {
@@ -588,22 +630,22 @@ namespace DataTools.ColorControls
 
                     UniColor? selc = null;
 
-                    if (updateForValueChange && SelectedColor is Color scolor && selectedElement is ColorWheelElement selem)
-                    {
-                        var pp = selem.Center;
+                    //if (updateForValueChange && SelectedColor is Color scolor && selectedElement is ColorWheelElement selem)
+                    //{
+                    //    var pp = selem.Center;
 
-                        foreach (var testelem in cw.Elements)
-                        {
-                            if (testelem.Bounds.Contains(pp))
-                            {
+                    //    foreach (var testelem in cw.Elements)
+                    //    {
+                    //        if (testelem.Bounds.Contains(pp))
+                    //        {
 
-                                SetSelectedColor(new UniColor(testelem.Color.ToArgb()));
-                                break;
-                            }
-                        }
-                    }
+                    //            SetSelectedColor(new UniColor(testelem.Color.ToArgb()));
+                    //            break;
+                    //        }
+                    //    }
+                    //}
 
-                    updateForValueChange = false;
+                    //updateForValueChange = false;
 
                     if (selc == null)
                     {

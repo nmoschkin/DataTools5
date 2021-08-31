@@ -1,0 +1,81 @@
+﻿<ComboBox
+    x:Class="DataTools.ColorControls.NamedColorPicker"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DataTools.ColorControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="40"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+
+    <ComboBox.GroupStyle>
+        <GroupStyle>
+            <GroupStyle.HeaderTemplate>
+                <DataTemplate>
+                    <Border
+                        Margin="0,2,0,2"
+                        Background="LightSlateGray"
+                        BorderBrush="DarkSlateGray"
+                        BorderThickness="0.75">
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock
+                                Grid.Row="0"
+                                Padding="4"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Background="Transparent"
+                                FontFamily="Calibri"
+                                FontSize="12"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                Text="{Binding Name}" />
+
+                        </Grid>
+
+                    </Border>
+                </DataTemplate>
+            </GroupStyle.HeaderTemplate>
+        </GroupStyle>
+    </ComboBox.GroupStyle>
+    <ComboBox.ItemTemplate>
+
+        <DataTemplate>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Rectangle
+                    Width="24"
+                    Height="24"
+                    Margin="8,2"
+                    VerticalAlignment="Top"
+                    Stroke="{x:Static SystemColors.ActiveBorderBrush}">
+
+                    <Rectangle.Fill>
+                        <SolidColorBrush Color="{Binding Color, Mode=OneWay}" />
+                    </Rectangle.Fill>
+                </Rectangle>
+
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="8,2"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontFamily="Segoe UI"
+                    FontSize="14"
+                    Text="{Binding Name}" />
+
+            </Grid>
+        </DataTemplate>
+    </ComboBox.ItemTemplate>
+
+</ComboBox>
