@@ -29,14 +29,16 @@ using Windows.Foundation.Collections;
 using Windows.Security.EnterpriseData;
 using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.Input;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace DataTools.WinUI.ColorControls
 {
-    public sealed partial class ColorElement : UserControl
+    public sealed class ColorElement : Control
     {
+
         ColorPickerRenderer cpRender;
 
         public delegate void ColorHitEvent(object sender, ColorHitEventArgs e);
@@ -45,8 +47,43 @@ namespace DataTools.WinUI.ColorControls
 
         UniPoint? selCoord;
 
+        ContainerVisual _container;
+        CompositionEllipseGeometry currentGeo;
+        CompositionSpriteShape currentSprite;
+        ShapeVisual currentShape;
+
+        private ContainerVisual GetVisual()
+        {
+            var hostVisual = ElementCompositionPreview.GetElementVisual(this);
+            ContainerVisual root = hostVisual.Compositor.CreateContainerVisual();
+            ElementCompositionPreview.SetElementChildVisual(this, root);
+            return root;
+        }
+
+        private void InitializeComponent()
+        {
+            IsHitTestVisible = true;
+            this.DefaultStyleKey = typeof(ColorElement);
+            this.IsEnabled = true;
+            this.AllowFocusOnInteraction = true;
+            this.AllowFocusWhenDisabled = true;
+            this.IsFocusEngagementEnabled = true;
+            this.IsTabStop = true;
+            Background = new SolidColorBrush(Colors.LightCyan);
+            this.PointerMoved += ColorElement_PointerMoved;
+
+            _container = GetVisual();
+            GetVisualInternal().BorderMode = Microsoft.UI.Composition.CompositionBorderMode.Soft;
+        }
+
+        private void ColorElement_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            OnPointerMoved(e);
+        }
+
         public ColorElement()
         {
+            this.DefaultStyleKey = typeof(ColorElement);
             InitializeComponent();
         }
 
@@ -282,7 +319,7 @@ namespace DataTools.WinUI.ColorControls
         {
             var fs = base.ArrangeOverride(finalSize);
             var width = fs.Width;
-            var height = fs.Height; 
+            var height = fs.Height;
 
             if (cpRender != null)
             {
@@ -291,7 +328,10 @@ namespace DataTools.WinUI.ColorControls
                     float mn1 = width < height ? (float)width : (float)height;
                     float mn2 = cpRender.Bounds.Width;
 
-                    if (mn1 == mn2) return fs;
+                    if (mn1 == mn2)
+                    {
+                        return fs;
+                    }
                 }
                 else if (cpRender.Bounds.Width == width && cpRender.Bounds.Height == height)
                 {
@@ -353,11 +393,13 @@ namespace DataTools.WinUI.ColorControls
                 SelectedColorName = cname;
             }
 
+            RenderPickerZone();
+
         }
 
         private void RenderPicker(int w = 0, int h = 0)
         {
-            var disp = Dispatcher;
+            if (_container == null) return;
 
             double width = w > 0 ? w : this.Width;
             double height = h > 0 ? h : this.Height;
@@ -438,129 +480,166 @@ namespace DataTools.WinUI.ColorControls
                     //var ret = ImageSource.FromStream(() => stream);
 
                     cpRender = cw;
-                    PickerSite.Source = await ImageLoader.LoadFromStream(stream);
+
+
+                    Compositor _compositor = _container.Compositor;
+                    SpriteVisual _imageVisual;
+                    CompositionSurfaceBrush _imageBrush;
+
+                    _imageBrush = _compositor.CreateSurfaceBrush();
+
+                    // The loadedSurface has a size of 0x0 till the image has been been downloaded, decoded and loaded to the surface. We can assign the surface to the CompositionSurfaceBrush and it will show up once the image is loaded to the surface.
+                    LoadedImageSurface _loadedSurface = LoadedImageSurface.StartLoadFromStream(stream.AsRandomAccessStream());
+
+                    _imageBrush.Surface = _loadedSurface;
+
+                    _imageVisual = _compositor.CreateSpriteVisual();
+                    _imageVisual.Brush = _imageBrush;
+                    _imageVisual.Size = new Vector2(cw.Bounds.Width, cw.Bounds.Height);
+                    //_imageVisual.Offset = new Vector3((float)Padding.Left, (float)Padding.Top, 0);
+
+                    _container.Children.RemoveAll();
+                    _container.Children.InsertAtBottom(_imageVisual);
+
+                    currentShape = null;
+                    currentSprite = null;
+                    currentGeo = null;
 
                 });
 
             });
         }
-        private ContainerVisual GetVisual()
-        {
-            var hostVisual = ElementCompositionPreview.GetElementVisual(PickerSite);
-            var root = hostVisual.Compositor.CreateContainerVisual();
-            ElementCompositionPreview.SetElementChildVisual(PickerSite, root);
 
-            return root;
-        }
-
-        CompositionEllipseGeometry currentGeo;
-        CompositionSpriteShape currentSprite;
-        private void RenderPickerZone()
+        private void RenderPickerZone(bool force = false, bool hide = false)
         {
+            var uc = SelectedColor.GetUniColor();
+            
+            if (_container == null) return;
+
+            if (selCoord == null || uc == UniColor.Empty || force || hide)
+            {
+                if (currentShape != null)
+                {
+                    try
+                    {
+                        if (_container.Children.Contains(currentShape))
+                        {
+                            _container.Children.Remove(currentShape);
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+
+                    currentShape = null;
+                    currentGeo = null;
+                    currentSprite = null;
+                    GC.Collect(0);
+                }
+
+                if (selCoord == null || uc == UniColor.Empty || hide) return;
+            }
 
             var pt = (UniPoint)selCoord;
-            var uc = SelectedColor.GetUniColor();
 
             uc = ((uint)uc) ^ 0x00ffffff;
 
+            var comp = _container.Compositor;
 
-            var container = GetVisual();
-            var comp = container.Compositor;
-
-            if (currentGeo != null)
+            if (currentShape != null)
             {
-                currentGeo.Center = new Vector2((float)pt.X, (float)pt.Y);
-                currentGeo.Radius = new Vector2(16f, 16f);
 
-                if (currentSprite != null)
-                {
-                    currentSprite.StrokeBrush = comp.CreateColorBrush(uc.GetWinUIColor());
-                    currentSprite.StrokeThickness = 1f;
-                    currentSprite.FillBrush = comp.CreateColorBrush(((UniColor)0).GetWinUIColor());
+                currentSprite.StrokeBrush = comp.CreateColorBrush(uc.GetWinUIColor());
+                currentShape.Offset = new Vector3((float)pt.X - 10, (float)pt.Y - 10, 0);
 
-                    return;
-                }
+                return;
             }
 
-
-            var shape = comp.CreateShapeVisual();
             var ellipseGeo = comp.CreateEllipseGeometry();
 
-            ellipseGeo.Center = new Vector2((float)pt.X, (float)pt.Y);
-            ellipseGeo.Radius = new Vector2(16f, 16f);
+            ellipseGeo.Radius = new Vector2(8f, 8f);
 
-            var sprite = comp.CreateSpriteShape(ellipseGeo);
+            var spriteShape = comp.CreateSpriteShape(ellipseGeo);
 
-            sprite.StrokeBrush = comp.CreateColorBrush(uc.GetWinUIColor());
-            sprite.StrokeThickness = 1f;
-            sprite.FillBrush = comp.CreateColorBrush(((UniColor)0).GetWinUIColor());
+            ellipseGeo.Center = new Vector2(10f, 10f);
 
-            shape.Shapes.Add(sprite);
-            container.Children.InsertAtTop(shape);
+            spriteShape.StrokeThickness = 1.35f;
+            spriteShape.StrokeBrush = comp.CreateColorBrush(uc.GetWinUIColor());
 
-            currentSprite = sprite;
+            var shapeVisual = comp.CreateShapeVisual();
+
+            shapeVisual.CompositeMode = CompositionCompositeMode.DestinationInvert;
+            shapeVisual.Shapes.Add(spriteShape);
+
+            shapeVisual.Offset = new Vector3((float)pt.X - 10, (float)pt.Y - 10, 0);    
+            shapeVisual.Size = new Vector2(20f, 20f);
+
+            _container.Children.InsertAtTop(shapeVisual);
+
+            currentShape = shapeVisual;
+            currentSprite = spriteShape;
             currentGeo = ellipseGeo;
 
         }
 
         bool colorDragging = false;
 
-        private void Grid_PointerPressed(object sender, PointerRoutedEventArgs e)
+        protected override void OnPointerPressed(PointerRoutedEventArgs e)
         {
             var pt = new UniPoint(e.GetCurrentPoint(this).Position.X, e.GetCurrentPoint(this).Position.Y);
             selCoord = pt;
 
-            pt.X -= (Width - cpRender.Bounds.Width) / 2;
-            pt.Y -= (Height - cpRender.Bounds.Height) / 2;
+            pt.X -= ((Width - cpRender.Bounds.Width) / 2);
+            pt.Y -= ((Height - cpRender.Bounds.Height) / 2);
 
             if (!cpRender.Bounds.Contains((System.Drawing.PointF)pt))
             {
                 selCoord = null;
-                // PickerCanvas.InvalidateArrange();
-
                 return;
             }
 
             var c = cpRender.HitTest((int)pt.X, (int)pt.Y);
+
             if (c == System.Drawing.Color.Empty)
             {
                 selCoord = null;
-                // PickerCanvas.InvalidateArrange();
                 return;
             }
 
-            // PickerCanvas.InvalidateArrange();
             SetSelectedColor(c);
-            RenderPickerZone();
+
             CapturePointer(e.Pointer);
             colorDragging = true;
 
             ColorHit?.Invoke(this, new ColorHitEventArgs(c));
         }
 
-        private void Grid_PointerReleased(object sender, PointerRoutedEventArgs e)
+        protected override void OnPointerReleased(PointerRoutedEventArgs e)
         {
             ReleasePointerCapture(e.Pointer);
             colorDragging = false;
         }
 
-        private void Grid_PointerMoved(object sender, PointerRoutedEventArgs e)
+        protected override void OnPointerMoved(PointerRoutedEventArgs e)
         {
             var pt = new UniPoint(e.GetCurrentPoint(this).Position.X, e.GetCurrentPoint(this).Position.Y);
-            selCoord = pt;
 
-            pt.X -= (Width - cpRender.Bounds.Width) / 2;
-            pt.Y -= (Height - cpRender.Bounds.Height) / 2;
+            pt.X -= ((Width - cpRender.Bounds.Width) / 2);
+            pt.Y -= ((Height - cpRender.Bounds.Height) / 2);
 
-            if (!cpRender.Bounds.Contains((System.Drawing.PointF)pt))
-            {
-                selCoord = null;
-                // PickerCanvas.InvalidateArrange();
+            //if (!cpRender.Bounds.Contains((System.Drawing.PointF)pt))
+            //{
+            //    selCoord = null;
 
-                return;
-            }
+            //    return;
+            //}
 
-            var c = cpRender.HitTest((int)pt.X, (int)pt.Y);
+            var c = cpRender.HitTest((int)pt.X, (int)pt.Y, true, out int fixX, out int fixY);
+
+
+            selCoord = new UniPoint(fixX, fixY);
+
 
             if (c == System.Drawing.Color.Empty)
             {
@@ -569,7 +648,7 @@ namespace DataTools.WinUI.ColorControls
                 {
                     ProtectedCursor = new CoreCursor(CoreCursorType.Arrow, 1);
                 }
-                // PickerCanvas.InvalidateArrange();
+
                 return;
             }
 
@@ -581,8 +660,6 @@ namespace DataTools.WinUI.ColorControls
 
             if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && colorDragging)
             {
-                RenderPickerZone();
-                // PickerCanvas.InvalidateArrange();
                 SetSelectedColor(c);
             }
         }
