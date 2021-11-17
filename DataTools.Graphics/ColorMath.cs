@@ -1,9 +1,4 @@
-﻿// ColorMath class.  Copyright (C) 1999-2014 Nathaniel Moschkin.
-// This is the 4th writing of this class.
-
-// This most recent version uses clarified equations harvested from Wikipedia.
-// The remainder of the code was written much prior... and was correctly
-// achieved through much trial and error.
+﻿// ColorMath class.  Copyright (C) 1999-2022 Nathaniel Moschkin.
 
 using System;
 using System.Drawing;
