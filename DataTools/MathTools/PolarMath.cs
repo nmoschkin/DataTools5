@@ -93,6 +93,28 @@ namespace DataTools.MathTools.PolarMath
                 Bottom = (Top + value);
             }
         }
+
+        public static explicit operator RectangleF(LinearRect rc)
+        {
+            return new RectangleF((float)rc.Left, (float)rc.Top, (float)rc.Width, (float)rc.Height);
+        }
+
+        public static explicit operator Rectangle(LinearRect rc)
+        {
+            return new Rectangle((int)rc.Left, (int)rc.Top, (int)rc.Width, (int)rc.Height);
+        }
+
+        public static implicit operator LinearRect(RectangleF rc)
+        {
+            return new LinearRect(rc.Left, rc.Top, rc.Width, rc.Height);
+        }
+
+        public static implicit operator LinearRect(Rectangle rc)
+        {
+            return new LinearRect(rc.Left, rc.Top, rc.Width, rc.Height);
+        }
+
+
     }
 
     [StructLayout(LayoutKind.Sequential)]

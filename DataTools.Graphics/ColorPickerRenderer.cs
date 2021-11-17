@@ -208,11 +208,34 @@ namespace DataTools.Graphics
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public Color HitTest(int x, int y)
+        public Color HitTest(int x, int y, bool closest, out int fixX, out int fixY)
         {
             HSVDATA hsv;
             float prad;
+            LinearCoordinates lin;
             PolarCoordinates pc;
+
+            if (x < 0 || y < 0 || x > Bounds.Width || y > Bounds.Height)
+            {
+                if (closest)
+                {
+                    if (x < 0) x = 0;
+                    if (y < 0) y = 0;
+                    if (x > Bounds.Width) x = (int)Bounds.Width;
+                    if (y > Bounds.Height) y = (int)Bounds.Height;
+                }
+                else
+                {
+
+                    fixX = x;
+                    fixY = y;
+
+                    return Color.Empty;
+                }
+            }
+
+            fixX = x;
+            fixY = y;
 
             switch (Mode)
             {
@@ -220,7 +243,21 @@ namespace DataTools.Graphics
 
                     prad = (Bounds.Width / 2);
                     pc = PolarCoordinates.ToPolarCoordinates(x - prad, y - prad);
-                    if (pc.Radius > prad) return Color.Empty;
+                    if (pc.Radius > prad)
+                    {
+                        if (closest)
+                        {
+                            pc.Radius = prad;
+
+                            lin = PolarCoordinates.ToLinearCoordinates(pc, Bounds);
+                            fixX = (int)lin.X;
+                            fixY = (int)lin.Y;
+                        }
+                        else
+                        {
+                            return Color.Empty;
+                        }
+                    }
 
                     hsv.Hue = pc.Arc + HueOffset;
                     hsv.Saturation = InvertSaturation ? 1 - (pc.Radius / prad) : (pc.Radius / prad);
@@ -233,7 +270,21 @@ namespace DataTools.Graphics
                     prad = (Bounds.Width / 2);
                     pc = PolarCoordinates.ToPolarCoordinates(x - prad, y - prad);
 
-                    if (pc.Radius > prad) return Color.Empty;
+                    if (pc.Radius > prad)
+                    {
+                        if (closest)
+                        {
+                            pc.Radius = prad;
+
+                            lin = PolarCoordinates.ToLinearCoordinates(pc, Bounds);
+                            fixX = (int)lin.X;
+                            fixY = (int)lin.Y;
+                        }
+                        else
+                        {
+                            return Color.Empty;
+                        }
+                    }
 
                     hsv.Hue = pc.Arc + HueOffset;
                     hsv.Saturation = 1;
@@ -244,7 +295,7 @@ namespace DataTools.Graphics
 
 
             foreach (ColorWheelElement e in Elements)
-            {
+            {                
                 if (e.PolyPoints.Length == 1)
                 {
                     var f = e.PolyPoints[0];                     
@@ -266,11 +317,22 @@ namespace DataTools.Graphics
         /// <summary>
         /// Gets the color at the specified location.
         /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public Color HitTest(int x, int y)
+        {
+            return HitTest(x, y, false, out _, out _);
+        }
+
+        /// <summary>
+        /// Gets the color at the specified location.
+        /// </summary>
         /// <param name="pt"></param>
         /// <returns></returns>
         public Color HitTest(Point pt)
         {
-            return HitTest(pt.X, pt.Y);
+            return HitTest(pt.X, pt.Y, false, out _, out _);
         }
 
         /// <summary>
