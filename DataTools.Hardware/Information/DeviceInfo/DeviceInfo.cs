@@ -327,7 +327,7 @@ namespace DataTools.Hardware
         {
             get
             {
-                return _FriendlyName;
+                return _FriendlyName ?? _BusReportedDeviceDesc ?? _Description;
             }
 
             internal set

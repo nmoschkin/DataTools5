@@ -144,17 +144,17 @@ namespace DataTools.SystemInformation
         /// <summary>
         /// Returns a value indicating whether or not the local computer can reach the internet.
         /// </summary>
+        /// <param name="timeout">Number of milliseconds to wait for timeout (default is 2000)</param>
         /// <remarks>
-        /// May take up to 2 seconds to return false.
-        /// Don't access this property in functions that need to return instantaneously.
+        /// May take up to <paramref name="timeout"/> milliseconds to return false.
         /// </remarks>
-        public static async Task<bool> GetHasInternetAsync()
+        public static async Task<bool> GetHasInternetAsync(int timeout = 2000)
         {
             try
             {
                 Ping ping = new Ping();
 
-                var reply = await ping.SendPingAsync(PingAddress, 2000);
+                var reply = await ping.SendPingAsync(PingAddress, timeout);
                 
                 if (reply.Status == IPStatus.Success)
                 {

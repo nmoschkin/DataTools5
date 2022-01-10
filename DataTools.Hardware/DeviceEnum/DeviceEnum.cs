@@ -843,7 +843,7 @@ namespace DataTools.Hardware
                         if (mm != IntPtr.Zero)
                         {
                             // Get a WPFImage
-                            infoOut.DeviceIcon = Resources.MakeWPFImage(Resources.GetItemIcon(mm, (Resources.SystemIconSizes)(User32.SHIL_EXTRALARGE)));
+                            infoOut.DeviceIcon = Resources.MakeWPFImage(Resources.GetItemIcon(mm, (Resources.SystemIconSizes)(User32.SHIL_JUMBO)));
                             mm.Free();
                         }
                     }
@@ -851,7 +851,7 @@ namespace DataTools.Hardware
 
                 if (infoOut.DeviceIcon is null)
                 {
-                    if (DevProp.SetupDiLoadDeviceIcon(hDev, ref devInfo, 48U, 48U, 0U, ref hIcon))
+                    if (DevProp.SetupDiLoadDeviceIcon(hDev, ref devInfo, 64U, 64U, 0U, ref hIcon))
                     {
                         var icn = System.Drawing.Icon.FromHandle(hIcon);
                         System.Drawing.Icon icn2 = (System.Drawing.Icon)icn.Clone();

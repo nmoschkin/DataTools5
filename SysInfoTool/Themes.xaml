@@ -24,7 +24,7 @@
 
                                 <Style x:Key="Heading" TargetType="{x:Type TextBlock}">
                                     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.InfoTextBrushKey}}" />
-                                    <Setter Property="FontFamily" Value="Segoe UI" />
+                                    <Setter Property="FontFamily" Value="Calibri" />
                                     <Setter Property="FontSize" Value="12" />
                                     <Setter Property="FontWeight" Value="SemiBold" />
                                     <Setter Property="Margin" Value="8,4,8,2" />
@@ -125,9 +125,17 @@
 
                                 <Style x:Key="Heading" TargetType="{x:Type TextBlock}">
                                     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.InfoTextBrushKey}}" />
-                                    <Setter Property="FontFamily" Value="Segoe UI" />
+                                    <Setter Property="FontFamily" Value="Calibri" />
                                     <Setter Property="FontSize" Value="12" />
                                     <Setter Property="FontWeight" Value="SemiBold" />
+                                    <Setter Property="Margin" Value="8,4,8,2" />
+                                </Style>
+
+                                <Style x:Key="BigHeading" TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.InfoTextBrushKey}}" />
+                                    <Setter Property="FontFamily" Value="Calibri" />
+                                    <Setter Property="FontSize" Value="18" />
+                                    <Setter Property="FontWeight" Value="Bold" />
                                     <Setter Property="Margin" Value="8,4,8,2" />
                                 </Style>
 
@@ -140,32 +148,46 @@
                                 </Style>
                             </Grid.Resources>
 
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
+
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
 
                             <Image
+                                Grid.Row="0"
                                 Grid.Column="0"
-                                Width="48"
-                                Height="48"
+                                MaxHeight="64"
                                 Margin="8,8,0,8"
-                                HorizontalAlignment="Center"
+                                HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
                                 RenderOptions.BitmapScalingMode="HighQuality"
                                 SnapsToDevicePixels="True"
                                 Source="{Binding DeviceIcon}"
                                 Stretch="Uniform" />
 
+                            <StackPanel
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical">
 
-                            <StackPanel Grid.Column="1">
+                                <TextBlock Style="{StaticResource BigHeading}" Text="{Binding FriendlyName}" />
+                                <TextBlock Style="{StaticResource Heading}" Text="{Binding Description}" />
+                            </StackPanel>
+
+
+                            <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
 
                                 <TextBlock Style="{StaticResource Heading}" Text="Friendly Name:" />
                                 <TextBlock Style="{StaticResource Content}" Text="{Binding FriendlyName}" />
 
                                 <TextBlock Style="{StaticResource Heading}" Text="Description:" />
                                 <TextBlock Style="{StaticResource Content}" Text="{Binding Description}" />
-
 
                                 <TextBlock Style="{StaticResource Heading}" Text="Device Install Date:" />
                                 <TextBlock Style="{StaticResource Content}" Text="{Binding InstallDate}" />
@@ -215,7 +237,7 @@
     <SolidColorBrush x:Key="SmoothCharcoalLight" Color="#FF9E998E" />
 
     <Style TargetType="{x:Type ListViewItem}">
-        <Setter Property="TextBlock.FontFamily" Value="Segoe UI" />
+        <Setter Property="TextBlock.FontFamily" Value="Calibri" />
         <Setter Property="TextBlock.FontSize" Value="12" />
         <Setter Property="Height" Value="48" />
     </Style>
@@ -258,13 +280,14 @@
                 Grid.Row="0"
                 Grid.RowSpan="2"
                 Grid.Column="0"
+                Width="48"
                 Height="48"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 RenderOptions.BitmapScalingMode="HighQuality"
                 SnapsToDevicePixels="True"
                 Source="{Binding DeviceIcon}"
-                Stretch="None"
+                Stretch="Uniform"
                 ToolTip="{StaticResource NetToolTip}"
                 ToolTipService.ShowDuration="15000" />
 
@@ -332,7 +355,6 @@
                 Grid.Row="0"
                 Grid.RowSpan="2"
                 Grid.Column="0"
-                MinWidth="32"
                 Source="{Binding DeviceIcon}"
                 Stretch="None" />
 
