@@ -15,7 +15,7 @@
 
 
     <Window.Resources>
-        <ResourceDictionary Source="Themes.xaml" />
+        <ResourceDictionary Source="/Themes.xaml" />
     </Window.Resources>
 
     <Grid

@@ -14,6 +14,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using DataTools.Text;
+using static DataTools.Text.TextTools;
 using DataTools.Win32;
 using DataTools.Win32.Disk.Partition;
 using DataTools.Win32.Disk.Partition.Gpt;
@@ -129,7 +130,7 @@ namespace DataTools.Hardware.Disk
                         Partitioning.DRIVE_LAYOUT_INFORMATION_EX arglayInfo = new Partitioning.DRIVE_LAYOUT_INFORMATION_EX();
 
                         p = Partitioning.GetPartitions(@"\\.\PhysicalDrive" + PhysicalDevice, IntPtr.Zero, layInfo: ref arglayInfo);
-
+                        
                     }
                     catch
                     {
@@ -203,7 +204,25 @@ namespace DataTools.Hardware.Disk
             get
             {
                 if (Type != StorageType.Volume || string.IsNullOrEmpty(VolumeGuidPath))
+                {                    
+                    if (_Size == 0)
+                    {
+                        _DiskLayout = DiskLayoutInfo.CreateLayout(DevicePath);
+                        if (_DiskLayout != null)
+                        {
+                            long newsize = 0L;
+                            foreach (var disk in _DiskLayout)
+                            {
+                                newsize += disk.Size;
+                            }
+
+                            _Size = newsize;
+                        }
+                    }
+
                     return _Size;
+                    
+                }
                 var a = default(ulong);
                 var b = default(ulong);
                 var c = default(ulong);
@@ -315,9 +334,7 @@ namespace DataTools.Hardware.Disk
         {
             get
             {
-                DeviceCapabilities CapabilitiesRet = default;
-                CapabilitiesRet = _Capabilities;
-                return CapabilitiesRet;
+                return _Capabilities;
             }
 
             internal set
@@ -333,9 +350,7 @@ namespace DataTools.Hardware.Disk
         {
             get
             {
-                string[] BackingStoreRet = default;
-                BackingStoreRet = _BackingStore;
-                return BackingStoreRet;
+                return _BackingStore ?? new string[0];
             }
 
             internal set
@@ -525,27 +540,28 @@ namespace DataTools.Hardware.Disk
         /// <remarks></remarks>
         public override string ToString()
         {
-            string ToStringRet = default;
+            string str = "";
+
             if (IsVolume)
             {
                 if (VolumePaths is object && VolumePaths.Count() > 0)
                 {
                     string slist = string.Join(", ", VolumePaths);
-                    ToStringRet = "[" + slist + "] ";
+                    str = "[" + slist + "] ";
                 }
                 else
                 {
-                    ToStringRet = "";
+                    str = "";
                 }
 
-                ToStringRet += FriendlyName + " (" + TextTools.PrintFriendlySize(Size) + ")";
+                str += FriendlyName + " (" + TextTools.PrintFriendlySize(Size) + ")";
             }
             else
             {
-                ToStringRet = "[" + Type.ToString() + "] " + FriendlyName + " (" + TextTools.PrintFriendlySize(Size) + ")";
+                str = "[" + Type.ToString() + "] " + FriendlyName + " (" + TextTools.PrintFriendlySize(Size) + ")";
             }
 
-            return ToStringRet;
+            return str;
         }
     }
 

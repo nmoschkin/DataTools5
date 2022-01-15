@@ -16,7 +16,7 @@
     Height="500"
     mc:Ignorable="d">
     <Window.Resources>
-        <ResourceDictionary Source="Themes.xaml" />
+        <ResourceDictionary Source="/Themes.xaml" />
     </Window.Resources>
 
     <Grid
