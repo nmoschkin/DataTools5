@@ -50,8 +50,25 @@ namespace DataTools.ColorControls
         public event ColorHitEvent ColorHit;
         public event ColorHitEvent ColorOver;
 
-        ColorWheelElement? selectedElement;
+        ColorPickerElement? selectedElement;
         bool updateForValueChange;
+
+
+
+
+        /// <summary>
+        /// Gets or sets a value that indicates the hue box is rendered tetrachromatically
+        /// </summary>
+        public bool Tetrachromatic
+        {
+            get { return (bool)GetValue(TetrachromaticProperty); }
+            set { SetValue(TetrachromaticProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Tetrachromatic.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty TetrachromaticProperty =
+            DependencyProperty.Register("Tetrachromatic", typeof(bool), typeof(ColorElement), new PropertyMetadata(false));
+
 
 
         public int HuePointerSize
@@ -391,7 +408,7 @@ namespace DataTools.ColorControls
             HSVDATA? hsv5 = null;
             UniColor uc;
 
-            ColorWheelElement cel = new ColorWheelElement();
+            ColorPickerElement cel = new ColorPickerElement();
 
             foreach (var c in cpRender.Elements)
             {
@@ -517,12 +534,25 @@ namespace DataTools.ColorControls
 
         private void PickerSite_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var pt = e.GetPosition(PickerSite);
-            var c = cpRender.HitTest((int)pt.X, (int)pt.Y);
             
-            SetSelectedColor(c);
-            ColorHit?.Invoke(this, new ColorHitEventArgs(c));
-            dragPick = true;
+            if (e.MouseDevice.LeftButton == MouseButtonState.Pressed)
+            {
+                if (Keyboard.Modifiers == ModifierKeys.Control)
+                {
+                    SelectedColor = null;
+                    SetSelectedColor(null);
+                    dragPick = false;
+
+                    return;
+                } 
+
+                var pt = e.GetPosition(PickerSite);
+                var c = cpRender.HitTest((int)pt.X, (int)pt.Y);
+
+                SetSelectedColor(c);
+                ColorHit?.Invoke(this, new ColorHitEventArgs(c));
+                dragPick = true;
+            }
 
         }
 
@@ -556,6 +586,7 @@ namespace DataTools.ColorControls
             double colorVal = this.ColorValue;
             double offset = this.HueOffset;
             bool invert = this.InvertSaturation;
+            bool tetra = this.Tetrachromatic;
             float esize = this.ElementSize;
             int hwt = this.HueWheelThickness;
             int ps = this.HuePointerSize;
@@ -612,8 +643,14 @@ namespace DataTools.ColorControls
                 else
                 {
 
-                    cw = new ColorPickerRenderer(w, h, colorVal, offset, invert, mode == ColorPickerMode.LinearVertical);
-
+                    if (mode == ColorPickerMode.HueBoxHorizontal || mode == ColorPickerMode.HueBoxVertical)
+                    {
+                        cw = new ColorPickerRenderer(w, h, true, invert, mode == ColorPickerMode.HueBoxVertical, tetra);
+                    }
+                    else
+                    {
+                        cw = new ColorPickerRenderer(w, h, colorVal, offset, invert, mode == ColorPickerMode.LinearVertical || mode == ColorPickerMode.HueBarVertical, false, mode == ColorPickerMode.HueBarHorizontal || mode == ColorPickerMode.HueBarVertical);
+                    }
                 }
 
 

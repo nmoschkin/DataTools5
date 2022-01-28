@@ -14,6 +14,14 @@ using DataTools.Graphics.Extensions;
 namespace DataTools.Graphics
 {
 
+    public enum StartCorner
+    {
+        NorthWest,
+        NorthEast,
+        SouthWest,
+        SouthEast
+    }
+
     /// <summary>
     /// Color picker mode
     /// </summary>
@@ -40,9 +48,25 @@ namespace DataTools.Graphics
         /// </summary>
         HexagonWheel = 3,
 
+        /// <summary>
+        /// A toriodal wheel representing hue in arc coordinates.
+        /// </summary>
         HueWheel = 4,
 
-        HueBar = 5
+        /// <summary>
+        /// A hue-only horizontal color bar (no saturation gradient)
+        /// </summary>
+        HueBarHorizontal = 5,
+
+        /// <summary>
+        /// A hue-only vertical color bar (no saturation gradient)
+        /// </summary>
+        HueBarVertical = 6,
+
+
+        HueBoxHorizontal = 7,
+
+        HueBoxVertical = 8
     }
 
     /// <summary>
@@ -66,10 +90,12 @@ namespace DataTools.Graphics
     /// </summary>
     public sealed class ColorPickerRenderer
     {
+        object lockObj = new object();
+
         /// <summary>
         /// All individual color elements in the current instance.
         /// </summary>
-        public List<ColorWheelElement> Elements { get; private set; } = new List<ColorWheelElement>();
+        public List<ColorPickerElement> Elements { get; private set; } = new List<ColorPickerElement>();
 
         /// <summary>
         /// The mode of the current instance.
@@ -132,35 +158,40 @@ namespace DataTools.Graphics
             }); 
         }
 
+
         private void ToBitmap()
         {
             if (imageBytes == null) return;
 
-            var mm = new MemPtr();
-            var bmp = new Bitmap(
-                (int)Math.Ceiling(Bounds.Width), 
-                (int)Math.Ceiling(Bounds.Height), 
-                PixelFormat.Format32bppArgb);
-            
-            mm.Alloc(bmp.Width * bmp.Height * 4);
+            lock (lockObj)
+            {
+                var mm = new MemPtr();
+                var bmp = new Bitmap(
+                    (int)Math.Ceiling(Bounds.Width),
+                    (int)Math.Ceiling(Bounds.Height),
+                    PixelFormat.Format32bppArgb);
 
-            var bm = new BitmapData();
+                mm.Alloc(bmp.Width * bmp.Height * 4 * 2);
 
-            bm.Scan0 = mm.Handle;
-            bm.Stride = bmp.Width * 4;
+                var bm = new BitmapData();
 
-            bm = bmp.LockBits
-                (new Rectangle(0, 0, bmp.Width, bmp.Height), 
-                ImageLockMode.ReadWrite | ImageLockMode.UserInputBuffer, 
-                PixelFormat.Format32bppArgb, 
-                bm);
+                bm.Scan0 = mm.Handle;
+                bm.Stride = bmp.Width * 4;
 
-            mm.FromByteArray(ImageBytes);
+                bm = bmp.LockBits
+                    (new Rectangle(0, 0, bmp.Width, bmp.Height),
+                    ImageLockMode.ReadWrite | ImageLockMode.UserInputBuffer,
+                    PixelFormat.Format32bppArgb,
+                    bm);
 
-            bmp.UnlockBits(bm);
-            mm.Free();
+                mm.FromByteArray(ImageBytes);
 
-            Bitmap = bmp;
+                bmp.UnlockBits(bm);
+                mm.Free();
+
+                Bitmap = bmp;
+            }
+
         }
 
         static bool PointInPolygon(PointF[] fillPoints, float x, float y)
@@ -294,7 +325,7 @@ namespace DataTools.Graphics
             }
 
 
-            foreach (ColorWheelElement e in Elements)
+            foreach (ColorPickerElement e in Elements)
             {                
                 if (e.PolyPoints.Length == 1)
                 {
@@ -335,6 +366,192 @@ namespace DataTools.Graphics
             return HitTest(pt.X, pt.Y, false, out _, out _);
         }
 
+
+        public ColorPickerRenderer(int width, int height, bool huebox, bool invert, bool vertical, bool tetrachromatic = false, bool suppressCreateBitmap = false)
+        {
+
+            if (huebox == false) throw new ArgumentException();
+
+            if (Bitmap != null)
+            {
+                Bitmap.Dispose();
+                Bitmap = null;
+            }
+
+            Bounds = new Rectangle(0, 0, width, height);
+            InvertSaturation = invert;
+
+
+            Value = 1;
+            HueOffset = 0;
+            Vertical = vertical;
+
+            if (vertical)
+            {
+                Mode = ColorPickerMode.HueBoxVertical;
+            }
+            else
+            {
+                Mode = ColorPickerMode.HueBoxHorizontal;
+            }
+
+            List<int> rawColors = new List<int>();
+
+            int x1 = 0;
+            int x2 = width;
+
+            int y1 = 0;
+            int y2 = height;
+
+
+
+            float cred = invert ? 255f : 0f;
+            float cblue = invert ? 0f : 255f;
+
+            float cgreen = invert ? 255f : 0f;
+            float corange = invert ? 0f : 255f;
+
+            float wstep = 255f / width;
+            float hstep = 255f / height;
+
+            byte r, g, b, o;
+            int color = 0;
+
+
+            for (int y = y1; y < y2; y++)
+            {
+                for (int x = x1; x < x2; x++)
+                {
+                    r = (byte)(int)Math.Round(cred);
+                    g = (byte)(int)Math.Round(cgreen);
+                    b = (byte)(int)Math.Round(cblue);
+                    o = (byte)(int)Math.Round(corange);
+
+                    if (tetrachromatic && y % 2 == 0 && x % 2 == 0)
+                    {
+                        var fred = ((cred * 1) - corange) / 2;
+                        if (fred < 0) fred = 0;
+
+                        var fgreen = ((cgreen * 1) + corange) / 2;
+                        if (fgreen > 255) fgreen = 255;
+
+                        r = (byte)(int)Math.Round(fred);
+                        g = (byte)(int)Math.Round(fgreen);
+
+                    }
+
+                    color = unchecked((int)0xFF000000) | (int)r | ((int)g << 8) | ((int)b << 16);
+
+
+                    var el = new ColorPickerElement();
+
+                    el.PolyPoints = new PointF[1] { new PointF(x, y) };
+                    el.Color = Color.FromArgb(color);
+                    el.Shape = ColorWheelShapes.Point;
+                    el.Bounds = new Rectangle(x, y, 1, 1);
+                    el.Center = el.PolyPoints[0];
+
+                    Elements.Add(el);
+                    rawColors.Add(color);
+
+                    if (vertical)
+                    {
+                        if (invert)
+                        {
+                            cgreen -= wstep;
+                            corange += wstep;
+                        }
+                        else
+                        {
+                            cgreen += wstep;
+                            corange -= wstep;
+                        }
+                    }
+                    else
+                    {
+                        if (invert)
+                        {
+                            cred -= wstep;
+                            cblue += wstep;
+                        }
+                        else
+                        {
+                            cred += wstep;
+                            cblue -= wstep;
+                        }
+                    }
+
+                }
+
+                if (vertical)
+                {
+                    if (invert)
+                    {
+                        cred -= hstep;
+                        cblue += hstep;
+                    }
+                    else
+                    {
+                        cred += hstep;
+                        cblue -= hstep;
+                    }
+
+                    cgreen = invert ? 255 : 0;
+                    corange = invert ? 0 : 255;
+                }
+                else
+                {
+                    if (invert)
+                    {
+                        cgreen -= hstep;
+                        corange += hstep;
+                    }
+                    else
+                    {
+                        cgreen += hstep;
+                        corange -= hstep;
+                    }
+
+                    cred = invert ? 255 : 0;
+                    cblue = invert ? 0 : 255;
+                }
+
+            }
+
+
+
+            var arrColors = rawColors.ToArray();
+            imageBytes = new byte[arrColors.Length * sizeof(int)];
+
+            Elements.Sort((ael, bel) =>
+            {
+                if (ael.Center.X == bel.Center.X)
+                {
+                    return (int)(ael.Center.Y - bel.Center.Y);
+                }
+                else
+                {
+                    return (int)(ael.Center.X - bel.Center.X);
+                }
+            });
+
+            unsafe
+            {
+                var gch1 = GCHandle.Alloc(arrColors, GCHandleType.Pinned);
+                var gch2 = GCHandle.Alloc(imageBytes, GCHandleType.Pinned);
+
+                Buffer.MemoryCopy((void*)gch1.AddrOfPinnedObject(), (void*)gch2.AddrOfPinnedObject(), imageBytes.Length, imageBytes.Length);
+
+                gch1.Free();
+                gch2.Free();
+
+            }
+
+            if (!suppressCreateBitmap) ToBitmap();
+
+        }
+
+
         /// <summary>
         /// Instantiate a linear color picker.
         /// </summary>
@@ -344,7 +561,7 @@ namespace DataTools.Graphics
         /// <param name="offset">Hue offset in degrees.</param>
         /// <param name="invert">True to invert saturation.</param>
         /// <param name="vertical">True to draw vertically.</param>
-        public ColorPickerRenderer(int width, int height, double value = 1d, double offset = 0d, bool invert = false, bool vertical = false, bool suppressCreateBitmap = false)
+        public ColorPickerRenderer(int width, int height, double value = 1d, double offset = 0d, bool invert = false, bool vertical = false, bool suppressCreateBitmap = false, bool huebar = false)
         {
             if (Bitmap != null)
             {
@@ -395,7 +612,7 @@ namespace DataTools.Graphics
                         hsv = new HSVDATA()
                         {
                             Hue = arc,
-                            Saturation = invert ? 1 - ((double)i / x2) : ((double)i / x2),
+                            Saturation = huebar ? 1 : invert ? 1 - ((double)i / x2) : ((double)i / x2),
                             Value = value
                         };
 
@@ -410,14 +627,14 @@ namespace DataTools.Graphics
                         hsv = new HSVDATA()
                         {
                             Hue = arc,
-                            Saturation = invert ? 1 - ((double)j/y2) : ((double)j/y2),
+                            Saturation = huebar ? 1 : invert ? 1 - ((double)j/y2) : ((double)j/y2),
                             Value = value
                         };
                     }
 
                     ColorMath.HSVToColorRaw(hsv, ref color);
 
-                    var el = new ColorWheelElement();
+                    var el = new ColorPickerElement();
 
                     el.PolyPoints = new PointF[1] { new PointF(i, j) };
                     el.Color = Color.FromArgb(color);
@@ -589,7 +806,7 @@ namespace DataTools.Graphics
                         ColorMath.HSVToColorRaw(hsv, ref color);
                     }
 
-                    var el = new ColorWheelElement();
+                    var el = new ColorPickerElement();
 
                     el.PolyPoints = new PointF[6];
                     el.Center = new PointF(i, j);
@@ -730,7 +947,7 @@ namespace DataTools.Graphics
                         ColorMath.HSVToColorRaw(hsv, ref color);
                     }
 
-                    var el = new ColorWheelElement();
+                    var el = new ColorPickerElement();
 
                     el.PolyPoints = new PointF[1] { new PointF(i, j) };
                     el.Color = Color.FromArgb(color);
@@ -767,7 +984,7 @@ namespace DataTools.Graphics
     /// <summary>
     /// Structure that represents an element on the color picker.
     /// </summary>
-    public struct ColorWheelElement
+    public struct ColorPickerElement
     {
         /// <summary>
         /// Element Color

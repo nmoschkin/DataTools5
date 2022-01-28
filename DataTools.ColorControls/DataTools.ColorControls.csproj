@@ -14,10 +14,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Update="ColorPicker.xaml.cs">
+    <Compile Update="Controls\ColorPicker.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="ColorDialog.xaml.cs">
+    <Compile Update="Controls\ColorDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -30,11 +30,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Update="ColorPicker.xaml">
+    <Page Update="Controls\ColorPicker.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="ColorDialog.xaml">
+    <Page Update="Controls\ColorDialog.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
