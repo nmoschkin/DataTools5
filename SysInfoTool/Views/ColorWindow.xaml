@@ -101,9 +101,9 @@
                         Margin="8"
                         ColorHit="LinePicker_ColorHit"
                         ElementSize="10"
-                        InvertSaturation="False"
+                        InvertSaturation="false"
                         Mode="HueBoxHorizontal"
-                        Tetrachromatic="true" />
+                        Tetrachromatic="false" />
 
                 </Grid>
 
