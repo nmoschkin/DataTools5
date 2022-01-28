@@ -429,10 +429,10 @@ namespace DataTools.Graphics
 
                     if (tetrachromatic && y % 2 == 0 && x % 2 == 0)
                     {
-                        var fred = ((cred * 1) - corange) / 2;
+                        var fred = ((cred * 1) - (corange / 2));
                         if (fred < 0) fred = 0;
 
-                        var fgreen = ((cgreen * 1) + corange) / 2;
+                        var fgreen = ((cgreen * 1) + (corange / 2));
                         if (fgreen > 255) fgreen = 255;
 
                         r = (byte)(int)Math.Round(fred);
