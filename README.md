@@ -12,6 +12,11 @@ _This repo will eventually go away once v7.0 has been completed._
 
 ## Version 5.0
 
+**Important**
+
+ - Some features in the hardware libraries depend on compiling native to your platform to function properly (compiling to x64 on 64-bit systems.)
+ - Many features require elevated administrative access.
+
 **September 5, 2021**
 
 So, I've finally started programming regularly in WinUI 3/Project Reunion and by extension the UWP namespaces.  I will be cleaning this code up and organizing it into sections based on target type.  I will also be cleaning up and 'universalizing' all of the universal code and the Win32 code will become better organized. I'm going to merge code from separate DLL's and break out new ones.  
