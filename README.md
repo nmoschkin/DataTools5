@@ -1,15 +1,16 @@
 # DataTools
-## Version 5.0
-
-**January 30, 2022**
 
 ## Version 7.0 Is Now Available
+
+**January 30, 2022**
 
 Version 7.0 promises to be much more usable, practical, organized, and documented.
 
 For Version 7.0 Go Here: https://www.github.com/nmoschkin/DataTools
 
 _This repo will eventually go away once v7.0 has been completed._
+
+## Version 5.0
 
 **September 5, 2021**
 
