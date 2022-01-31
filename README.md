@@ -1,6 +1,16 @@
 # DataTools
 ## Version 5.0
 
+**January 30, 2022**
+
+## Version 7.0 Is Now Available
+
+Version 7.0 promises to be much more usable, practical, organized, and documented.
+
+For Version 7.0 Go Here: https://www.github.com/nmoschkin/DataTools
+
+_This repo will eventually go away once v7.0 has been completed._
+
 **September 5, 2021**
 
 So, I've finally started programming regularly in WinUI 3/Project Reunion and by extension the UWP namespaces.  I will be cleaning this code up and organizing it into sections based on target type.  I will also be cleaning up and 'universalizing' all of the universal code and the Win32 code will become better organized. I'm going to merge code from separate DLL's and break out new ones.  
